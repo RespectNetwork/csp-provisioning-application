@@ -29,8 +29,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-import xdi2.core.xri3.CloudName;
-
 /**
  * Handles requests for the application home page.
  */
@@ -202,9 +200,11 @@ public class RegistrationController {
         try {
             CSPUserCredential theCred = theManager.startSignUpProcess();
             String cloudNumber =  theCred.getCloudNumber().toString();
-            this.setSecretToken(new CSPToken(theCred.getSecretToken()));
-            createSession(response, cloudNumber); 
             logger.debug("Created new CloudNumber: {}", cloudNumber);
+            this.setSecretToken(new CSPToken(theCred.getSecretToken()));
+            
+            createSession(response, cloudNumber); 
+            
             returnView = "userdetails";
             model.addAttribute("userInfo", new UserForm());
             model.addAttribute("cloudNumber", cloudNumber);
@@ -222,13 +222,13 @@ public class RegistrationController {
     /**
      * Get the user's basic Information and being the
      * email and phone number (sms) validation processes.
-     * This will also  create the initial basic graph.
+     * This will  create the user's initial graph.
      * 
      * @param userForm Form with User's details
      * @param result Binding Result for Validation or errors
      * @return ModelandView of next  travel location
      */
-    @RequestMapping(value = "/validateuserdetails", method = RequestMethod.POST)
+    @RequestMapping(value = "/getuserdetails", method = RequestMethod.POST)
     public ModelAndView createAndValidateUser(
             @Valid @ModelAttribute("userInfo") UserForm userForm,
             HttpServletRequest request,
@@ -241,7 +241,7 @@ public class RegistrationController {
         ModelAndView mv = null;
         String cloudNumber = getCloudNumberFromSession(request); 
  
-        //Go back to destination if errors. 
+        //Go back to destination if errors occur. 
         if (result.hasErrors()) {
             mv = new ModelAndView("userdetails");
             mv.addObject("userInfo", userForm);
@@ -259,7 +259,6 @@ public class RegistrationController {
                 mv = new ModelAndView(this.failureView);                
                 mv.addObject("error", error);
             }
-
         }
 
         return mv;
@@ -280,8 +279,7 @@ public class RegistrationController {
         logger.debug("Processing Validation Codes");
         
         String cloudNumber = null;
-        
-        
+              
         ModelAndView mv = null;
         try {
             cloudNumber = (String)request.getParameter("cloudNumber");
@@ -294,7 +292,7 @@ public class RegistrationController {
         
         logger.debug("Received cloudNumber {} in request paramater", cloudNumber);
  
-        //Go back to destination if errors. 
+        //Go back to destination if errors occur. 
         if (result.hasErrors()) {
             mv = new ModelAndView("validatecodes");
         } else {  
@@ -389,7 +387,7 @@ public class RegistrationController {
             mv.addObject("error", "Registration Failed: Invalid Session");
         } else {
             try {
-               CloudName cloudName = CloudName.create(cloudForm.getCloudName());
+               String cloudName = cloudForm.getCloudName();
                theManager.registerNewUser(cloudNumber, cloudName, cloudForm.getSecretToken());
                mv = new ModelAndView(successView);
             } catch (Exception e) {

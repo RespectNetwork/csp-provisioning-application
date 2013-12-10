@@ -11,80 +11,28 @@
 
 	<!-- DispatcherServlet Context: defines this servlet's request-processing 
 		infrastructure -->
-        	
+        
+    <beans:import resource="resources.xml"/>
+    <beans:import resource="i18n.xml"/>
+    <beans:import resource="view.xml"/>
+         	
 	<context:component-scan base-package="net.respectnetwork.csp.application" scoped-proxy="targetClass" />
 	<!-- Enables the Spring MVC @Controller programming model -->
 	<annotation-driven />
 
-	<!-- Handles HTTP GET requests for /resources/** by efficiently serving 
-		up static resources in the ${webappRoot}/resources directory -->
-	<resources mapping="/css/**" location="/css/" />
-	<resources mapping="/js/libs/**" location="/js/libs/" />
-	<resources mapping="/img/**" location="/img/" />
-
-	<!-- Internationalization support -->
-
-	<beans:bean id="localeResolver"
-		class="org.springframework.web.servlet.i18n.SessionLocaleResolver">
-		<beans:property name="defaultLocale" value="en_US" />
-	</beans:bean>
- 
-	<beans:bean id="localeChangeInterceptor"
-		class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
-		<beans:property name="paramName" value="language" />
-	</beans:bean>
- 
-	<beans:bean class="org.springframework.web.servlet.mvc.support.ControllerClassNameHandlerMapping" >
-		<beans:property name="interceptors">
-		   <beans:list>
-			<beans:ref bean="localeChangeInterceptor" />
-		   </beans:list>
-		</beans:property>
-	</beans:bean>
-
-	<beans:bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
-		<beans:property name="basename" value="locale/messages" />
-	</beans:bean>
-
-	<!-- **************************************************************** -->
-	<!-- THYMELEAF-SPECIFIC ARTIFACTS -->
-	<!-- TemplateResolver <- TemplateEngine <- ViewResolver -->
-	<!-- **************************************************************** -->
-
-	<beans:bean id="templateResolver"
-		class="org.thymeleaf.templateresolver.ServletContextTemplateResolver">
-		<beans:property name="prefix" value="/WEB-INF/views/" />
-		<beans:property name="suffix" value=".html" />
-		<beans:property name="templateMode" value="HTML5" />
-	</beans:bean>
-
-	<beans:bean id="templateEngine" class="org.thymeleaf.spring3.SpringTemplateEngine">
-		<beans:property name="templateResolver" ref="templateResolver" />
-	</beans:bean>
-
-	<beans:bean class="org.thymeleaf.spring3.view.ThymeleafViewResolver">
-		<beans:property name="templateEngine" ref="templateEngine" />
-	</beans:bean>
     
+    <!-- Business Logic -->
     
-    <beans:bean id="viewResolver"
-        class="org.springframework.web.servlet.view.InternalResourceViewResolver" >
-        <beans:property name="prefix">
-            <beans:value>/WEB-INF/pages/</beans:value>
-        </beans:property>
-        <beans:property name="suffix">
-            <beans:value>.jsp</beans:value>
-        </beans:property>
-    </beans:bean>
-    
-    
-    <!--  ######## Business Logic ########## -->
+    <!-- Registration Manager -->
     
     <beans:bean id="regManager"
         class="net.respectnetwork.csp.application.manager.RegistrationManager" >
         <beans:qualifier value="active"/>   
         <beans:property name="cspRegistrar" ref="basicCSP"/>    
     </beans:bean>
+    
+    
+    <!-- CSP SDK Implementation -->
     
     <beans:bean id="basicCSP"
         class="net.respectnetwork.sdk.csp.BasicCSP" >
@@ -97,8 +45,10 @@
     
     <beans:bean id="rnCSPInformationOTE" class="net.respectnetwork.sdk.csp.example.CSPInformationRespectNetwork"/>
    
+    <!-- Cloud Number Generator -->
     <beans:bean id="xdiCloudNameGen" class="net.respectnetwork.sdk.csp.xdi.XDIClientClouldNumberGenerator"/>
          
+    <!-- Notifier  -->     
     <beans:bean id="basicNotifier" class="net.respectnetwork.sdk.csp.notification.BasicNotificationService">
         <!-- Twilio Properties -->
         <beans:property name="authToken" value="a619926fa2b0a91e2e556a80c5c49498"/>
@@ -113,7 +63,7 @@
         
     </beans:bean>
     
- 
+    <!-- Token Manager -->
     <beans:bean id="basicTokenManager" class="net.respectnetwork.sdk.csp.notification.BasicTokenManager">
         <beans:property name="tokenCache" ref="ehTokenCache"></beans:property>
     </beans:bean>
@@ -130,7 +80,7 @@
     </beans:bean>
     
     
-    <!-- ############# Autowired Beans used in Registration Controller #############-->
+    <!--  Autowired Beans used in Registration Controller -->
     
     <beans:bean id="failureView" class="java.lang.String" >
         <beans:constructor-arg value="failure"/>

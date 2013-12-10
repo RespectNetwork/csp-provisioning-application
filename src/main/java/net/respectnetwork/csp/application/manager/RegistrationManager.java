@@ -108,10 +108,15 @@ public class RegistrationManager {
      * @param cloudName
      * @param secretToken
      */
-    public void registerNewUser(String cloudNumber, CloudName cloudName,
+    public void registerNewUser(String cloudNumber, String theCloudName,
             String secretToken) throws UserRegistrationException {
 
         try {
+            
+            CloudName cloudName = CloudName.create(theCloudName);
+            
+            //@TODO: Will we use this instead.?
+           //cspRegistrar.registerUserCloud(cloudNumber, cloudName, secretToken);
 
             // 5.1.1.1 Write Password to CSP Graph.
             cspRegistrar.setCloudSecretTokenInCSP(
@@ -121,14 +126,17 @@ public class RegistrationManager {
             cspRegistrar.registerCloudNameInRN(cloudName,
                     CloudNumber.create(cloudNumber));
 
+            // Create XDI EndPoint (for use in registry)
+            String cloudXdiEndpoint = null;
             String cloudXdiBase = cspRegistrar.getCspInformation()
                     .getCspCloudBaseXdiEndpoint();
-            String cloudXdiEndpoint = null;
 
             cloudXdiEndpoint = cloudXdiBase
                     + URLEncoder.encode(cloudNumber, "UTF-8");
+            
             logger.debug("Creating cloudXdiEndpoint : {}", cloudXdiEndpoint);
 
+            // ???
             cspRegistrar.setCloudXdiEndpointInRN(
                     CloudNumber.create(cloudNumber), cloudXdiEndpoint);
 
