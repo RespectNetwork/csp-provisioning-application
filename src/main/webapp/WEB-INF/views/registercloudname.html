@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta charset="utf-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+
+<title></title>
+<meta name="description" content="HTML 5 CSS 3 Spring Form"/>
+
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link rel="stylesheet" href="../../css/style.css" th:href="@{/css/style.css}"/>
+<script src="../../js/libs/modernizr-2.0.6.min.js" th:src="@{/js/libs/modernizr-2.0.6.min.js}"></script>
+</head>
+
+<body>
+	<div id="container">
+		<header> </header>
+
+		<form action="#" th:object="${cloudInfo}" th:action="@{/registercloud}"
+			method="post">
+
+			<h1>Register Cloud Name</h1>
+
+
+			<fieldset id="cloud-details">
+					
+				<label for="cloudName" th:text="cloudName">cloudName: </label>	
+				<input type="text" name="cloudName" value="" id="cloudName" placeholder="=you" required="required" autofocus="autofocus" th:value="*{cloudName}" /> 
+				
+				<label for="secretToken" th:text="secretToken">Secret Token: </label> 
+				<input type="password" name="secretToken" value="" id="secretToken" placeholder="" required="required"  th:value="*{secretToken}" /> 
+								
+				<input type="submit" value="Register" name="submit"
+					class="submit" />
+			</fieldset>
+			
+			<!-- end user-message -->
+			<div id="errors" th:if="${#fields.hasErrors('*')}">
+					<ul>
+						<li th:each="err : ${#fields.errors('*')}" th:text="${err}">Input is incorrect</li>
+					</ul>
+			</div>
+		</form>
+
+		<footer>
+			
+		</footer>
+	</div>
+	<!--! end of #container -->
+
+	
+	<script>
+		/*<![CDATA[*/
+		      //Embbeded Javascript    
+		/*]]>*/
+	</script>
+
+</body>
+</html>
