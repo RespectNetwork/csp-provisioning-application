@@ -12,8 +12,13 @@
 	<!-- DispatcherServlet Context: defines this servlet's request-processing 
 		infrastructure -->
         
-    <context:property-placeholder location="classpath:notification.properties" />
-        
+    <context:property-placeholder location="classpath:twilio.properties, classpath:mail.properties, classpath:notification.properties"/>
+    
+    
+    <!-- 
+    classpath:twilio.properties, classpath:notification.properties, classpath:mail.properties 
+   -->  
+       
     <beans:import resource="resources.xml"/>
     <beans:import resource="i18n.xml"/>
     <beans:import resource="view.xml"/>
@@ -74,15 +79,16 @@
     <!-- Notifier  -->     
     <beans:bean id="basicNotifier" class="net.respectnetwork.sdk.csp.notification.BasicNotificationService">
         <!-- Twilio Properties -->
-        <beans:property name="authToken" value="a619926fa2b0a91e2e556a80c5c49498"/>
-        <beans:property name="twillioAccountSID" value="AC1771265ef315d7ae18c2d96835108f73"/>
-        <beans:property name="cspSMSNumber" value="+16507419190"/>
+        <beans:property name="authToken" value="${twilio.authToken}"/>
+        <beans:property name="twillioAccountSID" value="${twilio.accountSID}"/>
+        <beans:property name="cspSMSNumber" value="${twilio.cspSMSNumber}"/>
+        
         
         <!--  Email Properties -->
-        <beans:property name="emailSubject" value="Verifying your Email Address"/>
-        <beans:property name="emailFrom" value="*****@respectnetwork.net"/>
-        <beans:property name="mailAccountUsername" value="*****@respectnetwork.net"/>
-        <beans:property name="mailAccountPassword" value="*****"/>
+        <beans:property name="emailSubject" value="${mail.subject}"/>
+        <beans:property name="emailFrom" value="${mail.from}"/>
+        <beans:property name="mailAccountUsername" value="${mail.username}"/>
+        <beans:property name="mailAccountPassword" value="${mail.password}"/>
         
     </beans:bean>
     
