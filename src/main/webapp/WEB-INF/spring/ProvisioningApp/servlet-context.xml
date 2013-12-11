@@ -12,6 +12,8 @@
 	<!-- DispatcherServlet Context: defines this servlet's request-processing 
 		infrastructure -->
         
+    <context:property-placeholder location="classpath:notification.properties" />
+        
     <beans:import resource="resources.xml"/>
     <beans:import resource="i18n.xml"/>
     <beans:import resource="view.xml"/>
@@ -37,14 +39,35 @@
     <beans:bean id="basicCSP"
         class="net.respectnetwork.sdk.csp.BasicCSP" >
         <beans:property name="cloudNumberGenerator" ref="xdiCloudNameGen"/>
-        <beans:property name="cspInformation" ref="rnCSPInformationOTE"/>
+        <beans:property name="cspInformation" ref="rnCSP-OTE"/>
         <beans:property name="theNotifier" ref="basicNotifier"/>
         <beans:property name="tokenManager" ref="basicTokenManager"/>  
         <beans:property name="validationEndpoint" value="http://localhost:8080/csp-provisioning-application/enterValidationCodes"/>
+        <beans:property name="messageManager" ref="basicMessageManager"/>
     </beans:bean>
     
+    <!-- Fixed Example of RN CSP: Unused -->
     <beans:bean id="rnCSPInformationOTE" class="net.respectnetwork.sdk.csp.example.CSPInformationRespectNetwork"/>
-   
+    
+    <beans:bean name="rnCSP-OTE" class="net.respectnetwork.sdk.csp.BasicCSPInformation">
+        <beans:constructor-arg name="cspCloudBaseXdiEndpoint" value="http://mycloud-ote.neustar.biz:14440/users/"/>
+        <beans:constructor-arg name="cspCloudNumber" ref="cspCloudNumber"/>
+        <beans:constructor-arg name="cspRegistryXdiEndpoint" value="http://mycloud-ote.neustar.biz:14440/registry"/>
+        <beans:constructor-arg name="cspSecretToken" value="s3cr3t"/>
+        <beans:constructor-arg name="rnCloudNumber" ref="rnCloudNumber"/>
+        <beans:constructor-arg name="rnRegistrationServiceXdiEndpoint" value="http://registration-dev.respectnetwork.net/registration"/>
+    </beans:bean>
+    
+    
+    <beans:bean id="cspCloudNumber" class="xdi2.core.xri3.CloudNumber" factory-method="create">
+        <beans:constructor-arg name="string" value="[@]!:uuid:ca51aeb9-e09e-4305-89d7-87a944a1e1fa"/>
+    </beans:bean>
+    
+    <beans:bean id="rnCloudNumber" class="xdi2.core.xri3.CloudNumber" factory-method="create">
+        <beans:constructor-arg name="string" value="[@]!:uuid:ca51aeb9-e09e-4305-89d7-87a944a1e1fa"/>
+    </beans:bean>
+ 
+    
     <!-- Cloud Number Generator -->
     <beans:bean id="xdiCloudNameGen" class="net.respectnetwork.sdk.csp.xdi.XDIClientClouldNumberGenerator"/>
          
@@ -57,9 +80,9 @@
         
         <!--  Email Properties -->
         <beans:property name="emailSubject" value="Verifying your Email Address"/>
-        <beans:property name="emailFrom" value="barryb@respectnetwork.net"/>
-        <beans:property name="mailAccountUsername" value="barryb@respectnetwork.net"/>
-        <beans:property name="mailAccountPassword" value="Dbeech99!"/>
+        <beans:property name="emailFrom" value="*****@respectnetwork.net"/>
+        <beans:property name="mailAccountUsername" value="*****@respectnetwork.net"/>
+        <beans:property name="mailAccountPassword" value="*****"/>
         
     </beans:bean>
     
@@ -67,6 +90,17 @@
     <beans:bean id="basicTokenManager" class="net.respectnetwork.sdk.csp.notification.BasicTokenManager">
         <beans:property name="tokenCache" ref="ehTokenCache"></beans:property>
     </beans:bean>
+    
+    
+    <!-- Message Manager -->
+    <beans:bean id="basicMessageManager" class="net.respectnetwork.sdk.csp.notification.BasicMessageManager">
+        <beans:property name="emailTemplate" value="${email.template}"/>
+        <beans:property name="smsTemplate" value="${sms.template}"/>
+    </beans:bean>
+    
+    
+    
+    
      
     <beans:bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean"/>
     

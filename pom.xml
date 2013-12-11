@@ -93,7 +93,7 @@
                         </systemProperty>
                         <systemProperty>
                             <name>log4j.configuration</name>
-                            <value>file:${basedir}/src/test/resources/log4j.properties</value>
+                            <value>file:${basedir}/src/test/resources/log4j.xml</value>
                         </systemProperty>
                     </systemProperties>
                 </configuration>
@@ -280,7 +280,7 @@
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
-            <version>1.0</version>
+            <version>2.6</version>
         </dependency>
         
         <!-- AspectJ -->
