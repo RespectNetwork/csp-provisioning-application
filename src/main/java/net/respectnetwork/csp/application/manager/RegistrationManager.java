@@ -158,7 +158,7 @@ public class RegistrationManager {
             //cspRegistrar.setVerifiedContactInformationInRN(CloudNumber.create(cloudNumber), email, phone);
             
             cspRegistrar.registerCloudNameInRN(cloudName,
-                    CloudNumber.create(cloudNumber));
+                    CloudNumber.create(cloudNumber), email, phone);
 
             // Create XDI EndPoint (for use in registry)
             String cloudXdiEndpoint = null;
