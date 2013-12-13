@@ -14,11 +14,7 @@
         
     <context:property-placeholder location="classpath:twilio.properties, classpath:mail.properties, classpath:notification.properties"/>
     
-    
-    <!-- 
-    classpath:twilio.properties, classpath:notification.properties, classpath:mail.properties 
-   -->  
-       
+              
     <beans:import resource="resources.xml"/>
     <beans:import resource="i18n.xml"/>
     <beans:import resource="view.xml"/>

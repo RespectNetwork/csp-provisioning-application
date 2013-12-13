@@ -8,7 +8,7 @@ import net.respectnetwork.csp.application.form.UserForm;
 import net.respectnetwork.sdk.csp.CSP;
 import net.respectnetwork.sdk.csp.exception.CSPRegistrationException;
 import net.respectnetwork.sdk.csp.exception.CSPValidationException;
-import net.respectnetwork.sdk.csp.model.CSPUser;
+import net.respectnetwork.sdk.csp.model.UserProfile;
 import net.respectnetwork.sdk.csp.model.CSPUserCredential;
 
 import org.slf4j.Logger;
@@ -72,7 +72,7 @@ public class RegistrationManager {
     public void createAndValidateUser(String cloudNumber, UserForm theUser, String secretToken)
         throws CSPValidationException{
            
-           CSPUser theCSPUser = new CSPUser();
+           UserProfile theCSPUser = new UserProfile();
            theCSPUser.setFirstName(theUser.getName());
            theCSPUser.setNickName(theUser.getNickName());
            
@@ -83,20 +83,34 @@ public class RegistrationManager {
            theCSPUser.setCity(theUser.getCity());
            theCSPUser.setState(theUser.getState());
            theCSPUser.setPostalcode(theUser.getPostalcode());
-           cspRegistrar.createAndValidateUser(CloudNumber.create(cloudNumber), theCSPUser, secretToken);
+           
+           cspRegistrar.setUpAndValidateUserProfileInCloud(CloudNumber.create(cloudNumber), theCSPUser, secretToken);
     }
     
     
     /**
      * Section 4.1.1
      */
-    public boolean validateCodes(String cloudNumber, String emailCode, String smsCode) {
-        try {        
-           return cspRegistrar.validateCodes(CloudNumber.create(cloudNumber), emailCode, smsCode);
+    public boolean validateCodes(String cloudNumber, String emailCode, String smsCode, String secretToken) {
+        
+        boolean validated = false;
+        try { 
+                     
+           validated = cspRegistrar.validateCodes(CloudNumber.create(cloudNumber), emailCode, smsCode, secretToken);
+           
+           //4.1.1.1
+           if (validated) {
+               // Update EMAIL and Phone Number in CloudGraph with validation Information
+               // e.g. <=me><+email><+validation>...
+              
+           }
+            
         } catch (CSPValidationException e) {
             logger.warn("Problem Validating SMS and/or Email Codes");
-            return false;
+            validated = false;
         }
+        
+        return validated;
     }
 
     /**
@@ -117,12 +131,32 @@ public class RegistrationManager {
             
             //@TODO: Will we use this instead.?
            //cspRegistrar.registerUserCloud(cloudNumber, cloudName, secretToken);
+            
 
+            
+            try {
+                if (cspRegistrar.checkCloudNameAvailableInRN(cloudName) != null){
+                    throw new UserRegistrationException("Clould Name " + cloudName.toString() + " not available");
+                }
+            } catch (Xdi2ClientException e) {
+                String error = "Problem checking Clould Number Avaliability: {} " +  e.getMessage();
+                throw new UserRegistrationException(error);
+            }
             // 5.1.1.1 Write Password to CSP Graph.
             cspRegistrar.setCloudSecretTokenInCSP(
                     CloudNumber.create(cloudNumber), secretToken);
 
             // 5.1.1.3
+            
+
+            
+            //@TODO: This assumes uniqueness Check has already  been done
+            // To Be implemented
+            String email = ""; //Get Email from Cloud Graph;
+            String phone = ""; //Get Phone from Cloud Graph;
+            
+            //cspRegistrar.setVerifiedContactInformationInRN(CloudNumber.create(cloudNumber), email, phone);
+            
             cspRegistrar.registerCloudNameInRN(cloudName,
                     CloudNumber.create(cloudNumber));
 
@@ -136,9 +170,9 @@ public class RegistrationManager {
             
             logger.debug("Creating cloudXdiEndpoint : {}", cloudXdiEndpoint);
 
-            // ???
-            cspRegistrar.setCloudXdiEndpointInRN(
-                    CloudNumber.create(cloudNumber), cloudXdiEndpoint);
+            // No need to  do  this
+            //cspRegistrar.setCloudXdiEndpointInRN(
+              //      CloudNumber.create(cloudNumber), cloudXdiEndpoint);
 
             // 5.1.1.5 ( User Graph )
             cspRegistrar.registerCloudNameInCloud(cloudName,

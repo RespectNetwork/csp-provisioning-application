@@ -181,8 +181,7 @@ public class RegistrationController {
     }
 
     /**
-     * @param secretToken
-     *            the secretToken to set
+     * @param secretToken the secretToken to set
      */
     public void setSecretToken(CSPToken secretToken) {
         this.secretToken = secretToken;
@@ -340,7 +339,7 @@ public class RegistrationController {
 
         
         if (cloudNumber != null) {         
-            if (theManager.validateCodes(cloudNumber, codesForm.getEmailCode(), codesForm.getSMSCode())) {
+            if (theManager.validateCodes(cloudNumber, codesForm.getEmailCode(), codesForm.getSMSCode(), secretToken.getSecretToken())) {
                 mv = new ModelAndView("registercloudname");
                 mv.addObject("cloudInfo", new CloudForm());
             } else {
