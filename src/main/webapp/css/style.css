@@ -72,7 +72,7 @@ signup {
 	float: left;
 	border: 1px solid #ddd;
 	padding: 30px 40px 20px 40px;
-	margin: 75px 0 0 0;
+	margin: 10px 10px 10px 10px;
 	width: 715px;
 	background: #fff;
 	/* -- CSS3 - define rounded corners -- */
@@ -395,8 +395,8 @@ figure {
 form {
 	float: left;
 	border: 1px solid #ddd;
-	padding: 30px 40px 20px 40px;
-	margin: 75px 0 0 0;
+	padding: 10px 10px 10px 10px;
+	margin: 15px 15px 15px 15px;
 	width: 350px;
 	background: #fff;
 	/* -- CSS3 - define rounded corners -- */
@@ -946,26 +946,7 @@ figure {
 /* =============================================================================
    Forms
    ========================================================================== */
-form {
-	float: left;
-	border: 1px solid #ddd;
-	padding: 30px 40px 20px 40px;
-	margin: 75px 0 0 0;
-	width: 715px;
-	background: #fff;
-	/* -- CSS3 - define rounded corners -- */
-	-webkit-border-radius: 10px;
-	-moz-border-radius: 10px;
-	border-radius: 10px;
-	/* -- CSS3 - create a background gradient -- */
-	background: -webkit-gradient(linear, 0% 0%, 0% 40%, from(#EEE), to(#FFF)
-		);
-	background: -moz-linear-gradient(0% 40% 90deg, #FFF, #EEE);
-	/* -- CSS3 - add a drop shadow -- */
-	-webkit-box-shadow: 0px 0 50px #ccc;
-	-moz-box-shadow: 0px 0 50px #ccc;
-	box-shadow: 0px 0 50px #ccc;
-}
+
 
 fieldset {
 	border: 0;

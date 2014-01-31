@@ -19,7 +19,7 @@
 	<div id="container">
 		<header> </header>
 
-		<form action="#" th:object="${codeInfo}" th:action="@{/validatecodes}"
+		<form style="width: 715px" action="#" th:object="${codeInfo}" th:action="@{/validatecodes}"
 			method="post">
 
 
@@ -40,9 +40,7 @@
 					
 	       </fieldset>
 					
-	
-			
-			
+		
 			<!-- end code-message -->
 			<div id="errors" th:if="${#fields.hasErrors('*')}">
 					<ul>

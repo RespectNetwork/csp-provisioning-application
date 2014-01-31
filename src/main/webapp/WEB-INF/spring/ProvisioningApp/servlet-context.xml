@@ -51,15 +51,16 @@
     <beans:bean id="rnCSPInformationOTE" class="net.respectnetwork.sdk.csp.example.CSPInformationRespectNetwork"/>
     
     <beans:bean name="rnCSP-OTE" class="net.respectnetwork.sdk.csp.BasicCSPInformation">
-        <beans:constructor-arg name="cspCloudBaseXdiEndpoint" value="http://mycloud-ote.neustar.biz:14440/users/"/>
         <beans:constructor-arg name="cspCloudNumber" ref="cspCloudNumber"/>
-        <beans:constructor-arg name="cspRegistryXdiEndpoint" value="http://mycloud-ote.neustar.biz:14440/registry"/>
         <beans:constructor-arg name="cspSecretToken" value="s3cr3t"/>
+        <beans:constructor-arg name="cspRegistryXdiEndpoint" value="http://mycloud-ote.neustar.biz:14440/registry"/>
+        <beans:constructor-arg name="cspCloudBaseXdiEndpoint" value="http://mycloud-ote.neustar.biz:14440/users/"/>
         <beans:constructor-arg name="rnCloudNumber" ref="rnCloudNumber"/>
         <beans:constructor-arg name="rnRegistrationServiceXdiEndpoint" value="http://registration-dev.respectnetwork.net/registration"/>
+        <beans:constructor-arg name="rnCspLinkContract" ref="rnCspLinkContract"/>
     </beans:bean>
     
-    
+       
     <beans:bean id="cspCloudNumber" class="xdi2.core.xri3.CloudNumber" factory-method="create">
         <beans:constructor-arg name="string" value="[@]!:uuid:ca51aeb9-e09e-4305-89d7-87a944a1e1fa"/>
     </beans:bean>
@@ -67,6 +68,13 @@
     <beans:bean id="rnCloudNumber" class="xdi2.core.xri3.CloudNumber" factory-method="create">
         <beans:constructor-arg name="string" value="[@]!:uuid:ca51aeb9-e09e-4305-89d7-87a944a1e1fa"/>
     </beans:bean>
+       
+    <beans:bean id="rnCspLinkContract" class="xdi2.core.xri3.XDI3Segment" factory-method="create">
+        <beans:constructor-arg name="string" value="[@]!:uuid:ca51aeb9-e09e-4305-89d7-87a944a1e1fa$to+registrar$from$do"/>
+    </beans:bean>
+    
+    
+    
  
     
     <!-- Cloud Number Generator -->
@@ -100,10 +108,6 @@
         <beans:property name="smsTemplate" value="${sms.template}"/>
     </beans:bean>
     
-    
-    
-    
-     
     <beans:bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean"/>
     
     <beans:bean id="ehTokenCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">

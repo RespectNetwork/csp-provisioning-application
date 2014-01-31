@@ -2,6 +2,7 @@ package net.respectnetwork.csp.application.manager;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Date;
 
 import net.respectnetwork.csp.application.exception.UserRegistrationException;
 import net.respectnetwork.csp.application.form.UserForm;
@@ -83,6 +84,8 @@ public class RegistrationManager {
            theCSPUser.setCity(theUser.getCity());
            theCSPUser.setState(theUser.getState());
            theCSPUser.setPostalcode(theUser.getPostalcode());
+           
+           //@TODO Call checkPhoneAndEmailAvailableInRN: 3.1.1.5.1
            
            cspRegistrar.setUpAndValidateUserProfileInCloud(CloudNumber.create(cloudNumber), theCSPUser, secretToken);
     }
@@ -181,6 +184,18 @@ public class RegistrationManager {
             // 5.1.1.7
             cspRegistrar.registerCloudNameInCSP(cloudName,
                     CloudNumber.create(cloudNumber));
+            
+
+            //MemberShip Registration: Part of 5.1.1.3.1
+            
+            cspRegistrar.setRespectNetworkMembershipInRN(CloudNumber.create(cloudNumber));
+            cspRegistrar.setRespectFirstMembershipInRN(CloudNumber.create(cloudNumber), new Date());
+            cspRegistrar.setRespectFirstLifetimeMembershipInRN(CloudNumber.create(cloudNumber));
+            
+            
+            
+            
+            
 
         } catch (Xdi2ClientException e) {
             String error = "Problem Completing User Registration"
