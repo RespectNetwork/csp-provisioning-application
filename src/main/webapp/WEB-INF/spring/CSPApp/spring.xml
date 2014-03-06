@@ -18,6 +18,8 @@
     <beans:import resource="resources.xml"/>
     <beans:import resource="i18n.xml"/>
     <beans:import resource="view.xml"/>
+    <beans:import resource="notification.xml"/>
+    <beans:import resource="payment.xml"/>
          	
 	<context:component-scan base-package="net.respectnetwork.csp.application" scoped-proxy="targetClass" />
 	<!-- Enables the Spring MVC @Controller programming model -->
@@ -31,26 +33,29 @@
     <beans:bean id="regManager"
         class="net.respectnetwork.csp.application.manager.RegistrationManager" >
         <beans:qualifier value="active"/>   
-        <beans:property name="cspRegistrar" ref="basicCSP"/>    
+        <beans:property name="cspRegistrar" ref="basicCSP"/>  
+        <beans:property name="userValidator" ref="basicUserValidator"/>  
+        <beans:property name="paymentProcesser" ref="nopPaymentProcessor"/>  
+        <beans:property name="registrationAmount" ref="registrationAmount"/> 
+        <beans:property name="registrationCurrencyCode" ref="registrationCurrencyCode"/>  
+        <beans:property name="runInTest" value="true"/>  <!-- Never run as true in Production -->       
     </beans:bean>
     
     
     <!-- CSP SDK Implementation -->
-    
-    <beans:bean id="basicCSP"
+     <beans:bean id="basicCSP"
         class="net.respectnetwork.sdk.csp.BasicCSP" >
-        <beans:property name="cloudNumberGenerator" ref="xdiCloudNameGen"/>
-        <beans:property name="cspInformation" ref="rnCSP-OTE"/>
-        <beans:property name="theNotifier" ref="basicNotifier"/>
-        <beans:property name="tokenManager" ref="basicTokenManager"/>  
-        <beans:property name="validationEndpoint" value="http://localhost:8080/csp-provisioning-application/enterValidationCodes"/>
-        <beans:property name="messageManager" ref="basicMessageManager"/>
+        <beans:property name="cspInformation" ref="rnCSP-STAGE"/>
     </beans:bean>
     
-    <!-- Fixed Example of RN CSP: Unused -->
-    <beans:bean id="rnCSPInformationOTE" class="net.respectnetwork.sdk.csp.example.CSPInformationRespectNetwork"/>
+   
     
-    <beans:bean name="rnCSP-OTE" class="net.respectnetwork.sdk.csp.BasicCSPInformation">
+    <!-- Fixed Example of RN CSP: Unused 
+    <beans:bean id="rnCSPInformationOTE" class="net.respectnetwork.sdk.csp.example.CSPInformationRespectNetwork"/>
+   -->
+   
+ 
+    <beans:bean name="rnCSP-STAGE" class="net.respectnetwork.sdk.csp.BasicCSPInformation">
         <beans:constructor-arg name="cspCloudNumber" ref="cspCloudNumber"/>
         <beans:constructor-arg name="cspSecretToken" value="s3cr3t"/>
         <beans:constructor-arg name="cspRegistryXdiEndpoint" value="http://mycloud-ote.neustar.biz:14440/registry"/>
@@ -58,7 +63,16 @@
         <beans:constructor-arg name="rnCloudNumber" ref="rnCloudNumber"/>
         <beans:constructor-arg name="rnRegistrationServiceXdiEndpoint" value="http://registration-dev.respectnetwork.net/registration"/>
         <beans:constructor-arg name="rnCspLinkContract" ref="rnCspLinkContract"/>
+        <beans:constructor-arg name="cspPrivateKey">
+            <beans:null />
+        </beans:constructor-arg>
+        <beans:constructor-arg name="rnCspSecretToken" value="s3cr3t"/>
+        <beans:constructor-arg name="xdiDiscoveryClient">
+            <beans:null />
+        </beans:constructor-arg>
     </beans:bean>
+    
+    
     
        
     <beans:bean id="cspCloudNumber" class="xdi2.core.xri3.CloudNumber" factory-method="create">
@@ -75,62 +89,13 @@
     
     
     
- 
-    
     <!-- Cloud Number Generator -->
     <beans:bean id="xdiCloudNameGen" class="net.respectnetwork.sdk.csp.xdi.XDIClientClouldNumberGenerator"/>
          
-    <!-- Notifier  -->     
-    <beans:bean id="basicNotifier" class="net.respectnetwork.sdk.csp.notification.BasicNotificationService">
-        <!-- Twilio Properties -->
-        <beans:property name="authToken" value="${twilio.authToken}"/>
-        <beans:property name="twillioAccountSID" value="${twilio.accountSID}"/>
-        <beans:property name="cspSMSNumber" value="${twilio.cspSMSNumber}"/>
-        
-        
-        <!--  Email Properties -->
-        <beans:property name="emailSubject" value="${mail.subject}"/>
-        <beans:property name="emailFrom" value="${mail.from}"/>
-        <beans:property name="mailAccountUsername" value="${mail.username}"/>
-        <beans:property name="mailAccountPassword" value="${mail.password}"/>
-        
-    </beans:bean>
-    
-    <!-- Token Manager -->
-    <beans:bean id="basicTokenManager" class="net.respectnetwork.sdk.csp.notification.BasicTokenManager">
-        <beans:property name="tokenCache" ref="ehTokenCache"></beans:property>
-    </beans:bean>
-    
-    
-    <!-- Message Manager -->
-    <beans:bean id="basicMessageManager" class="net.respectnetwork.sdk.csp.notification.BasicMessageManager">
-        <beans:property name="emailTemplate" value="${email.template}"/>
-        <beans:property name="smsTemplate" value="${sms.template}"/>
-    </beans:bean>
-    
-    <beans:bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean"/>
-    
-    <beans:bean id="ehTokenCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
-        <beans:property name="cacheManager" ref="cacheManager"/>
-        <beans:property name="maxElementsInMemory" value="1000000"/> <!--  -->
-        <beans:property name="memoryStoreEvictionPolicy" value="LRU"/>
-        <beans:property name="timeToLive" value="600"/>   <!-- 10 Mins -->
-        <beans:property name="overflowToDisk" value="true"/>
-        <beans:property name="diskPersistent" value="true"/>        
-    </beans:bean>
+
     
     
     <!--  Autowired Beans used in Registration Controller -->
-    
-    <beans:bean id="failureView" class="java.lang.String" >
-        <beans:constructor-arg value="failure"/>
-        <beans:qualifier value="failureView"/>         
-    </beans:bean>
-    
-    <beans:bean id="successView" class="java.lang.String" >
-        <beans:constructor-arg value="success"/>
-        <beans:qualifier value="successView"/>         
-    </beans:bean>
     
     <beans:bean id="sessionCookieName" class="java.lang.String" >
         <beans:constructor-arg value="csp-signup-session"/>

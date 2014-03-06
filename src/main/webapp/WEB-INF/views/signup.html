@@ -19,20 +19,24 @@
 	<div id="container">
 		<header> </header>
 
-		<form action="#" th:object="${cloudInfo}" th:action="@{/registercloud}"
+		<form action="#" th:object="${signUpInfo}" th:action="@{/signup}"
 			method="post">
 
 			<h1>Register Cloud Name</h1>
-
-
+			
+			<p><span style="color: red;" th:text="${error}">System Error</span></p>
+		
 			<fieldset id="cloud-details">
 					
 				<label for="cloudName" th:text="cloudName">cloudName: </label>	
 				<input type="text" name="cloudName" value="" id="cloudName" placeholder="=you" required="required" autofocus="autofocus" th:value="*{cloudName}" /> 
-				
-				<label for="secretToken" th:text="secretToken">Secret Token: </label> 
-				<input type="password" name="secretToken" value="" id="secretToken" placeholder="" required="required"  th:value="*{secretToken}" /> 
-								
+                <p style="color: red;" th:text="${cloudNameError}">CN Error</p>			
+                <label for="email" th:text="email">email: </label>  
+                <input type="text" name="email" value="" id="email" placeholder="=you" required="required" autofocus="autofocus" th:value="*{email}" /> 
+                <p style="color: red;" th:text="${emailError}">Email Error</p>         
+                <label for="mobilePhone" th:text="mobilePhone">mobilePhone: </label>  
+                <input type="text" name="mobilePhone" value="" id="mobilePhone" placeholder="=you" required="required" autofocus="autofocus" th:value="*{mobilePhone}" /> 
+                <p style="color: red;" th:text="${phoneError}">Phone Error</p>         
 				<input type="submit" value="Register" name="submit"
 					class="submit" />
 			</fieldset>
@@ -43,6 +47,7 @@
 						<li th:each="err : ${#fields.errors('*')}" th:text="${err}">Input is incorrect</li>
 					</ul>
 			</div>
+				
 		</form>
 
 		<footer>
