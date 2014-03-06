@@ -256,11 +256,17 @@ public class RegistrationController {
             errors = true;
         }
         
+        
+        //Get CloudName/ Email and Phone fromSession
+        HttpSession theSession = request.getSession(false);
+        String cloudName = (String)theSession.getAttribute("register_cloudName");
+        String verifiedEmail = (String)theSession.getAttribute("register_email");
+        String verifiedPhone = (String)theSession.getAttribute("register_phone");
+        
         // If Validation Has Succeeded.
         if (!errors) {
         
-            //Process Payment
-            
+            //Process Payment           
             if (theManager.processPayment(confirmationForm.getCardNumber(), confirmationForm.getCvv(),
                     confirmationForm.getExpMonth(), confirmationForm.getExpYear()) != PaymentStatusCode.SUCCESS) {
                 String errorStr = "Payment Processing Failed";
@@ -270,14 +276,7 @@ public class RegistrationController {
             }
             
             //Register Personal Cloud
-                 
-            //Get CloudName/ Email and Phone fromSession
-            HttpSession theSession = request.getSession(false);
-            String cloudName = (String)theSession.getAttribute("register_cloudName");
-            String verifiedEmail = (String)theSession.getAttribute("register_email");
-            String verifiedPhone = (String)theSession.getAttribute("register_phone");
-            
-            if (cloudName == null || verifiedEmail == null || verifiedPhone ==null ) {
+           if (cloudName == null || verifiedEmail == null || verifiedPhone ==null ) {
                 mv.addObject("error", "Error retrieving data from session"); 
                 errors= true;
             } else {      
