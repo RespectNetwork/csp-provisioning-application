@@ -1,20 +1,20 @@
 package net.respectnetwork.csp.application.controller;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
+import java.util.UUID;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
-import net.respectnetwork.csp.application.form.CloudForm;
-import net.respectnetwork.csp.application.form.CodesForm;
-import net.respectnetwork.csp.application.form.UserForm;
+import net.respectnetwork.csp.application.exception.UserRegistrationException;
+import net.respectnetwork.csp.application.form.AccountDetailsForm;
+import net.respectnetwork.csp.application.form.ConfirmationForm;
+import net.respectnetwork.csp.application.form.SignUpForm;
 import net.respectnetwork.csp.application.manager.RegistrationManager;
-import net.respectnetwork.csp.application.model.CSPToken;
-import net.respectnetwork.sdk.csp.exception.CSPValidationException;
-import net.respectnetwork.sdk.csp.model.CSPUserCredential;
+import net.respectnetwork.sdk.csp.payment.PaymentStatusCode;
+import net.respectnetwork.sdk.csp.validation.CSPValidationException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,12 +22,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+
+import xdi2.core.xri3.CloudName;
+import xdi2.core.xri3.CloudNumber;
 
 /**
  * Handles requests for the application home page.
@@ -41,16 +43,8 @@ public class RegistrationController {
     
     /** Registration Manager */
     private RegistrationManager theManager;
-    
-    /** Registration Failure View */
-    private String failureView;
-    
-    /** Registration Success View */
-    private String successView;
-    
-    /** Secret Token */
-    private CSPToken secretToken;
-    
+        
+
     /** Session Cookie */
     private String sessionCookieName;
     
@@ -78,40 +72,6 @@ public class RegistrationController {
         this.sessionCookieName = sessionCookieName;
     }
 
-    /**
-     * @return the failureView
-     */
-    public String getFailureView() {
-        return failureView;
-    }
-
-    /**
-     * @param failureView the failureView to set
-     */
-    @Autowired
-    @Qualifier("failureView")
-    @Required
-    public void setFailureView(String failureView) {
-        this.failureView = failureView;
-    }
-    
-
-    /**
-     * @return the successView
-     */
-    public String getSuccessView() {
-        return successView;
-    }
-
-    /**
-     * @param successView the successView to set
-     */
-    @Autowired
-    @Qualifier("successView")
-    @Required
-    public void setSuccessView(String successView) {
-        this.successView = successView;
-    }
 
     /**
      * 
@@ -171,269 +131,214 @@ public class RegistrationController {
         this.secureSession = secureSession;
     }
 
-    /**
-     * @return the secretToken
-     */
-    @Autowired
-    @Required
-    public CSPToken getSecretToken() {
-        return secretToken;
-    }
 
     /**
-     * @param secretToken the secretToken to set
-     */
-    public void setSecretToken(CSPToken secretToken) {
-        this.secretToken = secretToken;
-    }
-
-    /**
-     * Process the Initial SignUp Request
+     * Initial Sign-Up Page
      */
     @RequestMapping(value = "/signup", method = RequestMethod.POST)
-    public String signup(Model model, HttpServletResponse response) {
-        logger.debug("Starting SignUp Process");
+    public ModelAndView signup(
+            @Valid @ModelAttribute("signUpInfo") SignUpForm signUpForm,
+            HttpServletRequest request, HttpServletResponse response,
+            BindingResult result) {
         
-        String returnView = "";
-              
-        try {
-            CSPUserCredential theCred = theManager.startSignUpProcess();
-            String cloudNumber =  theCred.getCloudNumber().toString();
-            logger.debug("Created new CloudNumber: {}", cloudNumber);
-            this.setSecretToken(new CSPToken(theCred.getSecretToken()));
+        logger.debug("Starting the Sign Up Process");
+        
+        ModelAndView mv = null; 
+        boolean errors = false;
+        mv = new ModelAndView("signup");
+        mv.addObject("signUpInfo", signUpForm);
+        
+        String cloudName = signUpForm.getCloudName();
+        
+        if (cloudName != null) {           
+        // Start Check that the Cloud Number is Available.
+            try {
+                if (! theManager.isClouldNameAvailable(cloudName)) {
+                    String errorStr = "CloudName not Available";
+                    mv.addObject("cloudNameError", errorStr); 
+                    errors = true;
+                }
+            } catch (UserRegistrationException e) {
+                String errorStr = "System Error checking CloudName";
+                logger.warn(errorStr + " : {}", e.getMessage());
+                mv.addObject("error", errorStr);
+                errors = true;
+            }
             
-            createSession(response, cloudNumber); 
-            
-            returnView = "userdetails";
-            model.addAttribute("userInfo", new UserForm());
-            model.addAttribute("cloudNumber", cloudNumber);
-        } catch (Exception e) {
-            String error = "Problem Signing Up User: " + e.getMessage();
-            logger.warn(error);
-            returnView = this.failureView;
-            model.addAttribute("error", error);         
+            //If the CloudName is Available
+            if (errors == false) {
+                try {
+                    CloudNumber[] existingUsers= theManager.checkEmailAndMobilePhoneUniqueness(signUpForm.getMobilePhone(), signUpForm.getEmail());
+                    if (existingUsers[0] != null) {
+                       //Communicate back to Form phone is already taken
+                        String errorStr = "Phone Number not Unique";
+                        mv.addObject("phoneError", errorStr);
+                        logger.debug("Phone {} already used by {}", signUpForm.getMobilePhone(), existingUsers[0]  );
+                        errors = true;
+                    }
+                    if (existingUsers[1] != null) {
+                        String errorStr = "Email not Unique";
+                        mv.addObject("emailError", errorStr);
+                        logger.debug("Phone {} already used by {}", signUpForm.getEmail(), existingUsers[1]  );
+                        errors = true;
+                     }
+                } catch (UserRegistrationException e) {
+                    String errorStr = "System Error checking Email/Phone Number Uniqueness";
+                    logger.warn(errorStr + " : {}", e.getMessage());
+                    mv.addObject("error", errorStr);
+                    errors = true;
+                }
+                          
+                String sessionid =  UUID.randomUUID().toString();
+                createSession(response, sessionid);
+                
+                
+                // If all is okay send out the validation messages.
+                try {
+                    theManager.sendValidationCodes(sessionid, signUpForm.getEmail(), signUpForm.getMobilePhone());
+                } catch (CSPValidationException e) {
+                    String errorStr = "System Error sending validation messages";
+                    logger.warn(errorStr + " : {}", e.getMessage());
+                    mv.addObject("error", errorStr);    
+                    errors = true;
+                }
+                
+                if (!errors) {
+                    mv = new ModelAndView("confirmation"); 
+                    ConfirmationForm confirmationForm = new ConfirmationForm();
+                    mv.addObject("confirmationInfo", confirmationForm);
+                    
+                    //Add CloudName/ Email and Phone to Session
+                     HttpSession theSession = request.getSession(true);
+                     theSession.setAttribute("register_cloudName", signUpForm.getCloudName());
+                     theSession.setAttribute("register_email", signUpForm.getEmail());
+                     theSession.setAttribute("register_phone", signUpForm.getMobilePhone());
+                    
+                }
+            }
+                                            
         }
-        
-        return returnView;        
+        mv.addObject("signupInfo", signUpForm);
+                                    
+        return mv;        
     }
-
+    
+    
     
     /**
-     * Get the user's basic Information and being the
-     * email and phone number (sms) validation processes.
-     * This will  create the user's initial graph.
+     * Validate Confirmation Codes, Process Terms and Conditions
+     * Process Payment, Store Password and the register user Cloud.
      * 
      * @param userForm Form with User's details
      * @param result Binding Result for Validation or errors
      * @return ModelandView of next  travel location
      */
-    @RequestMapping(value = "/getuserdetails", method = RequestMethod.POST)
+    @RequestMapping(value = "/processRegistration", method = RequestMethod.POST)
     public ModelAndView createAndValidateUser(
-            @Valid @ModelAttribute("userInfo") UserForm userForm,
+            @Valid @ModelAttribute("confirmationInfo") ConfirmationForm confirmationForm,
             HttpServletRequest request,
             BindingResult result) {
         
                 
         logger.debug("Starting Creation/Validation Process");
-        logger.debug("Processing User Data: {}", userForm.toString());
+        logger.debug("Processing Confirmation Data: {}", confirmationForm.toString());
         
-        ModelAndView mv = null;
-        String cloudNumber = getCloudNumberFromSession(request); 
- 
-        //Go back to destination if errors occur. 
-        if (result.hasErrors()) {
-            mv = new ModelAndView("userdetails");
-            mv.addObject("userInfo", userForm);
-        } else {  
-            try {  
-                if (cloudNumber == null) {
-                    throw new CSPValidationException("Invalid Session");
-                }
-                theManager.createAndValidateUser(cloudNumber, userForm, this.secretToken.getSecretToken());
-                mv = new ModelAndView("validatecodes");
-                mv.addObject("codeInfo", new CodesForm());
-            } catch (CSPValidationException e) {
-                String error = "Problem Creating/Validating User: " + e.getMessage();
-                logger.debug(error);
-                mv = new ModelAndView(this.failureView);                
-                mv.addObject("error", error);
-            }
-        }
-
-        return mv;
-
-    }
-    
-    
-    /**
-     * Enter Validation Codes
-     */
-    @RequestMapping(value = "/enterValidationCodes", method = RequestMethod.GET)
-    public ModelAndView enterValidationCodes(
-            @Valid @ModelAttribute("codeInfo") CodesForm codesForm,
-            HttpServletRequest request,
-            BindingResult result) {
+        ModelAndView mv = new ModelAndView("confirmation");
+        String sessionIdentifier = getSessionIdentifierFromSession(request); 
+       
+        boolean errors = false;
         
-                
-        logger.debug("Processing Validation Codes");
-        
-        String cloudNumber = null;
-              
-        ModelAndView mv = null;
-        try {
-            cloudNumber = (String)request.getParameter("cloudNumber");
-            if (cloudNumber != null) {
-                cloudNumber = URLDecoder.decode(cloudNumber, "UTF-8");
-            }
-        } catch (UnsupportedEncodingException e) {
-                logger.warn("Problem Encoding Cloud Number: {}", e.getMessage());
+        //Validate Codes
+        if (!theManager.validateCodes(sessionIdentifier, confirmationForm.getEmailCode(), confirmationForm.getSmsCode())) {
+            String errorStr = "Code(s) Validation Failed";
+            logger.debug(errorStr);
+            mv.addObject("codeValidationError", errorStr); 
+            errors = true;
         }
         
-        logger.debug("Received cloudNumber {} in request paramater", cloudNumber);
- 
-        //Go back to destination if errors occur. 
-        if (result.hasErrors()) {
-            mv = new ModelAndView("validatecodes");
-        } else {  
-   
-                if (cloudNumber == null) {
-                    mv = new ModelAndView(failureView);
-                    mv.addObject("error", "Validation failed. No Clould Number Provided.");
-                } else {
-                    mv = new ModelAndView("validatecodes");
-                    mv.addObject("codeInfo", new CodesForm());
-                }
-
-        }
-
-        return mv;
-
-    }
-    
-    
-    
-    /**
-     * 
-     * @param codesForm
-     * @param result
-     * @return
-     */
-    @RequestMapping(value = "/validatecodes", method = RequestMethod.POST)
-    public ModelAndView validateCodes(
-            @Valid @ModelAttribute("codeInfo") CodesForm codesForm,
-            HttpServletRequest request,
-            BindingResult result) {
+        //Process Payment
         
-        logger.debug("Starting Code Checking Process");
-        
-        ModelAndView mv = null;
-        String cloudNumber = getCloudNumberFromSession(request); 
-
-        
-        if (result.hasErrors()) {
-            mv = new ModelAndView("validatecodes");
-            mv.addObject("codeInfo", codesForm);
+        if (theManager.processPayment(confirmationForm.getCardNumber(), confirmationForm.getCvv(),
+                confirmationForm.getExpMonth(), confirmationForm.getExpYear()) != PaymentStatusCode.SUCCESS) {
+            String errorStr = "Payment Processing Failed";
+            logger.warn(errorStr + "for " + confirmationForm.getCardNumber() );
+            mv.addObject("paymentProcessingError", errorStr); 
+            errors = true;
         }
         
-        logger.debug("Processing Codes: {}", codesForm.toString());
-
+        //Register Personal Cloud
+             
+        //Get CloudName/ Email and Phone fromSession
+        HttpSession theSession = request.getSession(false);
+        String cloudName = (String)theSession.getAttribute("register_cloudName");
+        String verifiedEmail = (String)theSession.getAttribute("register_email");
+        String verifiedPhone = (String)theSession.getAttribute("register_phone");
         
-        if (cloudNumber != null) {         
-            if (theManager.validateCodes(cloudNumber, codesForm.getEmailCode(), codesForm.getSMSCode(), secretToken.getSecretToken())) {
-                mv = new ModelAndView("registercloudname");
-                mv.addObject("cloudInfo", new CloudForm());
-            } else {
-                mv = new ModelAndView("validatecodes");
-                mv.addObject("codeInfo", new CodesForm());
-                mv.addObject("error", "Validation failed. Please Try again.");
-            }
-        } else {
-            mv = new ModelAndView(failureView);
-            mv.addObject("error", "Validation failed. Invalid Session.");
-        }
-        return mv;        
-    }
-    
-    /**
-     * Finish Registration of Cloud with provided Cloud Number and Session Token
-     * 
-     * @param cloudForm
-     * @param result
-     * @return Success or Failure Model and View.
-     */
-    @RequestMapping(value = "/registercloud", method = RequestMethod.POST)
-    public ModelAndView registerCloud(
-            @Valid @ModelAttribute("cloudInfo") CloudForm cloudForm,
-            HttpServletRequest request,
-            BindingResult result) {
-        
-        logger.debug("Starting Cloud Creation Process");
-        
-        ModelAndView mv = null;
-        String cloudNumber = getCloudNumberFromSession(request); 
-
-      
-        if (result.hasErrors()) {
-            mv = new ModelAndView("registercloudname");
-            mv.addObject("codeInfo", cloudForm);
-        }
-        
-        logger.debug("Processing Cloud Creation: {}", cloudForm.toString());
-        
-        
-        if (cloudNumber == null) {
-            mv = new ModelAndView(failureView);
-            mv.addObject("error", "Registration Failed: Invalid Session");
-        } else {
+        if (cloudName == null || verifiedEmail == null || verifiedPhone ==null ) {
+            mv.addObject("error", "Error retrieving data from session"); 
+            errors= true;
+        } else {      
             try {
-               String cloudName = cloudForm.getCloudName();
-               theManager.registerNewUser(cloudNumber, cloudName, cloudForm.getSecretToken());
-               mv = new ModelAndView(successView);
+                theManager.registerUser(CloudName.create(cloudName), verifiedPhone, verifiedEmail, confirmationForm.getPassword());
             } catch (Exception e) {
-               String errorMsg = "Registration Failed: " + e.getMessage();
-               mv = new ModelAndView(failureView);
-               mv.addObject("error", errorMsg);
+                logger.warn("Registration Error {}", e.getMessage() );
+                mv.addObject("error", e.getMessage());
+                errors = true;
             }
         }
-                              
-        return mv;        
-    }
-    
-    /**
-     * Extract Cloud Number from Session
-     * 
-     * @param cloudNumber
-     * @return
-     */
-    private String getCloudNumberFromSession(HttpServletRequest request) {
-        
-        String cloudNumber = null;
-        
-        Cookie[] theCookies = request.getCookies();
-        if (theCookies != null) {
-            for (int i = 0; i < theCookies.length; i++) {
-                if ( theCookies[i].getName().equalsIgnoreCase(sessionCookieName)){
-                    cloudNumber = theCookies[i].getValue();
-                }
-            }
+                    
+        if (!errors) {
+            mv = new ModelAndView("accountInformation"); 
+            AccountDetailsForm accountForm = new AccountDetailsForm();
+            accountForm.setCloudName(cloudName);
+            mv.addObject("accountInfo", accountForm);   
+            
+            logger.debug("Sucessfully Registered {}", cloudName );
         }
         
-        return cloudNumber;
-      
+     
+        
+        return mv;
+
     }
+     
     
     /**
      * Create Session by adding Cookies to the response
      * @param response
      */
-    private void createSession( HttpServletResponse response, String cloudNumber) {
+    private void createSession( HttpServletResponse response, String sessionIdentifier) {
                 
-        Cookie sessionCookie = new Cookie(sessionCookieName, cloudNumber);
+        Cookie sessionCookie = new Cookie(sessionCookieName, sessionIdentifier);
         sessionCookie.setMaxAge(sessionLength);
         sessionCookie.setSecure(secureSession);
         response.addCookie(sessionCookie);
         
         return;
     }
+    
+    
+    /**
+     * Extract Identifier from Session
+     * 
+     * @param cloudNumber
+     * @return
+     */
+    private String getSessionIdentifierFromSession(HttpServletRequest request) {
+        
+        String sessionIdentifier = null;
+        
+        Cookie[] theCookies = request.getCookies();
+        if (theCookies != null) {
+            for (int i = 0; i < theCookies.length; i++) {
+                if ( theCookies[i].getName().equalsIgnoreCase(sessionCookieName)){
+                    sessionIdentifier = theCookies[i].getValue();
+                }
+            }
+        }       
+        return sessionIdentifier;
+      
+    }
+    
 
 }

@@ -1,16 +1,23 @@
 package net.respectnetwork.csp.application.manager;
 
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 import java.net.URLEncoder;
+import java.util.Currency;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import net.respectnetwork.csp.application.exception.UserRegistrationException;
-import net.respectnetwork.csp.application.form.UserForm;
 import net.respectnetwork.sdk.csp.CSP;
+import net.respectnetwork.sdk.csp.UserValidator;
+import net.respectnetwork.sdk.csp.discount.CloudNameDiscountCode;
+import net.respectnetwork.sdk.csp.discount.RespectNetworkMembershipDiscountCode;
 import net.respectnetwork.sdk.csp.exception.CSPRegistrationException;
-import net.respectnetwork.sdk.csp.exception.CSPValidationException;
-import net.respectnetwork.sdk.csp.model.UserProfile;
-import net.respectnetwork.sdk.csp.model.CSPUserCredential;
+import net.respectnetwork.sdk.csp.payment.PaymentProcessingException;
+import net.respectnetwork.sdk.csp.payment.PaymentProcessor;
+import net.respectnetwork.sdk.csp.payment.PaymentStatusCode;
+import net.respectnetwork.sdk.csp.validation.CSPValidationException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +26,7 @@ import org.springframework.beans.factory.annotation.Required;
 import xdi2.client.exceptions.Xdi2ClientException;
 import xdi2.core.xri3.CloudName;
 import xdi2.core.xri3.CloudNumber;
+import xdi2.core.xri3.XDI3Segment;
 
 public class RegistrationManager {
     
@@ -30,6 +38,42 @@ public class RegistrationManager {
      * Class for Registering User in the Respect Network
      */
     private CSP cspRegistrar;
+    
+    /**
+     * Used for validating User details.
+     */
+    private UserValidator userValidator;
+    
+    /**
+     * Used for processingPayment.
+     */
+    private PaymentProcessor paymentProcesser;
+    
+    /**
+     * Charge for Registration
+     */
+    private String registrationAmount; 
+    
+    /**
+     * Registration Currency
+     */
+    private String registrationCurrencyCode;
+    
+    /**
+     * Registration Discount Code
+     */
+    private CloudNameDiscountCode cloudNameDiscountCode = CloudNameDiscountCode.OnePersonOneName;;
+    
+    /** RN Discount Code */
+    private  RespectNetworkMembershipDiscountCode respectNetworkMembershipDiscountCode = RespectNetworkMembershipDiscountCode.IIW17;
+    
+    /** Personal Cloud EndPoint */
+    private String personalCloudEndPoint  = "http://mycloud-ote.neustar.biz:8085/personalclouds/"; 
+    
+    /** Debug Mode */
+    private boolean runInTest = false;
+    
+    /**
     
     /**
      * Get CSP Registrar
@@ -49,166 +93,259 @@ public class RegistrationManager {
     }
     
     
-       
     /**
-     * Section 2.1.1
-     * https://wiki.respectnetwork.net/wiki/Alice_Signs_Up
-     * 
-     * @return CloudNumber
+     * Get User Validaor
+     * @return
      */
-    public CSPUserCredential startSignUpProcess()
-            throws CSPRegistrationException {
+    public UserValidator getUserValidator() {
+        return userValidator;
+    }
+
+    /**
+     * Set User Validator
+     * @param userValidator
+     */
+    public void setUserValidator(UserValidator userValidator) {
+        this.userValidator = userValidator;
+    }
+
+    /**
+     * @return the paymentProcesser
+     */
+    public PaymentProcessor getPaymentProcesser() {
+        return paymentProcesser;
+    }
+
+    /**
+     * @param paymentProcesser the paymentProcesser to set
+     */
+    public void setPaymentProcesser(PaymentProcessor paymentProcesser) {
+        this.paymentProcesser = paymentProcesser;
+    }
+
+    /**
+     * @return the registrationAmount
+     */
+    public String getRegistrationAmount() {
+        return registrationAmount;
+    }
+
+    /**
+     * @param registrationAmount the registrationAmount to set
+     */
+    public void setRegistrationAmount(String registrationAmount) {
+        this.registrationAmount = registrationAmount;
+    }
+
+    /**
+     * @return the registrationCurrencyCode
+     */
+    public String getRegistrationCurrencyCode() {
+        return registrationCurrencyCode;
+    }
+
+    /**
+     * @param registrationCurrencyCode the registrationCurrencyCode to set
+     */
+    public void setRegistrationCurrencyCode(String registrationCurrencyCode) {
+        this.registrationCurrencyCode = registrationCurrencyCode;
+    }
+
+
+    
+
+    
+
+    /**
+     * @return the runInTest
+     */
+    public boolean isRunInTest() {
+        return runInTest;
+    }
+
+    /**
+     * @param runInTest the runInTest to set
+     */
+    public void setRunInTest(boolean runInTest) {
+        this.runInTest = runInTest;
+    }
+
+    /**
+     * Check CloudName Availability
+     * 
+     * @param cloudName
+     * @return
+     * @throws UserRegistrationException
+     */
+    public boolean isClouldNameAvailable(String cloudName)
+        throws UserRegistrationException {
         
-        logger.debug("Starting SignUp Process");                    
-        CSPUserCredential cspCredential = cspRegistrar.signUpNewUser(); 
-        return cspCredential;
-            
+        boolean availability = false;
+        
+        try {
+            if (cspRegistrar.checkCloudNameAvailableInRN(CloudName.create(cloudName)) == null) {
+                availability = true;
+            }
+        } catch (Exception e) {
+            String error = "Problem checking Clould Number Avaliability: {} " +  e.getMessage();
+            logger.warn(error);
+            throw new UserRegistrationException(error);
+        }
+        
+        return availability;
     }
     
-    
     /**
+     * Check Email and Mobile Phone Number Uniqueness
      * 
-     * Section 3.1.1
+     * @param email
+     * @param mobilePhone
+     * @return
+     * @throws UserRegistrationException
      */
-    public void createAndValidateUser(String cloudNumber, UserForm theUser, String secretToken)
-        throws CSPValidationException{
-           
-           UserProfile theCSPUser = new UserProfile();
-           theCSPUser.setFirstName(theUser.getName());
-           theCSPUser.setNickName(theUser.getNickName());
-           
-           theCSPUser.setEmail(theUser.getEmail());
-           theCSPUser.setPhone(theUser.getPhone());
-           
-           theCSPUser.setStreet(theUser.getStreet());
-           theCSPUser.setCity(theUser.getCity());
-           theCSPUser.setState(theUser.getState());
-           theCSPUser.setPostalcode(theUser.getPostalcode());
-           
-           //@TODO Call checkPhoneAndEmailAvailableInRN: 3.1.1.5.1
-           
-           cspRegistrar.setUpAndValidateUserProfileInCloud(CloudNumber.create(cloudNumber), theCSPUser, secretToken);
+    public CloudNumber[] checkEmailAndMobilePhoneUniqueness(String email, String mobilePhone)
+        throws UserRegistrationException {
+              
+        try {
+            CloudNumber[] existingCloudNumbers = cspRegistrar.checkPhoneAndEmailAvailableInRN(email, mobilePhone); 
+            if (runInTest) { 
+                logger.debug("Overriding uniqueness check.");
+                existingCloudNumbers = new CloudNumber[2];
+            }
+            return existingCloudNumbers;
+
+        } catch (Xdi2ClientException e) {
+            logger.debug("Problem checking Phone/eMail Uniqueness");
+            throw new UserRegistrationException("Problem checking Phone/eMail Uniqueness: " + e.getMessage());
+        }    
+
     }
     
-    
     /**
-     * Section 4.1.1
+     * Validate Confirmation Codes
+     * 
+     * @param cloudNumber
+     * @param emailCode
+     * @param smsCode
+     * @return
      */
-    public boolean validateCodes(String cloudNumber, String emailCode, String smsCode, String secretToken) {
+    public boolean validateCodes(String sessionIdentifier, String emailCode, String smsCode) {
         
         boolean validated = false;
         try { 
                      
-           validated = cspRegistrar.validateCodes(CloudNumber.create(cloudNumber), emailCode, smsCode, secretToken);
-           
-           //4.1.1.1
-           if (validated) {
-               // Update EMAIL and Phone Number in CloudGraph with validation Information
-               // e.g. <=me><+email><+validation>...
-              
-           }
-            
+           validated = userValidator.validateCodes(sessionIdentifier, emailCode, smsCode);
+                   
         } catch (CSPValidationException e) {
-            logger.warn("Problem Validating SMS and/or Email Codes");
+            logger.warn("Problem Validating SMS and/or Email Codes: {}", e.getMessage());
             validated = false;
         }
         
         return validated;
     }
-
+    
     /**
-     * Register a new User.
+     * Process Payment
      * 
-     * Section 5.1.1
-     * 
-     * @param cloudNumber
-     * @param cloudName
-     * @param secretToken
+     * @param cardNumber
+     * @param cvv
+     * @param expMonth
+     * @param expYear
+     * @param amount
+     * @param currency
+     * @return
      */
-    public void registerNewUser(String cloudNumber, String theCloudName,
-            String secretToken) throws UserRegistrationException {
-
+    public PaymentStatusCode processPayment(String cardNumber, String cvv, String expMonth, String expYear) {
+        
+       
+        BigDecimal amount = new BigDecimal(registrationAmount);
+        Currency currency = Currency.getInstance(registrationCurrencyCode);
+        
+        PaymentStatusCode returnCode = null;
         try {
-            
-            CloudName cloudName = CloudName.create(theCloudName);
-            
-            //@TODO: Will we use this instead.?
-           //cspRegistrar.registerUserCloud(cloudNumber, cloudName, secretToken);
-            
+            returnCode = paymentProcesser.processPayment(cardNumber, cvv, expMonth, expYear, amount, currency);
+        } catch (PaymentProcessingException e) {
+            returnCode = PaymentStatusCode.FAILURE;
+        }
+        return returnCode;
+    }
+    
+    
+    /**
+     * Send Validation Codes
+     * 
+     * @param sessionId
+     * @param email
+     * @param mobilePhone
+     * @throws CSPValidationException
+     */
+    public void sendValidationCodes(String sessionId, String email, String mobilePhone)
+        throws CSPValidationException{
+        
+        userValidator.sendValidationMessages(sessionId, email, mobilePhone);
+        
+    }
+    
+    public CloudNumber registerUser(CloudName cloudName, String verifiedPhone, String verifiedEmail, String userPassword) throws CSPRegistrationException, Xdi2ClientException {
+        
+        
+        CloudNumber cloudNumber = CloudNumber.createRandom(cloudName.getCs());
+        
 
-            
-            try {
-                if (cspRegistrar.checkCloudNameAvailableInRN(cloudName) != null){
-                    throw new UserRegistrationException("Clould Name " + cloudName.toString() + " not available");
-                }
-            } catch (Xdi2ClientException e) {
-                String error = "Problem checking Clould Number Avaliability: {} " +  e.getMessage();
-                throw new UserRegistrationException(error);
-            }
-            // 5.1.1.1 Write Password to CSP Graph.
-            cspRegistrar.setCloudSecretTokenInCSP(
-                    CloudNumber.create(cloudNumber), secretToken);
+        // Unset for Message Signing.
+        //cspInformation.retrieveCspSignaturePrivateKey();
+        //cspInformation.setRnCspSecretToken(null);
 
-            // 5.1.1.3
-            
 
-            
-            //@TODO: This assumes uniqueness Check has already  been done
-            // To Be implemented
-            String email = ""; //Get Email from Cloud Graph;
-            String phone = ""; //Get Phone from Cloud Graph;
-            
-            //cspRegistrar.setVerifiedContactInformationInRN(CloudNumber.create(cloudNumber), email, phone);
-            
-            cspRegistrar.registerCloudNameInRN(cloudName,
-                    CloudNumber.create(cloudNumber), email, phone);
+        // Step 1: Register Cloud with Cloud Number and Shared Secret
+        
+        String cspSecretToken = cspRegistrar.getCspInformation().getCspSecretToken();
 
-            // Create XDI EndPoint (for use in registry)
-            String cloudXdiEndpoint = null;
-            String cloudXdiBase = cspRegistrar.getCspInformation()
-                    .getCspCloudBaseXdiEndpoint();
+        cspRegistrar.registerCloudInCSP(cloudNumber, cspSecretToken);
 
-            cloudXdiEndpoint = cloudXdiBase
-                    + URLEncoder.encode(cloudNumber, "UTF-8");
-            
-            logger.debug("Creating cloudXdiEndpoint : {}", cloudXdiEndpoint);
+        // step 2: Set Cloud Services in Cloud
 
-            // No need to  do  this
-            //cspRegistrar.setCloudXdiEndpointInRN(
-              //      CloudNumber.create(cloudNumber), cloudXdiEndpoint);
-
-            // 5.1.1.5 ( User Graph )
-            cspRegistrar.registerCloudNameInCloud(cloudName,
-                    CloudNumber.create(cloudNumber), secretToken);
-
-            // 5.1.1.7
-            cspRegistrar.registerCloudNameInCSP(cloudName,
-                    CloudNumber.create(cloudNumber));
-            
-
-            //MemberShip Registration: Part of 5.1.1.3.1
-            
-            cspRegistrar.setRespectNetworkMembershipInRN(CloudNumber.create(cloudNumber));
-            cspRegistrar.setRespectFirstMembershipInRN(CloudNumber.create(cloudNumber), new Date());
-            cspRegistrar.setRespectFirstLifetimeMembershipInRN(CloudNumber.create(cloudNumber));
-            
-            
-            
-            
-            
-
-        } catch (Xdi2ClientException e) {
-            String error = "Problem Completing User Registration"
-                    + e.getMessage();
-            logger.warn(error);
-            throw new UserRegistrationException(error);
-
+        Map<XDI3Segment, String> services = new HashMap<XDI3Segment, String> ();
+        
+        try {
+            services.put(XDI3Segment.create("<$https><$connect><$xdi>"), personalCloudEndPoint +
+                URLEncoder.encode(cloudNumber.toString(), "UTF-8") + "/connect/request");
         } catch (UnsupportedEncodingException e) {
-            String error = "Problem encoding cloudXdiEndpoint";
-            logger.warn(error);
-            throw new UserRegistrationException(error);
+            throw new CSPRegistrationException(e);
+        }
+        
+        cspRegistrar.setCloudServicesInCloud(cloudNumber, cspSecretToken, services);
 
+        // step 3: Check if the Cloud Name is available
+
+        CloudNumber existingCloudNumber = cspRegistrar.checkCloudNameAvailableInRN(cloudName);
+
+        if (existingCloudNumber != null) {
+            throw new CSPRegistrationException("Cloud Name " + cloudName + " is already registered with Cloud Number " + existingCloudNumber + ".");
         }
 
+       
+        // step 5: Register Cloud Name
+
+        cspRegistrar.registerCloudNameInRN(cloudName, cloudNumber, verifiedPhone, verifiedEmail, cloudNameDiscountCode);
+        cspRegistrar.registerCloudNameInCSP(cloudName, cloudNumber);
+        cspRegistrar.registerCloudNameInCloud(cloudName, cloudNumber, cspSecretToken);
+
+        // step 6: Set phone number and e-mail address
+
+        cspRegistrar.setPhoneAndEmailInCloud(cloudNumber, cspSecretToken, verifiedPhone, verifiedEmail);
+
+        // step 7: Set RN/RF membership
+
+        cspRegistrar.setRespectNetworkMembershipInRN(cloudNumber, new Date(), respectNetworkMembershipDiscountCode);
+        cspRegistrar.setRespectFirstMembershipInRN(cloudNumber);
+        
+        // Step 8: Change Secret Token
+
+        cspRegistrar.setCloudSecretTokenInCSP(cloudNumber, userPassword);
+        
+        return cloudNumber;
+
     }
+
 }

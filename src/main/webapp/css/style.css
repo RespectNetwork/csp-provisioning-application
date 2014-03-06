@@ -27,7 +27,19 @@ signup {
 	padding: 30px 40px 20px 40px;
 }
 
+#confirmation-details {
+    float: left;
+    width: 230px;
+    padding: 30px 40px 20px 40px;
+}
+
 #address-details {
+    float: left;
+    width: 230px;
+    padding: 30px 40px 20px 40px;
+}
+
+#payment-details {
     float: left;
     width: 230px;
     padding: 30px 40px 20px 40px;
@@ -440,6 +452,8 @@ fieldset {
 	padding: 0;
 }
 
+
+
 input,textarea {
 	padding: 8px;
 	margin: 4px 0 20px 0;
@@ -455,6 +469,10 @@ input,textarea {
 	/* -- CSS3 Transition - define what the transition will be applied to (i.e. the background) -- */
 	-webkit-transition: background 0.3s linear;
 }
+
+
+}
+
 
 /* 
  * 1. Correct color not inheriting in IE6/7/8/9 
@@ -507,11 +525,7 @@ button,input
 /*
  * Consistent box sizing and appearance
  */
-input
-[type="checkbox"],input
-[type="radio"] {
-	box-sizing: border-box;
-}
+
 
 input
 [type="search"] {
@@ -1039,9 +1053,7 @@ input[type="submit"]:hover {
 /*
  * Consistent box sizing and appearance
  */
-input[type="checkbox"],input[type="radio"] {
-	box-sizing: border-box;
-}
+
 
 input[type="search"] {
 	-moz-box-sizing: content-box;

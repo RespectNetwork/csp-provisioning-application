@@ -25,7 +25,7 @@ public class HomeController {
 	 */
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String homeForm(Model model) {
-		logger.info("Welcome to  CSP Home");
+		logger.info("Welcome to CSP Home");
 
 		model.addAttribute("signupInfo", new SignUpForm());
 
