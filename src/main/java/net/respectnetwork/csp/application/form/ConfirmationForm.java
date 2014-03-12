@@ -3,7 +3,6 @@ package net.respectnetwork.csp.application.form;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.hibernate.validator.constraints.Length;
 
 
 /**
