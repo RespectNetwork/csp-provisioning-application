@@ -17,7 +17,7 @@
         <java.version>1.6</java.version>
         <org.slf4j-version>1.7.5</org.slf4j-version>
         <xdi2-version>0.2-SNAPSHOT</xdi2-version>
-        <cspsdk-version>0.1.1</cspsdk-version>
+        <cspsdk-version>0.1.2</cspsdk-version>
         <thymeleaf-version>2.1.1.RELEASE</thymeleaf-version>
         <jetty-version>6.1.10</jetty-version>
     </properties>

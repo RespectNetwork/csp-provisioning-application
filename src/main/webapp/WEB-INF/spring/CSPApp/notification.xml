@@ -29,6 +29,14 @@
         <beans:property name="mailAccountUsername" value="${mail.username}"/>
         <beans:property name="mailAccountPassword" value="${mail.password}"/>
         
+        <beans:property name="mailSMTPAuth" value="${mail.smtp.auth}"/>
+        <beans:property name="mailStartTLS" value="${mail.smtp.starttls.enable}"/>
+        <beans:property name="mailSMTPHost" value="${mail.smtp.host}"/>
+        <beans:property name="mailSMTPPort" value="${mail.smtp.port}"/>
+        <beans:property name="mailTransport" value="${mail.transport.protocol}"/>
+        
+        <beans:property name="mailDebug" value="${mail.debug}"/>
+        
     </beans:bean>
     
     <!-- Token Manager -->
