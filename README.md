@@ -4,6 +4,7 @@ Respect Network CSP Reference Implementation
 ### Dependencies
 
 XDI2-Client: https://github.com/projectdanube/xdi2/tree/master/client (Version 0.2-SNAPSHOT) 
+
 SDK-CSP: https://github.com/RespectNetwork/sdk-csp/tree/release-0.1.x (Version 0.1.2) 
 
 ### How to  Build
@@ -32,9 +33,11 @@ Various configurable parameters for this service are located in property files i
 
 To  customize your CSP's configuration use the following config. mamnagement pattern.
 
-1) By default csp.default.properties is applied.
-2) Setting the -Dregistration.env System Property e.g. -Dregistration.env=dev will use the registration.${registration.env}.properties. Valid entries are dev, stage or ote.
-3) You can also  specify  a property file outside of the WAR using -Dcspprop.location=path_to_prop_file. The csp.properties file in this directory will be used.
+ 1. By default csp.default.properties is applied.
+
+ 2. Setting the -Dregistration.env System Property e.g. -Dregistration.env=dev will use the registration.${registration.env}.properties. Valid entries are dev, stage or ote.
+
+ 3. You can also  specify  a property file outside of the WAR using -Dcspprop.location=path_to_prop_file. The csp.properties file in this directory will be used. This is intended for use in production where  we do  not want sensitive information in github.
 
     <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="locations">
@@ -50,6 +53,6 @@ To  customize your CSP's configuration use the following config. mamnagement pat
 
 We also use property files for 
 
-Mail: ./main/resources/mail.properties
-Twilio: ./main/resources/twilio.properties
-Simple Notification Templates (Mail and SMS): ./main/resources/notification.properties
+ 1. Mail: ./main/resources/mail.properties
+ 2. Twilio: ./main/resources/twilio.properties
+ 3. Simple Notification Templates (Mail and SMS): ./main/resources/notification.properties
