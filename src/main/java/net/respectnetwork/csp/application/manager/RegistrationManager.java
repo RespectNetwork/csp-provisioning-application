@@ -152,9 +152,7 @@ public class RegistrationManager {
     }
 
 
-    
-
-    
+   
 
     /**
      * @return the runInTest
@@ -233,8 +231,12 @@ public class RegistrationManager {
         
         boolean validated = false;
         try { 
-                     
-           validated = userValidator.validateCodes(sessionIdentifier, emailCode, smsCode);
+           
+           if (!runInTest) {
+               validated = userValidator.validateCodes(sessionIdentifier, emailCode, smsCode);
+           } else {
+               validated = true;
+           }
                    
         } catch (CSPValidationException e) {
             logger.warn("Problem Validating SMS and/or Email Codes: {}", e.getMessage());
@@ -296,7 +298,6 @@ public class RegistrationManager {
         //cspInformation.retrieveCspSignaturePrivateKey();
         //cspInformation.setRnCspSecretToken(null);
 
-
         // Step 1: Register Cloud with Cloud Number and Shared Secret
         
         String cspSecretToken = cspRegistrar.getCspInformation().getCspSecretToken();
@@ -323,8 +324,7 @@ public class RegistrationManager {
         if (existingCloudNumber != null) {
             throw new CSPRegistrationException("Cloud Name " + cloudName + " is already registered with Cloud Number " + existingCloudNumber + ".");
         }
-
-       
+      
         // step 5: Register Cloud Name
 
         cspRegistrar.registerCloudNameInRN(cloudName, cloudNumber, verifiedPhone, verifiedEmail, cloudNameDiscountCode);

@@ -3,52 +3,43 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-<meta charset="utf-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
 <title></title>
-<meta name="description" content="HTML 5 CSS 3 Spring Form"/>
+<meta name="description" content="HTML 5 CSS 3 Spring Form" />
 
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 
-<link rel="stylesheet" href="../../css/style.css" th:href="@{/css/style.css}"/>
-<script src="../../js/libs/modernizr-2.0.6.min.js" th:src="@{/js/libs/modernizr-2.0.6.min.js}"></script>
+<link rel="stylesheet" href="../../css/style.css"
+	th:href="@{/css/style.css}" />
+<script src="../../js/libs/modernizr-2.0.6.min.js"
+	th:src="@{/js/libs/modernizr-2.0.6.min.js}"></script>
 </head>
 
 <body>
 	<div id="container">
-		<header> </header>
+		<div id="fullpage">
 
-		<form action="#" th:object="${accountInfo}" th:action="@{/}"
-			method="post">
 
-			<h1>Your Account</h1>
-			
-			<p><span style="color: red;" th:text="${error}">System Error</span></p>
-		
-			<fieldset id="cloud-details">
-					
-				<label for="cloudName" th:text="cloudName">cloudName: </label>	
-				<input type="text" name="cloudName" value="" id="cloudName" placeholder="=you" required="required" autofocus="autofocus" th:value="*{cloudName}" /> 
+			<h2>Your Account Information</h2>
+		    <p>
+			    <span style="color: red;" th:text="${error}">System Error</span>
+			</p>
 
-			</fieldset>
-			
-			<!-- end user-message -->
-			<div id="errors" th:if="${#fields.hasErrors('*')}">
-					<ul>
-						<li th:each="err : ${#fields.errors('*')}" th:text="${err}">Input is incorrect</li>
-					</ul>
-			</div>
-				
-		</form>
+	        <table>
+				<tr>
+					<td>CloudName:</td>
+					<td><span th:text="${accountInfo.cloudName}">=you</span></td>
+				</tr>
+			</table>
 
-		<footer>
-			
-		</footer>
+			<footer> </footer>
+		</div>
 	</div>
 	<!--! end of #container -->
 
-	
+
 	<script>
 		/*<![CDATA[*/
 		      //Embbeded Javascript    

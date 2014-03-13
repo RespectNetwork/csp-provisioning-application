@@ -9,24 +9,19 @@
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
         http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
 
-
-
     <beans:bean id="basicUserValidator" class="net.respectnetwork.sdk.csp.BasicUserValidator">
         <beans:property name="theNotifier" ref="basicNotifier"/>
         <beans:property name="tokenManager" ref="basicTokenManager"/>  
         <beans:property name="validationEndpoint" value="http://localhost:8080/csp-provisioning-application/enterValidationCodes"/>
         <beans:property name="messageManager" ref="basicMessageManager"/>
     </beans:bean>
-    
-
-        
+         
     <!-- Notifier  -->     
     <beans:bean id="basicNotifier" class="net.respectnetwork.sdk.csp.notification.BasicNotificationService">
         <!-- Twilio Properties -->
         <beans:property name="authToken" value="${twilio.authToken}"/>
         <beans:property name="twillioAccountSID" value="${twilio.accountSID}"/>
-        <beans:property name="cspSMSNumber" value="${twilio.cspSMSNumber}"/>
-        
+        <beans:property name="cspSMSNumber" value="${twilio.cspSMSNumber}"/>      
         
         <!--  Email Properties -->
         <beans:property name="emailSubject" value="${mail.subject}"/>
@@ -40,8 +35,7 @@
     <beans:bean id="basicTokenManager" class="net.respectnetwork.sdk.csp.notification.BasicTokenManager">
         <beans:property name="tokenCache" ref="ehTokenCache"></beans:property>
     </beans:bean>
-    
-    
+       
     <!-- Message Manager -->
     <beans:bean id="basicMessageManager" class="net.respectnetwork.sdk.csp.notification.BasicMessageManager">
         <beans:property name="emailTemplate" value="${email.template}"/>

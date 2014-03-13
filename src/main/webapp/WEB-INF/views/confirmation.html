@@ -19,65 +19,127 @@
 	<div id="container">
 		<header> </header>
 
-		<form style="width: 715px" action="#" th:object="${confirmationInfo}" th:action="@{/processRegistration}" method="post">
+		<form id="confirmationform" action="#" th:object="${confirmationInfo}" th:action="@{/processRegistration}" method="post">
 
 			<h2>Enter your confirmation and payment details here to complete registering your Personal Cloud.</h2>
 			
 			<p><span style="color: red;" th:text="${error}">System Error</span></p>
 
             <fieldset id="user-details">
-            
-                <h4>Enter Confirmation codes sent to your email and mobile phone.</h4>
-                
-                <p style="color: red;" th:text="${codeValidationError}">CN Error</p>         
-                
-                    
-                <label for="emailCode" th:text="#{theader.emailCode}">eMail: </label>   
-                <input type="text" name="emailCode" value="" id="emailCode" placeholder="" required="required" autofocus="autofocus" th:value="*{emailCode}" /> 
-                
-                <label for="smsCode" th:text="#{theader.smsCode}">eMail: </label>   
-                <input type="text" name="smsCode" value="" id="smsCode" placeholder="" required="required" autofocus="autofocus" th:value="*{smsCode}" /> 
-                
-              
-                <h4>Read and Accept Terms and Conditions</h4>
-                
-                <input style="width: 20px;" type="checkbox" name="cspTandC" value="false"  required="required" th:value="*{cspTandC}" /> 
-                <label for="cspTandC" th:text="#{theader.cspTandC}"> </label>   
-                                
-                <input style="width: 20px;" type="checkbox" name="rnTandC" value="false"  required="required"  th:value="*{rnTandC}" /> 
-                <label for="rnTandC" th:text="#{theader.rnTandC}"> </label> 
 
-                    
 
-            </fieldset>
+				<table>
+					<tr>
+						<td>
+							<h4>Enter Confirmation codes sent to your email and mobile phone.</h4>
+                            <p style="color: red;" th:text="${codeValidationError}">CN Error</p>
+						</td>
+					</tr>
+					<tr>
+						<td><label for="emailCode" th:text="#{theader.emailCode}">eMail:
+						</label></td>
+					</tr>
+					<tr>
+						<td><input type="text" name="emailCode" value=""
+							id="emailCode" placeholder="" required="required"
+							autofocus="autofocus" th:value="*{emailCode}" /></td>
+					</tr>
+					<tr>
+						<td><label for="smsCode" th:text="#{theader.smsCode}">eMail:
+						</label></td>
+					</tr>
+					<tr>
+						<td><input type="text" name="smsCode" value="" id="smsCode"
+							placeholder="" required="required" autofocus="autofocus"
+							th:value="*{smsCode}" /></td>
+					</tr>
+					<tr>
+						<td>
+							<h4>Read and Accept Terms and Conditions</h4>
+						</td>
+					</tr>
+					<tr>
+						<td><input style="width: 20px;" type="checkbox"
+							name="cspTandC" value="false" required="required"
+							th:value="*{cspTandC}" />
+							<label for="cspTandC" th:text="#{theader.cspTandC}">
+						    </label>
+						</td>
+					</tr>
+					<tr>
+						<td><input style="width: 20px;" type="checkbox"
+							name="rnTandC" value="false" required="required"
+							th:value="*{rnTandC}" />
+							<label for="rnTandC" th:text="#{theader.rnTandC}">
+						</label>
+						</td>
+					</tr>
+				</table>
+			</fieldset>
             
             <fieldset id="address-details">
-            
-                <h4>Enter your payment details. You will be charged $25.</h4>
-                
-                <p style="color: red;" th:text="${paymentProcessingError}">CN Error</p>               
-                         
-                <label for="cardNumber" th:text="#{theader.cardNumber}"> Street: </label>   
-                <input type="text" name="cardNumber" value="" id="cardNumber" placeholder="1234 1234 1234 1234" required="required" th:value="*{cardNumber}" /> 
-                
-                <label for="cvv" th:text="cvv">CVV</label>   
-                <input type="text" name="cvv" value="" id="cvv" placeholder="CVV" required="required" th:value="*{cvv}" /> 
-               
-                <label for="expMonth" th:text="#{theader.expMonth}"> Exp Month: </label>   
-                <input type="text" name="expMonth" value="01" id="expMonth" placeholder="MM" required="required" th:value="*{expMonth}" />
-            
-                <label for="expYear" th:text="#{theader.expYear}">Exp. Year: </label>   
-                <input type="text" name="expYear" value="2015" id="expYear" placeholder="YYYY" required="required"  th:value="*{expYear}" />
-                      
-                <h4>Enter a password that you will use to  access your account.</h4>
-                
-                <label for="password" th:text="#{theader.password}"> Password: </label>   
-                <input type="password" name="password" value="" id="password" placeholder="Password" required="required" th:value="*{password}" /> 
-                               
-                <br> </br>     
-                <input type="submit" value="Submit Details" name="submit" class="submit" />    
-                                
-            </fieldset>
+
+				<table>
+					<tr>
+						<td>
+							<h4>Enter your payment details. You will be charged $25.</h4>
+							<p style="color: red;" th:text="${paymentProcessingError}">CN Error</p>
+						</td>
+					</tr>
+					<tr>
+						<td><label for="cardNumber" th:text="#{theader.cardNumber}">
+								Street: </label></td>
+					</tr>
+					<tr>
+						<td><input type="text" name="cardNumber" value=""
+							id="cardNumber" placeholder="1234 1234 1234 1234"
+							required="required" th:value="*{cardNumber}" /></td>
+					</tr>
+					<tr>
+						<td><label for="cvv" th:text="CVV">CVV</label></td>
+					</tr>
+					<tr>
+						<td><input type="text" name="cvv" value="" id="cvv"
+							placeholder="CVV" required="required" th:value="*{cvv}" /></td>
+					</tr>
+					<tr>
+						<td><label for="expMonth" th:text="#{theader.expMonth}">
+								Exp Month: </label></td>
+					</tr>
+					<tr>
+						<td><input type="text" name="expMonth" value="01"
+							id="expMonth" placeholder="MM" required="required"
+							th:value="*{expMonth}" /></td>
+					</tr>
+					<tr>
+						<td><label for="expYear" th:text="#{theader.expYear}">Exp.
+								Year: </label></td>
+					</tr>
+					<tr>
+						<td><input type="text" name="expYear" value="2015"
+							id="expYear" placeholder="YYYY" required="required"
+							th:value="*{expYear}" /></td>
+					</tr>
+                    <tr>
+                        <td>
+                            <h4>Enter a password that you will use to access your account.</h4>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label for="password" th:text="#{theader.password}">Password: </label></td>
+                    </tr>
+                    <tr>
+                        <td><input type="password" name="password" value=""
+                            id="password" placeholder="Password" required="required"
+                            th:value="*{password}" /></td>
+                    </tr>
+					<tr>
+						<td><input type="submit" value="Submit Details" name="submit"
+							class="submit" /></td>
+					</tr>
+				</table>
+
+			</fieldset>
                     
             
 			
@@ -90,18 +152,11 @@
 				
 		</form>
 
-		<footer>
-			
-		</footer>
+
 	</div>
 	<!--! end of #container -->
 
-	
-	<script>
-		/*<![CDATA[*/
-		      //Embbeded Javascript    
-		/*]]>*/
-	</script>
+
 
 </body>
 </html>

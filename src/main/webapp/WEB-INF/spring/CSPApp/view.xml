@@ -36,8 +36,5 @@
             <beans:value>.jsp</beans:value>
         </beans:property>
     </beans:bean>
-    
-    
-  
-
+   
 </beans:beans>

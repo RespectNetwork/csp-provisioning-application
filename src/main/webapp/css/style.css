@@ -312,86 +312,6 @@ ol {
 	padding: 0;
 }
 
-/* =============================================================================
-   Embedded content
-   ========================================================================== */
-
-/*
- * Improve image quality when scaled in IE7
- * code.flickr.com/blog/2008/11/12/on-ui-quality-the-little-things-client-side-image-resizing/
- */
-img {
-	border: 0;
-	-ms-interpolation-mode: bicubic;
-}
-
-/*
- * Correct overflow displayed oddly in IE9 
- */
-svg
-
-
-
-
-
-
-
-
-:not
-
-
-
-
-
-
-
-
-(
-:root
-
-
-
-
-
-
-
-
-)
-{
-overflow
-
-
-
-
-
-
-
-
-:
-
-
-
-
-
-
-
-
-hidden
-
-
-
-
-
-
-;
-}
-
-/* =============================================================================
-   Figures
-   ========================================================================== */
-figure {
-	margin: 0;
-}
 
 /* =============================================================================
    Forms
@@ -401,7 +321,7 @@ form {
     float: left;
     border: 1px solid #ddd;
     padding: 30px 40px 20px 40px;
-    margin: 75px 0 0 0;
+    margin: 25px 10px 25px 10px;
     background: #fff;
     /* -- CSS3 - define rounded corners -- */
     -webkit-border-radius: 10px;
@@ -420,7 +340,8 @@ form {
 	float: left;
 	border: 1px solid #ddd;
 	padding: 30px 40px 20px 40px;
-    margin: 0 auto;
+    /*margin: 0 auto;*/
+    
 	width: 800px;
 
 }

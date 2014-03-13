@@ -224,7 +224,6 @@ public class RegistrationController {
     }
     
     
-    
     /**
      * Validate Confirmation Codes, Process Terms and Conditions
      * Process Payment, Store Password and the register user Cloud.
@@ -255,8 +254,7 @@ public class RegistrationController {
             mv.addObject("codeValidationError", errorStr); 
             errors = true;
         }
-        
-        
+           
         //Get CloudName/ Email and Phone fromSession
         HttpSession theSession = request.getSession(false);
         String cloudName = (String)theSession.getAttribute("register_cloudName");
@@ -275,7 +273,7 @@ public class RegistrationController {
                 errors = true;
             }
             
-            //Register Personal Cloud
+           //Register Personal Cloud
            if (cloudName == null || verifiedEmail == null || verifiedPhone ==null ) {
                 mv.addObject("error", "Error retrieving data from session"); 
                 errors= true;
@@ -298,8 +296,7 @@ public class RegistrationController {
             
             logger.debug("Sucessfully Registered {}", cloudName );
         }
-        
-      
+             
         return mv;
 
     }

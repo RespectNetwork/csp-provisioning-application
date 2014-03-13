@@ -26,19 +26,45 @@
 			
 			<p><span style="color: red;" th:text="${error}">System Error</span></p>
 		
-			<fieldset id="cloud-details">
-					
-				<label for="cloudName" th:text="cloudName">cloudName: </label>	
-				<input type="text" name="cloudName" value="" id="cloudName" placeholder="=you" required="required" autofocus="autofocus" th:value="*{cloudName}" /> 
-                <p style="color: red;" th:text="${cloudNameError}">CN Error</p>			
-                <label for="email" th:text="email">email: </label>  
-                <input type="text" name="email" value="" id="email" placeholder="=you" required="required" autofocus="autofocus" th:value="*{email}" /> 
-                <p style="color: red;" th:text="${emailError}">Email Error</p>         
-                <label for="mobilePhone" th:text="mobilePhone">mobilePhone: </label>  
-                <input type="text" name="mobilePhone" value="" id="mobilePhone" placeholder="=you" required="required" autofocus="autofocus" th:value="*{mobilePhone}" /> 
-                <p style="color: red;" th:text="${phoneError}">Phone Error</p>         
-				<input type="submit" value="Register" name="submit"
-					class="submit" />
+			<fieldset id="signup-details">
+
+				<table>
+					<tr>
+						<td><label for="cloudName" th:text="#{theader.cloudName}">cloudName:
+						</label></td>
+						<td><input type="text" name="cloudName" value=""
+							id="cloudName" placeholder="=you" required="required"
+							autofocus="autofocus" th:value="*{cloudName}" /></td>
+						<td>
+							<p style="color: red;" th:text="${cloudNameError}">CN Error</p>
+						</td>
+					</tr>
+					<tr>
+						<td><label for="email" th:text="#{theader.email}">email: </label></td>
+						<td><input type="text" name="email" value="" id="email"
+							placeholder="you@maildomain.com" required="required" autofocus="autofocus"
+							th:value="*{email}" /></td>
+						<td>
+							<p style="color: red;" th:text="${emailError}">Email Error</p>
+					    </td>
+					</tr>
+					<tr>
+						<td><label for="mobilePhone" th:text="#{theader.mobilePhone}">mobilePhone:
+						</label></td>
+						<td><input type="text" name="mobilePhone" value=""
+							id="mobilePhone" placeholder="+14156783455" required="required"
+							autofocus="autofocus" th:value="*{mobilePhone}" /></td>
+						<td>
+							<p style="color: red;" th:text="${phoneError}">Phone Error</p>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2"><input type="submit" value="Register" name="submit"
+							class="submit" />
+					    </td>
+					</tr>
+				</table>
+				
 			</fieldset>
 			
 			<!-- end user-message -->
@@ -59,7 +85,7 @@
 	
 	<script>
 		/*<![CDATA[*/
-		      //Embbeded Javascript    
+		//Embbeded Javascript    
 		/*]]>*/
 	</script>
 

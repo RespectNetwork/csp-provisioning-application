@@ -14,7 +14,7 @@
     <!-- MockInviter Service -->  
     <beans:bean id="mockInviter"
         class="net.respectnetwork.csp.application.invite.MockInviterService" > 
-        <beans:constructor-arg name="inviteFileName" value="/tmp/inviteMap2.txt"/>  
+        <beans:constructor-arg name="inviteFileName" value="${csp.inviteMapLocation}"/>  
     </beans:bean>
     
     
@@ -30,7 +30,7 @@
         <beans:property name="cspMap">
             <beans:map>
                  <beans:entry key ="respectnetwork" value-ref="rnCSP"/>
-                 <beans:entry key ="mycsp" value-ref="myCSP"/>
+                 <beans:entry key ="${csp.cspName}" value-ref="myCSP"/>
             </beans:map>
         </beans:property>
     </beans:bean>
@@ -45,20 +45,12 @@
     </beans:bean>
     
     <beans:bean id="myCSP" class="net.respectnetwork.csp.application.csp.CSP">
-        <beans:property name="identifier" value="mycsp"/>
-        <beans:property name="displayName" value="My CSP"/>
-        <beans:property name="inviteURL" value="http://localhost:8080/csp-provisioning-application"/>
-        <beans:property name="homeURL" value="/"/>
-        <beans:property name="inviteCode" value="XXXXXXXX"/>
-        <beans:property name="regURL" value="http://localhost:8080/csp-provisioning-application"/>
+        <beans:property name="identifier" value="${csp.cspName}"/>
+        <beans:property name="displayName" value="${csp.cspDisplayName}"/>
+        <beans:property name="inviteURL" value="${csp.cspInviteURL}"/>
+        <beans:property name="homeURL" value="${csp.cspHomeURL}"/>
+        <beans:property name="inviteCode" value="${csp.cspInviteCode}"/>
+        <beans:property name="regURL" value="${csp.cspRegURL}"/>
     </beans:bean>
-    
-    <!-- AutoWired into WelcomeController -->
-    <beans:bean id="csp" class="java.lang.String">
-        <beans:constructor-arg value="mycsp"/>
-        <beans:qualifier value="theCSP"/>
-    </beans:bean>
-    
-    
-     
+        
 </beans:beans>

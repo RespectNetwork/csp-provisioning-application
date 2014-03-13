@@ -9,17 +9,35 @@
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
         http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
 
-	<!-- DispatcherServlet Context: defines this servlet's request-processing 
-		infrastructure -->
-        
-    <context:property-placeholder location="classpath:twilio.properties, classpath:mail.properties, classpath:notification.properties"/>
-    
+
+
+    <!-- Property Configuration -->
+
+    <beans:bean
+        class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <beans:property name="locations">
+            <beans:list>
+                <beans:value>classpath:csp.default.properties</beans:value>
+                <beans:value>classpath:csp.${csp.env}.properties</beans:value>
+                <beans:value>file:${cspprop.location}/csp.properties</beans:value>
+                <beans:value>classpath:twilio.properties</beans:value>
+                <beans:value>classpath:mail.properties</beans:value>
+                <beans:value>classpath:notification.properties
+                </beans:value>
+            </beans:list>
+        </beans:property>
+        <beans:property name="ignoreResourceNotFound"
+            value="true" />
+        <beans:property name="ignoreUnresolvablePlaceholders"
+            value="false" />
+    </beans:bean>
               
     <beans:import resource="resources.xml"/>
     <beans:import resource="i18n.xml"/>
     <beans:import resource="view.xml"/>
     <beans:import resource="notification.xml"/>
     <beans:import resource="payment.xml"/>
+    <beans:import resource="invitation.xml"/>
          	
 	<context:component-scan base-package="net.respectnetwork.csp.application" scoped-proxy="targetClass" />
 	<!-- Enables the Spring MVC @Controller programming model -->
@@ -45,56 +63,50 @@
     <!-- CSP SDK Implementation -->
      <beans:bean id="basicCSP"
         class="net.respectnetwork.sdk.csp.BasicCSP" >
-        <beans:property name="cspInformation" ref="rnCSP-STAGE"/>
+        <beans:property name="cspInformation" ref="csp"/>
     </beans:bean>
     
-   
+    <!-- AutoWired into WelcomeController -->
+    <beans:bean id="cspName" class="java.lang.String">
+        <beans:constructor-arg value="${csp.cspName}"/>
+        <beans:qualifier value="cspName"/>
+    </beans:bean>
     
-    <!-- Fixed Example of RN CSP: Unused 
-    <beans:bean id="rnCSPInformationOTE" class="net.respectnetwork.sdk.csp.example.CSPInformationRespectNetwork"/>
-   -->
-   
- 
-    <beans:bean name="rnCSP-STAGE" class="net.respectnetwork.sdk.csp.BasicCSPInformation">
+  
+    <!-- CSP  Configuration -->
+    <beans:bean name="csp" class="net.respectnetwork.sdk.csp.BasicCSPInformation">
         <beans:constructor-arg name="cspCloudNumber" ref="cspCloudNumber"/>
-        <beans:constructor-arg name="cspSecretToken" value="s3cr3t"/>
-        <beans:constructor-arg name="cspRegistryXdiEndpoint" value="http://mycloud-ote.neustar.biz:14440/registry"/>
-        <beans:constructor-arg name="cspCloudBaseXdiEndpoint" value="http://mycloud-ote.neustar.biz:14440/users/"/>
+        <beans:constructor-arg name="cspSecretToken" value="${csp.cspSecretToken}"/>
+        <beans:constructor-arg name="cspRegistryXdiEndpoint" value="${csp.cspRegistryXdiEndpoint}"/>
+        <beans:constructor-arg name="cspCloudBaseXdiEndpoint" value="${csp.cspCloudBaseXdiEndpoint}"/>
         <beans:constructor-arg name="rnCloudNumber" ref="rnCloudNumber"/>
-        <beans:constructor-arg name="rnRegistrationServiceXdiEndpoint" value="http://registration-dev.respectnetwork.net/registration"/>
+        <beans:constructor-arg name="rnRegistrationServiceXdiEndpoint" value="${csp.rnRegistrationServiceXdiEndpoint}"/>
         <beans:constructor-arg name="rnCspLinkContract" ref="rnCspLinkContract"/>
         <beans:constructor-arg name="cspPrivateKey">
             <beans:null />
         </beans:constructor-arg>
-        <beans:constructor-arg name="rnCspSecretToken" value="s3cr3t"/>
+        <beans:constructor-arg name="rnCspSecretToken" value="${csp.rnCspSecretToken}"/>
         <beans:constructor-arg name="xdiDiscoveryClient">
             <beans:null />
         </beans:constructor-arg>
     </beans:bean>
     
-    
-    
-       
+        
     <beans:bean id="cspCloudNumber" class="xdi2.core.xri3.CloudNumber" factory-method="create">
-        <beans:constructor-arg name="string" value="[@]!:uuid:ca51aeb9-e09e-4305-89d7-87a944a1e1fa"/>
+        <beans:constructor-arg name="string" value="${csp.cloudNumber}"/>
     </beans:bean>
     
     <beans:bean id="rnCloudNumber" class="xdi2.core.xri3.CloudNumber" factory-method="create">
-        <beans:constructor-arg name="string" value="[@]!:uuid:ca51aeb9-e09e-4305-89d7-87a944a1e1fa"/>
+        <beans:constructor-arg name="string" value="${csp.rnCloudNumber}"/>
     </beans:bean>
        
     <beans:bean id="rnCspLinkContract" class="xdi2.core.xri3.XDI3Segment" factory-method="create">
-        <beans:constructor-arg name="string" value="[@]!:uuid:ca51aeb9-e09e-4305-89d7-87a944a1e1fa$to+registrar$from$do"/>
+        <beans:constructor-arg name="string" value="${csp.rnCspLinkContract}"/>
     </beans:bean>
-    
-    
     
     <!-- Cloud Number Generator -->
     <beans:bean id="xdiCloudNameGen" class="net.respectnetwork.sdk.csp.xdi.XDIClientClouldNumberGenerator"/>
-         
-
-    
-    
+          
     <!--  Autowired Beans used in Registration Controller -->
     
     <beans:bean id="sessionCookieName" class="java.lang.String" >
