@@ -50,8 +50,8 @@
     
     <beans:bean id="regManager"
         class="net.respectnetwork.csp.application.manager.RegistrationManager" >
-        <beans:qualifier value="active"/>   
-        <beans:property name="cspRegistrar" ref="basicCSP"/>  
+        <beans:qualifier value="active"/> 
+        <beans:constructor-arg name="cspRegistrar" ref="basicCSP"/>  
         <beans:property name="userValidator" ref="basicUserValidator"/>  
         <beans:property name="paymentProcesser" ref="nopPaymentProcessor"/>  
         <beans:property name="registrationAmount" ref="registrationAmount"/> 
@@ -86,11 +86,19 @@
             <beans:null />
         </beans:constructor-arg>
         <beans:constructor-arg name="rnCspSecretToken" value="${csp.rnCspSecretToken}"/>
-        <beans:constructor-arg name="xdiDiscoveryClient">
-            <beans:null />
-        </beans:constructor-arg>
+        <beans:constructor-arg name="xdiDiscoveryClient" ref="xdiDiscoveryClient"/>
     </beans:bean>
     
+    
+    
+    
+    <beans:bean id="xdiDiscoveryClient" class="xdi2.discovery.XDIDiscoveryClient">
+        <beans:constructor-arg  ref="xdiHttpClient"/>
+    </beans:bean>   
+    
+    <beans:bean id="xdiHttpClient" class="xdi2.client.http.XDIHttpClient">
+        <beans:constructor-arg value="${csp.cspDiscoveryClientURL}"/>
+    </beans:bean>
         
     <beans:bean id="cspCloudNumber" class="xdi2.core.xri3.CloudNumber" factory-method="create">
         <beans:constructor-arg name="string" value="${csp.cloudNumber}"/>

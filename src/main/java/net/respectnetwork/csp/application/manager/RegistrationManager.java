@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.respectnetwork.csp.application.exception.UserRegistrationException;
+import net.respectnetwork.sdk.csp.BasicCSPInformation;
 import net.respectnetwork.sdk.csp.CSP;
 import net.respectnetwork.sdk.csp.UserValidator;
 import net.respectnetwork.sdk.csp.discount.CloudNameDiscountCode;
@@ -87,7 +88,6 @@ public class RegistrationManager {
      * Set CSP Registrar
      * @param cspRegistrar
      */
-    @Required
     public void setCspRegistrar(CSP cspRegistrar) {
         this.cspRegistrar = cspRegistrar;
     }
@@ -166,6 +166,31 @@ public class RegistrationManager {
      */
     public void setRunInTest(boolean runInTest) {
         this.runInTest = runInTest;
+    }
+
+    /**
+     * Constructor Used for Getting CSP Private Key
+     */
+    public RegistrationManager(CSP cspRegistrar) {
+        
+        this.cspRegistrar = cspRegistrar;
+        
+        BasicCSPInformation theCSPInfo = (BasicCSPInformation)cspRegistrar.getCspInformation();
+        
+        // Getting the CSP  Private Key  and Setting it in  BasicCSPInformation.cspSignaturePrivateKey
+              
+         try {
+            theCSPInfo.retrieveCspSignaturePrivateKey();
+            //@TODO: Remove before used in PROD ...
+            logger.debug("Private Key = {}", theCSPInfo.getCspSignaturePrivateKey().toString() );
+        } catch (Exception e) {
+            logger.warn("Cannot get CSP Private Key", e.getMessage());
+            //throw new CSPRegistrationException("Problem getting CSP Private Key");
+        }
+        if ( theCSPInfo.getCspSignaturePrivateKey() != null) {
+            logger.debug("CSP Private Key Found: Setting setRnCspSecretToken = null");
+            theCSPInfo.setRnCspSecretToken(null);
+        } 
     }
 
     /**
@@ -292,12 +317,7 @@ public class RegistrationManager {
         
         
         CloudNumber cloudNumber = CloudNumber.createRandom(cloudName.getCs());
-        
-
-        // Unset for Message Signing.
-        //cspInformation.retrieveCspSignaturePrivateKey();
-        //cspInformation.setRnCspSecretToken(null);
-
+       
         // Step 1: Register Cloud with Cloud Number and Shared Secret
         
         String cspSecretToken = cspRegistrar.getCspInformation().getCspSecretToken();

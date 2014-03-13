@@ -50,7 +50,9 @@
         <beans:property name="smsTemplate" value="${sms.template}"/>
     </beans:bean>
     
-    <beans:bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean"/>
+    <beans:bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+        <beans:property name="shared" value="true"/>        
+    </beans:bean>
     
     <beans:bean id="ehTokenCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
         <beans:property name="cacheManager" ref="cacheManager"/>
