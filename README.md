@@ -39,6 +39,8 @@ To  customize your CSP's configuration use the following config. mamnagement pat
 
  3. You can also  specify  a property file outside of the WAR using -Dcspprop.location=path_to_prop_file. The csp.properties file in this directory will be used. This is intended for use in production where  we do  not want sensitive information in github.
 
+#### Application Context ####
+
     <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="locations">
             <list>
