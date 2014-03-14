@@ -22,7 +22,6 @@ import net.respectnetwork.sdk.csp.validation.CSPValidationException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Required;
 
 import xdi2.client.exceptions.Xdi2ClientException;
 import xdi2.core.xri3.CloudName;
@@ -152,8 +151,6 @@ public class RegistrationManager {
     }
 
 
-   
-
     /**
      * @return the runInTest
      */
@@ -182,10 +179,9 @@ public class RegistrationManager {
          try {
             theCSPInfo.retrieveCspSignaturePrivateKey();
             //@TODO: Remove before used in PROD ...
-            logger.debug("Private Key = {}", theCSPInfo.getCspSignaturePrivateKey().toString() );
+            logger.debug("Private Key Algo. = {}", theCSPInfo.getCspSignaturePrivateKey().getAlgorithm() );
         } catch (Exception e) {
             logger.warn("Cannot get CSP Private Key", e.getMessage());
-            //throw new CSPRegistrationException("Problem getting CSP Private Key");
         }
         if ( theCSPInfo.getCspSignaturePrivateKey() != null) {
             logger.debug("CSP Private Key Found: Setting setRnCspSecretToken = null");
@@ -232,7 +228,7 @@ public class RegistrationManager {
         try {
             CloudNumber[] existingCloudNumbers = cspRegistrar.checkPhoneAndEmailAvailableInRN(email, mobilePhone); 
             if (runInTest) { 
-                logger.debug("Overriding uniqueness check.");
+                logger.warn("Overriding uniqueness check.");
                 existingCloudNumbers = new CloudNumber[2];
             }
             return existingCloudNumbers;
@@ -256,13 +252,7 @@ public class RegistrationManager {
         
         boolean validated = false;
         try { 
-           
-           if (!runInTest) {
-               validated = userValidator.validateCodes(sessionIdentifier, emailCode, smsCode);
-           } else {
-               validated = true;
-           }
-                   
+           validated = userValidator.validateCodes(sessionIdentifier, emailCode, smsCode);
         } catch (CSPValidationException e) {
             logger.warn("Problem Validating SMS and/or Email Codes: {}", e.getMessage());
             validated = false;
@@ -283,8 +273,7 @@ public class RegistrationManager {
      * @return
      */
     public PaymentStatusCode processPayment(String cardNumber, String cvv, String expMonth, String expYear) {
-        
-       
+              
         BigDecimal amount = new BigDecimal(registrationAmount);
         Currency currency = Currency.getInstance(registrationCurrencyCode);
         

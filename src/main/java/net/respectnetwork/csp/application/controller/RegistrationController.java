@@ -2,10 +2,8 @@ package net.respectnetwork.csp.application.controller;
 
 import java.util.UUID;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import net.respectnetwork.csp.application.exception.UserRegistrationException;
@@ -13,6 +11,7 @@ import net.respectnetwork.csp.application.form.AccountDetailsForm;
 import net.respectnetwork.csp.application.form.ConfirmationForm;
 import net.respectnetwork.csp.application.form.SignUpForm;
 import net.respectnetwork.csp.application.manager.RegistrationManager;
+import net.respectnetwork.csp.application.session.RegistrationSession;
 import net.respectnetwork.sdk.csp.payment.PaymentStatusCode;
 import net.respectnetwork.sdk.csp.validation.CSPValidationException;
 
@@ -43,35 +42,11 @@ public class RegistrationController {
     
     /** Registration Manager */
     private RegistrationManager theManager;
-        
-
-    /** Session Cookie */
-    private String sessionCookieName;
     
-    /** Session Length (in seconds)*/  
-    private Integer sessionLength = 600;
+    /** Registration Session */
+    private RegistrationSession regSession;
+            
     
-    /** Whether the cookie can only be sent via SSL */  
-    private Boolean secureSession = true;
-    
-    
-    /**
-     * @return the sessionCookieName
-     */
-    public String getSessionCookieName() {
-        return sessionCookieName;
-    }
-
-    /**
-     * @param sessionCookieName the sessionCookieName to set
-     */
-    @Autowired
-    @Qualifier("sessionCookieName")
-    @Required
-    public void setSessionCookieName(String sessionCookieName) {
-        this.sessionCookieName = sessionCookieName;
-    }
-
 
     /**
      * 
@@ -92,44 +67,24 @@ public class RegistrationController {
         this.theManager = theManager;
     }
     
-   
+  
+
     /**
-     * Get Session Length
-     * @return
+     * @return the regSession
      */
-    public Integer getSessionLength() {
-        return sessionLength;
+    public RegistrationSession getRegSession() {
+        return regSession;
     }
 
- 
     /**
-     * Set the length of the session
-     * 
-     * @param Length of session
+     * @param regSession
+     *            the regSession to set
      */
     @Autowired
-    @Qualifier("sessionLength")
-    public void setSessionLength(Integer sessionLength) {
-        this.sessionLength = sessionLength;
+    public void setRegSession(RegistrationSession regSession) {
+        this.regSession = regSession;
     }
 
-    /**
-     * 
-     * @return
-     */
-    public Boolean isSecureSession() {
-        return secureSession;
-    }
-
-   /**
-    * 
-    * @param secureSession
-    */
-    @Autowired
-    @Qualifier("secureSession")
-    public void setSecureSession(Boolean secureSession) {
-        this.secureSession = secureSession;
-    }
 
 
     /**
@@ -188,19 +143,22 @@ public class RegistrationController {
                     mv.addObject("error", errorStr);
                     errors = true;
                 }
-                          
-                String sessionid =  UUID.randomUUID().toString();
-                createSession(response, sessionid);
+                       
                 
                 
-                // If all is okay send out the validation messages.
-                try {
-                    theManager.sendValidationCodes(sessionid, signUpForm.getEmail(), signUpForm.getMobilePhone());
-                } catch (CSPValidationException e) {
-                    String errorStr = "System Error sending validation messages";
-                    logger.warn(errorStr + " : {}", e.getMessage());
-                    mv.addObject("error", errorStr);    
-                    errors = true;
+                if (!errors) {
+                    String sessionId =  UUID.randomUUID().toString();
+                    regSession.setSessionId(sessionId);
+                           
+                    // If all is okay send out the validation messages.
+                    try {
+                        theManager.sendValidationCodes(sessionId, signUpForm.getEmail(), signUpForm.getMobilePhone());
+                    } catch (CSPValidationException e) {
+                        String errorStr = "System Error sending validation messages";
+                        logger.warn(errorStr + " : {}", e.getMessage());
+                        mv.addObject("error", errorStr);    
+                        errors = true;
+                    }
                 }
                 
                 if (!errors) {
@@ -209,11 +167,11 @@ public class RegistrationController {
                     mv.addObject("confirmationInfo", confirmationForm);
                     
                     //Add CloudName/ Email and Phone to Session
-                     HttpSession theSession = request.getSession(true);
-                     theSession.setAttribute("register_cloudName", signUpForm.getCloudName());
-                     theSession.setAttribute("register_email", signUpForm.getEmail());
-                     theSession.setAttribute("register_phone", signUpForm.getMobilePhone());
                     
+                    regSession.setCloudName(signUpForm.getCloudName());
+                    regSession.setVerifiedEmail(signUpForm.getEmail());
+                    regSession.setVerifiedMobilePhone(signUpForm.getMobilePhone());
+                   
                 }
             }
                                             
@@ -243,7 +201,7 @@ public class RegistrationController {
         logger.debug("Processing Confirmation Data: {}", confirmationForm.toString());
         
         ModelAndView mv = new ModelAndView("confirmation");
-        String sessionIdentifier = getSessionIdentifierFromSession(request); 
+        String sessionIdentifier = regSession.getSessionId(); 
        
         boolean errors = false;
         
@@ -255,11 +213,12 @@ public class RegistrationController {
             errors = true;
         }
            
+        
         //Get CloudName/ Email and Phone fromSession
-        HttpSession theSession = request.getSession(false);
-        String cloudName = (String)theSession.getAttribute("register_cloudName");
-        String verifiedEmail = (String)theSession.getAttribute("register_email");
-        String verifiedPhone = (String)theSession.getAttribute("register_phone");
+        
+        String cloudName = regSession.getCloudName();
+        String verifiedEmail = regSession.getVerifiedEmail();
+        String verifiedPhone = regSession.getVerifiedMobilePhone();
         
         // If Validation Has Succeeded.
         if (!errors) {
@@ -302,42 +261,7 @@ public class RegistrationController {
     }
      
     
-    /**
-     * Create Session by adding Cookies to the response
-     * @param response
-     */
-    private void createSession( HttpServletResponse response, String sessionIdentifier) {
-                
-        Cookie sessionCookie = new Cookie(sessionCookieName, sessionIdentifier);
-        sessionCookie.setMaxAge(sessionLength);
-        sessionCookie.setSecure(secureSession);
-        response.addCookie(sessionCookie);
-        
-        return;
-    }
-    
-    
-    /**
-     * Extract Identifier from Session
-     * 
-     * @param cloudNumber
-     * @return
-     */
-    private String getSessionIdentifierFromSession(HttpServletRequest request) {
-        
-        String sessionIdentifier = null;
-        
-        Cookie[] theCookies = request.getCookies();
-        if (theCookies != null) {
-            for (int i = 0; i < theCookies.length; i++) {
-                if ( theCookies[i].getName().equalsIgnoreCase(sessionCookieName)){
-                    sessionIdentifier = theCookies[i].getValue();
-                }
-            }
-        }       
-        return sessionIdentifier;
-      
-    }
+
     
 
 }

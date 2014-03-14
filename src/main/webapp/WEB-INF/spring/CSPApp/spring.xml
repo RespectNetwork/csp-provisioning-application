@@ -31,6 +31,8 @@
         <beans:property name="ignoreUnresolvablePlaceholders"
             value="false" />
     </beans:bean>
+    
+    <!--  Imports -->
               
     <beans:import resource="resources.xml"/>
     <beans:import resource="i18n.xml"/>
@@ -42,6 +44,12 @@
 	<context:component-scan base-package="net.respectnetwork.csp.application" scoped-proxy="targetClass" />
 	<!-- Enables the Spring MVC @Controller programming model -->
 	<annotation-driven />
+    
+    
+    <!-- Registration Session-scoped bean exposed as a proxy -->
+    <beans:bean id="registrationSession" class="net.respectnetwork.csp.application.session.RegistrationSession" scope="session">
+        <aop:scoped-proxy/>
+    </beans:bean>
 
     
     <!-- Business Logic -->
@@ -56,7 +64,7 @@
         <beans:property name="paymentProcesser" ref="nopPaymentProcessor"/>  
         <beans:property name="registrationAmount" ref="registrationAmount"/> 
         <beans:property name="registrationCurrencyCode" ref="registrationCurrencyCode"/>  
-        <beans:property name="runInTest" value="true"/>  <!-- Never run as true in Production -->       
+        <beans:property name="runInTest" value="${csp.runInTest}"/>  <!-- Never run as true in Production -->       
     </beans:bean>
     
     
@@ -89,8 +97,7 @@
         <beans:constructor-arg name="xdiDiscoveryClient" ref="xdiDiscoveryClient"/>
     </beans:bean>
     
-    
-    
+   
     
     <beans:bean id="xdiDiscoveryClient" class="xdi2.discovery.XDIDiscoveryClient">
         <beans:constructor-arg  ref="xdiHttpClient"/>
@@ -112,24 +119,5 @@
         <beans:constructor-arg name="string" value="${csp.rnCspLinkContract}"/>
     </beans:bean>
     
-    <!-- Cloud Number Generator -->
-    <beans:bean id="xdiCloudNameGen" class="net.respectnetwork.sdk.csp.xdi.XDIClientClouldNumberGenerator"/>
-          
-    <!--  Autowired Beans used in Registration Controller -->
-    
-    <beans:bean id="sessionCookieName" class="java.lang.String" >
-        <beans:constructor-arg value="csp-signup-session"/>
-        <beans:qualifier value="sessionCookieName"/>         
-    </beans:bean>
-    
-    <beans:bean id="sessionLength" class="java.lang.Integer" >
-        <beans:constructor-arg value="1200"/>
-        <beans:qualifier value="sessionLength"/>         
-    </beans:bean>
-    
-    <beans:bean id="secureSession" class="java.lang.Boolean" >
-        <beans:constructor-arg value="false"/>
-        <beans:qualifier value="secureSession"/>         
-    </beans:bean>  
  
 </beans:beans>
