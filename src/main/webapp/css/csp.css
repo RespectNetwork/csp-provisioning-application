@@ -22,7 +22,7 @@
     float: left;
     font-size: 35px;
     //border: 1px solid #ddd;
-    padding: 10px 10px 10px 10px;
+    padding: 4px 10px 10px 10px;
     margin: 15px 15px 15px 15px;
     width: 350px;
     backgrond: #fff;
@@ -57,8 +57,8 @@ body {
 }
 
 input[type='text'],input[type='password']  {
-    padding: 8px;
-    margin: 4px 0 20px 0;
+    padding: 2px;
+    margin: 4px 0 4px 0;
     background: #fff;
     width: 400px;
     font-size: 30px;
@@ -68,9 +68,10 @@ input[type='text'],input[type='password']  {
     -webkit-border-radius: 10px;
 }
 
+
 #shorttext {
     padding: 8px;
-    margin: 4px 0 20px 0;
+    margin: 4px 0 4px 0;
     background: #fff;
     width: 80px;
     font-size: 30px;
@@ -82,12 +83,12 @@ input[type='text'],input[type='password']  {
 
 input[type='submit'] {
     padding: 8px;
-    margin: 4px 0 20px 0;
+    margin: 4px 0 4px 0;
     background: #fff;
     width: 400px;
     font-size: 30px;
     color: #fff;
-    background-color: #23BBCC;
+    background-color: #02E4FF;
     border: 1px #ddd solid;
     -moz-border-radius: 10px;
     -webkit-border-radius: 10px;
@@ -101,22 +102,33 @@ input[type='checkbox'] {
     text-align: center;
     //border: 1px solid #000000;
     margin: 0 auto;
-    border-spacing: 10px;
+    border-spacing: 5px;
+    border-collapse: separate;
 }
+
+td {
+    //border: 1px #ddd solid; 
+}
+
 #headerText {
     margin: 0 auto;
+    padding: 4px 10px 4px 10px;
     font-size: 40px;
     line-height: 1.00;
-    color: #23BBCC;
+    color: #02E4FF;
 }
 #subHeaderText {
+    margin: 0 auto;
     font-size: 30px;
+    padding: 4px 10px 4px 10px;
     line-height: 1.00;
-    color: #23BBCC;
+    color: #02E4FF;
 }
 
 #error {
-	color: red;
-	font-size: 15px;
-	line-height: 1.00; 
+    color: red;
+    font-size: 15px;
+    line-height: 1.00; 
+    padding: 0px;
+    margin: 0 0 0 0;
 }

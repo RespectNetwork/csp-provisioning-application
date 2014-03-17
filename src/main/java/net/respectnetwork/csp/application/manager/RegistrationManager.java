@@ -22,6 +22,7 @@ import net.respectnetwork.sdk.csp.validation.CSPValidationException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Required;
 
 import xdi2.client.exceptions.Xdi2ClientException;
 import xdi2.core.xri3.CloudName;
@@ -68,12 +69,18 @@ public class RegistrationManager {
     private  RespectNetworkMembershipDiscountCode respectNetworkMembershipDiscountCode = RespectNetworkMembershipDiscountCode.IIW17;
     
     /** Personal Cloud EndPoint */
-    private String personalCloudEndPoint  = "http://mycloud-ote.neustar.biz:8085/personalclouds/"; 
+    private String personalCloudEndPoint; 
     
-    /** Debug Mode */
-    private boolean runInTest = false;
+    /** Debug Mode: Require Uniqueness in the eMail/SMS */
+    private boolean requireUniqueness = true;
     
-    /**
+    /** Debug Mode: Send eMail/SMS as part of validation */
+    private boolean sendMailAndSMS = true;
+      
+    /** Debug Mode: Require Codes to be validate to proceed with registration */
+    private boolean validateCodes = true;
+    
+   
     
     /**
      * Get CSP Registrar
@@ -154,15 +161,58 @@ public class RegistrationManager {
     /**
      * @return the runInTest
      */
-    public boolean isRunInTest() {
-        return runInTest;
+    public boolean isRequireUniqueness() {
+        return requireUniqueness;
     }
 
     /**
      * @param runInTest the runInTest to set
      */
-    public void setRunInTest(boolean runInTest) {
-        this.runInTest = runInTest;
+    public void setRequireUniqueness(boolean requireUniqueness) {
+        this.requireUniqueness = requireUniqueness;
+    }
+    
+    /**
+     * @return the personalCloudEndPoint
+     */
+    public String getPersonalCloudEndPoint() {
+        return personalCloudEndPoint;
+    }
+
+    /**
+     * @param personalCloudEndPoint the personalCloudEndPoint to set
+     */
+    @Required
+    public void setPersonalCloudEndPoint(String personalCloudEndPoint) {
+        this.personalCloudEndPoint = personalCloudEndPoint;
+    }
+
+    /**
+     * @return the sendMailAndSMS
+     */
+    public boolean isSendMailAndSMS() {
+        return sendMailAndSMS;
+    }
+
+    /**
+     * @param sendMailAndSMS the sendMailAndSMS to set
+     */
+    public void setSendMailAndSMS(boolean sendMailAndSMS) {
+        this.sendMailAndSMS = sendMailAndSMS;
+    }
+
+    /**
+     * @return the validateCodes
+     */
+    public boolean isValidateCodes() {
+        return validateCodes;
+    }
+
+    /**
+     * @param validateCodes the validateCodes to set
+     */
+    public void setValidateCodes(boolean validateCodes) {
+        this.validateCodes = validateCodes;
     }
 
     /**
@@ -178,7 +228,6 @@ public class RegistrationManager {
               
          try {
             theCSPInfo.retrieveCspSignaturePrivateKey();
-            //@TODO: Remove before used in PROD ...
             logger.debug("Private Key Algo. = {}", theCSPInfo.getCspSignaturePrivateKey().getAlgorithm() );
         } catch (Exception e) {
             logger.warn("Cannot get CSP Private Key", e.getMessage());
@@ -227,8 +276,8 @@ public class RegistrationManager {
               
         try {
             CloudNumber[] existingCloudNumbers = cspRegistrar.checkPhoneAndEmailAvailableInRN(email, mobilePhone); 
-            if (runInTest) { 
-                logger.warn("Overriding uniqueness check.");
+            if (!requireUniqueness) { 
+                logger.warn("Overriding eMail/SMS uniqueness check.");
                 existingCloudNumbers = new CloudNumber[2];
             }
             return existingCloudNumbers;
@@ -252,7 +301,13 @@ public class RegistrationManager {
         
         boolean validated = false;
         try { 
-           validated = userValidator.validateCodes(sessionIdentifier, emailCode, smsCode);
+            if (validateCodes) {
+                logger.debug("Validating codes: validateCodes = true ");
+                validated = userValidator.validateCodes(sessionIdentifier, emailCode, smsCode);
+            } else {
+                logger.debug("Not Validating codes: validateCodes = false");
+                validated = true;
+            }
         } catch (CSPValidationException e) {
             logger.warn("Problem Validating SMS and/or Email Codes: {}", e.getMessage());
             validated = false;
@@ -297,8 +352,12 @@ public class RegistrationManager {
      */
     public void sendValidationCodes(String sessionId, String email, String mobilePhone)
         throws CSPValidationException{
-        
-        userValidator.sendValidationMessages(sessionId, email, mobilePhone);
+        if (sendMailAndSMS) {
+            logger.debug("Not sending Validation messages: sendMailAndSMS = true ");
+            userValidator.sendValidationMessages(sessionId, email, mobilePhone);
+        } else {
+            logger.debug("Not sending Validation messages: sendMailAndSMS = false ");
+        }
         
     }
     

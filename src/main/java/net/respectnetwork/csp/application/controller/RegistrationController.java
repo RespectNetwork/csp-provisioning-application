@@ -320,7 +320,6 @@ public class RegistrationController {
                 errors = true;
             }
             
-
         }
         
         if (!errors) {
@@ -333,9 +332,7 @@ public class RegistrationController {
                 errors = true;
             }
         } 
-            
-
-                    
+                             
         if (!errors) {
             mv = new ModelAndView("cspdashboard"); 
             AccountDetailsForm accountForm = new AccountDetailsForm();
