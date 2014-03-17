@@ -63,8 +63,11 @@
         <beans:property name="userValidator" ref="basicUserValidator"/>  
         <beans:property name="paymentProcesser" ref="nopPaymentProcessor"/>  
         <beans:property name="registrationAmount" ref="registrationAmount"/> 
-        <beans:property name="registrationCurrencyCode" ref="registrationCurrencyCode"/>  
-        <beans:property name="runInTest" value="${csp.runInTest}"/>  <!-- Never run as true in Production -->       
+        <beans:property name="registrationCurrencyCode" ref="registrationCurrencyCode"/> 
+        <beans:property name="personalCloudEndPoint" value="${csp.cspCloudBaseXdiEndpoint}"/> 
+        <beans:property name="requireUniqueness" value="${csp.requireUniqueness}"/>  <!-- Never run as false in Production -->  
+        <beans:property name="sendMailAndSMS" value="${csp.sendMailAndSMS}"/>  <!-- Never run as false in Production --> 
+        <beans:property name="validateCodes" value="${csp.validateCodes}"/>  <!-- Never run as false in Production --> 
     </beans:bean>
     
     

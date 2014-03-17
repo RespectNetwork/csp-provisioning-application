@@ -57,9 +57,9 @@
                     <tr>
                         <td>
                             <input type="password" name="password" value=""
-                                id="password" placeholder="Password" required="required"
+                                id="password" placeholder="password" required="required"
                                 th:value="*{password}" />
-                                <p style="error" th:text="${passordError}">Phone Error</p>
+                                <p id="error" th:text="${passwordError}">Password Error</p>
                         </td>
                     </tr>
                     <tr>
