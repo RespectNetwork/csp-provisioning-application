@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta charset="utf-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+
+<title></title>
+<meta name="description" content="Invite "/>
+
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link rel="stylesheet" href="../../css/csp.css" th:href="@{/css/csp.css}"/>
+<script src="../../js/libs/modernizr-2.0.6.min.js" th:src="@{/js/libs/modernizr-2.0.6.min.js}"></script>
+
+</head>
+
+<body>
+    <div id="fullpage">
+        <div id="header">Respect Network</div>
+        <div id="content">
+            <form action="#" th:object="${paymentInfo}" th:action="@{/processpayment}" method="post">
+                <table id="signUpTable">
+                    <tr>
+                        <td colspan="2">
+                            <p id="headerText">Provide Payment Information.</p>
+                            <p id="error" th:text="${error}">System Error</p> 
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="text" name="cardNumber" value="" id="cardNumber" placeholder="credit card number" required="required" autofocus="autofocus" th:value="*{cardNumber}" />
+                            <p id="error" th:text="${cardNumberError}">CN Error</p>                       
+                        </td>
+                        <td rowspan="5">
+                            Lifetime Respect Network membership
+                          + Personal cloud hosting for one year
+                          <hr></hr>
+                         $25 USD
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                        
+                            <input id="shorttext" type="text" name="expMonth" value="mm"
+                            placeholder="mm" required="required"
+                            th:value="*{expMonth}" />
+                            
+                            <input id="shorttext" type="text" name="expYear" value="yyyy"
+                            placeholder="yyyy" required="required"
+                            th:value="*{expYear}" />
+                          
+                            <input id="shorttext" type="text" name="cvv" value="cvv"
+                            placeholder="cvv" required="required" th:value="*{cvv}"/>
+                    
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            Or
+                            <input type="text" name="giftCode" value="giftCode"
+                            id="giftCode" placeholder="gift code"
+                            th:value="*{giftCode}" />
+                                            
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <input style="width: 20px;" type="checkbox"
+                            name="cspTandC" value="false" required="required"
+                            th:value="*{cspTandC}" /> I agree to the Acme Personal Cloud Company Terms of Service.
+                                            
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <input type="submit" value="Submit" name="submit" class="submit" />
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+        <div id="footer">Acme Cloud Company Inc.</div>
+    </div>
+</body>
+</html>

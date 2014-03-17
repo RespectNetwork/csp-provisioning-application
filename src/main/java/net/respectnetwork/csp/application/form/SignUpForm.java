@@ -7,9 +7,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 public class SignUpForm {
     
     private String cloudName;
-    private String email;
-    private String mobilePhone;
-    
+   
        
     /**
      * @return the cloudName
@@ -23,30 +21,7 @@ public class SignUpForm {
     public void setCloudName(String cloudName) {
         this.cloudName = cloudName;
     }
-    /**
-     * @return the email
-     */
-    public String getEmail() {
-        return email;
-    }
-    /**
-     * @param email the email to set
-     */
-    public void setEmail(String email) {
-        this.email = email;
-    }
-    /**
-     * @return the mobilePhone
-     */
-    public String getMobilePhone() {
-        return mobilePhone;
-    }
-    /**
-     * @param mobilePhone the mobilePhone to set
-     */
-    public void setMobilePhone(String mobilePhone) {
-        this.mobilePhone = mobilePhone;
-    }
+ 
 
     
     
@@ -55,8 +30,6 @@ public class SignUpForm {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("MessageForm [cloudName=").append(cloudName)
-                .append(", email=").append(email)
-                .append(", mobilePhone=").append(mobilePhone)
                 .append("]");
         return builder.toString();
     }
@@ -68,8 +41,6 @@ public class SignUpForm {
     public int hashCode() {
         return new HashCodeBuilder()
         .append(cloudName)
-        .append(email)
-        .append(mobilePhone)
         .toHashCode();
     }
 
@@ -83,8 +54,6 @@ public class SignUpForm {
             final SignUpForm other = (SignUpForm) obj;
             return new EqualsBuilder()
                 .append(cloudName, other.cloudName)
-                .append(email, other.email)
-                .append(mobilePhone, other.mobilePhone)
                 .isEquals();
         } else{
             return false;

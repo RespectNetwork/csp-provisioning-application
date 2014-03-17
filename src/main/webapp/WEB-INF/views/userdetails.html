@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta charset="utf-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+
+<title></title>
+<meta name="description" content="Invite "/>
+
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<link rel="stylesheet" href="../../css/csp.css" th:href="@{/css/csp.css}"/>
+<script src="../../js/libs/modernizr-2.0.6.min.js" th:src="@{/js/libs/modernizr-2.0.6.min.js}"></script>
+
+</head>
+
+<body>
+    <div id="fullpage">
+        <div id="header">Respect Network</div>
+        <div id="content">
+            <form action="#" th:object="${userInfo}" th:action="@{/processuserdetails}" method="post">
+                <table id="signUpTable">
+                    <tr>
+                        <td>
+                            <p id="headerText">Associate your cloud name with an email address and a phone number.</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p id="subHeaderText">As part of the terms of the Respect Trust Framework, an email and phone number can only be used with one personal cloud.</p>
+                            <p id="error" th:text="${error}">Session Error</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                           <input type="text" name="email" value="" id="email"
+                                placeholder="email address" required="required" autofocus="autofocus"
+                                th:value="*{email}" />
+                            <p id="error" th:text="${emailError}">Phone Error</p>                                                
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="text" name="mobilePhone" value=""
+                                id="mobilePhone" placeholder="phone number" required="required"
+                                autofocus="autofocus" th:value="*{mobilePhone}" />
+                            <p id="error" th:text="${phoneError}">Phone Error</p>                        
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p id="subHeaderText">Add a password for logging into your personal cloud.</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="password" name="password" value=""
+                                id="password" placeholder="Password" required="required"
+                                th:value="*{password}" />
+                                <p style="error" th:text="${passordError}">Phone Error</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="checkbox"
+                                name="rnTandC" value="false" required="required"
+                                th:value="*{rnTandC}" />
+                                I agree to the Respect Trust Framework and the one- person one-account rule.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="submit" value="Next" name="submit" class="submit" />
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+        <div id="footer">Acme Cloud Company Inc.</div>
+    </div>
+</body>
+</html>

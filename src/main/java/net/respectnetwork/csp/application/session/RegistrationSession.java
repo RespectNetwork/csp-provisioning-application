@@ -22,6 +22,9 @@ public class RegistrationSession implements Serializable {
 
     /** Verified Mobile Phone used in Registration */
     private String verifiedMobilePhone;
+    
+    /** Password */
+    private String password;
 
 
     /**
@@ -80,6 +83,20 @@ public class RegistrationSession implements Serializable {
         this.verifiedMobilePhone = verifiedMobilePhone;
     }
 
+    /**
+     * @return the password
+     */
+    public String getPassword() {
+        return password;
+    }
+
+    /**
+     * @param password the password to set
+     */
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
@@ -87,6 +104,7 @@ public class RegistrationSession implements Serializable {
                 .append(", cloudName=").append(cloudName)
                 .append(", verifiedEmail=").append(verifiedEmail)
                 .append(", verifiedMobilePhone=").append(verifiedMobilePhone)
+                .append(", password=").append(password)                
                 .append("]");
         return builder.toString();
     }
@@ -96,8 +114,12 @@ public class RegistrationSession implements Serializable {
      */
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(sessionId).append(cloudName)
-                .append(verifiedEmail).append(verifiedMobilePhone).toHashCode();
+        return new HashCodeBuilder().append(sessionId)
+                .append(cloudName)
+                .append(verifiedEmail)
+                .append(verifiedMobilePhone)
+                .append(password)                
+                .toHashCode();
     }
 
     /**
@@ -111,6 +133,7 @@ public class RegistrationSession implements Serializable {
                     .append(cloudName, other.cloudName)
                     .append(verifiedEmail, other.verifiedEmail)
                     .append(verifiedMobilePhone, other.verifiedMobilePhone)
+                    .append(password, other.password)
                     .isEquals();
         } else {
             return false;

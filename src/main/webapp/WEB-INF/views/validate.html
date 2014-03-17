@@ -20,28 +20,29 @@
     <div id="fullpage">
         <div id="header">Respect Network</div>
         <div id="content">
-            <form action="#" th:object="${signUpInfo}" th:action="@{/signup}" method="post">
+            <form action="#" th:object="${validateInfo}" th:action="@{/validatecodes}" method="post">
                 <table id="signUpTable">
                     <tr>
                         <td>
-                            <p id="headerText">Choose Your Cloud Name</p>
+                            <p id="subHeaderText">Verification codes have been sent to your email and phone. Enter those codes in the fields below.</p>
                         </td>
                     </tr>
                     <tr>
-                        <td>
-                            <p id="subHeaderText">All personal cloud names begin with an = sign.</p>
-                        </td>
+                        <td><input type="text" name="emailCode" value=""
+                            id="emailCode" placeholder="email code" required="required"
+                            autofocus="autofocus" th:value="*{emailCode}" /></td>
                     </tr>
                     <tr>
                         <td>
-                            <input type="text" name="cloudName" value="" id="cloudName" placeholder="=you" required="required" autofocus="autofocus" th:value="*{cloudName}" />
-                            <p id="error" th:text="${cloudNameError}">CN Error</p>
-                            <p id="error" th:text="${error}">System Error</p>                        
-                        </td>
-                    </tr>
+                            <input type="text" name="smsCode" value="" id="smsCode"
+                                placeholder="sms code" required="required" autofocus="autofocus"
+                                th:value="*{smsCode}" />
+                                <p id="error" th:text="${codeValidationError}">Validation Error</p>                            
+                            </td>
+                    </tr>                    
                     <tr>
                         <td>
-                            <input type="submit" value="Next" name="submit" class="submit" />
+                            <input type="submit" value="Verify" name="submit" class="submit" />
                         </td>
                     </tr>
                 </table>

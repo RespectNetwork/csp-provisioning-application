@@ -8,8 +8,10 @@ import javax.validation.Valid;
 
 import net.respectnetwork.csp.application.exception.UserRegistrationException;
 import net.respectnetwork.csp.application.form.AccountDetailsForm;
-import net.respectnetwork.csp.application.form.ConfirmationForm;
+import net.respectnetwork.csp.application.form.PaymentForm;
 import net.respectnetwork.csp.application.form.SignUpForm;
+import net.respectnetwork.csp.application.form.UserDetailsForm;
+import net.respectnetwork.csp.application.form.ValidateForm;
 import net.respectnetwork.csp.application.manager.RegistrationManager;
 import net.respectnetwork.csp.application.session.RegistrationSession;
 import net.respectnetwork.sdk.csp.payment.PaymentStatusCode;
@@ -45,8 +47,7 @@ public class RegistrationController {
     
     /** Registration Session */
     private RegistrationSession regSession;
-            
-    
+              
 
     /**
      * 
@@ -66,8 +67,7 @@ public class RegistrationController {
     public void setTheManager(RegistrationManager theManager) {
         this.theManager = theManager;
     }
-    
-  
+     
 
     /**
      * @return the regSession
@@ -84,7 +84,6 @@ public class RegistrationController {
     public void setRegSession(RegistrationSession regSession) {
         this.regSession = regSession;
     }
-
 
 
     /**
@@ -119,136 +118,226 @@ public class RegistrationController {
                 mv.addObject("error", errorStr);
                 errors = true;
             }
-            
-            //If the CloudName is Available
-            if (errors == false) {
-                try {
-                    CloudNumber[] existingUsers= theManager.checkEmailAndMobilePhoneUniqueness(signUpForm.getMobilePhone(), signUpForm.getEmail());
-                    if (existingUsers[0] != null) {
-                       //Communicate back to Form phone is already taken
-                        String errorStr = "Phone Number not Unique";
-                        mv.addObject("phoneError", errorStr);
-                        logger.debug("Phone {} already used by {}", signUpForm.getMobilePhone(), existingUsers[0]  );
-                        errors = true;
-                    }
-                    if (existingUsers[1] != null) {
-                        String errorStr = "Email not Unique";
-                        mv.addObject("emailError", errorStr);
-                        logger.debug("Phone {} already used by {}", signUpForm.getEmail(), existingUsers[1]  );
-                        errors = true;
-                     }
-                } catch (UserRegistrationException e) {
-                    String errorStr = "System Error checking Email/Phone Number Uniqueness";
-                    logger.warn(errorStr + " : {}", e.getMessage());
-                    mv.addObject("error", errorStr);
-                    errors = true;
-                }
-                       
-                
-                
-                if (!errors) {
-                    String sessionId =  UUID.randomUUID().toString();
-                    regSession.setSessionId(sessionId);
-                           
-                    // If all is okay send out the validation messages.
-                    try {
-                        theManager.sendValidationCodes(sessionId, signUpForm.getEmail(), signUpForm.getMobilePhone());
-                    } catch (CSPValidationException e) {
-                        String errorStr = "System Error sending validation messages";
-                        logger.warn(errorStr + " : {}", e.getMessage());
-                        mv.addObject("error", errorStr);    
-                        errors = true;
-                    }
-                }
-                
-                if (!errors) {
-                    mv = new ModelAndView("confirmation"); 
-                    ConfirmationForm confirmationForm = new ConfirmationForm();
-                    mv.addObject("confirmationInfo", confirmationForm);
-                    
-                    //Add CloudName/ Email and Phone to Session
-                    
-                    regSession.setCloudName(signUpForm.getCloudName());
-                    regSession.setVerifiedEmail(signUpForm.getEmail());
-                    regSession.setVerifiedMobilePhone(signUpForm.getMobilePhone());
-                   
-                }
+
+            if (!errors) {
+                mv = new ModelAndView("userdetails");
+                UserDetailsForm userDetailsForm = new UserDetailsForm();
+                mv.addObject("userInfo", userDetailsForm);
+
+                // Add CloudName to Session
+
+                String sessionId =  UUID.randomUUID().toString();
+                regSession.setSessionId(sessionId);
+                regSession.setCloudName(signUpForm.getCloudName());
+
             }
-                                            
+                                                       
         }
         mv.addObject("signupInfo", signUpForm);
                                     
         return mv;        
     }
     
+    /**
+     * Get User Details
+     */
+    @RequestMapping(value = "/processuserdetails", method = RequestMethod.POST)
+    public ModelAndView getDetails(
+            @Valid @ModelAttribute("userInfo") UserDetailsForm userDetailsForm,
+            HttpServletRequest request, HttpServletResponse response,
+            BindingResult result) {
+        
+        logger.debug("Get User Details");
+        
+        ModelAndView mv = null; 
+        boolean errors = false;
+        mv = new ModelAndView("userdetails");
+        mv.addObject("userInfo", userDetailsForm);
+        
+        String cn = regSession.getCloudName();
+        String sessionId = regSession.getSessionId();
+        
+        //Session Check
+        if (sessionId == null || cn == null){
+            errors = true;
+            mv.addObject("error", "Invalid Session");          
+        }
+ 
+        if (!errors) {
+            try {
+                CloudNumber[] existingUsers = theManager
+                        .checkEmailAndMobilePhoneUniqueness(
+                                userDetailsForm.getMobilePhone(),
+                                userDetailsForm.getEmail());
+                if (existingUsers[0] != null) {
+                    // Communicate back to Form phone is already taken
+                    String errorStr = "Phone Number not Unique";
+                    mv.addObject("phoneError", errorStr);
+                    logger.debug("Phone {} already used by {}",
+                            userDetailsForm.getMobilePhone(), existingUsers[0]);
+                    errors = true;
+                }
+                if (existingUsers[1] != null) {
+                    String errorStr = "Email not Unique";
+                    mv.addObject("emailError", errorStr);
+                    logger.debug("Phone {} already used by {}",
+                            userDetailsForm.getEmail(), existingUsers[1]);
+                    errors = true;
+                }
+            } catch (UserRegistrationException e) {
+                String errorStr = "System Error checking Email/Phone Number Uniqueness";
+                logger.warn(errorStr + " : {}", e.getMessage());
+                mv.addObject("error", errorStr);
+                errors = true;
+            }
+        }
+
+        if (!errors) {
+
+            // If all is okay send out the validation messages.
+            try {
+                theManager.sendValidationCodes(sessionId,
+                        userDetailsForm.getEmail(),
+                        userDetailsForm.getMobilePhone());
+            } catch (CSPValidationException e) {
+                String errorStr = "System Error sending validation messages";
+                logger.warn(errorStr + " : {}", e.getMessage());
+                mv.addObject("error", errorStr);
+                errors = true;
+            }
+        }
+
+        if (!errors) {
+            mv = new ModelAndView("validate");
+            ValidateForm validateForm = new ValidateForm();
+            mv.addObject("validateInfo", validateForm);
+
+            // Add CloudName/ Email / Password and Phone to Session
+
+            regSession.setVerifiedEmail(userDetailsForm.getEmail());
+            regSession.setVerifiedMobilePhone(userDetailsForm.getMobilePhone());
+            regSession.setPassword(userDetailsForm.getPassword());
+        }
+           
+                                               
+        mv.addObject("userInfo", userDetailsForm);
+                                    
+        return mv;        
+    }
+    
     
     /**
-     * Validate Confirmation Codes, Process Terms and Conditions
-     * Process Payment, Store Password and the register user Cloud.
+     * Validate Confirmation Codes,
+     * 
      * 
      * @param userForm Form with User's details
      * @param result Binding Result for Validation or errors
      * @return ModelandView of next  travel location
      */
-    @RequestMapping(value = "/processRegistration", method = RequestMethod.POST)
-    public ModelAndView createAndValidateUser(
-            @Valid @ModelAttribute("confirmationInfo") ConfirmationForm confirmationForm,
+    @RequestMapping(value = "/validatecodes", method = RequestMethod.POST)
+    public ModelAndView validateCodes(
+            @Valid @ModelAttribute("validateInfo") ValidateForm validateForm,
             HttpServletRequest request,
             BindingResult result) {
         
                 
-        logger.debug("Starting Creation/Validation Process");
-        logger.debug("Processing Confirmation Data: {}", confirmationForm.toString());
+        logger.debug("Starting Validation Process");
+        logger.debug("Processing Validation Data: {}", validateForm.toString());
         
-        ModelAndView mv = new ModelAndView("confirmation");
+        ModelAndView mv = new ModelAndView("validate");
         String sessionIdentifier = regSession.getSessionId(); 
        
         boolean errors = false;
         
         //Validate Codes
-        if (!theManager.validateCodes(sessionIdentifier, confirmationForm.getEmailCode(), confirmationForm.getSmsCode())) {
+        if (!theManager.validateCodes(sessionIdentifier, validateForm.getEmailCode(), validateForm.getSmsCode())) {
             String errorStr = "Code(s) Validation Failed";
             logger.debug(errorStr);
             mv.addObject("codeValidationError", errorStr); 
             errors = true;
         }
-           
         
-        //Get CloudName/ Email and Phone fromSession
+        if (!errors) {
+            mv = new ModelAndView("payment");
+            PaymentForm paymentForm = new PaymentForm();
+            mv.addObject("paymentInfo", paymentForm);
+        }
+            
         
+        return mv;
+        
+    }
+    
+    
+    /**
+     * Process Payment
+     * 
+     * @param userForm Form with User's details
+     * @param result Binding Result for Validation or errors
+     * @return ModelandView of next  travel location
+     */
+    @RequestMapping(value = "/processpayment", method = RequestMethod.POST)
+    public ModelAndView processPayment(
+            @Valid @ModelAttribute("paymentInfo") PaymentForm paymentForm,
+            HttpServletRequest request,
+            BindingResult result) {
+        
+                
+        logger.debug("Payment Processing");
+        logger.debug("Processing Payment Data: {}", paymentForm.toString());
+        
+        ModelAndView mv = new ModelAndView("payment");
+
+
+       
+        boolean errors = false;
+        
+        String sessionIdentifier = regSession.getSessionId(); 
         String cloudName = regSession.getCloudName();
-        String verifiedEmail = regSession.getVerifiedEmail();
-        String verifiedPhone = regSession.getVerifiedMobilePhone();
+        String email = regSession.getVerifiedEmail();
+        String phone = regSession.getVerifiedMobilePhone();
+        String password = regSession.getPassword();
+        
+              
+        //Check Session      
+        if (sessionIdentifier == null || cloudName == null || email == null
+                || phone == null || password == null) {
+            errors = true;    
+            mv.addObject("error", "Invalid Session"); 
+        }
+        
+
         
         // If Validation Has Succeeded.
         if (!errors) {
         
             //Process Payment           
-            if (theManager.processPayment(confirmationForm.getCardNumber(), confirmationForm.getCvv(),
-                    confirmationForm.getExpMonth(), confirmationForm.getExpYear()) != PaymentStatusCode.SUCCESS) {
+            if (theManager.processPayment(paymentForm.getCardNumber(), paymentForm.getCvv(),
+                    paymentForm.getExpMonth(), paymentForm.getExpYear()) != PaymentStatusCode.SUCCESS) {
                 String errorStr = "Payment Processing Failed";
-                logger.warn(errorStr + "for " + confirmationForm.getCardNumber() );
+                logger.warn(errorStr + "for " + paymentForm.getCardNumber() );
                 mv.addObject("paymentProcessingError", errorStr); 
                 errors = true;
             }
             
-           //Register Personal Cloud
-           if (cloudName == null || verifiedEmail == null || verifiedPhone ==null ) {
-                mv.addObject("error", "Error retrieving data from session"); 
-                errors= true;
-            } else {      
-                try {
-                    theManager.registerUser(CloudName.create(cloudName), verifiedPhone, verifiedEmail, confirmationForm.getPassword());
-                } catch (Exception e) {
-                    logger.warn("Registration Error {}", e.getMessage() );
-                    mv.addObject("error", e.getMessage());
-                    errors = true;
-                }
-            }
+
         }
+        
+        if (!errors) {
+            try {
+                theManager.registerUser(CloudName.create(cloudName), phone,
+                        email, password);
+            } catch (Exception e) {
+                logger.warn("Registration Error {}", e.getMessage());
+                mv.addObject("error", e.getMessage());
+                errors = true;
+            }
+        } 
+            
+
                     
         if (!errors) {
-            mv = new ModelAndView("accountInformation"); 
+            mv = new ModelAndView("cspdashboard"); 
             AccountDetailsForm accountForm = new AccountDetailsForm();
             accountForm.setCloudName(cloudName);
             mv.addObject("accountInfo", accountForm);   
@@ -259,9 +348,5 @@ public class RegistrationController {
         return mv;
 
     }
-     
-    
-
-    
-
+ 
 }

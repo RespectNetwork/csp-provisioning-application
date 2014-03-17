@@ -3,7 +3,7 @@ package net.respectnetwork.csp.application.controller;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import net.respectnetwork.csp.application.form.InviterForm;
+import net.respectnetwork.csp.application.form.SignUpForm;
 import net.respectnetwork.csp.application.invite.InvitationManager;
 
 import org.slf4j.Logger;
@@ -78,17 +78,19 @@ public class HomeController {
     /**
 	 * Simply selects the home view to render by returning its name.
 	 */
-	@RequestMapping(value = "/", method = RequestMethod.GET)
+	@RequestMapping(value = "/signup", method = RequestMethod.GET)
 	public ModelAndView homeForm(HttpServletRequest request, Model model,
-	        @Valid @ModelAttribute("inviteInfo") InviterForm inviterForm) {
+	        @Valid @ModelAttribute("signUpInfo") SignUpForm SignUpForm) {
 	    
-		logger.info("Welcome to CSP Home");
+	    
+	    
+		logger.info("Welcome to CSP Invite Page");
 		   
         String inviter = null;
         String cloudName = null;
         
         ModelAndView mv = null; 
-        mv = new ModelAndView("csphome");
+        mv = new ModelAndView("signup");
         
         try {
            
@@ -98,9 +100,8 @@ public class HomeController {
                 
                 if (cloudName == null) {
                     mv.addObject("error", "Invalid Inviter Code: " + inviter);  
-                    inviterForm.setInviterCloudName(cloudName);
                 } else {
-                    inviterForm.setInviterCloudName(cloudName);
+                    SignUpForm.setCloudName(cloudName);
                 }    
             }
             
@@ -108,7 +109,7 @@ public class HomeController {
             logger.warn("Problem Processing", e.getMessage());
         }
         
-        mv.addObject("inviteInfo", inviterForm);
+        mv.addObject("signUpInfo", SignUpForm);
         
         
 
