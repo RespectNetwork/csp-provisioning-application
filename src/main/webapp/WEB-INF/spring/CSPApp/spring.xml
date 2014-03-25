@@ -93,14 +93,13 @@
         <beans:constructor-arg name="rnCloudNumber" ref="rnCloudNumber"/>
         <beans:constructor-arg name="rnRegistrationServiceXdiEndpoint" value="${csp.rnRegistrationServiceXdiEndpoint}"/>
         <beans:constructor-arg name="rnCspLinkContract" ref="rnCspLinkContract"/>
-        <beans:constructor-arg name="cspPrivateKey">
+        <beans:constructor-arg name="cspSignaturePrivateKey">
             <beans:null />
         </beans:constructor-arg>
         <beans:constructor-arg name="rnCspSecretToken" value="${csp.rnCspSecretToken}"/>
         <beans:constructor-arg name="xdiDiscoveryClient" ref="xdiDiscoveryClient"/>
     </beans:bean>
-    
-   
+      
     
     <beans:bean id="xdiDiscoveryClient" class="xdi2.discovery.XDIDiscoveryClient">
         <beans:constructor-arg  ref="xdiHttpClient"/>
