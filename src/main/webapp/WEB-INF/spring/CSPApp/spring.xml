@@ -22,8 +22,8 @@
                 <beans:value>file:${cspprop.location}/csp.properties</beans:value>
                 <beans:value>classpath:twilio.properties</beans:value>
                 <beans:value>classpath:mail.properties</beans:value>
-                <beans:value>classpath:notification.properties
-                </beans:value>
+                <beans:value>classpath:notification.properties</beans:value>
+                <beans:value>classpath:db.properties</beans:value>
             </beans:list>
         </beans:property>
         <beans:property name="ignoreResourceNotFound"
@@ -121,5 +121,29 @@
         <beans:constructor-arg name="string" value="${csp.rnCspLinkContract}"/>
     </beans:bean>
     
+    <beans:bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <beans:property name="driverClassName" value="${db.driver}"/>
+        <beans:property name="url" value="${db.jdbcUrl}"/>
+        <beans:property name="username" value="${db.username}"/>
+        <beans:property name="password" value="${db.password}"/>
+        <beans:property name="initialSize" value="${db.minPoolSize}"/>
+        <beans:property name="maxActive" value="${db.maxPoolSize}"/>
+        <beans:property name="removeAbandoned" value="true"/>
+    </beans:bean>
+
+    <beans:bean id="cspDAOImpl" class="net.respectnetwork.csp.application.dao.mysql.CSPDAOImpl" scope="singleton">
+        <beans:property name="dataSource" ref="dataSource"/>
+    </beans:bean>
+
+    <beans:bean id="dependentCloudDAOImpl" class="net.respectnetwork.csp.application.dao.mysql.DependentCloudDAOImpl" scope="singleton">
+        <beans:property name="dataSource" ref="dataSource"/>
+    </beans:bean>
+
+    <beans:bean id="daoFactory" class="net.respectnetwork.csp.application.dao.DAOFactory" scope="singleton">
+        <beans:property name="cSPDAO"             ref="cspDAOImpl"/>
+        <beans:property name="dependentCloudDAO" ref="dependentCloudDAOImpl"/>
+    </beans:bean>
+
+    <beans:bean id="daoContextProvider" class="net.respectnetwork.csp.application.dao.DAOContextProvider" />
  
 </beans:beans>
