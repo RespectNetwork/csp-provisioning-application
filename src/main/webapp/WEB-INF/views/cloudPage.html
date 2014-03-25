@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+<title></title>
+<meta name="Clear authinfo cache" content="HTML 5 CSS 3 Spring Form" />
+
+
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+
+<link href="/css/bootstrap.css" rel="stylesheet" />
+<!--
+<link rel="stylesheet" href="../../css/style.css" th:href="@{/css/style.css}"/>
+-->  
+<script src="/js/libs/modernizr-2.0.6.min.js" th:src="@{/js/libs/modernizr-2.0.6.min.js}"></script>
+
+</head>
+
+<body>
+	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="/js/libs/bootstrap.js"></script>
+<script type="text/javascript">
+    
+    function logout() {
+    	var actionURL = document.getElementById("logoutURL").value;
+    	$("#logout_form").attr("action", actionURL);
+        $("#logout_form").submit();
+    }
+    
+    
+</script>
+    <h1>Welcome to your cloud page</h1>
+   
+   <div>
+    <form class="form-horizontal" id="logout_form" name="logout_form" action="index.html" method="POST">
+    <fieldset>
+    <input type="hidden" name="logoutURL" id="logoutURL" th:value="${logoutURL}" />
+    <div class="form-group">
+    <div class="col-sm-offset-2 col-sm-10">
+      <button type="submit"  onclick="logout()" class="btn btn-danger">Logout</button>
+    </div>
+  </div>
+    </fieldset>
+    </form>
+   </div>
+  
+
+
+</body>
+</html>

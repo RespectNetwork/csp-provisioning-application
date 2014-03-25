@@ -71,6 +71,14 @@
     </beans:bean>
     
     
+	<!-- Personal Cloud Manager -->
+    
+    <beans:bean id="personalCloudManager"
+        class="net.respectnetwork.csp.application.manager.PersonalCloudManager" >         
+            
+        <beans:property name="personalCloudDiscoveryClient" ref="xdiDiscoveryClient"/>    
+    </beans:bean>
+        
     <!-- CSP SDK Implementation -->
      <beans:bean id="basicCSP"
         class="net.respectnetwork.sdk.csp.BasicCSP" >
