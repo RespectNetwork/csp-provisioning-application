@@ -20,7 +20,7 @@
     <div id="fullpage">
         <div id="header">Respect Network</div>
         <div id="content">
-            <form action="#" th:object="${paymentInfo}" th:action="@{/processpayment}" method="post">
+            <form action="#" th:object="${paymentInfo}" th:action="@{/stripeConnect}" method="post">
                 <table id="signUpTable">
                     <tr>
                         <td colspan="2">
@@ -29,10 +29,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>
-                            <input type="text" name="cardNumber" value="" id="cardNumber" placeholder="credit card number" required="required" autofocus="autofocus" th:value="*{cardNumber}" />
-                            <p id="error" th:text="${cardNumberError}">CN Error</p>                       
-                        </td>
+                        
                         <td rowspan="5">
                             Lifetime Respect Network membership
                           + Personal cloud hosting for one year
@@ -41,28 +38,22 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>
-                        
-                            <input id="shorttext" type="text" name="expMonth" value="mm"
-                            placeholder="mm" required="required"
-                            th:value="*{expMonth}" />
-                            
-                            <input id="shorttext" type="text" name="expYear" value="yyyy"
-                            placeholder="yyyy" required="required"
-                            th:value="*{expYear}" />
-                          
-                            <input id="shorttext" type="text" name="cvv" value="cvv"
-                            placeholder="cvv" required="required" th:value="*{cvv}"/>
-                    
-                        </td>
+                    <script
+					    src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+					    data-key="pk_test_BWUFT9rT63JEL5829geBwdVS"
+					    data-amount="2500"
+					    data-name="One Personal Cloud"
+					    data-description="$25 USD"
+					    data-image="img/cloud.png">
+  					</script>
                     </tr>
                     
                     <tr>
                         <td>
                             Or
                             <input type="text" name="giftCode" value="giftCode"
-                            id="giftCode" placeholder="gift code"
-                            th:value="*{giftCode}" />
+                            id="giftCode" placeholder="gift code not implemented yet"
+                             />
                                             
                         </td>
                     </tr>
@@ -76,11 +67,7 @@
                         </td>
                     </tr>
                     
-                    <tr>
-                        <td>
-                            <input type="submit" value="Submit" name="submit" class="submit" />
-                        </td>
-                    </tr>
+                    
                 </table>
             </form>
         </div>

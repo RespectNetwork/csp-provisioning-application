@@ -291,6 +291,15 @@
             <artifactId>aspectjtools</artifactId>
             <version>1.6.2</version>
         </dependency>
+        
+        <!-- STRIPE -->
+        <dependency>
+			  <groupId>com.stripe</groupId>
+			  <artifactId>stripe-java</artifactId>
+			  <version>1.9.0</version>
+		</dependency>
+        
+        
 
     </dependencies>
 
