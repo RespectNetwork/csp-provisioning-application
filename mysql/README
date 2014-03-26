@@ -1,0 +1,7 @@
+This directory contains SQL scripts for popuplating MySQL database.
+
+csp_create.sql	- DDL for creating all tables, indexes and foreign keys
+csp_data.sql	- dummy data for CSP records
+csp_drop.sql	- DDL for dropping all tables
+
+-EOF-
