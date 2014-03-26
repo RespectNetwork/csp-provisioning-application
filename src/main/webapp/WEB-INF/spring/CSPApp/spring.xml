@@ -135,13 +135,38 @@
         <beans:property name="dataSource" ref="dataSource"/>
     </beans:bean>
 
+    <beans:bean id="paymentDAOImpl" class="net.respectnetwork.csp.application.dao.mysql.PaymentDAOImpl" scope="singleton">
+        <beans:property name="dataSource" ref="dataSource"/>
+    </beans:bean>
+
+    <beans:bean id="inviteDAOImpl" class="net.respectnetwork.csp.application.dao.mysql.InviteDAOImpl" scope="singleton">
+        <beans:property name="dataSource" ref="dataSource"/>
+    </beans:bean>
+
+    <beans:bean id="inviteResponseDAOImpl" class="net.respectnetwork.csp.application.dao.mysql.InviteResponseDAOImpl" scope="singleton">
+        <beans:property name="dataSource" ref="dataSource"/>
+    </beans:bean>
+
+    <beans:bean id="giftCodeDAOImpl" class="net.respectnetwork.csp.application.dao.mysql.GiftCodeDAOImpl" scope="singleton">
+        <beans:property name="dataSource" ref="dataSource"/>
+    </beans:bean>
+
+    <beans:bean id="giftCodeRedemptionDAOImpl" class="net.respectnetwork.csp.application.dao.mysql.GiftCodeRedemptionDAOImpl" scope="singleton">
+        <beans:property name="dataSource" ref="dataSource"/>
+    </beans:bean>
+
     <beans:bean id="dependentCloudDAOImpl" class="net.respectnetwork.csp.application.dao.mysql.DependentCloudDAOImpl" scope="singleton">
         <beans:property name="dataSource" ref="dataSource"/>
     </beans:bean>
 
     <beans:bean id="daoFactory" class="net.respectnetwork.csp.application.dao.DAOFactory" scope="singleton">
-        <beans:property name="cSPDAO"             ref="cspDAOImpl"/>
-        <beans:property name="dependentCloudDAO" ref="dependentCloudDAOImpl"/>
+        <beans:property name="cSPDAO"                ref="cspDAOImpl"/>
+        <beans:property name="paymentDAO"            ref="paymentDAOImpl"/>
+        <beans:property name="inviteDAO"             ref="inviteDAOImpl"/>
+        <beans:property name="inviteResponseDAO"     ref="inviteResponseDAOImpl"/>
+        <beans:property name="giftCodeDAO"           ref="giftCodeDAOImpl"/>
+        <beans:property name="giftCodeRedemptionDAO" ref="giftCodeRedemptionDAOImpl"/>
+        <beans:property name="dependentCloudDAO"     ref="dependentCloudDAOImpl"/>
     </beans:bean>
 
     <beans:bean id="daoContextProvider" class="net.respectnetwork.csp.application.dao.DAOContextProvider" />

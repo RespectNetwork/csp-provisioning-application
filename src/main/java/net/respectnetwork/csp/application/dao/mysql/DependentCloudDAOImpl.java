@@ -29,15 +29,27 @@ public class DependentCloudDAOImpl extends BaseDAOImpl implements DependentCloud
 		logger.info("DependentCloudDAOImpl() created");
 	}
 
+	private DependentCloudModel get( ResultSet rset ) throws SQLException
+	{
+		DependentCloudModel dep = new DependentCloudModel();
+
+		dep.setGuardianCloudName (rset.getString    (1));
+		dep.setDependentCloudName(rset.getString    (2));
+		dep.setPaymentId         (rset.getString    (3));
+		dep.setTimeCreated       (rset.getTimestamp (4));
+
+		return dep;
+	}
+
 	public List<DependentCloudModel> list( String guardianCloudName ) throws DAOException
 	{
 		logger.info("list() " + guardianCloudName);
 
-		List<DependentCloudModel>    rtn  = null;
-		Connection                   conn = this.getConnection();
-		PreparedStatement            stmt = null;
-		ResultSet                    rset = null;
-		String                       sql  = null;
+		List<DependentCloudModel> rtn  = null;
+		Connection                conn = this.getConnection();
+		PreparedStatement         stmt = null;
+		ResultSet                 rset = null;
+		String                    sql  = null;
 
 		try
 		{
@@ -48,17 +60,12 @@ public class DependentCloudDAOImpl extends BaseDAOImpl implements DependentCloud
 			rset = stmt.executeQuery();
 			while( rset.next() )
 			{
-				DependentCloudModel dep = new DependentCloudModel();
-				dep.setGuardianCloudName (rset.getString    (1));
-				dep.setDependentCloudName(rset.getString    (2));
-				dep.setPaymentId         (rset.getString    (3));
-				dep.setTimeCreated       (rset.getTimestamp (4));
+				DependentCloudModel dep = this.get(rset);
 				if( rtn == null )
 				{
 					rtn = new ArrayList<DependentCloudModel>();
 				}
 				rtn.add(dep);
-
 				logger.info(dep.toString());
 			}
 			rset.close();

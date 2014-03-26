@@ -56,7 +56,7 @@ public class BaseDAOImpl
 
 	public void closeConnection( Connection conn, Statement stmt, ResultSet rset ) throws DAOException
 	{
-		logger.debug("CLose database connection");
+		logger.debug("Close database connection");
 		if( conn != null )
 		{
 			try
@@ -79,7 +79,7 @@ public class BaseDAOImpl
 				throw new DAOException(err, e);
 			}
 		}
-		logger.debug("CLose database connection ok");
+		logger.debug("Close database connection ok");
 	}
 
 	public void closeConnection( Connection conn, Statement stmt ) throws DAOException

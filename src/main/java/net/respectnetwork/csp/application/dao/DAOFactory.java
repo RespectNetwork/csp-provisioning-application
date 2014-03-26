@@ -12,8 +12,13 @@ public class DAOFactory
 
 	private static DAOFactory singleton = null;
 
-	private CSPDAO	            cSPDAO;
-	private DependentCloudDAO   dependentCloudDAO;
+	private CSPDAO	              cSPDAO;
+	private PaymentDAO            paymentDAO;
+	private InviteDAO             inviteDAO;
+	private InviteResponseDAO     inviteResponseDAO;
+	private GiftCodeDAO           giftCodeDAO;
+	private GiftCodeRedemptionDAO giftCodeRedemptionDAO;
+	private DependentCloudDAO     dependentCloudDAO;
 
 	public static DAOFactory getInstance()
 	{
@@ -26,9 +31,6 @@ public class DAOFactory
 			logger.info("Get DAOFactory singleton");
 			if( singleton == null )
 			{
-//				ApplicationContext context = null;
-// 				context = new ClassPathXmlApplicationContext("classpath*:spring.xml");
-// 				context = new ClassPathXmlApplicationContext("/u01/xdi/csp-provisioning-application/src/main/webapp/WEB-INF/spring/CSPApp/spring.xml");
 				ApplicationContext context = DAOContextProvider.getApplicationContext();
 				singleton = (DAOFactory) context.getBean("daoFactory");
 				if( singleton == null )
@@ -51,6 +53,11 @@ public class DAOFactory
 	public DAOFactory()
 	{
 		this.cSPDAO = null;
+		this.paymentDAO = null;
+		this.inviteDAO = null;
+		this.inviteResponseDAO = null;
+		this.giftCodeDAO = null;
+		this.giftCodeRedemptionDAO = null;
 		this.dependentCloudDAO = null;
 	}
 
@@ -62,6 +69,56 @@ public class DAOFactory
 	public void setCSPDAO( CSPDAO cSPDAO )
 	{
 		this.cSPDAO = cSPDAO;
+	}
+
+	public PaymentDAO getPaymentDAO()
+	{
+		return this.paymentDAO;
+	}
+
+	public void setPaymentDAO( PaymentDAO paymentDAO )
+	{
+		this.paymentDAO = paymentDAO;
+	}
+
+	public InviteDAO getInviteDAO()
+	{
+		return this.inviteDAO;
+	}
+
+	public void setInviteDAO( InviteDAO inviteDAO )
+	{
+		this.inviteDAO = inviteDAO;
+	}
+
+	public InviteResponseDAO getInviteResponseDAO()
+	{
+		return this.inviteResponseDAO;
+	}
+
+	public void setInviteResponseDAO( InviteResponseDAO inviteResponseDAO )
+	{
+		this.inviteResponseDAO = inviteResponseDAO;
+	}
+
+	public GiftCodeDAO getGiftCodeDAO()
+	{
+		return this.giftCodeDAO;
+	}
+
+	public void setGiftCodeDAO( GiftCodeDAO giftCodeDAO )
+	{
+		this.giftCodeDAO = giftCodeDAO;
+	}
+
+	public GiftCodeRedemptionDAO getGiftCodeRedemptionDAO()
+	{
+		return this.giftCodeRedemptionDAO;
+	}
+
+	public void setGiftCodeRedemptionDAO( GiftCodeRedemptionDAO giftCodeRedemptionDAO )
+	{
+		this.giftCodeRedemptionDAO = giftCodeRedemptionDAO;
 	}
 
 	public DependentCloudDAO getDependentCloudDAO()

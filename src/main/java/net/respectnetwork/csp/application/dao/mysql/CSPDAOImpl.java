@@ -29,6 +29,21 @@ public class CSPDAOImpl extends BaseDAOImpl implements CSPDAO
 		logger.info("CSPDAOImpl() created");
 	}
 
+	private CSPModel get( ResultSet rset ) throws SQLException
+	{
+		CSPModel csp = new CSPModel();
+
+		csp.setCspCloudName      (rset.getString    (1));
+		csp.setPaymentGatewayName(rset.getString    (2));
+		csp.setPaymentUrlTemplate(rset.getString    (3));
+		csp.setUsername          (rset.getString    (4));
+		csp.setPassword          (rset.getString    (5));
+		csp.setCostPerCloudName  (rset.getBigDecimal(6));
+		csp.setCurrency          (rset.getString    (7));
+
+		return csp;
+	}
+
 	public List<CSPModel> list() throws DAOException
 	{
 		logger.info("list()");
@@ -37,7 +52,7 @@ public class CSPDAOImpl extends BaseDAOImpl implements CSPDAO
 		Connection        conn = this.getConnection();
 		PreparedStatement stmt = null;
 		ResultSet         rset = null;
-		String		  sql  = null;
+		String            sql  = null;
 
 		try
 		{
@@ -47,21 +62,12 @@ public class CSPDAOImpl extends BaseDAOImpl implements CSPDAO
 			rset = stmt.executeQuery();
 			while( rset.next() )
 			{
-				CSPModel csp = new CSPModel();
-				csp.setCspCloudName      (rset.getString    (1));
-				csp.setPaymentGatewayName(rset.getString    (2));
-				csp.setPaymentUrlTemplate(rset.getString    (3));
-				csp.setUsername          (rset.getString    (4));
-				csp.setPassword          (rset.getString    (5));
-				csp.setCostPerCloudName  (rset.getBigDecimal(6));
-				csp.setCurrency          (rset.getString    (7));
-				csp.setTimeCreated       (rset.getTimestamp (8));
+				CSPModel csp = this.get(rset);
 				if( rtn == null )
 				{
 					rtn = new ArrayList<CSPModel>();
 				}
 				rtn.add(csp);
-
 				logger.info(csp.toString());
 			}
 			rset.close();
@@ -98,7 +104,7 @@ public class CSPDAOImpl extends BaseDAOImpl implements CSPDAO
 		Connection        conn = this.getConnection();
 		PreparedStatement stmt = null;
 		ResultSet         rset = null;
-		String		  sql  = null;
+		String            sql  = null;
 
 		try
 		{
@@ -109,19 +115,8 @@ public class CSPDAOImpl extends BaseDAOImpl implements CSPDAO
 			rset = stmt.executeQuery();
 			if( rset.next() )
 			{
-				CSPModel csp = new CSPModel();
-				csp.setCspCloudName      (rset.getString    (1));
-				csp.setPaymentGatewayName(rset.getString    (2));
-				csp.setPaymentUrlTemplate(rset.getString    (3));
-				csp.setUsername          (rset.getString    (4));
-				csp.setPassword          (rset.getString    (5));
-				csp.setCostPerCloudName  (rset.getBigDecimal(6));
-				csp.setCurrency          (rset.getString    (7));
-				csp.setTimeCreated       (rset.getTimestamp (8));
-
-				logger.info(csp.toString());
-
-				rtn = csp;
+				rtn = this.get(rset);
+				logger.info(rtn.toString());
 			}
 			rset.close();
 			rset = null;
