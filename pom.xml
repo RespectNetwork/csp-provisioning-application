@@ -200,7 +200,7 @@
         <dependency>
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
-            <version>1.0.0.GA</version>
+            <version>1.1.0.Final</version>
         </dependency>
 
         <!-- XDI -->
@@ -312,7 +312,7 @@
             <artifactId>commons-dbcp</artifactId>
             <version>1.2.2</version>
         </dependency>
-            
+
     </dependencies>
 
 </project>

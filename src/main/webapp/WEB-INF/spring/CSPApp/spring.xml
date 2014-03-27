@@ -10,6 +10,7 @@
         http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
 
 
+    <annotation-driven/>
 
     <!-- Property Configuration -->
 
@@ -91,6 +92,10 @@
         <beans:qualifier value="cspName"/>
     </beans:bean>
     
+    <beans:bean id="cspCloudName" class="java.lang.String">
+        <beans:constructor-arg value="${csp.cspCloudName}"/>
+        <beans:qualifier value="cspCloudName"/>
+    </beans:bean>
   
     <!-- CSP  Configuration -->
     <beans:bean name="csp" class="net.respectnetwork.sdk.csp.BasicCSPInformation">
