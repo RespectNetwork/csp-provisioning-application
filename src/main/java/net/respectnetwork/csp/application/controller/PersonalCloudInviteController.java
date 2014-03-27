@@ -158,6 +158,16 @@ public class PersonalCloudInviteController
 		return mv;
 	}
 
+	@RequestMapping(value = "/inviteDone", method = RequestMethod.GET)
+	public ModelAndView showInviteSubmitForm( Model model, HttpServletRequest request ) throws DAOException
+	{
+		ModelAndView mv = new ModelAndView("cspdashboard");
+		AccountDetailsForm acct = new AccountDetailsForm();
+		acct.setCloudName(this.getCloudName());
+		mv.addObject("accountInfo", acct);
+		return mv;
+	}
+
 	@RequestMapping(value = "/inviteSubmit", method = RequestMethod.POST)
 	public ModelAndView showInviteSubmitForm( @Valid @ModelAttribute("inviteForm") InviteForm inviteForm, BindingResult result, Model model, HttpServletRequest request ) throws DAOException
 	{
