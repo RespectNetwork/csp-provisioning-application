@@ -6,11 +6,16 @@ import java.util.Map;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
+import net.respectnetwork.csp.application.dao.DAOFactory;
+import net.respectnetwork.csp.application.dao.InviteResponseDAO;
 import net.respectnetwork.csp.application.form.AccountDetailsForm;
+import net.respectnetwork.csp.application.form.PaymentForm;
 import net.respectnetwork.csp.application.invite.InvitationManager;
 import net.respectnetwork.csp.application.manager.PersonalCloudManager;
 import net.respectnetwork.csp.application.manager.RegistrationManager;
+import net.respectnetwork.csp.application.model.InviteResponseModel;
 import net.respectnetwork.csp.application.session.RegistrationSession;
 
 import org.slf4j.Logger;
@@ -20,6 +25,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
@@ -151,15 +158,30 @@ public class PersonalCloudController {
         	CloudNumber cloudNumber;
 			try {
 				cloudNumber = myCSP.checkCloudNameAvailableInRN(cloudName);
-				myCSP.authenticateInCloud(cloudNumber, request.getParameter("secrettoken"));
-				String sessionId =  UUID.randomUUID().toString();
-		        if(regSession != null){
-		        	logger.info("Creating a new regSession with session id =" + sessionId);
-			        regSession.setSessionId(sessionId);
+				String secretToken = null;
+				if(regSession != null){
+					secretToken = regSession.getPassword();
+				}
+				if(secretToken == null || secretToken.isEmpty()){
+						secretToken = request.getParameter("secrettoken") ;
+				}
+				myCSP.authenticateInCloud(cloudNumber,secretToken);
+				
+		        if(regSession != null && regSession.getCloudName() == null){
+		        	
+		        	if (regSession.getSessionId() == null || regSession.getSessionId().isEmpty() ) {
+		        		String sessionId =  UUID.randomUUID().toString();
+		        		regSession.setSessionId(sessionId);
+		        		logger.info("Creating a new regSession with session id =" + sessionId);
+		        	}
 			        logger.info("Setting cloudname as  " + request.getParameter("cloudname"));
-			        regSession.setCloudName(request.getParameter("cloudname"));
+			        if(request.getParameter("cloudname") != null) {
+			        	regSession.setCloudName(request.getParameter("cloudname"));
+			        }
 			        //logger.info("Setting secret token as  " + request.getParameter("secrettoken"));
-			        regSession.setPassword(request.getParameter("secrettoken"));
+			        if(request.getParameter("secrettoken") != null){
+			        	regSession.setPassword(request.getParameter("secrettoken"));
+			        }
 		        }
 		        mv = new ModelAndView("cloudPage");
 		        String cspHomeURL = request.getContextPath();
@@ -227,77 +249,108 @@ public class PersonalCloudController {
 	}
 	
 	@RequestMapping(value = "/stripeConnect", method = RequestMethod.POST)
-	public ModelAndView processStripeResponse(HttpServletRequest request, Model model) {
+	public ModelAndView processStripeResponse(@Valid @ModelAttribute("paymentInfo") PaymentForm paymentForm, HttpServletRequest request, Model model , BindingResult result) {
 		logger.info("processing STRIPE Response");
 		
-		ModelAndView mv = new ModelAndView("payment");
-		
-		String code = request.getParameter("code");
-		String stripeToken = request.getParameter("stripeToken");
-		
-		if(code != null && !code.isEmpty()){ //this is an oAuth connect request
-			
-		} else if(stripeToken != null && !stripeToken.isEmpty()) { //this is a CC charge request
-			logger.info("stripeToken : " + stripeToken);
-			Stripe.apiKey = "sk_test_edYuRLMvloToRshYM49kO1Gz"; //test account
-			//Stripe.apiKey = "sk_test_D1kxUlYXpqaa9THZOwKvbkLq"; //emmettglobal's test account
-			Map<String, Object> chargeParams = new HashMap<String, Object>();
-			chargeParams.put("amount", 2500); //amount in cents
-			chargeParams.put("currency", "usd");
-			chargeParams.put("card", stripeToken); 
-			chargeParams.put("description", "Charge for test@example.com");
-			
-
-			try {
-				Charge ccChargeResponse = Charge.create(chargeParams);
-				logger.info("CC charge is successful!");
-				logger.info(ccChargeResponse.toString());
-				 String sessionIdentifier = regSession.getSessionId(); 
-			     String cloudName = regSession.getCloudName();
-			     String email = regSession.getVerifiedEmail();
-			     String phone = regSession.getVerifiedMobilePhone();
-			     String password = regSession.getPassword();
-			     
-			     try {
-			    	 logger.debug("Going to create the personal cloud now...");
-		                registrationManager.registerUser(CloudName.create(cloudName), phone,
-		                        email, password);
-		                
-		                mv = new ModelAndView("cspdashboard"); 
-		                AccountDetailsForm accountForm = new AccountDetailsForm();
-		                accountForm.setCloudName(cloudName);
-		                mv.addObject("accountInfo", accountForm);   
-		                
-		                logger.debug("Sucessfully Registered {}", cloudName );
-		                
-		            } catch (Exception e) {
-		                logger.warn("Registration Error {}", e.getMessage());
-		                mv.addObject("error", e.getMessage());
-		                
-		            }
-			     
-			        
-			} catch (AuthenticationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (InvalidRequestException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (APIConnectionException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (CardException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (APIException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+		boolean errors = false;
         
-//        mv = new ModelAndView("cloudPage");
-//        String cspHomeURL = request.getContextPath();
-//        mv.addObject("logoutURL", cspHomeURL + "/logout");
+		ModelAndView mv = new ModelAndView("cloudPage");
+		String cspHomeURL = request.getContextPath();
+		mv.addObject("logoutURL", cspHomeURL + "/logout");
+		
+        String sessionIdentifier = regSession.getSessionId(); 
+        String cloudName = regSession.getCloudName();
+        String email = regSession.getVerifiedEmail();
+        String phone = regSession.getVerifiedMobilePhone();
+        String password = regSession.getPassword();
+        
+		//Check Session      
+        if (sessionIdentifier == null || cloudName == null || email == null
+                || phone == null || password == null) {
+            errors = true;    
+            mv.addObject("error", "Invalid Session"); 
+        }
+        
+			if(!errors) {
+			
+				String code = request.getParameter("code");
+				String stripeToken = request.getParameter("stripeToken");
+				
+				if(code != null && !code.isEmpty()){ //this is an oAuth connect request
+					
+				} else if(stripeToken != null && !stripeToken.isEmpty()) { //this is a CC charge request
+					logger.info("stripeToken : " + stripeToken);
+					Stripe.apiKey = "sk_test_edYuRLMvloToRshYM49kO1Gz"; //test account
+					//Stripe.apiKey = "sk_test_D1kxUlYXpqaa9THZOwKvbkLq"; //emmettglobal's test account
+					Map<String, Object> chargeParams = new HashMap<String, Object>();
+					chargeParams.put("amount", 2500); //amount in cents
+					chargeParams.put("currency", "usd");
+					chargeParams.put("card", stripeToken); 
+					chargeParams.put("description", "Charge for test@example.com");
+					
+		
+					try {
+						Charge ccChargeResponse = Charge.create(chargeParams);
+						logger.info("CC charge is successful!");
+						logger.info(ccChargeResponse.toString());
+						
+					     
+					     try {
+					    	 logger.debug("Going to create the personal cloud now...");
+				                registrationManager.registerUser(CloudName.create(cloudName), phone,
+				                        email, password);
+				                
+				                //need a new unique response id
+				                String responseId = UUID.randomUUID().toString();
+				                
+				                //make entries in the invite_response table or giftcode_redemption table that a new cloud has been registered against an invite code and optionally a gif code
+				                if((regSession.getInviteCode() != null) && (regSession.getGiftCode() != null)){
+				                	//make a new record in the giftcode_redemption table
+				                	
+				                } else if (regSession.getInviteCode() != null){
+				                	//make a new record in the invite_response table
+				                	InviteResponseModel inviteResponse = new InviteResponseModel();
+				                	inviteResponse.setCloudNameCreated(cloudName);
+				                	inviteResponse.setInviteId(regSession.getInviteCode());
+				                	inviteResponse.setResponseId(responseId);
+				                	inviteResponse.setPaymentId(paymentForm.getPaymentId());
+				                	
+				                	InviteResponseDAO inviteResponseDAO = DAOFactory.getInstance().getInviteResponseDAO();
+				                	inviteResponseDAO.insert(inviteResponse);
+				                }
+				                
+				                AccountDetailsForm accountForm = new AccountDetailsForm();
+				                accountForm.setCloudName(cloudName);
+				                mv.addObject("accountInfo", accountForm);   
+				                
+				                logger.debug("Sucessfully Registered {}", cloudName );
+				                
+				            } catch (Exception e) {
+				                logger.warn("Registration Error {}", e.getMessage());
+				                mv.addObject("error", e.getMessage());
+				                
+				            }
+					     
+					        
+					} catch (AuthenticationException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (InvalidRequestException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (APIConnectionException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (CardException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (APIException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+		}
+
         return mv;
 	}
 	

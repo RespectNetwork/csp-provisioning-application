@@ -6,6 +6,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import net.respectnetwork.csp.application.dao.DAOFactory;
+import net.respectnetwork.csp.application.dao.InviteResponseDAO;
 import net.respectnetwork.csp.application.exception.UserRegistrationException;
 import net.respectnetwork.csp.application.form.AccountDetailsForm;
 import net.respectnetwork.csp.application.form.PaymentForm;
@@ -13,6 +15,7 @@ import net.respectnetwork.csp.application.form.SignUpForm;
 import net.respectnetwork.csp.application.form.UserDetailsForm;
 import net.respectnetwork.csp.application.form.ValidateForm;
 import net.respectnetwork.csp.application.manager.RegistrationManager;
+import net.respectnetwork.csp.application.model.InviteResponseModel;
 import net.respectnetwork.csp.application.session.RegistrationSession;
 import net.respectnetwork.sdk.csp.payment.PaymentStatusCode;
 import net.respectnetwork.sdk.csp.validation.CSPValidationException;
@@ -291,6 +294,9 @@ public class RegistrationController {
      * @param result Binding Result for Validation or errors
      * @return ModelandView of next  travel location
      */
+    //This code should not be used anymore. The same functionality is now in PersonalCloudController - /stripeConnect
+    /*
+     
     @RequestMapping(value = "/processpayment", method = RequestMethod.POST)
     public ModelAndView processPayment(
             @Valid @ModelAttribute("paymentInfo") PaymentForm paymentForm,
@@ -351,7 +357,14 @@ public class RegistrationController {
                 	
                 } else if (regSession.getInviteCode() != null){
                 	//make a new record in the invite_response table
+                	InviteResponseModel inviteResponse = new InviteResponseModel();
+                	inviteResponse.setCloudNameCreated(cloudName);
+                	inviteResponse.setInviteId(regSession.getInviteCode());
+                	inviteResponse.setResponseId(responseId);
+                	inviteResponse.setPaymentId(paymentForm.getPaymentId());
                 	
+                	InviteResponseDAO inviteResponseDAO = DAOFactory.getInstance().getInviteResponseDAO();
+                	inviteResponseDAO.insert(inviteResponse);
                 }
             } catch (Exception e) {
                 logger.warn("Registration Error {}", e.getMessage());
@@ -372,5 +385,5 @@ public class RegistrationController {
         return mv;
 
     }
- 
+ */
 }
