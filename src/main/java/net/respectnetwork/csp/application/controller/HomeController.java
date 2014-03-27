@@ -84,25 +84,48 @@ public class HomeController {
 	    
 	    
 	    
-		logger.info("Welcome to CSP Invite Page");
+		logger.info("Alice signs up by invite flow");
 		   
-        String inviter = null;
+        String inviteCode = null;
         String cloudName = null;
+        String inviterCloudName = null;
+        String giftCode = null;
+        String selfInviteCode = null;
         
         ModelAndView mv = null; 
         mv = new ModelAndView("signup");
         
         try {
            
-            inviter = (String)request.getParameter("inviter");      
-            if (inviter !=null){
-                cloudName = invitationManager.getCloudNameFromInviterCode(inviter, cspName);
+        	inviteCode = (String)request.getParameter("invitecode");      
+        	giftCode = (String)request.getParameter("giftcode");
+        	selfInviteCode = (String)request.getParameter("inviter");
+        	
+            
+        	//if both invite code and gift code is present. This is the case when Alice is invited by Roger
+            
+            if (inviteCode !=null){
+            	inviterCloudName = invitationManager.getInviterName(inviteCode);
+            	
+                if (inviterCloudName == null) {
+                    mv.addObject("error", "Invalid Invite Code: " + inviteCode);  
+                } else {
+                	SignUpForm.setInviteCode(inviteCode);
+                	if(giftCode != null) {
+                		SignUpForm.setGiftCode(giftCode);
+                	}
+                	
+                }    
+            } // the else case happens when Roger was not invited by anyone. He created an invite from RespectNetwork website
+            // this flow will happen in "public launch"
+            else if(selfInviteCode != null){
+            	cloudName = invitationManager.getCloudNameFromInviterCode(selfInviteCode, cspName);
                 
                 if (cloudName == null) {
-                    mv.addObject("error", "Invalid Inviter Code: " + inviter);  
+                    mv.addObject("error", "Invalid Inviter Code: " + selfInviteCode);  
                 } else {
                     SignUpForm.setCloudName(cloudName);
-                }    
+                } 
             }
             
         } catch (Exception e) {

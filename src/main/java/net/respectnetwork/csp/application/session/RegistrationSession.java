@@ -25,6 +25,12 @@ public class RegistrationSession implements Serializable {
     
     /** Password */
     private String password;
+    
+    /** invite code */
+    private String inviteCode;
+    
+    /** gift code */
+    private String giftCode;
 
 
     /**
@@ -139,5 +145,21 @@ public class RegistrationSession implements Serializable {
             return false;
         }
     }
+
+	public String getInviteCode() {
+		return inviteCode;
+	}
+
+	public void setInviteCode(String inviteCode) {
+		this.inviteCode = inviteCode;
+	}
+
+	public String getGiftCode() {
+		return giftCode;
+	}
+
+	public void setGiftCode(String giftCode) {
+		this.giftCode = giftCode;
+	}
 
 }

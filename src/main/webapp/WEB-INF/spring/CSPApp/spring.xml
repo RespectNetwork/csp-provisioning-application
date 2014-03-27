@@ -68,6 +68,7 @@
         <beans:property name="requireUniqueness" value="${csp.requireUniqueness}"/>  <!-- Never run as false in Production -->  
         <beans:property name="sendMailAndSMS" value="${csp.sendMailAndSMS}"/>  <!-- Never run as false in Production --> 
         <beans:property name="validateCodes" value="${csp.validateCodes}"/>  <!-- Never run as false in Production --> 
+		<beans:property name="requireInviteCode" value="${csp.requireInviteCode}"/>  <!-- Never run as false in Production -->        	
     </beans:bean>
     
     
