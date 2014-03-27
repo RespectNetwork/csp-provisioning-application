@@ -103,11 +103,21 @@ public class RegistrationController {
         mv.addObject("signUpInfo", signUpForm);
         
         String cloudName = signUpForm.getCloudName();
+        String inviteCode = signUpForm.getInviteCode();
+        String giftCode = signUpForm.getGiftCode();
+        
+        logger.debug("Invite Code = " + inviteCode);
+        logger.debug("Gift Code = " + giftCode);
+        logger.debug("Cloud Name : " + cloudName);
         
         if (cloudName != null) {           
         // Start Check that the Cloud Number is Available.
             try {
-                if (! theManager.isClouldNameAvailable(cloudName)) {
+            	if(theManager.isRequireInviteCode() && ((inviteCode == null) || (inviteCode.trim().isEmpty())) ){
+            		errors = true;
+            		logger.debug("Invite code is required and it has not been passed in the input query parameters(inviteCode=)");
+            	}
+            	else if (! theManager.isCloudNameAvailable(cloudName)) {
                     String errorStr = "CloudName not Available";
                     mv.addObject("cloudNameError", errorStr); 
                     errors = true;
@@ -129,6 +139,8 @@ public class RegistrationController {
                 String sessionId =  UUID.randomUUID().toString();
                 regSession.setSessionId(sessionId);
                 regSession.setCloudName(signUpForm.getCloudName());
+                regSession.setInviteCode(inviteCode);
+                regSession.setGiftCode(giftCode);
 
             }
                                                        
@@ -258,8 +270,11 @@ public class RegistrationController {
         }
         
         if (!errors) {
+        	
             mv = new ModelAndView("payment");
             PaymentForm paymentForm = new PaymentForm();
+            String paymentId = UUID.randomUUID().toString();
+            paymentForm.setPaymentId(paymentId);
             mv.addObject("paymentInfo", paymentForm);
         }
             
@@ -326,6 +341,18 @@ public class RegistrationController {
             try {
                 theManager.registerUser(CloudName.create(cloudName), phone,
                         email, password);
+                
+                //need a new unique response id
+                String responseId = UUID.randomUUID().toString();
+                
+                //make entries in the invite_response table or giftcode_redemption table that a new cloud has been registered against an invite code and optionally a gif code
+                if((regSession.getInviteCode() != null) && (regSession.getGiftCode() != null)){
+                	//make a new record in the giftcode_redemption table
+                	
+                } else if (regSession.getInviteCode() != null){
+                	//make a new record in the invite_response table
+                	
+                }
             } catch (Exception e) {
                 logger.warn("Registration Error {}", e.getMessage());
                 mv.addObject("error", e.getMessage());

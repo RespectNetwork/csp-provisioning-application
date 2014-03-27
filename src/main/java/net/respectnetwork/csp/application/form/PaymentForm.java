@@ -29,7 +29,9 @@ public class PaymentForm {
     /** Exp. Year */
     private String expYear;
 
+    /** payment id - this is a unique id which refers to this payment transaction , either via a gift card or via a CC */
     
+    private String paymentId;
     
 	/**
      * @return the Gift Code
@@ -168,5 +170,13 @@ public class PaymentForm {
             return false;
         }
     }
+
+	public String getPaymentId() {
+		return paymentId;
+	}
+
+	public void setPaymentId(String paymentId) {
+		this.paymentId = paymentId;
+	}
 	
 }

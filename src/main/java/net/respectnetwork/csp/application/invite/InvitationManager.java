@@ -4,6 +4,9 @@ import java.util.Map;
 
 import net.respectnetwork.csp.application.csp.CSP;
 import net.respectnetwork.csp.application.csp.CSPStore;
+import net.respectnetwork.csp.application.dao.DAOException;
+import net.respectnetwork.csp.application.dao.DAOFactory;
+import net.respectnetwork.csp.application.model.InviteModel;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -214,6 +217,26 @@ public class InvitationManager  {
         return name;       
     }
 
-
+    /**
+     * get inviter name from invite code when the invitation is created by a person
+     */
+      public String getInviterName(String inviterCode){
+    	  
+    	  logger.debug("Looking up inviter name for " + inviterCode);
+    	  String inviterName = null;
+    	  //lookup the inviter name from DB
+    	  try {
+    		  InviteModel invite = DAOFactory.getInstance().getInviteDAO().get(inviterCode);
+    		  if(invite != null){
+    			  inviterName = invite.getInviterCloudName();
+    			  logger.debug("Inviter name " + inviterName);
+    		  }
+		} catch (DAOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	return inviterName;
+      }
+    
               
 }

@@ -80,7 +80,8 @@ public class RegistrationManager {
     /** Debug Mode: Require Codes to be validate to proceed with registration */
     private boolean validateCodes = true;
     
-   
+    /** Controls whether an invite code is required for registration or not */
+    private boolean requireInviteCode = true;
     
     /**
      * Get CSP Registrar
@@ -245,7 +246,7 @@ public class RegistrationManager {
      * @return
      * @throws UserRegistrationException
      */
-    public boolean isClouldNameAvailable(String cloudName)
+    public boolean isCloudNameAvailable(String cloudName)
         throws UserRegistrationException {
         
         boolean availability = false;
@@ -415,5 +416,13 @@ public class RegistrationManager {
         return cloudNumber;
 
     }
+
+	public boolean isRequireInviteCode() {
+		return requireInviteCode;
+	}
+
+	public void setRequireInviteCode(boolean requireInviteCode) {
+		this.requireInviteCode = requireInviteCode;
+	}
 
 }
