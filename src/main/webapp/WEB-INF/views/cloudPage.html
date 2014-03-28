@@ -33,15 +33,41 @@
     
     
 </script>
-    <h1>Welcome to your cloud page</h1>
-
+    <h1>Welcome <span th:text="${cloudName}">=cloudName</span></h1>
 
 <div>
 <a href="#" th:href="@{/invite}">Invites &amp; Gift Cards</a>
 </div>   
+
+<div>
+  <table border="1" th:if="${inviteList != null and #lists.size(inviteList) &gt; 0 }">
+    <tr>
+      <td>Invitee</td>
+      <td>Gift Cards</td>
+    </tr>
+    <tr th:each="inv : ${inviteList}">
+      <td><a target="_blank" href="#" th:href="${inv.invitedEmailAddress}" title="last sent" th:title="${#dates.format(inv.timeCreated, 'yyyy-mm-dd HH:mm:ss')}"><span th:text="${inv.invitedEmailAddress}">email</span></a></td>
+      <td align="center"><span th:text="${inv.giftCardCount}">0</span></td>
+    </tr>
+  </table>
+</div>
+
 <div>
 <a href="#" th:href="@{/dependent}">Create Personal Clouds For Dependents &amp; Gift Cards</a>
 </div>
+
+<div>
+Dependent clouds
+</div>
+
+<div>
+  <table border="0" th:if="${dependentList != null and #lists.size(dependentList) &gt; 0 }">
+    <tr th:each="dep : ${dependentList}">
+      <td><span th:text="${dep.dependentCloudName}">=name</span></td>
+    </tr>
+  </table>
+</div>
+
    <div>
     <form class="form-horizontal" id="logout_form" name="logout_form" action="index.html" method="POST">
     <fieldset>

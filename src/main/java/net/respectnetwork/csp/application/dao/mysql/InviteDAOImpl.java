@@ -97,6 +97,63 @@ public class InviteDAOImpl extends BaseDAOImpl implements InviteDAO
 		return rtn;
 	}
 
+	public List<InviteModel> listGroupByInvited( String inviterCloudName ) throws DAOException
+	{
+		logger.info("listlistGroupByInvited() " + inviterCloudName);
+
+		List<InviteModel> rtn  = null;
+		Connection        conn = this.getConnection();
+		PreparedStatement stmt = null;
+		ResultSet         rset = null;
+		String            sql  = null;
+
+		try
+		{
+			sql = "select lower(invited_email_address), max(time_created), (select count(*) from giftcode where invite_id = p.invite_id) from invite p where inviter_cloudname = ? group by lower(invited_email_address) order by lower(invited_email_address)";
+
+			logger.info(sql + " : " + inviterCloudName);
+			stmt = conn.prepareStatement(sql);
+			stmt.setString(1, inviterCloudName);
+			rset = stmt.executeQuery();
+			while( rset.next() )
+			{
+				InviteModel inv = new InviteModel();
+				inv.setInvitedEmailAddress(rset.getString   (1));
+				inv.setTimeCreated        (rset.getTimestamp(2));
+				inv.setGiftCardCount      (rset.getInt      (3));
+				if( rtn == null )
+				{
+					rtn = new ArrayList<InviteModel>();
+				}
+				rtn.add(inv);
+				logger.info(inv.toString());
+			}
+			rset.close();
+			rset = null;
+			stmt.close();
+			stmt = null;
+		}
+		catch( SQLException e )
+		{
+			String err = "Failed to execute SQL statement - " + sql;
+			logger.error(err, e);
+			throw new DAOException(err, e);
+		}
+		finally
+		{
+			this.closeConnection(conn, stmt, rset);
+		}
+		if( rtn == null )
+		{
+			logger.error("No Invite found");
+		}
+		else
+		{
+			logger.error("Invite found = " + rtn.size());
+		}
+		return rtn;
+	}
+
 	public InviteModel get( String inviteId ) throws DAOException
 	{
 		logger.info("get() - " + inviteId);
