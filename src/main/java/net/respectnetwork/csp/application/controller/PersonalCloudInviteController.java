@@ -214,7 +214,7 @@ public class PersonalCloudInviteController
 		cspModel = DAOFactory.getInstance().getCSPDAO().get(this.getCspCloudName());
 		BigDecimal quantity = BigDecimal.valueOf((long) inviteForm.getGiftCardQuantity().intValue());
 		BigDecimal amount   = cspModel.getCostPerCloudName().multiply(quantity);
-		String desc = "Cloudname Gift Cards for " + inviteForm.getEmailAddress();
+		String     desc     = this.getPaymentDescription(inviteForm, request);
 
 		inviteForm.setInviteId(UUID.randomUUID().toString());
 
@@ -269,9 +269,9 @@ public class PersonalCloudInviteController
 		cspModel = DAOFactory.getInstance().getCSPDAO().get(this.getCspCloudName());
 		BigDecimal quantity = BigDecimal.valueOf((long) inviteForm.getGiftCardQuantity().intValue());
 		BigDecimal amount   = cspModel.getCostPerCloudName().multiply(quantity);
-		String     desc     = "Cloudname Gift Cards for " + inviteForm.getEmailAddress();
+		String     desc     = this.getPaymentDescription(inviteForm, request);
 
-		String token = StripePaymentProcessor.getToken(request);
+		String     token    = StripePaymentProcessor.getToken(request);
 		if( token == null )
 		{
 			mv = new ModelAndView("inviteSubmit");
@@ -363,5 +363,13 @@ public class PersonalCloudInviteController
 	{
 		logger.info("sendInviteEmail - " + invite);
 		logger.info("sendInviteEmail - " + giftCodeList);
+	}
+
+	private String getPaymentDescription( InviteForm inviteForm, HttpServletRequest request )
+	{
+		String rtn = "CloudName Gift Cards for {0}";
+		rtn = DAOContextProvider.getApplicationContext().getMessage("invite.text.paydesc", 
+			new Object[] { inviteForm.getEmailAddress() }, rtn, request.getLocale());
+		return rtn;
 	}
 }

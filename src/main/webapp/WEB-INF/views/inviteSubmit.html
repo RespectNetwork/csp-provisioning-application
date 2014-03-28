@@ -26,21 +26,18 @@
                          <span th:text="${#numbers.formatDecimal(cspModel.costPerCloudName.multiply(inviteForm.giftCardQuantity), 0, 'COMMA', 2, 'POINT')}">25.00</span>
             </td>
           </tr>
-          <tr th:if="${inviteForm.giftCardFlag.equals(true)}" th:utext="${javaScript}">
-            <script                 src="https://checkout.stripe.com/checkout.js"
+          <tr>
+            <td th:if="${inviteForm.giftCardFlag.equals(true)}" th:utext="${javaScript}">
+              <script               src="https://checkout.stripe.com/checkout.js"
                                   class="stripe-button"
                                data-key="sk_test_BQokikJOvBiI2HlWgH4olfQ2"
                             data-amount="2500"
                               data-name="One Personal Cloud"
                        data-description="$25 USD"
                              data-image="img/cloud.png">
-             </script>
+              </script>
+            </td>
           </tr>
-<!--
-          <tr>
-            <td colspan="2" align="center"><input type="submit" value="Finish!" th:value="#{invite.text.finish}" name="submit" class="submit" /></td>
-          </tr>
-  -->
         </table>
       </form>
     </div>

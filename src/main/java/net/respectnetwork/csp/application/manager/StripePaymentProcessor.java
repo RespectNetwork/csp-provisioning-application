@@ -40,11 +40,11 @@ public class StripePaymentProcessor
 		StringBuilder builder = new StringBuilder("\n");
 
 		builder.append("<script           class=\"stripe-button\"\n")
-		       .append("                    src=\"" + csp.getPaymentUrlTemplate() + "\"\n")
-		       .append("               data-key=\"" + csp.getUsername() + "\"\n")
+		       .append("                    src=\"" + csp.getPaymentUrlTemplate().replaceAll("\"", "&quot;") + "\"\n")
+		       .append("               data-key=\"" + csp.getUsername().replaceAll("\"", "&quot;") + "\"\n")
 		       .append("            data-amount=\"" + getAmount(amount) + "\"\n")
-		       .append("              data-name=\"" + csp.getPaymentGatewayName() + "\"\n")
-		       .append("       data-description=\"" + desc + "\"\n")
+		       .append("              data-name=\"" + csp.getPaymentGatewayName().replaceAll("\"", "&quot;") + "\"\n")
+		       .append("       data-description=\"" + desc.replaceAll("\"", "&quot;") + "\"\n")
 		       .append("             data-image=\"img/cloud.png\">\n")
 		       .append("</script>\n");
 
