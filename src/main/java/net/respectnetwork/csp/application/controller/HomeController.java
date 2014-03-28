@@ -28,6 +28,10 @@ public class HomeController {
 	private static final Logger logger = LoggerFactory
 			.getLogger(HomeController.class);
 	
+    public static final String URL_PARAM_NAME_INVITE_CODE = "invitecode";
+    public static final String URL_PARAM_NAME_GIFT_CODE   = "giftcode"  ;
+    public static final String URL_PARAM_NAME_INVITER     = "inviter"   ;
+
 	/** 
      * Invitation Service
      */
@@ -97,9 +101,9 @@ public class HomeController {
         
         try {
            
-        	inviteCode = (String)request.getParameter("invitecode");      
-        	giftCode = (String)request.getParameter("giftcode");
-        	selfInviteCode = (String)request.getParameter("inviter");
+        	inviteCode = (String)request.getParameter(URL_PARAM_NAME_INVITE_CODE);
+        	giftCode = (String)request.getParameter(URL_PARAM_NAME_GIFT_CODE);
+        	selfInviteCode = (String)request.getParameter(URL_PARAM_NAME_INVITER);
         	
             
         	//if both invite code and gift code is present. This is the case when Alice is invited by Roger

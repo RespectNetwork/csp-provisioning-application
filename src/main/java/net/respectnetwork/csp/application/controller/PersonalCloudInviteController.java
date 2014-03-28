@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -16,6 +17,8 @@ import net.respectnetwork.csp.application.manager.PersonalCloudManager;
 import net.respectnetwork.csp.application.manager.RegistrationManager;
 import net.respectnetwork.csp.application.manager.StripePaymentProcessor;
 import net.respectnetwork.csp.application.session.RegistrationSession;
+
+import net.respectnetwork.sdk.csp.notification.BasicNotificationService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +50,18 @@ public class PersonalCloudInviteController
 
 	private static final List<Integer> quantityList = new ArrayList<Integer>(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
 
+	private static final String RES_DEFAULT_INVITE_TEXT_PAYDESC = "CloudName Gift Cards for {0}";
+
+	private static final String RES_DEFAILT_INVITE_MAIL_SUBJECT = "Invitation from {0} to join Respect Network";
+	private static final String RES_DEFAILT_INVITE_MAIL_HEADER  = "{0} has invited you to join Respect Network at http://respectnetwork.com/\n\n";
+	private static final String RES_DEFAILT_INVITE_MAIL_GIFT_0  = "Please click the following URL to sign up:\n\n";
+	private static final String RES_DEFAILT_INVITE_MAIL_GIFT_1  = "Please click the following URL to sign up and redeem the gift card given by {0}:\n\n";
+	private static final String RES_DEFAILT_INVITE_MAIL_GIFT_2  = "Please click the following URLs to sign up and redeem the gift cards given by {0}:\n\n";
+	private static final String RES_DEFAILT_INVITE_MAIL_URL     = "   {0}\n\n";
+	private static final String RES_DEFAILT_INVITE_MAIL_FOOTER  = "\n\nSincerely,\n\nRespect Network\n\nhttp://respectnetwork.com/\n\nThe Personal Cloud Network";
+
 	private String              cspCloudName;
+	private String		    cspInviteURL;
 	private RegistrationSession regSession;
     
 	public String getCspCloudName()
@@ -62,9 +76,21 @@ public class PersonalCloudInviteController
 		this.cspCloudName = cspCloudName;
 	}
 
+	public String getCspInviteURL()
+	{
+		return this.cspInviteURL;
+	}
+
+	@Autowired
+	@Qualifier("cspInviteURL")
+	public void setCspInviteURL( String cspInviteURL )
+	{
+		this.cspInviteURL = cspInviteURL;
+	}
+
 	public RegistrationSession getRegSession()
 	{
-		return regSession;
+		return this.regSession;
 	}
 
 	@Autowired
@@ -76,8 +102,6 @@ public class PersonalCloudInviteController
 	private String getCloudName()
 	{
 		String rtn = regSession.getCloudName();
-
-		// rtn = "=animesh.test15";
 
 		return rtn;
 	}
@@ -202,7 +226,7 @@ public class PersonalCloudInviteController
 		         || (inviteForm.getGiftCardQuantity().intValue() <= 0) )
 		{
 			logger.info("Without payment");
-			InviteModel invite = this.saveInvite(inviteForm, null, null);
+			InviteModel invite = this.saveInvite(inviteForm, null, null, request.getLocale());
 			mv = new ModelAndView("inviteDone");
 			mv.addObject("inviteModel" , invite);
 			mv.addObject("giftCardList", null);
@@ -212,7 +236,7 @@ public class PersonalCloudInviteController
 		cspModel = DAOFactory.getInstance().getCSPDAO().get(this.getCspCloudName());
 		BigDecimal quantity = BigDecimal.valueOf((long) inviteForm.getGiftCardQuantity().intValue());
 		BigDecimal amount   = cspModel.getCostPerCloudName().multiply(quantity);
-		String     desc     = this.getPaymentDescription(inviteForm, request);
+		String     desc     = this.getPaymentDescription(inviteForm, request.getLocale());
 
 		inviteForm.setInviteId(UUID.randomUUID().toString());
 
@@ -267,7 +291,7 @@ public class PersonalCloudInviteController
 		cspModel = DAOFactory.getInstance().getCSPDAO().get(this.getCspCloudName());
 		BigDecimal quantity = BigDecimal.valueOf((long) inviteForm.getGiftCardQuantity().intValue());
 		BigDecimal amount   = cspModel.getCostPerCloudName().multiply(quantity);
-		String     desc     = this.getPaymentDescription(inviteForm, request);
+		String     desc     = this.getPaymentDescription(inviteForm, request.getLocale());
 
 		String     token    = StripePaymentProcessor.getToken(request);
 		if( token == null )
@@ -302,7 +326,7 @@ public class PersonalCloudInviteController
 
 		List<GiftCodeModel> giftCardList = new ArrayList<GiftCodeModel>();
 
-		InviteModel invite = this.saveInvite(inviteForm, payment, giftCardList);
+		InviteModel invite = this.saveInvite(inviteForm, payment, giftCardList, request.getLocale());
 		mv = new ModelAndView("inviteDone");
 		mv.addObject("cspModel"    , cspModel);
 		mv.addObject("inviteModel" , invite);
@@ -311,7 +335,7 @@ public class PersonalCloudInviteController
 		return mv;
 	}
 
-	private InviteModel saveInvite( InviteForm inviteForm, PaymentModel payment, List<GiftCodeModel> giftCodeList ) throws DAOException
+	private InviteModel saveInvite( InviteForm inviteForm, PaymentModel payment, List<GiftCodeModel> giftCodeList, Locale locale ) throws DAOException
 	{
 		DAOFactory dao = DAOFactory.getInstance();
 
@@ -352,22 +376,83 @@ public class PersonalCloudInviteController
 			}
 		}
 
-		this.sendInviteEmail(rtn, giftCodeList);
+		this.sendInviteEmail(rtn, giftCodeList, locale);
 
 		return rtn;
 	}
 
-	private void sendInviteEmail( InviteModel invite, List<GiftCodeModel> giftCodeList )
+	private void sendInviteEmail( InviteModel invite, List<GiftCodeModel> giftCodeList, Locale locale )
 	{
-		logger.info("sendInviteEmail - " + invite);
-		logger.info("sendInviteEmail - " + giftCodeList);
+		logger.info("sendInviteEmail - " + invite + " : " + giftCodeList);
+
+		Object[]      inviter = new Object[] { invite.getInviterCloudName() };
+		String        subject = this.getMessageFromResource("invite.mail.subject", inviter, RES_DEFAILT_INVITE_MAIL_SUBJECT, locale);
+		StringBuilder builder = new StringBuilder();
+
+		builder.append(this.getMessageFromResource("invite.mail.header" , inviter, RES_DEFAILT_INVITE_MAIL_HEADER , locale));
+		builder.append(invite.getEmailMessage().trim());
+		builder.append('\n');
+		builder.append('\n');
+		if( (giftCodeList == null) || (giftCodeList.size() == 0) )
+		{
+			builder.append(this.getMessageFromResource("invite.mail.gift.0", inviter, RES_DEFAILT_INVITE_MAIL_GIFT_0, locale));
+		}
+		else if( giftCodeList.size() == 1 )
+		{
+			builder.append(this.getMessageFromResource("invite.mail.gift.1", inviter, RES_DEFAILT_INVITE_MAIL_GIFT_1, locale));
+		}
+		else
+		{
+			builder.append(this.getMessageFromResource("invite.mail.gift.2", inviter, RES_DEFAILT_INVITE_MAIL_GIFT_2, locale));
+		}
+		String url = this.getCspInviteURL();
+		if( url.endsWith("/") == false )
+		{
+			url = url + "/";
+		}
+		url = url + "signup?" + HomeController.URL_PARAM_NAME_INVITE_CODE + "=" + invite.getInviteId();
+
+		if( (giftCodeList == null) || (giftCodeList.size() == 0) )
+		{
+			builder.append(this.getMessageFromResource("invite.mail.url", new Object[] { url }, RES_DEFAILT_INVITE_MAIL_URL, locale));
+		}
+		else
+		{
+			for( GiftCodeModel gift : giftCodeList )
+			{
+				Object[] obj = new Object[] { url + "&" + HomeController.URL_PARAM_NAME_GIFT_CODE + "=" + gift.getGiftCodeId() };
+				builder.append(this.getMessageFromResource("invite.mail.url", obj, RES_DEFAILT_INVITE_MAIL_URL, locale));
+			}
+		}
+
+		builder.append(this.getMessageFromResource("invite.mail.footer", inviter, RES_DEFAILT_INVITE_MAIL_FOOTER, locale));
+
+		try
+		{
+			BasicNotificationService svc = (BasicNotificationService) DAOContextProvider.getApplicationContext().getBean("basicNotifier");
+			logger.info("basicNotifier = " + svc + " " + svc.getEmailSubject());
+			svc.setEmailSubject(subject);
+			svc.sendEmailNotification(invite.getInvitedEmailAddress(), builder.toString());
+			logger.info("invite email has been sent to " + invite.getInvitedEmailAddress());
+			logger.debug("Subject: " + subject + "\n\n" + builder.toString());
+		}
+		catch( Exception e )
+		{
+			logger.error("Failed to send invite email to " + invite.getInvitedEmailAddress(), e);
+		}
 	}
 
-	private String getPaymentDescription( InviteForm inviteForm, HttpServletRequest request )
+	private String getMessageFromResource( String name, Object[] objs, String def, Locale locale )
 	{
-		String rtn = "CloudName Gift Cards for {0}";
-		rtn = DAOContextProvider.getApplicationContext().getMessage("invite.text.paydesc", 
-			new Object[] { inviteForm.getEmailAddress() }, rtn, request.getLocale());
+		String rtn = DAOContextProvider.getApplicationContext().getMessage(name, objs, def, locale);
+
+		return rtn;
+	}
+
+	private String getPaymentDescription( InviteForm inviteForm, Locale locale )
+	{
+		Object[] obj = new Object[] { inviteForm.getEmailAddress() };
+		String   rtn = getMessageFromResource("invite.text.paydesc", obj, RES_DEFAULT_INVITE_TEXT_PAYDESC, locale);
 		return rtn;
 	}
 }
