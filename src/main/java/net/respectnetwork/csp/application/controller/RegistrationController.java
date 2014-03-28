@@ -129,6 +129,8 @@ public class RegistrationController {
         logger.debug("Gift Code = " + giftCode);
         logger.debug("Cloud Name : " + cloudName);
         
+        mv = new ModelAndView("signup");
+        
         if (cloudName != null) {           
         // Start Check that the Cloud Number is Available.
             try {
