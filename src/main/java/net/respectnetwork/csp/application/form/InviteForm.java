@@ -19,7 +19,7 @@ public class InviteForm
 	@NotNull
 	private Boolean       giftCardFlag;
 
-	@NotNull @Min(0) @Max(10)
+	@NotNull @Min(1) @Max(10)
 	private Integer       giftCardQuantity;
 
 	public InviteForm()
