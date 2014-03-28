@@ -97,6 +97,11 @@
         <beans:constructor-arg value="${csp.cspCloudName}"/>
         <beans:qualifier value="cspCloudName"/>
     </beans:bean>
+
+    <beans:bean id="cspInviteURL" class="java.lang.String">
+        <beans:constructor-arg value="${csp.cspInviteURL}"/>
+        <beans:qualifier value="cspInviteURL"/>
+    </beans:bean>
   
     <!-- CSP  Configuration -->
     <beans:bean name="csp" class="net.respectnetwork.sdk.csp.BasicCSPInformation">
