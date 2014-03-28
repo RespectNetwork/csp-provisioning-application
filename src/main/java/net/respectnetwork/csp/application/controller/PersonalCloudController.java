@@ -265,7 +265,15 @@ public class PersonalCloudController {
         
 		//nullify password from the session object
 		if(regSession != null){
-			regSession.setPassword("");
+			regSession.setCloudName(null);
+			regSession.setPassword(null);
+			regSession.setVerifiedEmail(null);
+			regSession.setDependentForm(null);
+			regSession.setGiftCode(null);
+			regSession.setInviteCode(null);
+			regSession.setInviteForm(null);
+			regSession.setSessionId(null);
+			regSession.setVerifiedMobilePhone(null);
 		}
         ModelAndView mv = null; 
         
