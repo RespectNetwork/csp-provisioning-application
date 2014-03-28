@@ -1,86 +1,77 @@
 <!DOCTYPE html>
+
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="utf-8" />
-<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-
-<title></title>
-<meta name="Clear authinfo cache" content="HTML 5 CSS 3 Spring Form" />
-
-
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-
-<link href="/css/bootstrap.css" rel="stylesheet" />
-<!--
-<link rel="stylesheet" href="../../css/style.css" th:href="@{/css/style.css}"/>
--->  
-<script src="/js/libs/modernizr-2.0.6.min.js" th:src="@{/js/libs/modernizr-2.0.6.min.js}"></script>
-
-</head>
-
-<body>
-	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://code.jquery.com/jquery.js"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="/js/libs/bootstrap.js"></script>
+  <title >Welcome to Personal Cloud Network</title>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="description" content="Welcome"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <link rel="stylesheet" href="../../css/csp.css" th:href="@{/css/csp.css}"/>
+  <script src="../../js/libs/modernizr-2.0.6.min.js" th:src="@{/js/libs/modernizr-2.0.6.min.js}"></script>
 <script type="text/javascript">
-    
     function logout() {
-    	var actionURL = document.getElementById("logoutURL").value;
-    	$("#logout_form").attr("action", actionURL);
+        var actionURL = document.getElementById("logoutURL").value;
+        $("#logout_form").attr("action", actionURL);
         $("#logout_form").submit();
     }
-    
-    
 </script>
-    <h1>Welcome <span th:text="${cloudName}">=cloudName</span></h1>
-
-<div>
-<a href="#" th:href="@{/invite}">Invites &amp; Gift Cards</a>
-</div>   
-
-<div>
-  <table border="1" th:if="${inviteList != null and #lists.size(inviteList) &gt; 0 }">
-    <tr>
-      <td>Invitee</td>
-      <td>Gift Cards</td>
-    </tr>
-    <tr th:each="inv : ${inviteList}">
-      <td><a target="_blank" href="#" th:href="${inv.invitedEmailAddress}" title="last sent" th:title="${#dates.format(inv.timeCreated, 'yyyy-mm-dd HH:mm:ss')}"><span th:text="${inv.invitedEmailAddress}">email</span></a></td>
-      <td align="center"><span th:text="${inv.giftCardCount}">0</span></td>
-    </tr>
-  </table>
-</div>
-
-<div>
-<a href="#" th:href="@{/dependent}">Create Personal Clouds For Dependents &amp; Gift Cards</a>
-</div>
-
-<div>
-Dependent clouds
-</div>
-
-<div>
-  <table border="0" th:if="${dependentList != null and #lists.size(dependentList) &gt; 0 }">
-    <tr th:each="dep : ${dependentList}">
-      <td><span th:text="${dep.dependentCloudName}">=name</span></td>
-    </tr>
-  </table>
-</div>
-
-   <div>
-    <form class="form-horizontal" id="logout_form" name="logout_form" action="index.html" method="POST">
-    <fieldset>
-    <input type="hidden" name="logoutURL" id="logoutURL" th:value="${logoutURL}" />
-    <div class="form-group">
-    <div class="col-sm-offset-2 col-sm-10">
-      <button type="submit"  onclick="logout()" class="btn btn-danger">Logout</button>
+</head>
+<body>
+  <div id="fullpage">
+    <div id="content">
+      <table id="inviteTable" width="100%">
+        <tr>
+          <td colspan="2">
+            <table width="100%">
+              <tr>
+                <td width="90%" align="left" ><p class="headerText">Welcome <span th:text="${cloudName}">=cloudName</span></p></td>
+                <td width="10%" align="right">
+                  <form id="logout_form" name="logout_form" action="#" method="POST">
+                  <input type="hidden" name="logoutURL" id="logoutURL" th:value="${logoutURL}" />
+                  <button type="submit"  onclick="logout()" class="btn btn-danger">Logout</button>
+                </form>
+               </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td width="200px">
+            <table>
+              <tr>
+                <td><a style="font-size: 18px" href="#" th:href="@{/invite}">Invites &amp; Gift Cards</a></td>
+              </tr>
+              <tr th:if="${inviteList != null and #lists.size(inviteList) &gt; 0 }">
+                <td>
+                  <table>
+                    <tr th:each="inv : ${inviteList}">
+                      <td height="20px"><a style="font-size: 16px" target="_blank" href="#" th:href="${inv.invitedEmailAddress}" title="last sent" th:title="${#dates.format(inv.timeCreated, 'yyyy-mm-dd HH:mm:ss')}"><span th:text="${inv.invitedEmailAddress}">email</span></a></td>
+                      <td height="20px" align="right" bgcolor="gold" th:if="${inv.giftCardCount &gt; 0}"><span style="font-size: 16px" th:text="${inv.giftCardCount}">0</span></td>
+                      <td height="20px" align="right" bgcolor="gold" th:if="${inv.giftCardCount ==   0}"><span style="font-size: 16px">&nbsp;</span></td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+              <tr>
+                <td><a style="font-size: 18px" href="#" th:href="@{/dependent}">Add&nbsp;clouds&nbsp;for&nbsp;my&nbsp;dependents</a></td>
+              </tr>
+              <tr th:if="${dependentList != null and #lists.size(dependentList) &gt; 0 }">
+                <td><p style="font-size: 16px; color: gray">Dependent clouds</p>
+                  <table>
+                    <tr th:each="dep : ${dependentList}">
+                      <td><span style="font-size: 16px;" th:text="${dep.dependentCloudName}">=name</span></td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </td>
+          <td>&nbsp;</td>
+        </tr>
+      </table>
     </div>
+    <div id="footer">Acme Cloud Company Inc.</div>
   </div>
-    </fieldset>
-    </form>
-   </div>
-  
-
 </body>
 </html>
