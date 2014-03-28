@@ -1,7 +1,6 @@
 package net.respectnetwork.csp.application.controller;
 
 import java.math.BigDecimal;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -33,12 +32,12 @@ import org.springframework.web.servlet.ModelAndView;
 import xdi2.client.exceptions.Xdi2ClientException;
 import xdi2.core.xri3.CloudName;
 import xdi2.core.xri3.CloudNumber;
-
 import net.respectnetwork.csp.application.form.InviteForm;
 import net.respectnetwork.csp.application.model.*;
 import net.respectnetwork.csp.application.dao.*;
 
 import javax.validation.Valid;
+
 import org.springframework.validation.*;
 
 @Controller
@@ -165,11 +164,10 @@ public class PersonalCloudInviteController
 	@RequestMapping(value = "/inviteDone", method = RequestMethod.GET)
 	public ModelAndView showInviteDoneForm( Model model, HttpServletRequest request ) throws DAOException
 	{
-		ModelAndView mv = new ModelAndView("cspdashboard");
-		AccountDetailsForm acct = new AccountDetailsForm();
-		acct.setCloudName(this.getCloudName());
-		mv.addObject("accountInfo", acct);
-		return mv;
+		ModelAndView mv = new ModelAndView("cloudPage");
+        String cspHomeURL = request.getContextPath();
+        mv.addObject("logoutURL", cspHomeURL + "/logout");
+        return mv;
 	}
 
 	@RequestMapping(value = "/inviteSubmit", method = RequestMethod.POST)

@@ -140,7 +140,7 @@ public class PersonalCloudController {
 		return mv;
 	}
     
-	@RequestMapping(value = "/cloudPage", method = RequestMethod.POST)
+	@RequestMapping(value = "/cloudPage", method = {RequestMethod.POST,RequestMethod.GET})
 	public ModelAndView showCloudPage(HttpServletRequest request, Model model) {
 		logger.info("showing cloudPage form");
 		
