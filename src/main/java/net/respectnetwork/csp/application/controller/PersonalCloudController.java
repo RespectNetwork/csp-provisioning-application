@@ -2,8 +2,10 @@ package net.respectnetwork.csp.application.controller;
 
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -25,6 +27,10 @@ import net.respectnetwork.csp.application.model.InviteResponseModel;
 import net.respectnetwork.csp.application.model.PaymentModel;
 import net.respectnetwork.csp.application.session.RegistrationSession;
 import net.respectnetwork.sdk.csp.exception.CSPRegistrationException;
+
+import net.respectnetwork.csp.application.dao.DAOFactory;
+import net.respectnetwork.csp.application.model.InviteModel;
+import net.respectnetwork.csp.application.model.DependentCloudModel;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,6 +88,23 @@ public class PersonalCloudController {
     /** Registration Session */
     private RegistrationSession regSession;
     
+    /** 
+     * CSP Cloud Name
+     */
+    private String cspCloudName;
+
+    public String getCspCloudName()
+    {
+        return this.cspCloudName;
+    }
+
+    @Autowired
+    @Qualifier("cspCloudName")
+    public void setCspCloudName( String cspCloudName )
+    {
+        this.cspCloudName = cspCloudName;
+    }
+
     /**
      * @return the invitationManager
      */
@@ -191,9 +214,7 @@ public class PersonalCloudController {
 			        	regSession.setPassword(request.getParameter("secrettoken"));
 			        }
 		        }
-		        mv = new ModelAndView("cloudPage");
-		        String cspHomeURL = request.getContextPath();
-		        mv.addObject("logoutURL", cspHomeURL + "/logout");
+		        mv = getCloudPage(request, regSession.getCloudName());
 		        logger.info("Successfully authenticated to the personal cloud for " + request.getParameter("cloudname") );
 			} catch (Xdi2ClientException e) {
 				// TODO Auto-generated catch block
@@ -262,12 +283,11 @@ public class PersonalCloudController {
 		
 		boolean errors = false;
         
-		ModelAndView mv = new ModelAndView("cloudPage");
-		String cspHomeURL = request.getContextPath();
-		mv.addObject("logoutURL", cspHomeURL + "/logout");
+        String cloudName = regSession.getCloudName();
+
+		ModelAndView mv = getCloudPage(request, cloudName);
 		
         String sessionIdentifier = regSession.getSessionId(); 
-        String cloudName = regSession.getCloudName();
         String email = regSession.getVerifiedEmail();
         String phone = regSession.getVerifiedMobilePhone();
         String password = regSession.getPassword();
@@ -392,4 +412,29 @@ public class PersonalCloudController {
         return mv;
 	}
 	
+	public static ModelAndView getCloudPage( HttpServletRequest request, String cloudName )
+	{
+		ModelAndView mv         = new ModelAndView("cloudPage");
+		String       cspHomeURL = request.getContextPath();
+
+		mv.addObject("logoutURL", cspHomeURL + "/logout");
+		mv.addObject("cloudName", cloudName);
+
+		try
+		{
+			DAOFactory dao = DAOFactory.getInstance();
+
+			List<InviteModel>         invList = dao.getInviteDAO().listGroupByInvited(cloudName);
+			List<DependentCloudModel> depList = dao.getDependentCloudDAO().list(cloudName);
+
+			mv.addObject("inviteList"   , invList);
+			mv.addObject("dependentList", depList);
+		}
+		catch( DAOException e )
+		{
+			logger.error("Failed to perform DAO opertations", e);
+		}
+
+		return mv;
+	}
 }

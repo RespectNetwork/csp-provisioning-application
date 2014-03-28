@@ -188,10 +188,8 @@ public class PersonalCloudInviteController
 	@RequestMapping(value = "/inviteDone", method = RequestMethod.GET)
 	public ModelAndView showInviteDoneForm( Model model, HttpServletRequest request ) throws DAOException
 	{
-		ModelAndView mv = new ModelAndView("cloudPage");
-        String cspHomeURL = request.getContextPath();
-        mv.addObject("logoutURL", cspHomeURL + "/logout");
-        return mv;
+		ModelAndView mv = PersonalCloudController.getCloudPage(request, this.getCloudName());
+		return mv;
 	}
 
 	@RequestMapping(value = "/inviteSubmit", method = RequestMethod.POST)

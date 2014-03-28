@@ -14,6 +14,7 @@ public class InviteModel
 	private String		emailSubject;
 	private String		emailMessage;
 	private Date		timeCreated;
+	private Integer         giftCardCount;
 
 	public InviteModel()
 	{
@@ -24,6 +25,7 @@ public class InviteModel
 		this.emailSubject = null;
 		this.emailMessage = null;
 		this.timeCreated = null;
+		this.giftCardCount = null;
 	}
 
 	public String getInviteId()
@@ -96,6 +98,16 @@ public class InviteModel
 		this.timeCreated = timeCreated;
 	}
 
+	public Integer getGiftCardCount()
+	{
+		return this.giftCardCount;
+	}
+
+	public void setGiftCardCount( Integer giftCardCount )
+	{
+		this.giftCardCount = giftCardCount;
+	}
+
 	public boolean equals( Object object )
 	{
 		if( object == null )
@@ -120,6 +132,7 @@ public class InviteModel
 				.append(this.emailSubject, other.emailSubject)
 				.append(this.emailMessage, other.emailMessage)
 				.append(this.timeCreated, other.timeCreated)
+				.append(this.giftCardCount, other.giftCardCount)
 				.isEquals();
 	}
 
@@ -134,6 +147,7 @@ public class InviteModel
 				.append(this.emailSubject)
 				.append(this.emailMessage)
 				.append(this.timeCreated)
+				.append(this.giftCardCount)
 				.toHashCode();
 	}
 
@@ -155,6 +169,8 @@ public class InviteModel
 		    .append(this.emailMessage).append(']');
 		builder.append("[timeCreated=")
 		    .append(this.timeCreated).append(']');
+		builder.append("[giftCardCount=")
+		    .append(this.giftCardCount).append(']');
 		builder.append(' ');
 		builder.append(super.toString());
 		return builder.toString();

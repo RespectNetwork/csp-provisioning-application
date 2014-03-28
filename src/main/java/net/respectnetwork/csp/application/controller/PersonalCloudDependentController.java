@@ -159,10 +159,8 @@ public class PersonalCloudDependentController
 	@RequestMapping(value = "/dependentDone", method = RequestMethod.GET)
 	public ModelAndView showDependentDoneForm( Model model, HttpServletRequest request ) throws DAOException
 	{
-		ModelAndView mv = new ModelAndView("cloudPage");
-        String cspHomeURL = request.getContextPath();
-        mv.addObject("logoutURL", cspHomeURL + "/logout");
-        return mv;
+		ModelAndView mv = PersonalCloudController.getCloudPage(request, this.regSession.getCloudName());
+		return mv;
 	}
 
 	@RequestMapping(value = "/dependentSubmit", method = RequestMethod.POST)
@@ -188,10 +186,9 @@ public class PersonalCloudDependentController
 		if( result.hasErrors() )
 		{
 			logger.error("result - " + result);
-			mv = new ModelAndView("cloudPage");        
-	        mv.addObject("logoutURL", cspHomeURL + "/logout");
-	        return mv;		
-	    }
+			mv = PersonalCloudController.getCloudPage(request, cloudName);
+			return mv;
+		}
 		
 		cspModel = DAOFactory.getInstance().getCSPDAO().get(this.getCspCloudName());
 		
