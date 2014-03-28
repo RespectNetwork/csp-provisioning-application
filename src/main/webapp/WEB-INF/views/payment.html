@@ -38,14 +38,17 @@
                         </td>
                     </tr>
                     <tr>
-                    <script
-					    src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-					    data-key="pk_test_BWUFT9rT63JEL5829geBwdVS"
-					    data-amount="2500"
-					    data-name="One Personal Cloud"
-					    data-description="$25 USD"
-					    data-image="img/cloud.png">
-  					</script>
+                    <td  th:utext="${javaScript}">
+              			<script               
+              				src="https://checkout.stripe.com/checkout.js"
+                             class="stripe-button"
+                             data-key="sk_test_BQokikJOvBiI2HlWgH4olfQ2"
+                             data-amount="2500"
+                             data-name="One Personal Cloud"
+                             data-description="$25 USD"
+                             data-image="img/cloud.png">
+              			</script>
+            		</td>
                     </tr>
                     
                     <tr>
@@ -62,7 +65,7 @@
                         <td>
                             <input style="width: 20px;" type="checkbox"
                             name="cspTandC" value="false" required="required"
-                            th:value="*{cspTandC}" /> I agree to the Acme Personal Cloud Company Terms of Service.
+                             /> I agree to the Acme Personal Cloud Company Terms of Service.
                                             
                         </td>
                     </tr>

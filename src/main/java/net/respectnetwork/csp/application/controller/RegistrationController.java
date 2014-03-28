@@ -1,11 +1,13 @@
 package net.respectnetwork.csp.application.controller;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import net.respectnetwork.csp.application.dao.DAOException;
 import net.respectnetwork.csp.application.dao.DAOFactory;
 import net.respectnetwork.csp.application.dao.InviteResponseDAO;
 import net.respectnetwork.csp.application.exception.UserRegistrationException;
@@ -15,6 +17,8 @@ import net.respectnetwork.csp.application.form.SignUpForm;
 import net.respectnetwork.csp.application.form.UserDetailsForm;
 import net.respectnetwork.csp.application.form.ValidateForm;
 import net.respectnetwork.csp.application.manager.RegistrationManager;
+import net.respectnetwork.csp.application.manager.StripePaymentProcessor;
+import net.respectnetwork.csp.application.model.CSPModel;
 import net.respectnetwork.csp.application.model.InviteResponseModel;
 import net.respectnetwork.csp.application.session.RegistrationSession;
 import net.respectnetwork.sdk.csp.payment.PaymentStatusCode;
@@ -50,7 +54,20 @@ public class RegistrationController {
     
     /** Registration Session */
     private RegistrationSession regSession;
-              
+    
+    private String              cspCloudName;
+    
+    public String getCspCloudName()
+	{
+		return this.cspCloudName;
+	}
+
+	@Autowired
+	@Qualifier("cspCloudName")
+	public void setCspCloudName( String cspCloudName )
+	{
+		this.cspCloudName = cspCloudName;
+	}
 
     /**
      * 
@@ -274,11 +291,26 @@ public class RegistrationController {
         
         if (!errors) {
         	
-            mv = new ModelAndView("payment");
+        	CSPModel     cspModel   = null;
+        	
+        	try {
+				cspModel = DAOFactory.getInstance().getCSPDAO().get(this.getCspCloudName());
+			} catch (DAOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        	mv = new ModelAndView("payment");
+        	
+    		BigDecimal amount   = cspModel.getCostPerCloudName();
+    		String     desc     = "Personal cloud  " + regSession.getCloudName();
+    		mv.addObject("cspModel"    , cspModel);
+			mv.addObject("javaScript"  , StripePaymentProcessor.getJavaScript(cspModel, amount, desc));
+/*            
             PaymentForm paymentForm = new PaymentForm();
             String paymentId = UUID.randomUUID().toString();
             paymentForm.setPaymentId(paymentId);
             mv.addObject("paymentInfo", paymentForm);
+*/            
         }
             
         
