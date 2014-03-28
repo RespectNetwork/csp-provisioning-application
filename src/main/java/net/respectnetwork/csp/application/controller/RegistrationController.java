@@ -19,6 +19,7 @@ import net.respectnetwork.csp.application.form.ValidateForm;
 import net.respectnetwork.csp.application.manager.RegistrationManager;
 import net.respectnetwork.csp.application.manager.StripePaymentProcessor;
 import net.respectnetwork.csp.application.model.CSPModel;
+import net.respectnetwork.csp.application.model.InviteModel;
 import net.respectnetwork.csp.application.model.InviteResponseModel;
 import net.respectnetwork.csp.application.session.RegistrationSession;
 import net.respectnetwork.sdk.csp.payment.PaymentStatusCode;
@@ -119,8 +120,6 @@ public class RegistrationController {
         
         ModelAndView mv = null; 
         boolean errors = false;
-        mv = new ModelAndView("signup");
-        mv.addObject("signUpInfo", signUpForm);
         
         String cloudName = signUpForm.getCloudName();
         String inviteCode = signUpForm.getInviteCode();
@@ -129,6 +128,8 @@ public class RegistrationController {
         logger.debug("Invite Code = " + inviteCode);
         logger.debug("Gift Code = " + giftCode);
         logger.debug("Cloud Name : " + cloudName);
+        
+        mv = new ModelAndView("signup");
         
         if (cloudName != null) {           
         // Start Check that the Cloud Number is Available.
@@ -148,10 +149,25 @@ public class RegistrationController {
                 mv.addObject("error", errorStr);
                 errors = true;
             }
-
+            InviteModel invite = null;
+           //add the email address of the person who was invited in the userDetailsForm object, the user shouldn't be able to change it
+            DAOFactory dao = DAOFactory.getInstance();
+            UserDetailsForm userDetailsForm = new UserDetailsForm();
+            try {
+				invite = dao.getInviteDAO().get(inviteCode);
+				if(invite != null && (invite.getInvitedEmailAddress() != null || invite.getInvitedEmailAddress().trim().isEmpty() )) {
+					userDetailsForm.setEmail(invite.getInvitedEmailAddress());
+				} else {
+					logger.error("This invite object does not have an email address or another valid identifier associated to it. Sending user to the signup page.");
+					errors = true;
+				}
+			} catch (DAOException e) {
+				logger.error("Could not get invite information from DB. Sending user to the signup page.");
+				errors = true;
+			}
             if (!errors) {
                 mv = new ModelAndView("userdetails");
-                UserDetailsForm userDetailsForm = new UserDetailsForm();
+                
                 mv.addObject("userInfo", userDetailsForm);
 
                 // Add CloudName to Session
@@ -161,7 +177,10 @@ public class RegistrationController {
                 regSession.setCloudName(signUpForm.getCloudName());
                 regSession.setInviteCode(inviteCode);
                 regSession.setGiftCode(giftCode);
+                regSession.setVerifiedEmail(invite.getInvitedEmailAddress());
 
+            } else {
+                mv = new ModelAndView("signup");
             }
                                                        
         }
@@ -246,7 +265,8 @@ public class RegistrationController {
 
             // Add CloudName/ Email / Password and Phone to Session
 
-            regSession.setVerifiedEmail(userDetailsForm.getEmail());
+            logger.debug("Setting verified email " + regSession.getVerifiedEmail());
+            //regSession.setVerifiedEmail(userDetailsForm.getEmail());
             regSession.setVerifiedMobilePhone(userDetailsForm.getMobilePhone());
             regSession.setPassword(userDetailsForm.getPassword());
         }
@@ -304,7 +324,13 @@ public class RegistrationController {
     		BigDecimal amount   = cspModel.getCostPerCloudName();
     		String     desc     = "Personal cloud  " + regSession.getCloudName();
     		mv.addObject("cspModel"    , cspModel);
-			mv.addObject("javaScript"  , StripePaymentProcessor.getJavaScript(cspModel, amount, desc));
+    		if(regSession.getGiftCode() != null){
+    			mv.addObject("giftCode"  ,regSession.getGiftCode());
+    		}
+    		else {
+    			mv.addObject("javaScript"  , StripePaymentProcessor.getJavaScript(cspModel, amount, desc));
+    		}
+			
 /*            
             PaymentForm paymentForm = new PaymentForm();
             String paymentId = UUID.randomUUID().toString();

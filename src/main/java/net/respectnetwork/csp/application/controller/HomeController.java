@@ -105,6 +105,9 @@ public class HomeController {
         	giftCode = (String)request.getParameter(URL_PARAM_NAME_GIFT_CODE);
         	selfInviteCode = (String)request.getParameter(URL_PARAM_NAME_INVITER);
         	
+        	logger.debug("Invite Code = " + inviteCode);
+            logger.debug("Gift Code = " + giftCode);
+            logger.debug("Cloud Name : " + cloudName);
             
         	//if both invite code and gift code is present. This is the case when Alice is invited by Roger
             
