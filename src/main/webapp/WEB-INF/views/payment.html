@@ -53,9 +53,9 @@
                     
                     <tr>
                         <td>
-                            Or
-                            <input type="text" name="giftCode" value="giftCode"
-                            id="giftCode" placeholder="gift code not implemented yet"
+                            Gift Code
+                            <input type="text" name="giftCode" th:value="${giftCode}"
+                            id="giftCode" 
                              />
                                             
                         </td>
@@ -69,7 +69,11 @@
                                             
                         </td>
                     </tr>
-                    
+                    <tr>
+                        <td>
+                            <input type="submit" value="Next" name="submit" class="submit" />
+                        </td>
+                    </tr>
                     
                 </table>
             </form>

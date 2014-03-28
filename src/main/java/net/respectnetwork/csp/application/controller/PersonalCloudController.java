@@ -24,6 +24,7 @@ import net.respectnetwork.csp.application.model.GiftCodeRedemptionModel;
 import net.respectnetwork.csp.application.model.InviteResponseModel;
 import net.respectnetwork.csp.application.model.PaymentModel;
 import net.respectnetwork.csp.application.session.RegistrationSession;
+import net.respectnetwork.sdk.csp.exception.CSPRegistrationException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -270,85 +271,122 @@ public class PersonalCloudController {
         String email = regSession.getVerifiedEmail();
         String phone = regSession.getVerifiedMobilePhone();
         String password = regSession.getPassword();
+        logger.debug(sessionIdentifier + "--" + cloudName + "--" + email + "--" + phone + "--" + password);
+        logger.debug("Invite Code =" + regSession.getInviteCode() + " and gift code = " + regSession.getGiftCode());
         
 		//Check Session      
         if (sessionIdentifier == null || cloudName == null || email == null
                 || phone == null || password == null) {
             errors = true;    
             mv.addObject("error", "Invalid Session"); 
+            logger.debug("Invalid Session ...");
         }
         CSPModel cspModel = null;
+        DAOFactory dao = DAOFactory.getInstance();
 		try {
-			cspModel = DAOFactory.getInstance().getCSPDAO().get(this.getCspName());
+			cspModel = dao.getCSPDAO().get(this.getCspName());
 		} catch (DAOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 			errors = true;    
             mv.addObject("error", "Cannot connect to DB to lookup information");
+            logger.debug("Cannot connect to DB to lookup info...");
 		}
-        
+		logger.debug("Reached here - 5 , errors = " + errors);
 			if(!errors) {
+				logger.debug("Reached here - 10");
 				
-				BigDecimal amount   = cspModel.getCostPerCloudName();
-				String     desc     = "A personal cloud for " + cloudName;
-
-				String     token    = StripePaymentProcessor.getToken(request);
-				
-				
-				if(token != null && !token.isEmpty()) { //this is a CC charge request
-					PaymentModel payment = StripePaymentProcessor.makePayment(cspModel, amount, desc, token);
-					if(payment != null){
-						DAOFactory dao = DAOFactory.getInstance();
-						try {
-							dao.getPaymentDAO().insert(payment);
-						} catch (DAOException e1) {
-							logger.error("Could not insert payment record in the DB " + e1.getMessage());
-							logger.info("Payment record info \n" + payment.toString());
+				//need a new unique response id
+                String responseId = UUID.randomUUID().toString();
+              //make entries in the invite_response table or giftcode_redemption table that a new cloud has been registered against an invite code and optionally a gif code
+                if((regSession.getInviteCode() != null) && (regSession.getGiftCode() != null)) {
+                	logger.debug("Reached here - 20");
+			    	 logger.debug("Going to create the personal cloud now for gift code path...");
+		                try {
+							registrationManager.registerUser(CloudName.create(cloudName), phone,
+							        email, password);
+							logger.debug("Reached here - 30");
+							AccountDetailsForm accountForm = new AccountDetailsForm();
+			                accountForm.setCloudName(cloudName);
+			                mv.addObject("accountInfo", accountForm);   
+			                
+			                logger.debug("Sucessfully Registered {}", cloudName );
+						} catch (Xdi2ClientException e1) {
+							logger.debug("Reached here - 40");
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						} catch (CSPRegistrationException e1) {
+							logger.debug("Reached here - 50");
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
 						}
-					     try {
-					    	 logger.debug("Going to create the personal cloud now...");
-				                registrationManager.registerUser(CloudName.create(cloudName), phone,
-				                        email, password);
-				                
-				                //need a new unique response id
-				                String responseId = UUID.randomUUID().toString();
-				                
-				                //make entries in the invite_response table or giftcode_redemption table that a new cloud has been registered against an invite code and optionally a gif code
-				                if((regSession.getInviteCode() != null) && (regSession.getGiftCode() != null)){
-				                	//make a new record in the giftcode_redemption table
-				                	GiftCodeRedemptionModel giftCodeRedemption = new GiftCodeRedemptionModel();
-				                	giftCodeRedemption.setCloudNameCreated(cloudName);
-				                	giftCodeRedemption.setGiftCodeId(regSession.getGiftCode());
-				                	giftCodeRedemption.setRedemptionId(responseId);
-				                	giftCodeRedemption.setTimeCreated(new Date());
-				                	dao.getGiftCodeRedemptionDAO().insert(giftCodeRedemption);
-				                	
-				                } else if (regSession.getInviteCode() != null){
-				                	//make a new record in the invite_response table
-				                	InviteResponseModel inviteResponse = new InviteResponseModel();
-				                	inviteResponse.setCloudNameCreated(cloudName);
-				                	inviteResponse.setInviteId(regSession.getInviteCode());
-				                	inviteResponse.setResponseId(responseId);
-				                	inviteResponse.setPaymentId(payment.getPaymentId());
-				                	
-				                	InviteResponseDAO inviteResponseDAO = DAOFactory.getInstance().getInviteResponseDAO();
-				                	inviteResponseDAO.insert(inviteResponse);
-				                }
-				                
-				                AccountDetailsForm accountForm = new AccountDetailsForm();
-				                accountForm.setCloudName(cloudName);
-				                mv.addObject("accountInfo", accountForm);   
-				                
-				                logger.debug("Sucessfully Registered {}", cloudName );
-				                
-				            } catch (Exception e) {
-				                logger.warn("Registration Error {}", e.getMessage());
-				                mv.addObject("error", e.getMessage());
-				                
-				            }
-					     
-					}   
-				}
+
+		                logger.debug("Reached here - 60");
+                	//make a new record in the giftcode_redemption table
+                	GiftCodeRedemptionModel giftCodeRedemption = new GiftCodeRedemptionModel();
+                	giftCodeRedemption.setCloudNameCreated(cloudName);
+                	giftCodeRedemption.setGiftCodeId(regSession.getGiftCode());
+                	giftCodeRedemption.setRedemptionId(responseId);
+                	giftCodeRedemption.setTimeCreated(new Date());
+                	try {
+						dao.getGiftCodeRedemptionDAO().insert(giftCodeRedemption);
+						logger.debug("Reached here - 70");
+					} catch (DAOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+                	logger.debug("Reached here - 80");
+                	
+                } else { //CC path
+                	logger.debug("Reached here - 90");
+					BigDecimal amount   = cspModel.getCostPerCloudName();
+					String     desc     = "A personal cloud for " + cloudName;
+	
+					String     token    = StripePaymentProcessor.getToken(request);
+					
+					
+					if(token != null && !token.isEmpty()) { //this is a CC charge request
+						PaymentModel payment = StripePaymentProcessor.makePayment(cspModel, amount, desc, token);
+						if(payment != null){
+							
+							try {
+								dao.getPaymentDAO().insert(payment);
+							} catch (DAOException e1) {
+								logger.error("Could not insert payment record in the DB " + e1.getMessage());
+								logger.info("Payment record info \n" + payment.toString());
+							}
+						     try {
+						    	 logger.debug("Going to create the personal cloud now for CC path ...");
+					                registrationManager.registerUser(CloudName.create(cloudName), phone,
+					                        email, password);
+					                
+					                 if (regSession.getInviteCode() != null){
+					                	//make a new record in the invite_response table
+					                	InviteResponseModel inviteResponse = new InviteResponseModel();
+					                	inviteResponse.setCloudNameCreated(cloudName);
+					                	inviteResponse.setInviteId(regSession.getInviteCode());
+					                	inviteResponse.setResponseId(responseId);
+					                	inviteResponse.setPaymentId(payment.getPaymentId());
+					                	
+					                	InviteResponseDAO inviteResponseDAO = DAOFactory.getInstance().getInviteResponseDAO();
+					                	inviteResponseDAO.insert(inviteResponse);
+					                }
+					                
+					                AccountDetailsForm accountForm = new AccountDetailsForm();
+					                accountForm.setCloudName(cloudName);
+					                mv.addObject("accountInfo", accountForm);   
+					                
+					                logger.debug("Sucessfully Registered {}", cloudName );
+					                
+					            } catch (Exception e) {
+					                logger.warn("Registration Error {}", e.getMessage());
+					                mv.addObject("error", e.getMessage());
+					                
+					            }
+						 
+						}   
+					}
+                }
 		}
 
         return mv;
