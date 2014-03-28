@@ -5,6 +5,8 @@ import java.io.Serializable;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
+import net.respectnetwork.csp.application.form.InviteForm;
+
 public class RegistrationSession implements Serializable {
 
     /** Generated Serial ID */
@@ -32,6 +34,8 @@ public class RegistrationSession implements Serializable {
     /** gift code */
     private String giftCode;
 
+    /** invite form */
+    private InviteForm inviteForm;
 
     /**
      * @return the SessionId
@@ -103,6 +107,20 @@ public class RegistrationSession implements Serializable {
         this.password = password;
     }
 
+    /**
+     * @return the inviteForm
+     */
+    public InviteForm getInviteForm() {
+        return inviteForm;
+    }
+
+    /**
+     * @param inviteForm the inviteForm to set
+     */
+    public void setInviteForm(InviteForm inviteForm) {
+        this.inviteForm = inviteForm;
+    }
+
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
@@ -111,6 +129,7 @@ public class RegistrationSession implements Serializable {
                 .append(", verifiedEmail=").append(verifiedEmail)
                 .append(", verifiedMobilePhone=").append(verifiedMobilePhone)
                 .append(", password=").append(password)                
+                .append(", inviteForm=").append(inviteForm)                
                 .append("]");
         return builder.toString();
     }
@@ -125,6 +144,7 @@ public class RegistrationSession implements Serializable {
                 .append(verifiedEmail)
                 .append(verifiedMobilePhone)
                 .append(password)                
+                .append(inviteForm)                
                 .toHashCode();
     }
 
@@ -140,6 +160,7 @@ public class RegistrationSession implements Serializable {
                     .append(verifiedEmail, other.verifiedEmail)
                     .append(verifiedMobilePhone, other.verifiedMobilePhone)
                     .append(password, other.password)
+                    .append(inviteForm, other.inviteForm)
                     .isEquals();
         } else {
             return false;

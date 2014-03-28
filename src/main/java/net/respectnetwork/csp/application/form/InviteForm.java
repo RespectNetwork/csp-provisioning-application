@@ -8,6 +8,8 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 
 public class InviteForm
 {
+	private String	      inviteId;
+
 	@NotNull @Size(min=6, max=64) @Email
 	private String        emailAddress;
 
@@ -22,10 +24,21 @@ public class InviteForm
 
 	public InviteForm()
 	{
+		this.inviteId = null;
 		this.emailAddress = "";
 		this.emailMessage = "";
 		this.giftCardFlag = Boolean.FALSE;
 		this.giftCardQuantity = Integer.valueOf(1);
+	}
+
+	public String getInviteId()
+	{
+		return this.inviteId;
+	}
+
+	public void setInviteId( String inviteId )
+	{
+		this.inviteId = inviteId;
 	}
 
 	public String getEmailAddress()
@@ -85,6 +98,7 @@ public class InviteForm
 		InviteForm other = (InviteForm) object;
 		return new EqualsBuilder()
 				.appendSuper(super.equals(other))
+				.append(this.inviteId, other.inviteId)
 				.append(this.emailAddress, other.emailAddress)
 				.append(this.emailMessage, other.emailMessage)
 				.append(this.giftCardFlag, other.giftCardFlag)
@@ -96,6 +110,7 @@ public class InviteForm
 	{
 		return new HashCodeBuilder(17, 37)
 				.appendSuper(super.hashCode())
+				.append(this.inviteId)
 				.append(this.emailAddress)
 				.append(this.emailMessage)
 				.append(this.giftCardFlag)
@@ -107,6 +122,8 @@ public class InviteForm
 	{
 		StringBuilder builder = new StringBuilder();
 		builder.append("InviteForm ");
+		builder.append("[inviteId=")
+		    .append(this.inviteId).append(']');
 		builder.append("[emailAddress=")
 		    .append(this.emailAddress).append(']');
 		builder.append("[emailMessage=")

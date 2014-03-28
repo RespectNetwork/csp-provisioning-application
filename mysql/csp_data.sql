@@ -10,10 +10,10 @@ insert into csp
 )
 values 
 (	'@testcsp'
-,	'payment gateway'
-,	'https://www.pay.com/{xid}/{currency}/{amount}'
-,	'username'
-,	'password'
+,	'Test CSP'
+,	'https://checkout.stripe.com/checkout.js'
+,	'pk_test_BWUFT9rT63JEL5829geBwdVS'
+,	'sk_test_edYuRLMvloToRshYM49kO1Gz'
 ,	25.00
 ,	'USD'
 ,	now()
@@ -30,10 +30,10 @@ insert into csp
 )
 values 
 (	'@testcsp1'
-,	'payment gateway 1'
-,	'https://www.pay.com/{xid}/{currency}/{amount}'
-,	'username1'
-,	'password1'
+,	'Test CSP 1'
+,	'https://checkout.stripe.com/checkout.js'
+,	'pk_test_BWUFT9rT63JEL5829geBwdVS'
+,	'sk_test_edYuRLMvloToRshYM49kO1Gz'
 ,	25.00
 ,	'USD'
 ,	now()

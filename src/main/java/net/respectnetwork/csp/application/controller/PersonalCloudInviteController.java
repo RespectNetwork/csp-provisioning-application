@@ -15,6 +15,7 @@ import net.respectnetwork.csp.application.form.AccountDetailsForm;
 import net.respectnetwork.csp.application.invite.InvitationManager;
 import net.respectnetwork.csp.application.manager.PersonalCloudManager;
 import net.respectnetwork.csp.application.manager.RegistrationManager;
+import net.respectnetwork.csp.application.manager.StripePaymentProcessor;
 import net.respectnetwork.csp.application.session.RegistrationSession;
 
 import org.slf4j.Logger;
@@ -33,14 +34,6 @@ import xdi2.client.exceptions.Xdi2ClientException;
 import xdi2.core.xri3.CloudName;
 import xdi2.core.xri3.CloudNumber;
 
-import com.stripe.Stripe;
-import com.stripe.exception.APIConnectionException;
-import com.stripe.exception.APIException;
-import com.stripe.exception.AuthenticationException;
-import com.stripe.exception.CardException;
-import com.stripe.exception.InvalidRequestException;
-import com.stripe.model.Charge;
-
 import net.respectnetwork.csp.application.form.InviteForm;
 import net.respectnetwork.csp.application.model.*;
 import net.respectnetwork.csp.application.dao.*;
@@ -57,7 +50,6 @@ public class PersonalCloudInviteController
 
 	private String              cspCloudName;
 	private RegistrationSession regSession;
-
     
 	public String getCspCloudName()
 	{
@@ -87,6 +79,18 @@ public class PersonalCloudInviteController
 		String rtn = regSession.getCloudName();
 
 		// rtn = "=animesh.test15";
+
+		return rtn;
+	}
+
+	private void setInviteForm( InviteForm inviteForm )
+	{
+		regSession.setInviteForm(inviteForm);
+	}
+
+	private InviteForm getInviteForm()
+	{
+		InviteForm rtn = regSession.getInviteForm();
 
 		return rtn;
 	}
@@ -159,7 +163,7 @@ public class PersonalCloudInviteController
 	}
 
 	@RequestMapping(value = "/inviteDone", method = RequestMethod.GET)
-	public ModelAndView showInviteSubmitForm( Model model, HttpServletRequest request ) throws DAOException
+	public ModelAndView showInviteDoneForm( Model model, HttpServletRequest request ) throws DAOException
 	{
 		ModelAndView mv = new ModelAndView("cspdashboard");
 		AccountDetailsForm acct = new AccountDetailsForm();
@@ -173,7 +177,7 @@ public class PersonalCloudInviteController
 	{
 		String       cloudName  = this.getCloudName();
 
-		logger.info("showing invite review page - " + cloudName + " : " + inviteForm);
+		logger.info("showing invite submit page - " + cloudName + " : " + inviteForm);
 
 		String       cspHomeURL = request.getContextPath();
 		ModelAndView mv         = null;
@@ -208,35 +212,103 @@ public class PersonalCloudInviteController
 		}
 
 		cspModel = DAOFactory.getInstance().getCSPDAO().get(this.getCspCloudName());
+		BigDecimal quantity = BigDecimal.valueOf((long) inviteForm.getGiftCardQuantity().intValue());
+		BigDecimal amount   = cspModel.getCostPerCloudName().multiply(quantity);
+		String desc = "Cloudname Gift Cards for " + inviteForm.getEmailAddress();
 
-		if( inviteForm.getGiftCardFlag() != null )
+		inviteForm.setInviteId(UUID.randomUUID().toString());
+
+		mv = new ModelAndView("inviteSubmit");
+
+		mv.addObject("cspModel"    , cspModel);
+		mv.addObject("javaScript"  , StripePaymentProcessor.getJavaScript(cspModel, amount, desc));
+
+		model.addAttribute("inviteForm", inviteForm);
+		this.setInviteForm(inviteForm);
+
+		return mv;
+	}
+
+	@RequestMapping(value = "/invitePayment", method = RequestMethod.POST)
+	public ModelAndView showInvitePaymentForm( Model model, HttpServletRequest request ) throws DAOException
+	{
+		String       cloudName  = this.getCloudName();
+		InviteForm   inviteForm = this.getInviteForm();
+
+		logger.info("showing invite payment page - " + cloudName + " : " + inviteForm);
+
+		String       cspHomeURL = request.getContextPath();
+		ModelAndView mv         = null;
+		CSPModel     cspModel   = null;
+
+		if( cloudName == null )
 		{
-			logger.info("With payment");
-
-			BigDecimal quantity = BigDecimal.valueOf((long) inviteForm.getGiftCardQuantity().intValue());
-
-			List<GiftCodeModel> giftCardList = new ArrayList<GiftCodeModel>();
-
-			PaymentModel payment = new PaymentModel();
-			payment.setPaymentId(UUID.randomUUID().toString());
-			payment.setCspCloudName(this.getCspCloudName());
-			payment.setPaymentReferenceId("XXXX");
-			payment.setPaymentResponseCode("YYYY");
-			payment.setAmount(cspModel.getCostPerCloudName().multiply(quantity));
-			payment.setCurrency(cspModel.getCurrency());
-
-			InviteModel invite = this.saveInvite(inviteForm, payment, giftCardList);
-			mv = new ModelAndView("inviteDone");
-			mv.addObject("cspModel"    , cspModel);
-			mv.addObject("inviteModel" , invite);
-			mv.addObject("giftCardList", giftCardList);
+			mv = new ModelAndView("login");
+			mv.addObject("postURL", cspHomeURL + "/cloudPage");
 			return mv;
 		}
 
-		mv = new ModelAndView("inviteDone");
+		if( inviteForm == null )
+		{
+			mv = showInviteDoneForm(model, request);
+			return mv;
+		}
 
+		// nullify session variable
+
+		this.setInviteForm(null);
+
+		InviteModel inviteModel = DAOFactory.getInstance().getInviteDAO().get(inviteForm.getInviteId());
+		if( inviteModel != null )
+		{
+			logger.error("InviteModel already exist - " + inviteModel);
+			mv = showInviteDoneForm(model, request);
+			return mv;
+		}
+
+		cspModel = DAOFactory.getInstance().getCSPDAO().get(this.getCspCloudName());
+		BigDecimal quantity = BigDecimal.valueOf((long) inviteForm.getGiftCardQuantity().intValue());
+		BigDecimal amount   = cspModel.getCostPerCloudName().multiply(quantity);
+		String     desc     = "Cloudname Gift Cards for " + inviteForm.getEmailAddress();
+
+		String token = StripePaymentProcessor.getToken(request);
+		if( token == null )
+		{
+			mv = new ModelAndView("inviteSubmit");
+
+			mv.addObject("error"       , "Failed to obtain payment token. Please try again!");
+			mv.addObject("cspModel"    , cspModel);
+			mv.addObject("javaScript"  , StripePaymentProcessor.getJavaScript(cspModel, amount, desc));
+
+			model.addAttribute("inviteForm", inviteForm);
+			this.setInviteForm(inviteForm);
+
+                        return mv;
+		}
+
+		PaymentModel payment = StripePaymentProcessor.makePayment(cspModel, amount, desc, token);
+
+		if( payment == null )
+		{
+			mv = new ModelAndView("inviteSubmit");
+
+			mv.addObject("error"       , "Failed to process payment. Please try again!");
+			mv.addObject("cspModel"    , cspModel);
+			mv.addObject("javaScript"  , StripePaymentProcessor.getJavaScript(cspModel, amount, desc));
+
+			model.addAttribute("inviteForm", inviteForm);
+			this.setInviteForm(inviteForm);
+
+                        return mv;
+		}
+
+		List<GiftCodeModel> giftCardList = new ArrayList<GiftCodeModel>();
+
+		InviteModel invite = this.saveInvite(inviteForm, payment, giftCardList);
+		mv = new ModelAndView("inviteDone");
 		mv.addObject("cspModel"    , cspModel);
-		model.addAttribute("inviteForm", inviteForm);
+		mv.addObject("inviteModel" , invite);
+		mv.addObject("giftCardList", giftCardList);
 
 		return mv;
 	}
@@ -246,7 +318,15 @@ public class PersonalCloudInviteController
 		DAOFactory dao = DAOFactory.getInstance();
 
 		InviteModel rtn = new InviteModel();
-		rtn.setInviteId(UUID.randomUUID().toString());
+
+		if( inviteForm.getInviteId() != null )
+		{
+			rtn.setInviteId(inviteForm.getInviteId());
+		}
+		else
+		{
+			rtn.setInviteId(UUID.randomUUID().toString());
+		}
 		rtn.setCspCloudName(this.getCspCloudName());
 		rtn.setInviterCloudName(this.getCloudName());
 		rtn.setInvitedEmailAddress(inviteForm.getEmailAddress());
@@ -274,14 +354,14 @@ public class PersonalCloudInviteController
 			}
 		}
 
-		this.sendInvite(rtn, giftCodeList);
+		this.sendInviteEmail(rtn, giftCodeList);
 
 		return rtn;
 	}
 
-	private void sendInvite( InviteModel invite, List<GiftCodeModel> giftCodeList )
+	private void sendInviteEmail( InviteModel invite, List<GiftCodeModel> giftCodeList )
 	{
-		logger.info("sendInvite - " + invite);
-		logger.info("sendInvite - " + giftCodeList);
+		logger.info("sendInviteEmail - " + invite);
+		logger.info("sendInviteEmail - " + giftCodeList);
 	}
 }

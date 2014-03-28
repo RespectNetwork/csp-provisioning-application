@@ -2,9 +2,9 @@ create table  csp
 (	csp_cloudname		varchar(64)	primary key
 ,	payment_gateway_name	varchar(64)	not null
 ,	payment_url_template	varchar(64)	not null
-,	username		varchar(16)	not null
-,	password		varchar(16)	not null
-,	cost_per_cloudname	numeric(5,2)	not null
+,	username		varchar(64)	not null
+,	password		varchar(64)	not null
+,	cost_per_cloudname	numeric(9,2)	not null
 ,	currency		char(3)		not null
 ,	time_created		datetime	not null
 );

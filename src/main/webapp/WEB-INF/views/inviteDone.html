@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title th:text="#{invite.text.summary}">Invite &amp; Gift Cards Summary!</title>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta name="description" content="Invite"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <link rel="stylesheet" href="../../css/csp.css" th:href="@{/css/csp.css}"/>
+  <script src="../../js/libs/modernizr-2.0.6.min.js" th:src="@{/js/libs/modernizr-2.0.6.min.js}"></script>
+</head>
+<body>
+  <div id="fullpage">
+    <div id="content">
+      <form action="#" th:object="${inviteModel}" th:action="@{/inviteDone}" method="get">
+        <table id="inviteTable" width="100%">
+          <tr>
+            <td colspan="2"><p class="headerText" th:text="#{invite.text.sent}">Invites &amp; Gift Cards Have Been Sent!</p>
+              <p class="subHeaderText" th:if="${error}" th:text="${error}" style="color: orange">System Error</p>
+            </td>
+          </tr>
+          <tr>
+            <td span="2">
+              <span th:text="#{invite.text.msg}">An email has been sent to</span>
+              <span th:text="${inviteModel.invitedEmailAddress}">foo@bar.com</span>
+              <span th:if="${giftCardList != null}" th:text="#{invite.text.alongwith}">along with</span>
+              <span th:if="${giftCardList != null}" th:text="${#lists.size(giftCardList)}">0</span>
+              <span th:if="${giftCardList != null and #lists.size(giftCardList) &gt; 1 }" th:text="#{invite.text.giftcards}">Gift Cards</span>
+              <span th:if="${giftCardList != null and #lists.size(giftCardList) ==   1 }" th:text="#{invite.text.giftcard}">Gift Card</span>
+              <span th:if="${giftCardList != null}" th:text="#{invite.text.total}">totaling</span>
+              <span th:if="${giftCardList != null}" th:text="${cspModel.currency}">USD</span>
+              <span th:if="${giftCardList != null}" th:text="${#numbers.formatDecimal(cspModel.costPerCloudName.multiply(__${#lists.size(giftCardList)}__), 0, 'COMMA', 2, 'POINT')}">25.00</span>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2" align="center"><input type="submit" value="Done!" th:value="#{invite.text.done}" name="submit" class="submit" /></td>
+          </tr>
+        </table>
+      </form>
+    </div>
+    <div id="footer">Acme Cloud Company Inc.</div>
+  </div>
+</body>
+</html>
