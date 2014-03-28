@@ -10,10 +10,10 @@ public class InviteForm
 {
 	private String	      inviteId;
 
-	@NotNull @Size(min=6, max=64) @Email
+	@NotNull @Size(min=6, max=128) @Email
 	private String        emailAddress;
 
-	@NotNull @Size(min=1, max=1024)
+	@NotNull @Size(min=1, max=2048)
 	private String        emailMessage;
 
 	@NotNull
