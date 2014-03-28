@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta charset="utf-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+
+<title></title>
+<meta name="description" content="Dependent "/>
+
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+
+<link rel="stylesheet" href="../../css/csp.css" th:href="@{/css/csp.css}"/>
+<script src="../../js/libs/modernizr-2.0.6.min.js" th:src="@{/js/libs/modernizr-2.0.6.min.js}"></script>
+
+</head>
+
+<body>
+    <div id="fullpage">
+        <div id="header">Respect Network</div>
+        <div id="content">
+            <form action="#" th:object="${dependentForm}" th:action="@{/dependentSubmit}" method="post">
+                <table id="signUpTable">
+                    <tr>
+                        <td>
+                            <p id="headerText">Choose Cloud Name For Dependent</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p id="subHeaderText">All personal cloud names begin with an = sign.</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="text" name="dependentCloudName" value="" id="dependentCloudName" placeholder="=dependent name" required="required" autofocus="autofocus" th:value="*{dependentCloudName}" />
+                                                    
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p id="subHeaderText">Add a password for logging into dependent personal cloud.</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="password" name="dependentCloudPassword" value=""
+                                id="dependentCloudPassword" placeholder="password" required="required"
+                                th:value="*{dependentCloudPassword}" />
+                                <p id="error" th:text="${passwordError}">Password Error</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="checkbox"
+                                name="consent" value="false" required="required"
+                                th:value="*{consentFlag}" />
+                                I agree to the conditions for Dependent Personal Clouds.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="submit" value="Next" name="submit" class="submit" />
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+        <div id="footer">Acme Cloud Company Inc.</div>
+    </div>
+</body>
+</html>
