@@ -2,10 +2,11 @@ package net.respectnetwork.csp.application.session;
 
 import java.io.Serializable;
 
+import net.respectnetwork.csp.application.form.DependentForm;
+import net.respectnetwork.csp.application.form.InviteForm;
+
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-
-import net.respectnetwork.csp.application.form.InviteForm;
 
 public class RegistrationSession implements Serializable {
 
@@ -37,6 +38,9 @@ public class RegistrationSession implements Serializable {
     /** invite form */
     private InviteForm inviteForm;
 
+    /** invite form */
+    private DependentForm dependentForm;
+    
     /**
      * @return the SessionId
      */
@@ -181,6 +185,14 @@ public class RegistrationSession implements Serializable {
 
 	public void setGiftCode(String giftCode) {
 		this.giftCode = giftCode;
+	}
+
+	public DependentForm getDependentForm() {
+		return dependentForm;
+	}
+
+	public void setDependentForm(DependentForm dependentForm) {
+		this.dependentForm = dependentForm;
 	}
 
 }
