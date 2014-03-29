@@ -183,6 +183,10 @@ public class PersonalCloudController {
         } else if (regSession.getCloudName() != null){
         	cloudName = CloudName.create(regSession.getCloudName());
         }
+	if( cloudName == null )
+	{
+		return processLogout(request, model);
+	}
         
         net.respectnetwork.sdk.csp.CSP myCSP = registrationManager.getCspRegistrar();
         if(myCSP != null){

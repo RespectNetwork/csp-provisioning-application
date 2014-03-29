@@ -9,12 +9,11 @@
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <link rel="stylesheet" href="../../css/csp.css" th:href="@{/css/csp.css}"/>
   <script src="../../js/libs/modernizr-2.0.6.min.js" th:src="@{/js/libs/modernizr-2.0.6.min.js}"></script>
-
 </head>
 <body>
   <div id="fullpage">
     <div id="content">
-      <table id="inviteTable" width="100%">
+      <table xid="inviteTable" width="100%">
         <tr>
           <td colspan="2">
             <table width="100%">
@@ -22,7 +21,6 @@
                 <td width="90%" align="left" ><p class="headerText">Welcome <span th:text="${cloudName}">=cloudName</span></p></td>
                 <td width="10%" align="right">
                   <form id="logout_form" name="logout_form" action="#" th:action="@{/logout}" method="post">
-                  
                   <button type="submit" class="btn btn-danger">Logout</button>
                 </form>
                </td>
@@ -34,34 +32,41 @@
           <td width="200px">
             <table>
               <tr>
-                <td><a style="font-size: 18px" href="#" th:href="@{/invite}">Invites &amp; Gift Cards</a></td>
+                <td bgcolor="lightblue"><a style="font-size: 18px" href="#" th:href="@{/invite}">Invites &amp; Gift Cards</a></td>
               </tr>
               <tr th:if="${inviteList != null and #lists.size(inviteList) &gt; 0 }">
-                <td>
-                  <table>
-                    <tr th:each="inv : ${inviteList}">
-                      <td height="20px"><a style="font-size: 16px" target="_blank" href="#" th:href="${inv.invitedEmailAddress}" title="last sent" th:title="${#dates.format(inv.timeCreated, 'yyyy-mm-dd HH:mm:ss')}"><span th:text="${inv.invitedEmailAddress}">email</span></a></td>
-                      <td height="20px" align="right" bgcolor="gold" th:if="${inv.giftCardCount &gt; 0}"><span style="font-size: 16px" th:text="${inv.giftCardCount}">0</span></td>
-                      <td height="20px" align="right" bgcolor="gold" th:if="${inv.giftCardCount ==   0}"><span style="font-size: 16px">&nbsp;</span></td>
-                    </tr>
+                <td width="100%">
+                  <table width="100%" style="line-height:18px;" border="0" cellspacing="0" cellpadding="0" bgcolor="lightgray">
+                    <tbody style="height:100px; overflow-y:scroll; display:block;">
+                      <tr th:each="inv : ${inviteList}">
+                        <td width="200px"><a style="font-size: 16px" target="_blank" href="#" th:href="${'mailto:' + inv.invitedEmailAddress}" title="last sent" th:title="${#dates.format(inv.timeCreated, 'yyyy-mm-dd HH:mm:ss')}"><span th:text="${inv.invitedEmailAddress}">email</span></a></td>
+                        <td align="right" bgcolor="gold" th:if="${inv.giftCardCount &gt; 0}">&nbsp;<span style="font-size: 16px" th:text="${inv.giftCardCount}">0</span>&nbsp;</td>
+                        <td align="right" bgcolor="gold" th:if="${inv.giftCardCount ==   0}">&nbsp;<span style="font-size: 16px">&nbsp;</span>&nbsp;</td>
+                      </tr>
+                    </tbody>
                   </table>
                 </td>
               </tr>
               <tr>
-                <td><a style="font-size: 18px" href="#" th:href="@{/dependent}">Add&nbsp;clouds&nbsp;for&nbsp;my&nbsp;dependents</a></td>
+                <td bgcolor="lightblue"><a style="font-size: 18px" href="#" th:href="@{/dependent}">Add&nbsp;clouds&nbsp;for&nbsp;my&nbsp;dependents</a></td>
               </tr>
               <tr th:if="${dependentList != null and #lists.size(dependentList) &gt; 0 }">
-                <td><p style="font-size: 16px; color: gray">Dependent clouds</p>
-                  <table>
-                    <tr th:each="dep : ${dependentList}">
-                      <td><span style="font-size: 16px;" th:text="${dep.dependentCloudName}">=name</span></td>
-                    </tr>
+                <td width="100%">
+                  <table width="100%" style="line-height:18px" border="0" cellspacing="0" cellpadding="0" bgcolor="lightgray">
+                    <tbody style="height:120px; overflow-y:scroll; display:block;">
+                      <tr>
+                        <td><span style="font-size: 16px; color: gray">Dependent clouds</span></td>
+                      </tr>
+                      <tr th:each="dep : ${dependentList}">
+                        <td><span style="font-size: 16px;" th:text="${dep.dependentCloudName}">=name</span></td>
+                      </tr>
+                    </tbody>
                   </table>
                 </td>
               </tr>
             </table>
           </td>
-          <td>&nbsp;</td>
+          <td valign="top"><span style="font-size:20px; color:blue">Congratulations!<br/>And welcome to the future of personal data ...</span></td>
         </tr>
       </table>
     </div>
