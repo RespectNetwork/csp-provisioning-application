@@ -324,36 +324,36 @@ public class PersonalCloudController {
             mv.addObject("error", "Cannot connect to DB to lookup information");
             logger.debug("Cannot connect to DB to lookup info...");
 		}
-		logger.debug("Reached here - 5 , errors = " + errors);
+		
 			if(!errors) {
-				logger.debug("Reached here - 10");
+				
 				
 				//need a new unique response id
                 String responseId = UUID.randomUUID().toString();
               //make entries in the invite_response table or giftcode_redemption table that a new cloud has been registered against an invite code and optionally a gif code
-                if((regSession.getInviteCode() != null) && (regSession.getGiftCode() != null)) {
-                	logger.debug("Reached here - 20");
+                if((regSession.getInviteCode() != null) && (regSession.getGiftCode() != null) && !regSession.getGiftCode().isEmpty()) {
+                	
 			    	 logger.debug("Going to create the personal cloud now for gift code path...");
 		                try {
 							registrationManager.registerUser(CloudName.create(cloudName), phone,
 							        email, password);
-							logger.debug("Reached here - 30");
+							
 							AccountDetailsForm accountForm = new AccountDetailsForm();
 			                accountForm.setCloudName(cloudName);
 			                mv.addObject("accountInfo", accountForm);   
 			                
 			                logger.debug("Sucessfully Registered {}", cloudName );
 						} catch (Xdi2ClientException e1) {
-							logger.debug("Reached here - 40");
+							
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						} catch (CSPRegistrationException e1) {
-							logger.debug("Reached here - 50");
+							
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}
 
-		                logger.debug("Reached here - 60");
+		                
                 	//make a new record in the giftcode_redemption table
                 	GiftCodeRedemptionModel giftCodeRedemption = new GiftCodeRedemptionModel();
                 	giftCodeRedemption.setCloudNameCreated(cloudName);
@@ -362,15 +362,15 @@ public class PersonalCloudController {
                 	giftCodeRedemption.setTimeCreated(new Date());
                 	try {
 						dao.getGiftCodeRedemptionDAO().insert(giftCodeRedemption);
-						logger.debug("Reached here - 70");
+						
 					} catch (DAOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-                	logger.debug("Reached here - 80");
                 	
-                } else { //CC path
-                	logger.debug("Reached here - 90");
+                	
+                } else if(regSession.getInviteCode() != null && !regSession.getInviteCode().isEmpty()) { //CC path
+                	
 					BigDecimal amount   = cspModel.getCostPerCloudName();
 					String     desc     = "A personal cloud for " + cloudName;
 	

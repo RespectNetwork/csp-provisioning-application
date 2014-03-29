@@ -30,13 +30,14 @@
                     <tr>
                         <td>
                             <p id="subHeaderText">As part of the terms of the Respect Trust Framework, an email and phone number can only be used with one personal cloud.</p>
+                            
                             <p id="error" th:text="${error}">Session Error</p>
                         </td>
                     </tr>
                     <tr>
                         <td>
-                           <input type="text" name="email" value="" id="email"
-                                placeholder="email address" required="required"  disabled="disabled"
+                           <input type="text" name="email"  id="email"
+                                placeholder="email address" required="required"  
                                 th:value="*{email}" />
                             <p id="error" th:text="${emailError}">Email Error</p>                                                
                         </td>

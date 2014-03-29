@@ -15,31 +15,31 @@ public class RegistrationSession implements Serializable {
     
     
     /** Session Id used in Registration */
-    private String sessionId;
+    private String sessionId = null;
     
     /** CloudName used in Registration */
-    private String cloudName;
+    private String cloudName = null;
 
     /** Verified Email used in Registration */
-    private String verifiedEmail;
+    private String verifiedEmail = null;
 
     /** Verified Mobile Phone used in Registration */
-    private String verifiedMobilePhone;
+    private String verifiedMobilePhone ;
     
     /** Password */
-    private String password;
+    private String password = null;
     
     /** invite code */
-    private String inviteCode;
+    private String inviteCode = null;
     
     /** gift code */
-    private String giftCode;
+    private String giftCode  = null;
 
     /** invite form */
-    private InviteForm inviteForm;
+    private InviteForm inviteForm = null;
 
     /** invite form */
-    private DependentForm dependentForm;
+    private DependentForm dependentForm = null;
     
     /**
      * @return the SessionId

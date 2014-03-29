@@ -155,7 +155,7 @@ public class RegistrationController {
             UserDetailsForm userDetailsForm = new UserDetailsForm();
             try {
 				invite = dao.getInviteDAO().get(inviteCode);
-				if(invite != null && (invite.getInvitedEmailAddress() != null || invite.getInvitedEmailAddress().trim().isEmpty() )) {
+				if(invite != null && (invite.getInvitedEmailAddress() != null && !invite.getInvitedEmailAddress().trim().isEmpty() )) {
 					userDetailsForm.setEmail(invite.getInvitedEmailAddress());
 				} else {
 					logger.error("This invite object does not have an email address or another valid identifier associated to it. Sending user to the signup page.");
@@ -324,7 +324,7 @@ public class RegistrationController {
     		BigDecimal amount   = cspModel.getCostPerCloudName();
     		String     desc     = "Personal cloud  " + regSession.getCloudName();
     		mv.addObject("cspModel"    , cspModel);
-    		if(regSession.getGiftCode() != null){
+    		if(regSession.getGiftCode() != null && !regSession.getGiftCode().isEmpty()){
     			mv.addObject("giftCode"  ,regSession.getGiftCode());
     		}
     		else {
