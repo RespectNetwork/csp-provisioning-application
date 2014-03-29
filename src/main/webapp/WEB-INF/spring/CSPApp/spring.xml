@@ -102,6 +102,16 @@
         <beans:constructor-arg value="${csp.cspInviteURL}"/>
         <beans:qualifier value="cspInviteURL"/>
     </beans:bean>
+    
+    <beans:bean id="cspContactPhone" class="java.lang.String">
+        <beans:constructor-arg value="${csp.contactPhone}"/>
+        <beans:qualifier value="cspContactPhone"/>
+    </beans:bean>
+    
+    <beans:bean id="cspContactEmail" class="java.lang.String">
+        <beans:constructor-arg value="${csp.contactEmail}"/>
+        <beans:qualifier value="cspContactEmail"/>
+    </beans:bean>
   
     <!-- CSP  Configuration -->
     <beans:bean name="csp" class="net.respectnetwork.sdk.csp.BasicCSPInformation">

@@ -294,31 +294,19 @@ public class PersonalCloudDependentController
 		}
 		
 		//register the dependent cloudname
-		try {
-			CloudNumber dependentCloudNumber = theManager.registerUser(CloudName.create(dependentForm.getDependentCloudName()), "", "", dependentForm.getDependentCloudPassword());
-			if(dependentCloudNumber != null) {
-				logger.info("Dependent Cloud Number " + dependentCloudNumber.toString());
-			} else {
-				logger.error("Dependent Cloud Could not be registered");
-				errors = true;
-			}
-		} catch (Xdi2ClientException e) {
-			
-			e.printStackTrace();
-			logger.error("Could not create dependent cloud for " +dependentForm.getDependentCloudName() );
-			logger.error(e.getMessage());
-            errors = true;
-		} catch (CSPRegistrationException e) {
-			
-			logger.error("Could not create dependent cloud for " +dependentForm.getDependentCloudName() );
-			logger.error(e.getMessage());
+	
+		CloudNumber dependentCloudNumber = theManager.registerDependent(CloudName.create(cloudName), regSession.getPassword(), CloudName.create(dependentForm.getDependentCloudName()),  dependentForm.getDependentCloudPassword(),dependentForm.getDependentBirthDate());
+		if(dependentCloudNumber != null) {
+			logger.info("Dependent Cloud Number " + dependentCloudNumber.toString());
+		} else {
+			logger.error("Dependent Cloud Could not be registered");
 			errors = true;
-			
 		}
+		 
 		if(errors){
 			mv = new ModelAndView("dependentSubmit");
 
-			mv.addObject("error"       , "Failed to process payment. Please try again!");
+			mv.addObject("error"       , "Failed to register dependent cloud. " + theManager.getCSPContactInfo());
 			mv.addObject("cspModel"    , cspModel);
 			mv.addObject("javaScript"  , StripePaymentProcessor.getJavaScript(cspModel, amount, desc));
 

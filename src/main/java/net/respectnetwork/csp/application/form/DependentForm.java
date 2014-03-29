@@ -17,6 +17,8 @@ public class DependentForm
 	private boolean consentFlag;
 	private String consentText;
 	
+	private String dependentBirthDate ;
+	
 	
 	public DependentForm()
 	{
@@ -25,7 +27,8 @@ public class DependentForm
 		this.giftCode = null;
 		this.paymentByCC = true;
 		this.consentFlag = false;
-		this.consentText = "I agree to the T&C for Dependent Personal Clouds.";
+		this.consentText = "I agree to the Terms and Conditions for Dependent Personal Clouds.";
+		dependentBirthDate = null;
 	}
 
 	
@@ -138,5 +141,15 @@ public class DependentForm
 
 	public void setConsentText(String consentText) {
 		this.consentText = consentText;
+	}
+
+
+	public String getDependentBirthDate() {
+		return dependentBirthDate;
+	}
+
+
+	public void setDependentBirthDate(String dependentBirthDate) {
+		this.dependentBirthDate = dependentBirthDate;
 	}
 }

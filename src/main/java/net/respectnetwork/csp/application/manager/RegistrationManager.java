@@ -1,8 +1,14 @@
 package net.respectnetwork.csp.application.manager;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.net.URLEncoder;
+import java.security.GeneralSecurityException;
+import java.security.PrivateKey;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Currency;
 import java.util.Date;
 import java.util.HashMap;
@@ -22,12 +28,17 @@ import net.respectnetwork.sdk.csp.validation.CSPValidationException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Required;
 
 import xdi2.client.exceptions.Xdi2ClientException;
+import xdi2.client.util.XDIClientUtil;
 import xdi2.core.xri3.CloudName;
 import xdi2.core.xri3.CloudNumber;
 import xdi2.core.xri3.XDI3Segment;
+import xdi2.discovery.XDIDiscoveryClient;
+import xdi2.discovery.XDIDiscoveryResult;
 
 public class RegistrationManager {
     
@@ -82,6 +93,18 @@ public class RegistrationManager {
     
     /** Controls whether an invite code is required for registration or not */
     private boolean requireInviteCode = true;
+    
+    /** 
+     * CSP phone
+     */
+    private String cspContactPhone;
+    
+    /** 
+     * CSP email
+     */
+    private String cspContactEmail;
+    
+    
     
     /**
      * Get CSP Registrar
@@ -424,5 +447,162 @@ public class RegistrationManager {
 	public void setRequireInviteCode(boolean requireInviteCode) {
 		this.requireInviteCode = requireInviteCode;
 	}
+	
+	public CloudNumber registerDependent(CloudName guardianCloudName , String guardianToken , CloudName dependentCloudName,  String dependentToken , String s_dependentBirthDate){
+		
+				try {
+					CloudNumber depCloudNumber = this.registerUser(dependentCloudName, " ", " ", dependentToken);
+					if(depCloudNumber == null) {
+						logger.debug("Dependent Cloud did not get registered successfully");
+						return null;
+					}
+				} catch (Xdi2ClientException e1) {
+					
+					e1.printStackTrace();
+					return null;
+				} catch (CSPRegistrationException e1) {
+					
+					e1.printStackTrace();
+					return null;
+				}
+				// Common Data
+
+				CloudNumber guardianCloudNumber = null;
+		        CloudNumber dependentCloudNumber = null;
+		        PrivateKey guardianPrivateKey = null;
+		        PrivateKey dependentPrivateKey = null;
+				boolean withConsent = true;
+				
+				Date dependentBirthDate = null;
+				
+				BasicCSPInformation cspInformation = (BasicCSPInformation)cspRegistrar.getCspInformation();
+				
+				// Resolve Cloud Numbers from Name
+				
+		        XDIDiscoveryClient discovery = cspInformation.getXdiDiscoveryClient();
+
+		        try {
+		            SimpleDateFormat format = 
+		                    new SimpleDateFormat("MM/dd/yyyy");
+		            dependentBirthDate = format.parse(s_dependentBirthDate);
+		        } catch (ParseException e) {
+	                logger.debug("Invalid Dependent BirthDate.");
+	                return null;
+		        }
+
+				for (int tries = 0 ; tries < 5 ; tries++) {
+
+					try {
+						logger.debug("Waiting for five seconds to allow for the newly registered dependent name in discovery");
+						Thread.sleep(5000);
+					} catch (InterruptedException e1) {
+						
+					}
+		        
+			        try {
+			            XDIDiscoveryResult guardianRegistry = discovery.discoverFromRegistry(
+			                    XDI3Segment.create(guardianCloudName.toString()), null);
+			            
+			            XDIDiscoveryResult dependentRegistry = discovery.discoverFromRegistry(
+			                    XDI3Segment.create(dependentCloudName.toString()), null);
+			            
+			            guardianCloudNumber = guardianRegistry.getCloudNumber();
+			            dependentCloudNumber = dependentRegistry.getCloudNumber();
+			            
+			            String guardianXdiEndpoint = guardianRegistry.getXdiEndpointUri();
+			            String dependentXdiEndpoint = dependentRegistry.getXdiEndpointUri();
+	
+			            guardianPrivateKey = XDIClientUtil.retrieveSignaturePrivateKey(guardianCloudNumber, guardianXdiEndpoint, guardianToken);
+			            logger.debug("GuardianPrivateKey Algo: " + guardianPrivateKey.getAlgorithm());
+	
+			            dependentPrivateKey = XDIClientUtil.retrieveSignaturePrivateKey(dependentCloudNumber, dependentXdiEndpoint, dependentToken);
+			            logger.debug("DependentPrivateKey Algo: " + dependentPrivateKey.getAlgorithm());
+			            
+			            if (guardianCloudNumber == null || dependentCloudNumber == null) {
+			                logger.debug("Un-registered Cloud Name.");
+			                continue;
+			            }
+			            break;
+	
+			        } catch (Xdi2ClientException e) {
+			            logger.debug("Problem with Cloud Name Provided.");
+			            e.printStackTrace();
+			            logger.debug(e.getMessage());
+			            continue;
+			        } catch (GeneralSecurityException gse){
+			        	logger.debug("Problem retrieving signatures.");
+			        	gse.printStackTrace();
+			        	logger.debug(gse.getMessage());
+			            continue;
+			        }
+			        
+				}
+				if(guardianCloudNumber != null && dependentCloudNumber != null) {
+			        try {
+			            // Set User Cloud Data
+			        	cspRegistrar.setGuardianshipInCloud(cspInformation, guardianCloudNumber, dependentCloudNumber, dependentBirthDate, withConsent, guardianToken, guardianPrivateKey);
+			    		
+			    		// Set CSP Cloud Data
+			        	cspRegistrar.setGuardianshipInCSP(cspInformation, guardianCloudNumber, dependentCloudNumber, dependentBirthDate, withConsent, guardianPrivateKey);
+			    	    
+			    	    // Set MemberGraph Data
+			        	cspRegistrar.setGuardianshipInRN(cspInformation, guardianCloudNumber, dependentCloudNumber, dependentBirthDate, withConsent, guardianPrivateKey);
+			        	
+			        	/*
+			    	     	    
+			    	    //Check the Results
+			    	    CloudNumber[] theDependents = cspRegistrar.getMyDependentsInCSP(cspInformation, guardianCloudNumber);
+			    	    
+			    	    if (theDependents == null) {
+			    	    	logger.debug("No Dependents found for " + guardianCloudName.toString()); 	        
+			    	    } else {	    
+			        	    for(int i=0; i < theDependents.length; i++){
+			        	    	logger.debug("Dependent: " + i + " = " + theDependents[i]);
+			        	    }
+			    	    }
+			    	    
+			    	    
+			            CloudNumber[] theGuardians = cspRegistrar.getMyGuardiansInCSP(cspInformation, dependentCloudNumber);
+			            
+			            if (theGuardians == null) {
+			            	logger.debug("No Guardians found for " + dependentCloudName.toString() );         
+			            } else {        
+			                for(int i=0; i < theGuardians.length; i++){
+			                	logger.debug("Guardian: " + i + " = " + theGuardians[i]);
+			                }
+			            }
+			            */
+			    	    
+			        } catch (Xdi2ClientException e) {
+			        	logger.debug("Xdi2ClientException: " + e.getMessage());
+			            e.printStackTrace();
+			        }
+				}
+		return dependentCloudNumber;
+	}
+	
+	/**
+     * @param phone to set
+     */
+    @Autowired
+    @Qualifier("cspContactPhone")
+    public void setCspContactPhone(String cspPhone) {
+        this.cspContactPhone = cspPhone;
+    }
+    
+    /**
+     * @param email to set
+     */
+    @Autowired
+    @Qualifier("cspContactEmail")
+    public void setCspContactEmail(String cspEmail) {
+        this.cspContactEmail = cspEmail;
+    }
+    
+    public String getCSPContactInfo() {
+    	
+    	return "Please contact the CSP at " + this.cspContactPhone + " or via email at " + this.cspContactEmail;
+    }
+    
 
 }
