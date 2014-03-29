@@ -3,6 +3,7 @@ package net.respectnetwork.csp.application.controller;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import net.respectnetwork.csp.application.dao.DAOFactory;
 import net.respectnetwork.csp.application.form.SignUpForm;
 import net.respectnetwork.csp.application.invite.InvitationManager;
 
@@ -116,10 +117,18 @@ public class HomeController {
             	
                 if (inviterCloudName == null) {
                     mv.addObject("error", "Invalid Invite Code: " + inviteCode);  
+                    logger.debug("Inviter cloud name is null. So, cannot proceed.");
                 } else {
+                	logger.debug("Valid invite code found.");
                 	SignUpForm.setInviteCode(inviteCode);
                 	if(giftCode != null) {
-                		SignUpForm.setGiftCode(giftCode);
+                		if ( DAOFactory.getInstance().getGiftCodeRedemptionDAO().get(giftCode) != null )
+                		{
+                			logger.debug("Invalid gift code. This gift code has already been redeemed. Id=" + giftCode);
+                			mv.addObject("error", "This gift code has already been redeemed. So, a new personal cloud cannot be registered using this gift code. Id=" + giftCode); 
+                		} else {
+                			SignUpForm.setGiftCode(giftCode);
+                		}
                 	}
                 	
                 }    
