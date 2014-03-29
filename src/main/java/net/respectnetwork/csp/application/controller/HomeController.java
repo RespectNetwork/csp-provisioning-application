@@ -116,6 +116,7 @@ public class HomeController {
             	inviterCloudName = invitationManager.getInviterName(inviteCode);
             	
                 if (inviterCloudName == null) {
+                	mv = new ModelAndView("generalErrorPage");
                     mv.addObject("error", "Invalid Invite Code: " + inviteCode);  
                     logger.debug("Inviter cloud name is null. So, cannot proceed.");
                 } else {
@@ -125,6 +126,7 @@ public class HomeController {
                 		if ( DAOFactory.getInstance().getGiftCodeRedemptionDAO().get(giftCode) != null )
                 		{
                 			logger.debug("Invalid gift code. This gift code has already been redeemed. Id=" + giftCode);
+                			mv = new ModelAndView("generalErrorPage");
                 			mv.addObject("error", "This gift code has already been redeemed. So, a new personal cloud cannot be registered using this gift code. Id=" + giftCode); 
                 		} else {
                 			SignUpForm.setGiftCode(giftCode);
@@ -138,6 +140,7 @@ public class HomeController {
             	cloudName = invitationManager.getCloudNameFromInviterCode(selfInviteCode, cspName);
                 
                 if (cloudName == null) {
+                	mv = new ModelAndView("generalErrorPage");
                     mv.addObject("error", "Invalid Inviter Code: " + selfInviteCode);  
                 } else {
                     SignUpForm.setCloudName(cloudName);

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta charset="utf-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+
+<title></title>
+<meta name="description" content="Invite "/>
+
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+
+<link rel="stylesheet" href="../../css/csp.css" th:href="@{/css/csp.css}"/>
+<script src="../../js/libs/modernizr-2.0.6.min.js" th:src="@{/js/libs/modernizr-2.0.6.min.js}"></script>
+
+</head>
+
+<body>
+    <div id="fullpage">
+        <div id="header">Respect Network</div>
+        <div id="content">
+            
+                <table id="errorTable">
+                    
+                    
+                    <tr>
+                        <td>
+                            <p id="error" th:text="${error}">System Error</p>                        
+                        </td>
+                    </tr>
+                </table>
+        </div>
+        <div id="footer">Acme Cloud Company Inc.</div>
+    </div>
+</body>
+</html>
