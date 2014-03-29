@@ -183,6 +183,10 @@ public class PersonalCloudController {
         } else if (regSession.getCloudName() != null){
         	cloudName = CloudName.create(regSession.getCloudName());
         }
+	if( cloudName == null )
+	{
+		return processLogout(request, model);
+	}
         
         net.respectnetwork.sdk.csp.CSP myCSP = registrationManager.getCspRegistrar();
         if(myCSP != null){
@@ -259,7 +263,7 @@ public class PersonalCloudController {
 		this.personalCloudManager = personalCloudManager;
 	}
 	
-	@RequestMapping(value = "/logout", method = RequestMethod.POST)
+	@RequestMapping(value = "/logout", method = { RequestMethod.GET, RequestMethod.POST})
 	public ModelAndView processLogout(HttpServletRequest request, Model model) {
 		logger.info("processing logout");
         
