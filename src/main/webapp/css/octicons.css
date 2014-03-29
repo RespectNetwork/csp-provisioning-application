@@ -1,0 +1,13 @@
+@font-face{
+font-family : 'octicons';
+font-weight : normal;
+font-style  : normal;
+src : url("http://github.global.ssl.fastly.net/assets/octicons-d341523a70725da6c351a2c6f18be0ded2dc2f1d.eot");
+src : url("http://github.global.ssl.fastly.net/assets/octicons-d341523a70725da6c351a2c6f18be0ded2dc2f1d.eot#iefix") format("embedded-opentype"),
+      url("http://github.global.ssl.fastly.net/assets/octicons-9bbae08c1cd7e286a9ccaff26ec329833bd7fd96.woff") format("woff"),
+      url("http://github.global.ssl.fastly.net/assets/octicons-60cf83937357c2baddc516db0df165bab9d0bcfd.ttf") format("truetype"),
+      url("http://github.global.ssl.fastly.net/assets/octicons-52a571b716675ae3a40e1324bf28ea1167d59ad7.svg#octicons") format("svg")
+}
+.octicon{font:normal normal 16px octicons;line-height:1;display:inline-block;text-decoration:none;-webkit-font-smoothing:antialiased}
+.mega-octicon{font:normal normal 32px octicons;line-height:1;display:inline-block;text-decoration:none;-webkit-font-smoothing:antialiased}
+.octicon-log-out:before{content:'\f032'}

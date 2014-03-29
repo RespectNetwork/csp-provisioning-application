@@ -263,7 +263,7 @@ public class PersonalCloudController {
 		this.personalCloudManager = personalCloudManager;
 	}
 	
-	@RequestMapping(value = "/logout", method = RequestMethod.POST)
+	@RequestMapping(value = "/logout", method = { RequestMethod.GET, RequestMethod.POST})
 	public ModelAndView processLogout(HttpServletRequest request, Model model) {
 		logger.info("processing logout");
         
