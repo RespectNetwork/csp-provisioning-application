@@ -50,8 +50,9 @@
               			</script>
             		</td>
                     </tr>
+                    <div th:if="${giftCode}">
+                    <tr >
                     
-                    <tr>
                         <td>
                             Gift Code
                             <input type="text" name="giftCode" th:value="${giftCode}"
@@ -60,7 +61,7 @@
                                             
                         </td>
                     </tr>
-                    
+                    </div>
                     <tr>
                         <td>
                             <input style="width: 20px;" type="checkbox"
