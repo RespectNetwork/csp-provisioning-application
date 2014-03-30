@@ -39,7 +39,7 @@
       </style>
     -->
   <link rel="stylesheet" media="all" href="css/styles.css" type="text/css"/>
-  <link rel="stylesheet" media="all" href="css/octicons.css" type="text/css"/>
+  <link href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet"/>
   <script th:if="${inviteList != null}" th:text="${'var inviteListSize = ' + #lists.size(inviteList) + ';'}">var inviteListSize = 0;</script>
   <script th:if="${inviteList == null}">var inviteListSize = 0;</script>
   <script src="js/libs/home.js"></script>
@@ -53,7 +53,7 @@
           <div id="logo">
             <img src="img/logo.png" alt="Happy Cloud Co."/>
           </div>
-          <span id="topname">Welcome&nbsp;&nbsp;<span th:text="${cloudName}">=BobaFett</span>&nbsp;&nbsp;<a href="/logout" th:href="@{/logout}"><span class="octicon octicon-log-out"></span></a></span>
+          <span id="topname">Welcome&nbsp;&nbsp;<span th:text="${cloudName}">=BobaFett</span>&nbsp;&nbsp;<a title="sign out" href="/logout" th:href="@{/logout}"><span class="fa fa-sign-out fa-1x"></span></a></span>
         </div>
       </div>
       <div class="section group">
@@ -81,7 +81,7 @@
                 <a href="javascript:showInviteList(false)" id="showLess" name="showLess" style="display:none">Show Less</a>
               </div>
               <div th:each="inv : ${inviteList}" style="display:block;" id="inviteList" name="inviteList">
-                <div class="col span_6_of_7"><a target="_blank" href="#" th:href="${'mailto:' + inv.invitedEmailAddress}" title="last sent" th:title="${#dates.format(inv.timeCreated, 'yyyy-MM-DD HH:mm:ss')}"><span th:text="${inv.invitedEmailAddress}">anotheremail@anotherdomain.com</span></a></div>
+                <div class="col span_6_of_7"><a target="_blank" href="#" th:href="${'mailto:' + inv.invitedEmailAddress}" title="last sent" th:title="${#dates.format(inv.timeCreated, 'yyyy-MM-dd HH:mm:ss')}"><span th:text="${inv.invitedEmailAddress}">anotheremail@anotherdomain.com</span></a></div>
                 <div class="col span_1_of_7" th:if="${inv.giftCardCount &gt; 0}"><span th:text="${inv.giftCardCount}">3</span></div>
                 <div class="col span_1_of_7" th:if="${inv.giftCardCount ==   0}"></div>
               </div>

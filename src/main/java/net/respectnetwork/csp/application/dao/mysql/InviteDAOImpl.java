@@ -109,7 +109,7 @@ public class InviteDAOImpl extends BaseDAOImpl implements InviteDAO
 
 		try
 		{
-			sql = "select lower(invited_email_address), max(time_created), (select count(*) from giftcode where invite_id = p.invite_id) from invite p where inviter_cloudname = ? group by lower(invited_email_address) order by lower(invited_email_address)";
+			sql = "select lower(invited_email_address), max(time_created), (select count(*) from giftcode where invite_id = p.invite_id) from invite p where inviter_cloudname = ? group by lower(invited_email_address) order by max(time_created) desc, lower(invited_email_address)";
 
 			logger.info(sql + " : " + inviterCloudName);
 			stmt = conn.prepareStatement(sql);
