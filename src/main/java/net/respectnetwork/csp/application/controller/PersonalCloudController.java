@@ -177,6 +177,7 @@ public class PersonalCloudController {
 		
         ModelAndView mv = null; 
         CloudName cloudName = null;
+        boolean errors = false;
         
         if(request.getParameter("cloudname") != null){
         	cloudName = CloudName.create(request.getParameter("cloudname"));
@@ -200,42 +201,47 @@ public class PersonalCloudController {
 				if(secretToken == null || secretToken.isEmpty()){
 						secretToken = request.getParameter("secrettoken") ;
 				}
-				myCSP.authenticateInCloud(cloudNumber,secretToken);
-				
-		        if(regSession != null && regSession.getCloudName() == null){
-		        	
-		        	if (regSession.getSessionId() == null || regSession.getSessionId().isEmpty() ) {
-		        		String sessionId =  UUID.randomUUID().toString();
-		        		regSession.setSessionId(sessionId);
-		        		logger.info("Creating a new regSession with session id =" + sessionId);
-		        	}
-			        logger.info("Setting cloudname as  " + request.getParameter("cloudname"));
-			        if(request.getParameter("cloudname") != null) {
-			        	regSession.setCloudName(request.getParameter("cloudname"));
+				if (cloudNumber != null) {
+					myCSP.authenticateInCloud(cloudNumber,secretToken);
+					
+			        if(regSession != null && regSession.getCloudName() == null){
+			        	
+			        	if (regSession.getSessionId() == null || regSession.getSessionId().isEmpty() ) {
+			        		String sessionId =  UUID.randomUUID().toString();
+			        		regSession.setSessionId(sessionId);
+			        		logger.info("Creating a new regSession with session id =" + sessionId);
+			        	}
+				        logger.info("Setting cloudname as  " + request.getParameter("cloudname"));
+				        if(request.getParameter("cloudname") != null) {
+				        	regSession.setCloudName(request.getParameter("cloudname"));
+				        }
+				        //logger.info("Setting secret token as  " + request.getParameter("secrettoken"));
+				        if(request.getParameter("secrettoken") != null){
+				        	regSession.setPassword(request.getParameter("secrettoken"));
+				        }
 			        }
-			        //logger.info("Setting secret token as  " + request.getParameter("secrettoken"));
-			        if(request.getParameter("secrettoken") != null){
-			        	regSession.setPassword(request.getParameter("secrettoken"));
-			        }
-		        }
-		        mv = getCloudPage(request, regSession.getCloudName());
-		        logger.info("Successfully authenticated to the personal cloud for " + request.getParameter("cloudname") );
+			        mv = getCloudPage(request, regSession.getCloudName());
+			        logger.info("Successfully authenticated to the personal cloud for " + request.getParameter("cloudname") );
+				} else {
+					errors = true;
+				}
 			} catch (Xdi2ClientException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-				logger.info("Authenticating to personal cloud failed for " + request.getParameter("cloudname") );
-				String cspHomeURL = request.getContextPath();
-	            String formPostURL = cspHomeURL + "/cloudPage";          
-	            mv = new ModelAndView("login");
-	            mv.addObject("postURL", formPostURL);
+				errors = true;
+				logger.debug("Authenticating to personal cloud failed for " + request.getParameter("cloudname") );
 			}
         	
         } else {
         	logger.info("CSP Object is null. " );
+        	errors = true;
+        }
+        if(errors){
         	String cspHomeURL = request.getContextPath();
             String formPostURL = cspHomeURL + "/cloudPage";          
             mv = new ModelAndView("login");
             mv.addObject("postURL", formPostURL);
+        	
         }
         
         
