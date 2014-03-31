@@ -158,6 +158,10 @@
         <beans:property name="initialSize" value="${db.minPoolSize}"/>
         <beans:property name="maxActive" value="${db.maxPoolSize}"/>
         <beans:property name="removeAbandoned" value="true"/>
+        <beans:property name="validationQuery" value="select count(*) from csp where 1 = 0"/>
+        <beans:property name="testOnBorrow" value="true"/>
+        
+        
     </beans:bean>
 
     <beans:bean id="cspDAOImpl" class="net.respectnetwork.csp.application.dao.mysql.CSPDAOImpl" scope="singleton">

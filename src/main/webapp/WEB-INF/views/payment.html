@@ -84,7 +84,7 @@
                           + Personal cloud hosting for one year for $25 USD
                         </td>
                     </tr>
-                    <tr>
+                    
                     <tr>
                         <td>
                             <input  type="checkbox"
@@ -93,7 +93,8 @@
                                             
                         </td>
                     </tr>
-                    
+                    <div th:unless="${giftCode}">
+                    <tr>
                     <td  th:utext="${javaScript}">
               			<script               
               				src="https://checkout.stripe.com/checkout.js"
@@ -106,6 +107,8 @@
               			</script>
             		</td>
                     </tr>
+                    </div> <!-- if not giftcode -->
+                    
                     <div th:if="${giftCode}">
                     <tr >
                     
@@ -117,7 +120,14 @@
                                             
                         </td>
                     </tr>
-                    </div>
+                    <tr>
+                       <td>
+                        <div class="col span_11_of_12">                       	
+                        	<button type="submit" name="submit" id="submit" class="btn btn-default">Next</button>
+                        </div>
+                      </td>
+                    </tr>
+                    </div> <!-- end if giftCode -->
                     
                     
                 </table>
