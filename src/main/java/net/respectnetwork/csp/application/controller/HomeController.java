@@ -1,11 +1,14 @@
 package net.respectnetwork.csp.application.controller;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import net.respectnetwork.csp.application.dao.DAOFactory;
 import net.respectnetwork.csp.application.form.SignUpForm;
 import net.respectnetwork.csp.application.invite.InvitationManager;
+import net.respectnetwork.csp.application.model.GiftCodeModel;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -99,6 +102,7 @@ public class HomeController {
         
         ModelAndView mv = null; 
         mv = new ModelAndView("signup");
+        boolean errors = false;
         
         try {
            
@@ -129,7 +133,21 @@ public class HomeController {
                 			mv = new ModelAndView("generalErrorPage");
                 			mv.addObject("error", "This gift code has already been redeemed. So, a new personal cloud cannot be registered using this gift code. Id=" + giftCode); 
                 		} else {
-                			SignUpForm.setGiftCode(giftCode);
+                			boolean codeMatch = false;
+                			List<GiftCodeModel> giftCodes = DAOFactory.getInstance().getGiftCodeDAO().list(inviteCode);
+                			for(GiftCodeModel gift : giftCodes){
+                				if(gift.getGiftCodeId().equals(giftCode)){
+                					codeMatch = true;
+                					break;
+                				}
+                			}
+                			if(codeMatch) {
+                				SignUpForm.setGiftCode(giftCode);
+                			} else {
+                				logger.debug("Invalid gift code. Please check the URL. Id=" + giftCode);
+                    			mv = new ModelAndView("generalErrorPage");
+                    			mv.addObject("error", "Invalid gift code. Please check the URL. Id=" + giftCode);                				
+                			}
                 		}
                 	}
                 	
