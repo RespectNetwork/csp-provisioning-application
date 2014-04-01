@@ -35,7 +35,7 @@ To  customize your CSP's configuration use the following config. mamnagement pat
 
  1. By default csp.default.properties is applied.
 
- 2. Setting the -Dregistration.env System Property e.g. -Dregistration.env=dev will use the registration.${registration.env}.properties. Valid entries are dev, stage or ote.
+ 2. Setting the -Dcsp.env System Property e.g. -Dcsp.env=dev will use the registration.${csp.env}.properties. Valid entries are dev, stage or ote.
 
  3. You can also  specify  a property file outside of the WAR using -Dcspprop.location=path_to_prop_file. The csp.properties file in this directory will be used. This is intended for use in production where  we do  not want sensitive information in github.
 
