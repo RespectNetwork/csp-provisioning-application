@@ -178,7 +178,7 @@ public class PersonalCloudController {
         ModelAndView mv = null; 
         CloudName cloudName = null;
         boolean errors = false;
-        
+        logger.info("Cloudname from request parameter " + request.getParameter("cloudname"));
         if(request.getParameter("cloudname") != null){
         	cloudName = CloudName.create(request.getParameter("cloudname"));
         } else if (regSession.getCloudName() != null){
@@ -188,9 +188,13 @@ public class PersonalCloudController {
 	{
 		return processLogout(request, model);
 	}
-        
+	logger.info("Logging in for cloudname " + cloudName.toString());
         net.respectnetwork.sdk.csp.CSP myCSP = registrationManager.getCspRegistrar();
+        if(myCSP == null){
+        	logger.info("myCSP is null!");
+        }
         if(myCSP != null){
+        	logger.info("CSP Info:" + myCSP.toString());
         	CloudNumber cloudNumber;
 			try {
 				cloudNumber = myCSP.checkCloudNameAvailableInRN(cloudName);
