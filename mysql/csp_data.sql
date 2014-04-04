@@ -9,8 +9,8 @@ insert into csp
 ,	time_created
 )
 values 
-(	'@testcsp'
-,	'Test CSP'
+(	'+testcsp'
+,	'STRIPE'
 ,	'https://checkout.stripe.com/checkout.js'
 ,	'pk_test_BWUFT9rT63JEL5829geBwdVS'
 ,	'sk_test_edYuRLMvloToRshYM49kO1Gz'
@@ -29,8 +29,8 @@ insert into csp
 ,	time_created
 )
 values 
-(	'@testcsp1'
-,	'Test CSP 1'
+(	'+paoga'
+,	'SAGEPAY'
 ,	'https://checkout.stripe.com/checkout.js'
 ,	'pk_test_BWUFT9rT63JEL5829geBwdVS'
 ,	'sk_test_edYuRLMvloToRshYM49kO1Gz'

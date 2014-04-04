@@ -18,7 +18,8 @@ public class UserDetailsForm {
     /** Password */
     private String password; 
     
-       
+    /** Cloudname */
+    private String cloudName;    
 
     /**
      * @return the email
@@ -82,7 +83,8 @@ public class UserDetailsForm {
         builder.append("MessageForm [email=").append(email)
                 .append(", mobilePhone=").append(mobilePhone)
                 .append(", rnTandC=").append(rnTandC)
-                .append(", password=").append(password)
+                //.append(", password=").append(password)
+                .append(", cloudName=").append(cloudName)
                 .append("]");
         return builder.toString();
     }
@@ -113,11 +115,20 @@ public class UserDetailsForm {
                 .append(mobilePhone, other.mobilePhone)
                 .append(rnTandC, other.rnTandC)
                 .append(password, other.password)
+                .append(cloudName, other.cloudName)
                 .isEquals();
         } else{
             return false;
         }
     }
+   public String getCloudName()
+   {
+      return cloudName;
+   }
+   public void setCloudName(String cloudName)
+   {
+      this.cloudName = cloudName;
+   }
     
     
     

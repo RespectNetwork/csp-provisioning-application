@@ -1,6 +1,5 @@
 package net.respectnetwork.csp.application.controller;
 
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -22,12 +21,12 @@ import net.respectnetwork.csp.application.manager.PersonalCloudManager;
 import net.respectnetwork.csp.application.manager.RegistrationManager;
 import net.respectnetwork.csp.application.manager.StripePaymentProcessor;
 import net.respectnetwork.csp.application.model.CSPModel;
+import net.respectnetwork.csp.application.model.GiftCodeModel;
 import net.respectnetwork.csp.application.model.GiftCodeRedemptionModel;
 import net.respectnetwork.csp.application.model.InviteResponseModel;
 import net.respectnetwork.csp.application.model.PaymentModel;
 import net.respectnetwork.csp.application.session.RegistrationSession;
 import net.respectnetwork.sdk.csp.exception.CSPRegistrationException;
-
 import net.respectnetwork.csp.application.dao.DAOFactory;
 import net.respectnetwork.csp.application.model.InviteModel;
 import net.respectnetwork.csp.application.model.DependentCloudModel;
@@ -58,405 +57,559 @@ import com.stripe.exception.InvalidRequestException;
 import com.stripe.model.Charge;
 
 @Controller
-public class PersonalCloudController {
+public class PersonalCloudController
+{
 
-	/** CLass Logger */
-	private static final Logger logger = LoggerFactory
-			.getLogger(PersonalCloudController.class);
-	
-	/** 
-     * Invitation Service : to create invites and gift codes
-     */
-    private InvitationManager invitationManager;
-    
-    /**
-     * Registration Service : to register dependent clouds
-     */
-    private RegistrationManager registrationManager;
-    
-    /**
-     * Personal Cloud Service : to authenticate to personal cloud and get/set information from/to the personal cloud
-     */
-    private PersonalCloudManager personalCloudManager;
-    
-    
-    /** 
-     * CSP Name
-     */
-    private String cspName;
-    
-    /** Registration Session */
-    private RegistrationSession regSession;
-    
-    /** 
-     * CSP Cloud Name
-     */
-    private String cspCloudName;
+   /** CLass Logger */
+   private static final Logger  logger = LoggerFactory
+                                             .getLogger(PersonalCloudController.class);
 
-    public String getCspCloudName()
-    {
-        return this.cspCloudName;
-    }
+   /**
+    * Invitation Service : to create invites and gift codes
+    */
+   private InvitationManager    invitationManager;
 
-    @Autowired
-    @Qualifier("cspCloudName")
-    public void setCspCloudName( String cspCloudName )
-    {
-        this.cspCloudName = cspCloudName;
-    }
+   /**
+    * Registration Service : to register dependent clouds
+    */
+   private RegistrationManager  registrationManager;
 
-    /**
-     * @return the invitationManager
-     */
-    public InvitationManager getInvitationManager() {
-        return invitationManager;
-    }
+   /**
+    * Personal Cloud Service : to authenticate to personal cloud and get/set
+    * information from/to the personal cloud
+    */
+   private PersonalCloudManager personalCloudManager;
 
+   /**
+    * CSP Name
+    */
+   private String               cspName;
 
-    /**
-     * @param invitationManager the invitationManager to set
-     */
-    @Autowired
-    @Required
-    public void setInvitationManager(InvitationManager invitationManager) {
-        this.invitationManager = invitationManager;
-    }
+   /** Registration Session */
+   private RegistrationSession  regSession;
 
+   /**
+    * CSP Cloud Name
+    */
+   private String               cspCloudName;
 
-	/**
-     * @return the csp
-     */
-    public String getCspName() {
-        return cspName;
-    }
+   public String getCspCloudName()
+   {
+      return this.cspCloudName;
+   }
 
+   @Autowired
+   @Qualifier("cspCloudName")
+   public void setCspCloudName(String cspCloudName)
+   {
+      this.cspCloudName = cspCloudName;
+   }
 
-    /**
-     * @param csp the cspName to set
-     */
-    @Autowired
-    @Qualifier("cspName")
-    public void setCspName(String cspName) {
-        this.cspName = cspName;
-    }
+   /**
+    * @return the invitationManager
+    */
+   public InvitationManager getInvitationManager()
+   {
+      return invitationManager;
+   }
 
-    /**
-     * @return the regSession
-     */
-    public RegistrationSession getRegSession() {
-        return regSession;
-    }
+   /**
+    * @param invitationManager
+    *           the invitationManager to set
+    */
+   @Autowired
+   @Required
+   public void setInvitationManager(InvitationManager invitationManager)
+   {
+      this.invitationManager = invitationManager;
+   }
 
-    /**
-     * @param regSession
-     *            the regSession to set
-     */
-    @Autowired
-    public void setRegSession(RegistrationSession regSession) {
-        this.regSession = regSession;
-    }
+   /**
+    * @return the csp
+    */
+   public String getCspName()
+   {
+      return cspName;
+   }
 
-	
-	@RequestMapping(value = "/login", method = RequestMethod.GET)
-	public ModelAndView showLoginForm(HttpServletRequest request, Model model) {
-		logger.info("showing login form");
+   /**
+    * @param csp
+    *           the cspName to set
+    */
+   @Autowired
+   @Qualifier("cspName")
+   public void setCspName(String cspName)
+   {
+      this.cspName = cspName;
+   }
+
+   /**
+    * @return the regSession
+    */
+   public RegistrationSession getRegSession()
+   {
+      return regSession;
+   }
+
+   /**
+    * @param regSession
+    *           the regSession to set
+    */
+   @Autowired
+   public void setRegSession(RegistrationSession regSession)
+   {
+      this.regSession = regSession;
+   }
+
+   @RequestMapping(value = "/login", method = RequestMethod.GET)
+   public ModelAndView showLoginForm(HttpServletRequest request, Model model)
+   {
+      logger.info("showing login form");
+
+      ModelAndView mv = null;
+
+      String cspHomeURL = request.getContextPath();
+      String formPostURL = cspHomeURL + "/cloudPage";
+
+      mv = new ModelAndView("login");
+      mv.addObject("postURL", formPostURL);
+      return mv;
+   }
+
+   @RequestMapping(value = "/cloudPage", method =
+   { RequestMethod.POST, RequestMethod.GET })
+   public ModelAndView showCloudPage(HttpServletRequest request, Model model)
+   {
+      logger.info("showing cloudPage form");
+
+      ModelAndView mv = null;
+      CloudName cloudName = null;
+      boolean errors = false;
+      logger.info("Cloudname from request parameter "
+            + request.getParameter("cloudname"));
+      if (request.getParameter("cloudname") != null)
+      {
+         cloudName = CloudName.create(request.getParameter("cloudname"));
+      } else if (regSession.getCloudName() != null)
+      {
+         cloudName = CloudName.create(regSession.getCloudName());
+      }
+      if (cloudName == null)
+      {
+         return processLogout(request, model);
+      }
+      logger.info("Logging in for cloudname " + cloudName.toString());
+      net.respectnetwork.sdk.csp.CSP myCSP = registrationManager
+            .getCspRegistrar();
+      if (myCSP == null)
+      {
+         logger.info("myCSP is null!");
+      }
+      if (myCSP != null)
+      {
+         logger.info("CSP Info:" + myCSP.toString());
+         CloudNumber cloudNumber;
+         try
+         {
+            cloudNumber = myCSP.checkCloudNameAvailableInRN(cloudName);
+            String secretToken = null;
+            if (regSession != null)
+            {
+               secretToken = regSession.getPassword();
+            }
+            if (secretToken == null || secretToken.isEmpty())
+            {
+               secretToken = request.getParameter("secrettoken");
+            }
+            if (cloudNumber != null)
+            {
+               myCSP.authenticateInCloud(cloudNumber, secretToken);
+
+               if (regSession != null && regSession.getCloudName() == null)
+               {
+
+                  if (regSession.getSessionId() == null
+                        || regSession.getSessionId().isEmpty())
+                  {
+                     String sessionId = UUID.randomUUID().toString();
+                     regSession.setSessionId(sessionId);
+                     logger.info("Creating a new regSession with session id ="
+                           + sessionId);
+                  }
+                  logger.info("Setting cloudname as  "
+                        + request.getParameter("cloudname"));
+                  if (request.getParameter("cloudname") != null)
+                  {
+                     regSession.setCloudName(request.getParameter("cloudname"));
+                  }
+                  // logger.info("Setting secret token as  " +
+                  // request.getParameter("secrettoken"));
+                  if (request.getParameter("secrettoken") != null)
+                  {
+                     regSession
+                           .setPassword(request.getParameter("secrettoken"));
+                  }
+               }
+               mv = getCloudPage(request, regSession.getCloudName());
+               logger.info("Successfully authenticated to the personal cloud for "
+                     + request.getParameter("cloudname"));
+            } else
+            {
+               errors = true;
+            }
+         } catch (Xdi2ClientException e)
+         {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            errors = true;
+            logger.debug("Authenticating to personal cloud failed for "
+                  + request.getParameter("cloudname"));
+         }
+
+      } else
+      {
+         logger.info("CSP Object is null. ");
+         errors = true;
+      }
+      if (errors)
+      {
+         String cspHomeURL = request.getContextPath();
+         String formPostURL = cspHomeURL + "/cloudPage";
+         mv = new ModelAndView("login");
+         mv.addObject("postURL", formPostURL);
+
+      }
+
+      return mv;
+   }
+
+   public RegistrationManager getRegistrationManager()
+   {
+      return registrationManager;
+   }
+
+   @Autowired
+   public void setRegistrationManager(RegistrationManager registrationManager)
+   {
+      this.registrationManager = registrationManager;
+   }
+
+   public PersonalCloudManager getPersonalCloudManager()
+   {
+      return personalCloudManager;
+   }
+
+   @Autowired
+   public void setPersonalCloudManager(PersonalCloudManager personalCloudManager)
+   {
+      this.personalCloudManager = personalCloudManager;
+   }
+
+   @RequestMapping(value = "/logout", method =
+   { RequestMethod.GET, RequestMethod.POST })
+   public ModelAndView processLogout(HttpServletRequest request, Model model)
+   {
+      logger.info("processing logout");
+
+      // nullify password from the session object
+      if (regSession != null)
+      {
+         regSession.setCloudName(null);
+         regSession.setPassword(null);
+         regSession.setVerifiedEmail(null);
+         regSession.setDependentForm(null);
+         regSession.setGiftCode(null);
+         regSession.setInviteCode(null);
+         regSession.setInviteForm(null);
+         regSession.setSessionId(null);
+         regSession.setVerifiedMobilePhone(null);
+      }
+      ModelAndView mv = null;
+
+      String cspHomeURL = request.getContextPath();
+      String formPostURL = cspHomeURL + "/cloudPage";
+
+      mv = new ModelAndView("login");
+      mv.addObject("postURL", formPostURL);
+      return mv;
+   }
+
+   @RequestMapping(value = "/stripeConnect", method = RequestMethod.POST)
+   public ModelAndView processStripeResponse(
+         @Valid @ModelAttribute("paymentInfo") PaymentForm paymentForm,
+         HttpServletRequest request, Model model, BindingResult result)
+   {
+      logger.info("processing STRIPE Response");
+
+      boolean errors = false;
+
+      String cloudName = regSession.getCloudName();
+
+      ModelAndView mv = getCloudPage(request, cloudName);
+
+      String sessionIdentifier = regSession.getSessionId();
+      String email = regSession.getVerifiedEmail();
+      String phone = regSession.getVerifiedMobilePhone();
+      String password = regSession.getPassword();
+      logger.debug(sessionIdentifier + "--" + cloudName + "--" + email + "--"
+            + phone + "--" + password);
+
+      // Check Session
+      if (sessionIdentifier == null || cloudName == null || email == null
+            || phone == null || password == null)
+      {
+         errors = true;
+         mv.addObject("error", "Invalid Session");
+         logger.debug("Invalid Session ...");
+      }
+      CSPModel cspModel = null;
+      DAOFactory dao = DAOFactory.getInstance();
+      try
+      {
+         cspModel = dao.getCSPDAO().get(this.getCspName());
+      } catch (DAOException e1)
+      {
+         // TODO Auto-generated catch block
+         e1.printStackTrace();
+         errors = true;
+         mv.addObject("error", "Cannot connect to DB to lookup information");
+         logger.debug("Cannot connect to DB to lookup info...");
+      }
+
+      if (!errors)
+      {
+         BigDecimal amount = cspModel.getCostPerCloudName();
+         String desc = "A personal cloud for " + cloudName;
+
+         String token = StripePaymentProcessor.getToken(request);
+
+         if (token != null && !token.isEmpty())
+         { // this is a CC charge request
+            PaymentModel payment = StripePaymentProcessor.makePayment(cspModel,
+                  amount, desc, token);
+            if (payment != null)
+            {
+
+               try
+               {
+                  dao.getPaymentDAO().insert(payment);
+               } catch (DAOException e1)
+               {
+                  logger.error("Could not insert payment record in the DB "
+                        + e1.getMessage());
+                  logger.info("Payment record info \n" + payment.toString());
+               }
+               try
+               {
+                  logger.debug("Going to create the personal cloud now for CC path ...");
+                  registrationManager.registerUser(CloudName.create(cloudName),
+                        phone, email, password);
+
+                  AccountDetailsForm accountForm = new AccountDetailsForm();
+                  accountForm.setCloudName(cloudName);
+                  mv.addObject("accountInfo", accountForm);
+
+                  logger.debug("Sucessfully Registered {}", cloudName);
+
+               } catch (Exception e)
+               {
+                  logger.warn("Registration Error {}", e.getMessage());
+                  mv.addObject("error", e.getMessage());
+
+               }
+
+            }
+         }
+
+      }
+
+      return mv;
+   }
+
+   public static ModelAndView getCloudPage(HttpServletRequest request,
+         String cloudName)
+   {
+      ModelAndView mv = new ModelAndView("cloudPage");
+      String cspHomeURL = request.getContextPath();
+
+      mv.addObject("logoutURL", cspHomeURL + "/logout");
+      mv.addObject("cloudName", cloudName);
+
+      try
+      {
+         DAOFactory dao = DAOFactory.getInstance();
+
+         List<InviteModel> invList = dao.getInviteDAO().listGroupByInvited(
+               cloudName);
+         List<DependentCloudModel> depList = dao.getDependentCloudDAO().list(
+               cloudName);
+
+         mv.addObject("inviteList", invList);
+         mv.addObject("dependentList", depList);
+      } catch (DAOException e)
+      {
+         logger.error("Failed to perform DAO opertations", e);
+      }
+
+      return mv;
+   }
+
+   @RequestMapping(value = "/makePayment", method = RequestMethod.POST)
+   public ModelAndView makePayment(
+         @Valid @ModelAttribute("paymentInfo") PaymentForm paymentForm,
+         HttpServletRequest request, Model model, BindingResult result)
+   {
+      logger.info("processing makePayment");
+
+      boolean errors = false;
+      String errorText = "";
+
+      ModelAndView mv = new ModelAndView("signup");
+
+      String cloudName = regSession.getCloudName();
+      String sessionIdentifier = regSession.getSessionId();
+      String email = regSession.getVerifiedEmail();
+      String phone = regSession.getVerifiedMobilePhone();
+      String password = regSession.getPassword();
+      logger.debug(sessionIdentifier + "--" + cloudName + "--" + email + "--"
+            + phone + "--" + password);
+
+      // Check Session
+      if (sessionIdentifier == null || cloudName == null || email == null
+            || phone == null || password == null)
+      {
+         errors = true;
+         mv.addObject("error", "Invalid Session");
+         logger.debug("Invalid Session ...");
+         return mv;
+      }
+
+      
+      if ((request.getParameter("paymentType") != null) && (request.getParameter("paymentType").equals("creditCard"))) 
+      {
+         mv = new ModelAndView("creditCardPayment");
+         CSPModel cspModel = null;
+
+         try
+         {
+            cspModel = DAOFactory.getInstance().getCSPDAO()
+                  .get(this.getCspCloudName());
+         } catch (DAOException e)
+         {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+         }
         
-        ModelAndView mv = null; 
-        
-        String cspHomeURL = request.getContextPath();
-        String formPostURL = cspHomeURL + "/cloudPage";
-       
-        mv = new ModelAndView("login");
-        mv.addObject("postURL", formPostURL);
-		return mv;
-	}
-    
-	@RequestMapping(value = "/cloudPage", method = {RequestMethod.POST,RequestMethod.GET})
-	public ModelAndView showCloudPage(HttpServletRequest request, Model model) {
-		logger.info("showing cloudPage form");
-		
-        ModelAndView mv = null; 
-        CloudName cloudName = null;
-        boolean errors = false;
-        logger.info("Cloudname from request parameter " + request.getParameter("cloudname"));
-        if(request.getParameter("cloudname") != null){
-        	cloudName = CloudName.create(request.getParameter("cloudname"));
-        } else if (regSession.getCloudName() != null){
-        	cloudName = CloudName.create(regSession.getCloudName());
-        }
-	if( cloudName == null )
-	{
-		return processLogout(request, model);
-	}
-	logger.info("Logging in for cloudname " + cloudName.toString());
-        net.respectnetwork.sdk.csp.CSP myCSP = registrationManager.getCspRegistrar();
-        if(myCSP == null){
-        	logger.info("myCSP is null!");
-        }
-        if(myCSP != null){
-        	logger.info("CSP Info:" + myCSP.toString());
-        	CloudNumber cloudNumber;
-			try {
-				cloudNumber = myCSP.checkCloudNameAvailableInRN(cloudName);
-				String secretToken = null;
-				if(regSession != null){
-					secretToken = regSession.getPassword();
-				}
-				if(secretToken == null || secretToken.isEmpty()){
-						secretToken = request.getParameter("secrettoken") ;
-				}
-				if (cloudNumber != null) {
-					myCSP.authenticateInCloud(cloudNumber,secretToken);
-					
-			        if(regSession != null && regSession.getCloudName() == null){
-			        	
-			        	if (regSession.getSessionId() == null || regSession.getSessionId().isEmpty() ) {
-			        		String sessionId =  UUID.randomUUID().toString();
-			        		regSession.setSessionId(sessionId);
-			        		logger.info("Creating a new regSession with session id =" + sessionId);
-			        	}
-				        logger.info("Setting cloudname as  " + request.getParameter("cloudname"));
-				        if(request.getParameter("cloudname") != null) {
-				        	regSession.setCloudName(request.getParameter("cloudname"));
-				        }
-				        //logger.info("Setting secret token as  " + request.getParameter("secrettoken"));
-				        if(request.getParameter("secrettoken") != null){
-				        	regSession.setPassword(request.getParameter("secrettoken"));
-				        }
-			        }
-			        mv = getCloudPage(request, regSession.getCloudName());
-			        logger.info("Successfully authenticated to the personal cloud for " + request.getParameter("cloudname") );
-				} else {
-					errors = true;
-				}
-			} catch (Xdi2ClientException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				errors = true;
-				logger.debug("Authenticating to personal cloud failed for " + request.getParameter("cloudname") );
-			}
-        	
-        } else {
-        	logger.info("CSP Object is null. " );
-        	errors = true;
-        }
-        if(errors){
-        	String cspHomeURL = request.getContextPath();
-            String formPostURL = cspHomeURL + "/cloudPage";          
-            mv = new ModelAndView("login");
-            mv.addObject("postURL", formPostURL);
-        	
-        }
-        
-        
-		return mv;
-	}
 
+         BigDecimal amount = cspModel.getCostPerCloudName();
+         String desc = "Personal cloud  " + regSession.getCloudName();
+         mv.addObject("cspModel", cspModel);
+         if(cspModel.getPaymentGatewayName().equals("STRIPE"))
+         {
+            logger.debug("Payment gateway is STRIPE");
+            mv.addObject("StripeJavaScript",
+                  StripePaymentProcessor.getJavaScript(cspModel, amount, desc));
+         } else if (cspModel.getPaymentGatewayName().equals("SAGEPAY"))
+         {
+            //TBD
+         }
 
-	public RegistrationManager getRegistrationManager() {
-		return registrationManager;
-	}
+         return mv;
+      }
+      mv = new ModelAndView("payment");
+      String giftCode = request.getParameter("giftCode");
+      if ((giftCode != null) && (!giftCode.isEmpty()))
+      {
+         regSession.setGiftCode(giftCode);
+      }
 
-	@Autowired
-	public void setRegistrationManager(RegistrationManager registrationManager) {
-		this.registrationManager = registrationManager;
-	}
+      DAOFactory dao = DAOFactory.getInstance();
+      try
+      {
+         GiftCodeModel giftCodeObj = dao.getGiftCodeDAO().get(giftCode);
+         if (giftCodeObj != null)
+         {
+            GiftCodeRedemptionModel gcrObj = dao.getGiftCodeRedemptionDAO()
+                  .get(giftCode);
+            if (gcrObj != null)
+            {
+               errors = true;
+               errorText = "This giftcode has already been redeemed.";
 
+            }
 
-	public PersonalCloudManager getPersonalCloudManager() {
-		return personalCloudManager;
-	}
+         } else
+         {
+            errors = true;
+            errorText = "The giftcode is not valid. Please check the giftcode id.";
+         }
+      } catch (DAOException e2)
+      {
+         // TODO Auto-generated catch block
+         e2.printStackTrace();
+      }
 
+      if(errors)
+      {
+         mv.addObject("error", errorText);
+         return mv;
+      }
 
-	@Autowired
-	public void setPersonalCloudManager(PersonalCloudManager personalCloudManager) {
-		this.personalCloudManager = personalCloudManager;
-	}
-	
-	@RequestMapping(value = "/logout", method = { RequestMethod.GET, RequestMethod.POST})
-	public ModelAndView processLogout(HttpServletRequest request, Model model) {
-		logger.info("processing logout");
-        
-		//nullify password from the session object
-		if(regSession != null){
-			regSession.setCloudName(null);
-			regSession.setPassword(null);
-			regSession.setVerifiedEmail(null);
-			regSession.setDependentForm(null);
-			regSession.setGiftCode(null);
-			regSession.setInviteCode(null);
-			regSession.setInviteForm(null);
-			regSession.setSessionId(null);
-			regSession.setVerifiedMobilePhone(null);
-		}
-        ModelAndView mv = null; 
-        
-        String cspHomeURL = request.getContextPath();
-        String formPostURL = cspHomeURL + "/cloudPage";
-       
-        mv = new ModelAndView("login");
-        mv.addObject("postURL", formPostURL);
-		return mv;
-	}
-	
-	@RequestMapping(value = "/stripeConnect", method = RequestMethod.POST)
-	public ModelAndView processStripeResponse(@Valid @ModelAttribute("paymentInfo") PaymentForm paymentForm, HttpServletRequest request, Model model , BindingResult result) {
-		logger.info("processing STRIPE Response");
-		
-		boolean errors = false;
-        
-        String cloudName = regSession.getCloudName();
+      if (!errors)
+      {
 
-		ModelAndView mv = getCloudPage(request, cloudName);
-		
-        String sessionIdentifier = regSession.getSessionId(); 
-        String email = regSession.getVerifiedEmail();
-        String phone = regSession.getVerifiedMobilePhone();
-        String password = regSession.getPassword();
-        logger.debug(sessionIdentifier + "--" + cloudName + "--" + email + "--" + phone + "--" + password);
-        logger.debug("Invite Code =" + regSession.getInviteCode() + " and gift code = " + regSession.getGiftCode());
-        
-		//Check Session      
-        if (sessionIdentifier == null || cloudName == null || email == null
-                || phone == null || password == null) {
-            errors = true;    
-            mv.addObject("error", "Invalid Session"); 
-            logger.debug("Invalid Session ...");
-        }
-        CSPModel cspModel = null;
-        DAOFactory dao = DAOFactory.getInstance();
-		try {
-			cspModel = dao.getCSPDAO().get(this.getCspName());
-		} catch (DAOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-			errors = true;    
-            mv.addObject("error", "Cannot connect to DB to lookup information");
-            logger.debug("Cannot connect to DB to lookup info...");
-		}
-		
-			if(!errors) {
-				
-				
-				//need a new unique response id
-                String responseId = UUID.randomUUID().toString();
-              //make entries in the invite_response table or giftcode_redemption table that a new cloud has been registered against an invite code and optionally a gif code
-                if((regSession.getInviteCode() != null) && (regSession.getGiftCode() != null) && !regSession.getGiftCode().isEmpty()) {
-                	
-			    	 logger.debug("Going to create the personal cloud now for gift code path...");
-		                try {
-							registrationManager.registerUser(CloudName.create(cloudName), phone,
-							        email, password);
-							
-							AccountDetailsForm accountForm = new AccountDetailsForm();
-			                accountForm.setCloudName(cloudName);
-			                mv.addObject("accountInfo", accountForm);   
-			                
-			                logger.debug("Sucessfully Registered {}", cloudName );
-						} catch (Xdi2ClientException e1) {
-							
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						} catch (CSPRegistrationException e1) {
-							
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}
+         mv = getCloudPage(request, cloudName);
+         // need a new unique response id
+         String responseId = UUID.randomUUID().toString();
+         // make entries in the giftcode_redemption
+         // table that a new cloud has been registered against a gift code
+         if ((regSession.getGiftCode() != null)
+               && !regSession.getGiftCode().isEmpty())
+         {
 
-		                
-                	//make a new record in the giftcode_redemption table
-                	GiftCodeRedemptionModel giftCodeRedemption = new GiftCodeRedemptionModel();
-                	giftCodeRedemption.setCloudNameCreated(cloudName);
-                	giftCodeRedemption.setGiftCodeId(regSession.getGiftCode());
-                	giftCodeRedemption.setRedemptionId(responseId);
-                	giftCodeRedemption.setTimeCreated(new Date());
-                	try {
-						dao.getGiftCodeRedemptionDAO().insert(giftCodeRedemption);
-						
-					} catch (DAOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-                	
-                	
-                } else if(regSession.getInviteCode() != null && !regSession.getInviteCode().isEmpty()) { //CC path
-                	
-					BigDecimal amount   = cspModel.getCostPerCloudName();
-					String     desc     = "A personal cloud for " + cloudName;
-	
-					String     token    = StripePaymentProcessor.getToken(request);
-					
-					
-					if(token != null && !token.isEmpty()) { //this is a CC charge request
-						PaymentModel payment = StripePaymentProcessor.makePayment(cspModel, amount, desc, token);
-						if(payment != null){
-							
-							try {
-								dao.getPaymentDAO().insert(payment);
-							} catch (DAOException e1) {
-								logger.error("Could not insert payment record in the DB " + e1.getMessage());
-								logger.info("Payment record info \n" + payment.toString());
-							}
-						     try {
-						    	 logger.debug("Going to create the personal cloud now for CC path ...");
-					                registrationManager.registerUser(CloudName.create(cloudName), phone,
-					                        email, password);
-					                
-					                 if (regSession.getInviteCode() != null){
-					                	//make a new record in the invite_response table
-					                	InviteResponseModel inviteResponse = new InviteResponseModel();
-					                	inviteResponse.setCloudNameCreated(cloudName);
-					                	inviteResponse.setInviteId(regSession.getInviteCode());
-					                	inviteResponse.setResponseId(responseId);
-					                	inviteResponse.setPaymentId(payment.getPaymentId());
-					                	
-					                	InviteResponseDAO inviteResponseDAO = DAOFactory.getInstance().getInviteResponseDAO();
-					                	inviteResponseDAO.insert(inviteResponse);
-					                }
-					                
-					                AccountDetailsForm accountForm = new AccountDetailsForm();
-					                accountForm.setCloudName(cloudName);
-					                mv.addObject("accountInfo", accountForm);   
-					                
-					                logger.debug("Sucessfully Registered {}", cloudName );
-					                
-					            } catch (Exception e) {
-					                logger.warn("Registration Error {}", e.getMessage());
-					                mv.addObject("error", e.getMessage());
-					                
-					            }
-						 
-						}   
-					}
-                }
-		}
+            logger.debug("Going to create the personal cloud now for gift code path...");
+            try
+            {
+               registrationManager.registerUser(CloudName.create(cloudName),
+                     phone, email, password);
 
-        return mv;
-	}
-	
-	public static ModelAndView getCloudPage( HttpServletRequest request, String cloudName )
-	{
-		ModelAndView mv         = new ModelAndView("cloudPage");
-		String       cspHomeURL = request.getContextPath();
+               AccountDetailsForm accountForm = new AccountDetailsForm();
+               accountForm.setCloudName(cloudName);
+               mv.addObject("accountInfo", accountForm);
 
-		mv.addObject("logoutURL", cspHomeURL + "/logout");
-		mv.addObject("cloudName", cloudName);
+               logger.debug("Sucessfully Registered {}", cloudName);
+            } catch (Xdi2ClientException e1)
+            {
 
-		try
-		{
-			DAOFactory dao = DAOFactory.getInstance();
+               // TODO Auto-generated catch block
+               e1.printStackTrace();
+            } catch (CSPRegistrationException e1)
+            {
 
-			List<InviteModel>         invList = dao.getInviteDAO().listGroupByInvited(cloudName);
-			List<DependentCloudModel> depList = dao.getDependentCloudDAO().list(cloudName);
+               // TODO Auto-generated catch block
+               e1.printStackTrace();
+            }
 
-			mv.addObject("inviteList"   , invList);
-			mv.addObject("dependentList", depList);
-		}
-		catch( DAOException e )
-		{
-			logger.error("Failed to perform DAO opertations", e);
-		}
+            // make a new record in the giftcode_redemption table
+            GiftCodeRedemptionModel giftCodeRedemption = new GiftCodeRedemptionModel();
+            giftCodeRedemption.setCloudNameCreated(cloudName);
+            giftCodeRedemption.setGiftCodeId(regSession.getGiftCode());
+            giftCodeRedemption.setRedemptionId(responseId);
+            giftCodeRedemption.setTimeCreated(new Date());
+            try
+            {
+               dao.getGiftCodeRedemptionDAO().insert(giftCodeRedemption);
 
-		return mv;
-	}
+            } catch (DAOException e)
+            {
+               // TODO Auto-generated catch block
+               e.printStackTrace();
+            }
+
+         }
+      }
+
+      return mv;
+   }
+
 }

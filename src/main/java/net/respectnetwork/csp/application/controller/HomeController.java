@@ -84,7 +84,8 @@ public class HomeController {
 
 
     /**
-	 * Simply selects the home view to render by returning its name.
+	 * This is the page the user lands if s/he came from the CSP site. There will be no invite code (ref code in the wire diagrams) when they come here.
+	 * The processing on submit of this form is done in RegistrationController.
 	 */
 	@RequestMapping(value = "/signup", method = RequestMethod.GET)
 	public ModelAndView homeForm(HttpServletRequest request, Model model,

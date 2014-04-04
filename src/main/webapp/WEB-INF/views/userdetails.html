@@ -69,6 +69,17 @@
     
             <form action="#" th:object="${userInfo}" th:action="@{/processuserdetails}" method="post">
                 <table id="signUpTable">
+                	<tr>
+                        <td>
+                            <p id="headerText">Welcome  <span th:text="*{cloudName}" /> </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a href="signup.html" th:href="@{/signup}">Want to change your cloudname ? </a>
+                        </td>
+                    </tr>
+                    
                     <tr>
                         <td>
                             <p id="headerText">Associate your cloud name with an email address and a phone number.</p>

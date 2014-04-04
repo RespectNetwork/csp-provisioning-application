@@ -1,6 +1,7 @@
 package net.respectnetwork.csp.application.session;
 
 import java.io.Serializable;
+import java.util.Map;
 
 import net.respectnetwork.csp.application.form.DependentForm;
 import net.respectnetwork.csp.application.form.InviteForm;
@@ -40,6 +41,13 @@ public class RegistrationSession implements Serializable {
 
     /** invite form */
     private DependentForm dependentForm = null;
+    
+    /** URL parameter list that comes from RN*/
+    
+    private Map<String,String[]> RNParamMap = null;
+    
+    /** RN post registration URL */
+    private String RNPostRegistrationURL = null;
     
     /**
      * @return the SessionId
@@ -194,5 +202,25 @@ public class RegistrationSession implements Serializable {
 	public void setDependentForm(DependentForm dependentForm) {
 		this.dependentForm = dependentForm;
 	}
+
+   public Map<String, String[]> getRNParamMap()
+   {
+      return RNParamMap;
+   }
+
+   public void setRNParamMap(Map<String, String[]> rNParamMap)
+   {
+      RNParamMap = rNParamMap;
+   }
+
+   public String getRNPostRegistrationURL()
+   {
+      return RNPostRegistrationURL;
+   }
+
+   public void setRNPostRegistrationURL(String rNPostRegistrationURL)
+   {
+      RNPostRegistrationURL = rNPostRegistrationURL;
+   }
 
 }
