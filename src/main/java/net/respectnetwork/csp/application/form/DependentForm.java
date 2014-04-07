@@ -7,28 +7,18 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 
 public class DependentForm
 {
-	private String dependentCloudName;
-	private String dependentCloudPassword;
-
-	private boolean paymentByCC ;
-	
-	private String giftCode;
 	
 	private boolean consentFlag;
 	private String consentText;
 	
-	private String dependentBirthDate ;
+	private String dependentCloudName , dependentCloudPassword , dependentBirthDate ;
 	
 	
 	public DependentForm()
 	{
-		this.dependentCloudName = null;
-		this.dependentCloudName = null;
-		this.giftCode = null;
-		this.paymentByCC = true;
 		this.consentFlag = false;
 		this.consentText = "I agree to the Terms and Conditions for Dependent Personal Clouds.";
-		dependentBirthDate = null;
+
 	}
 
 	
@@ -51,8 +41,8 @@ public class DependentForm
 				.appendSuper(super.equals(other))
 				.append(this.dependentCloudName, other.dependentCloudName)
 				.append(this.dependentCloudPassword, other.dependentCloudPassword)
-				.append(this.paymentByCC, other.paymentByCC)
-				.append(this.giftCode, other.giftCode)			
+				.append(this.dependentBirthDate, other.dependentBirthDate)
+		
 				.isEquals();
 	}
 
@@ -62,8 +52,6 @@ public class DependentForm
 				.appendSuper(super.hashCode())
 				.append(this.dependentCloudName)
 				.append(this.dependentCloudPassword)
-				.append(this.paymentByCC)
-				.append(this.giftCode)			
 				.toHashCode();
 	}
 
@@ -73,10 +61,7 @@ public class DependentForm
 		builder.append("DependentForm ");
 		builder.append("[dependentCloudName=")
 		    .append(this.dependentCloudName).append(']');
-		builder.append("[paymentByCCFlag=")
-		    .append(this.paymentByCC).append(']');
-		builder.append("[giftCode=")
-		    .append(this.giftCode).append(']');
+
 		;
 		builder.append(' ');
 		builder.append(super.toString());
@@ -84,44 +69,10 @@ public class DependentForm
 	}
 
 
-	public String getDependentCloudName() {
-		return dependentCloudName;
-	}
+	
 
 
-	public void setDependentCloudName(String dependentCloudName) {
-		this.dependentCloudName = dependentCloudName;
-	}
-
-
-	public String getDependentCloudPassword() {
-		return dependentCloudPassword;
-	}
-
-
-	public void setDependentCloudPassword(String dependentCloudPassword) {
-		this.dependentCloudPassword = dependentCloudPassword;
-	}
-
-
-	public boolean isPaymentByCC() {
-		return paymentByCC;
-	}
-
-
-	public void setPaymentByCC(boolean paymentByCC) {
-		this.paymentByCC = paymentByCC;
-	}
-
-
-	public String getGiftCode() {
-		return giftCode;
-	}
-
-
-	public void setGiftCode(String giftCode) {
-		this.giftCode = giftCode;
-	}
+	
 
 
 	public boolean isConsentFlag() {
@@ -144,12 +95,43 @@ public class DependentForm
 	}
 
 
-	public String getDependentBirthDate() {
-		return dependentBirthDate;
-	}
 
 
-	public void setDependentBirthDate(String dependentBirthDate) {
-		this.dependentBirthDate = dependentBirthDate;
-	}
+   public String getDependentCloudName()
+   {
+      return dependentCloudName;
+   }
+
+
+   public void setDependentCloudName(String dependentCloudName)
+   {
+      this.dependentCloudName = dependentCloudName;
+   }
+
+
+   public String getDependentCloudPassword()
+   {
+      return dependentCloudPassword;
+   }
+
+
+   public void setDependentCloudPassword(String dependentCloudPassword)
+   {
+      this.dependentCloudPassword = dependentCloudPassword;
+   }
+
+
+   public String getDependentBirthDate()
+   {
+      return dependentBirthDate;
+   }
+
+
+   public void setDependentBirthDate(String dependentBirthDate)
+   {
+      this.dependentBirthDate = dependentBirthDate;
+   }
+
+
+	
 }

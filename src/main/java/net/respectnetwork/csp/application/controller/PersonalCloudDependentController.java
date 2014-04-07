@@ -39,247 +39,218 @@ import xdi2.core.xri3.CloudNumber;
 @Controller
 public class PersonalCloudDependentController
 {
-	private static final Logger logger = LoggerFactory.getLogger(PersonalCloudDependentController.class);
-	private String              cspCloudName;
-	private RegistrationSession regSession;
-    
-	/**
-     * Registration Service : to register dependent clouds
-     */
-    private RegistrationManager theManager;
-    
-	public String getCspCloudName()
-	{
-		return this.cspCloudName;
-	}
+   private static final Logger logger = LoggerFactory
+                                            .getLogger(PersonalCloudDependentController.class);
+   private String              cspCloudName;
+   private RegistrationSession regSession;
 
-	@Autowired
-	@Qualifier("cspCloudName")
-	public void setCspCloudName( String cspCloudName )
-	{
-		this.cspCloudName = cspCloudName;
-	}
+   /**
+    * Registration Service : to register dependent clouds
+    */
+   private RegistrationManager theManager;
 
-	public RegistrationSession getRegSession()
-	{
-		return regSession;
-	}
+   public String getCspCloudName()
+   {
+      return this.cspCloudName;
+   }
 
-	@Autowired
-	public void setRegSession(RegistrationSession regSession)
-	{
-		this.regSession = regSession;
-	}
+   @Autowired
+   @Qualifier("cspCloudName")
+   public void setCspCloudName(String cspCloudName)
+   {
+      this.cspCloudName = cspCloudName;
+   }
 
-	private String getCloudName()
-	{
-		String rtn = regSession.getCloudName();
-		return rtn;
-	}
+   public RegistrationSession getRegSession()
+   {
+      return regSession;
+   }
 
-	private DependentForm getDependentForm()
-	{
-		DependentForm rtn = regSession.getDependentForm();
+   @Autowired
+   public void setRegSession(RegistrationSession regSession)
+   {
+      this.regSession = regSession;
+   }
 
-		return rtn;
-	}
-	private void setDependentForm( DependentForm dependentForm )
-	{
-		regSession.setDependentForm(dependentForm);
-	}
+   private String getCloudName()
+   {
+      String rtn = regSession.getCloudName();
+      return rtn;
+   }
 
-	@RequestMapping(value = "/dependent", method = RequestMethod.GET)
-	public ModelAndView showDependentForm(HttpServletRequest request, Model model) throws DAOException
-	{
-		String       cloudName  = this.getCloudName();
+   private DependentForm getDependentForm()
+   {
+      DependentForm rtn = regSession.getDependentForm();
 
-		logger.info("showing dependent page - " + cloudName);
+      return rtn;
+   }
 
-		String       cspHomeURL = request.getContextPath();
-		ModelAndView mv         = null;
-		DependentForm dependentForm = null;
-		CSPModel     cspModel   = null;
+   private void setDependentForm(DependentForm dependentForm)
+   {
+      regSession.setDependentForm(dependentForm);
+   }
 
-		if( cloudName == null )
-		{
-			mv = new ModelAndView("login");
-			mv.addObject("postURL", cspHomeURL + "/cloudPage");
-			return mv;
-		}
+   @RequestMapping(value = "/dependent", method = RequestMethod.GET)
+   public ModelAndView showDependentForm(HttpServletRequest request, Model model)
+         throws DAOException
+   {
+      String cloudName = this.getCloudName();
 
-		cspModel = DAOFactory.getInstance().getCSPDAO().get(this.getCspCloudName());
+      logger.info("showing dependent page - " + cloudName);
 
-		mv = new ModelAndView("dependent");
-		mv.addObject("cspModel"    , cspModel);
-		dependentForm = new DependentForm();
-		model.addAttribute("dependentForm", dependentForm);
+      String cspHomeURL = request.getContextPath();
+      ModelAndView mv = null;
+      DependentForm dependentForm = null;
+      CSPModel cspModel = null;
 
-		return mv;
-	}
-/*
-	@RequestMapping(value = "/dependentReview", method = RequestMethod.POST)
-	public ModelAndView showInviteReviewForm( @Valid @ModelAttribute("dependentForm") DependentForm dependentForm, BindingResult result, Model model, HttpServletRequest request ) throws DAOException
-	{
-		String       cloudName  = this.getCloudName();
+      if (cloudName == null)
+      {
+         mv = new ModelAndView("login");
+         mv.addObject("postURL", cspHomeURL + "/cloudPage");
+         return mv;
+      }
 
-		logger.info("showing dependent review page - " + cloudName + " : " + dependentForm);
+      cspModel = DAOFactory.getInstance().getCSPDAO()
+            .get(this.getCspCloudName());
 
-		String       cspHomeURL = request.getContextPath();
-		ModelAndView mv         = null;
-		CSPModel     cspModel   = null;
+      mv = new ModelAndView("dependent");
+      mv.addObject("cspModel", cspModel);
+      dependentForm = new DependentForm();
+      model.addAttribute("dependentForm", dependentForm);
 
-		if( cloudName == null )
-		{
-			mv = new ModelAndView("login");
-			mv.addObject("postURL", cspHomeURL + "/cloudPage");
-			return mv;
-		}
+      return mv;
+   }
 
-		if( result.hasErrors() )
-		{
-			logger.error("result - " + result);
-			mv = new ModelAndView("cloudPage");        
-	        mv.addObject("logoutURL", cspHomeURL + "/logout");
-	        return mv;
-		}
-		else
-		{
-			mv = new ModelAndView("dependentReview");
-		}
+   @RequestMapping(value = "/dependentDone", method = RequestMethod.GET)
+   public ModelAndView showDependentDoneForm(Model model,
+         HttpServletRequest request) throws DAOException
+   {
+      ModelAndView mv = PersonalCloudController.getCloudPage(request,
+            this.regSession.getCloudName());
+      return mv;
+   }
 
-		cspModel = DAOFactory.getInstance().getCSPDAO().get(this.getCspCloudName());
-		
-		mv.addObject("cspModel"    , cspModel);
-		
-		model.addAttribute("dependentForm", dependentForm);
+   @RequestMapping(value = "/dependentSubmit", method = RequestMethod.POST)
+   public ModelAndView showDependentSubmitForm(
+         @Valid @ModelAttribute("dependentForm") DependentForm dependentForm,
+         BindingResult result, Model model, HttpServletRequest request)
+         throws DAOException
+   {
+      String cloudName = this.getCloudName();
+      boolean errors = false;
 
-		
-		return mv;
-	}
-*/
-	@RequestMapping(value = "/dependentDone", method = RequestMethod.GET)
-	public ModelAndView showDependentDoneForm( Model model, HttpServletRequest request ) throws DAOException
-	{
-		ModelAndView mv = PersonalCloudController.getCloudPage(request, this.regSession.getCloudName());
-		return mv;
-	}
+      logger.info("showing dependent submit page - " + cloudName + " : "
+            + dependentForm);
 
-	@RequestMapping(value = "/dependentSubmit", method = RequestMethod.POST)
-	public ModelAndView showDependentSubmitForm( @Valid @ModelAttribute("dependentForm") DependentForm dependentForm, BindingResult result, Model model, HttpServletRequest request ) throws DAOException
-	{
-		String       cloudName  = this.getCloudName();
-		boolean errors = false; 
+      String cspHomeURL = request.getContextPath();
+      ModelAndView mv = null;
+      CSPModel cspModel = null;
 
-		logger.info("showing dependent submit page - " + cloudName + " : " + dependentForm);
+      if (cloudName == null)
+      {
+         mv = new ModelAndView("login");
+         mv.addObject("postURL", cspHomeURL + "/cloudPage");
+         return mv;
+      }
 
-		String       cspHomeURL = request.getContextPath();
-		ModelAndView mv         = null;
-		CSPModel     cspModel   = null;
+      if (result.hasErrors())
+      {
+         logger.error("result - " + result);
+         mv = PersonalCloudController.getCloudPage(request, cloudName);
+         return mv;
+      }
 
-		if( cloudName == null )
-		{
-			mv = new ModelAndView("login");
-			mv.addObject("postURL", cspHomeURL + "/cloudPage");
-			return mv;
-		}
-		
-		 
-		if( result.hasErrors() )
-		{
-			logger.error("result - " + result);
-			mv = PersonalCloudController.getCloudPage(request, cloudName);
-			return mv;
-		}
-		
-		cspModel = DAOFactory.getInstance().getCSPDAO().get(this.getCspCloudName());
-		
-		
-		
-		String 		dependentCloudName = dependentForm.getDependentCloudName();
-		
-		String errorStr = "";
-		
-		try	{
-			logger.info("Checking for dependent cloudname :" + dependentCloudName);
-			if (! theManager.isCloudNameAvailable(dependentCloudName)) {
-                errorStr = "CloudName not Available";
-                errors = true;
+      cspModel = DAOFactory.getInstance().getCSPDAO()
+            .get(this.getCspCloudName());
+
+      String[] arrDependentCloudName = dependentForm.getDependentCloudName()
+            .split(",");
+
+      String errorStr = "";
+
+      for (String dependentCloudName : arrDependentCloudName)
+      {
+         try
+         {
+            logger.info("Checking for dependent cloudname :"
+                  + dependentCloudName);
+            if (!theManager.isCloudNameAvailable(dependentCloudName))
+            {
+               errorStr = "CloudName not Available " + dependentCloudName;
+               errors = true;
             }
-		} catch (UserRegistrationException e) {
-			errorStr = "System Error checking CloudName";
+         } catch (UserRegistrationException e)
+         {
+            errorStr = "System Error checking CloudName";
             logger.warn(errorStr + " : {}", e.getMessage());
             errors = true;
-		}
-		if(errors){
-            mv = new ModelAndView("dependent");
-    		mv.addObject("cspModel"    , cspModel);
-    		dependentForm = new DependentForm();
-    		model.addAttribute("dependentForm", dependentForm);
-            mv.addObject("error", errorStr);
-            errors = true;
-            return mv;
-			
-		}
-		/*
-		BigDecimal amount   = cspModel.getCostPerCloudName();
-		String     desc     = this.getPaymentDescription(dependentForm, request);
-		
-		mv = new ModelAndView("dependentSubmit");
+         }
+      }
+      if (errors)
+      {
+         mv = new ModelAndView("dependent");
+         mv.addObject("cspModel", cspModel);
+         dependentForm = new DependentForm();
+         model.addAttribute("dependentForm", dependentForm);
+         mv.addObject("error", errorStr);
+         errors = true;
+         return mv;
 
-		mv.addObject("cspModel"    , cspModel);
-		mv.addObject("javaScript"  , StripePaymentProcessor.getJavaScript(cspModel, amount, desc));
+      }
 
-		model.addAttribute("dependentForm", dependentForm);
-		*/
-		mv = new ModelAndView("payment");
-		PaymentForm paymentForm = new PaymentForm();
+      mv = new ModelAndView("payment");
+      PaymentForm paymentForm = new PaymentForm();
       paymentForm.setTxnType(PaymentForm.TXN_TYPE_DEP);
-      paymentForm.setNumberOfClouds(1);
+      paymentForm.setNumberOfClouds(arrDependentCloudName.length);
       mv.addObject("paymentInfo", paymentForm);
-		this.setDependentForm(dependentForm);
-		return mv;
-	}
+      this.setDependentForm(dependentForm);
+      return mv;
+   }
 
+   public static DependentCloudModel saveDependent(String dependentCloudName,
+         PaymentModel payment, String cloudName)
+   {
+      DependentCloudModel dependentCloud = null;
+      DAOFactory dao = DAOFactory.getInstance();
 
-	public  static DependentCloudModel saveDependent( DependentForm dependentForm, PaymentModel payment , String cloudName) 
-	{
-		DependentCloudModel dependentCloud = null;
-		DAOFactory dao = DAOFactory.getInstance();
+      dependentCloud = new DependentCloudModel();
+      dependentCloud.setDependentCloudName(dependentCloudName);
+      dependentCloud.setGuardianCloudName(cloudName);
+      if (payment != null)
+      {
+         dependentCloud.setPaymentId(payment.getPaymentId());
+      }
+      dependentCloud.setTimeCreated(new Date());
+      try
+      {
+         dao.getDependentCloudDAO().insert(dependentCloud);
+      } catch (DAOException ex)
+      {
+         logger.debug("Error while saving dependent record in DB "
+               + ex.getMessage());
+         return null;
+      }
 
-		if( payment != null )
-		{
-			dependentCloud = new DependentCloudModel();
-			dependentCloud.setDependentCloudName(dependentForm.getDependentCloudName());
-			dependentCloud.setGuardianCloudName(cloudName);
-			if(payment != null)
-			{
-			   dependentCloud.setPaymentId(payment.getPaymentId());
-			}
-			dependentCloud.setTimeCreated(new Date());
-			try {
-			   dao.getDependentCloudDAO().insert(dependentCloud);
-			}
-			catch(DAOException ex)
-			{
-			   logger.debug("Error while saving dependent record in DB " + ex.getMessage());
-			   return null;
-			}
-		}
-		return dependentCloud;
-	}
+      return dependentCloud;
+   }
 
-	private String getPaymentDescription( DependentForm dependentForm, HttpServletRequest request )
-	{
-		String rtn = "Personal Cloud For " + dependentForm.getDependentCloudName();
-		
-		return rtn;
-	}
+   private String getPaymentDescription(DependentForm dependentForm,
+         HttpServletRequest request)
+   {
+      String rtn = "Personal Cloud For "
+            + dependentForm.getDependentCloudName();
 
-	public RegistrationManager getTheManager() {
-		return theManager;
-	}
-	@Autowired
-	public void setTheManager(RegistrationManager theManager) {
-		this.theManager = theManager;
-	}
+      return rtn;
+   }
+
+   public RegistrationManager getTheManager()
+   {
+      return theManager;
+   }
+
+   @Autowired
+   public void setTheManager(RegistrationManager theManager)
+   {
+      this.theManager = theManager;
+   }
 }

@@ -413,7 +413,7 @@ public class PersonalCloudController
                }
                if (txnType.equals(PaymentForm.TXN_TYPE_DEP))
                {
-                  if((mv = createDependentClouds(cloudName,payment)) != null)
+                  if((mv = createDependentClouds(cloudName,payment,null)) != null)
                   {
                      return mv;
                   }
@@ -545,7 +545,7 @@ public class PersonalCloudController
          logger.debug("Invalid choice for gift card ...");
          return mv;
 
-      }
+      } 
 
       String txnType = paymentForm.getTxnType();
 
@@ -564,6 +564,9 @@ public class PersonalCloudController
       if (giftCodesVal != null && !giftCodesVal.isEmpty())
       {
          giftCodes = giftCodesVal.split(" ");
+         
+         regSession.setGiftCode(giftCodesVal);
+         
          if (giftCodes != null
                && paymentForm.getNumberOfClouds() < giftCodes.length)
          {
@@ -658,7 +661,7 @@ public class PersonalCloudController
             }
             if (txnType.equals(PaymentForm.TXN_TYPE_DEP))
             {
-               return createDependentClouds(cloudName,null);
+               return createDependentClouds(cloudName,null,giftCodes);
             }
 
          }
@@ -719,43 +722,146 @@ public class PersonalCloudController
       return mv;
    }
 
-   private ModelAndView createDependentClouds(String cloudName , PaymentModel payment)
+   private ModelAndView createDependentClouds(String cloudName , PaymentModel payment , String [] giftCodes)
    {
       ModelAndView mv = null;
       boolean errors = false;
+      DAOFactory dao = DAOFactory.getInstance();
+      
       DependentForm dependentForm = regSession.getDependentForm();
 
-      regSession.setDependentForm(null);
+      //
 
-      // register the dependent cloudname
+      String[] arrDependentCloudName = dependentForm.getDependentCloudName().split(",");
+      String[] arrDependentCloudPasswords = dependentForm
+            .getDependentCloudPassword().split(",");
+      String[] arrDependentCloudBirthDates = dependentForm
+            .getDependentBirthDate().split(",");
+      
 
-      CloudNumber dependentCloudNumber = registrationManager.registerDependent(
-            CloudName.create(cloudName), regSession.getPassword(),
-            CloudName.create(dependentForm.getDependentCloudName()),
-            dependentForm.getDependentCloudPassword(),
-            dependentForm.getDependentBirthDate());
-      if (dependentCloudNumber != null)
+      int cloudsPurchasedWithGiftCodes = 0;
+      if(payment != null) //payment via CC
       {
-         logger.info("Dependent Cloud Number "
-               + dependentCloudNumber.toString());
-         PersonalCloudDependentController.saveDependent(dependentForm, payment, cloudName);         
-      } else
-      {
-         logger.error("Dependent Cloud Could not be registered");
-         errors = true;
+         String giftCodeStr = regSession.getGiftCode();
+         if(giftCodeStr != null && !giftCodeStr.isEmpty())
+         {
+            cloudsPurchasedWithGiftCodes = giftCodeStr.split(" ").length;
+         }
       }
+      // register the dependent cloudnames
 
-      if (errors)
+      int i = 0;
+      for(String dependentCloudName : arrDependentCloudName)
       {
-         mv = new ModelAndView("dependent");
-         mv.addObject("error", "Failed to register dependent cloud. "
-               + registrationManager.getCSPContactInfo());       
+         if (giftCodes != null && i == giftCodes.length)
+         {
+            break;
+         }
+         if (i < cloudsPurchasedWithGiftCodes)
+         {
+            i++;
+            continue;
+         }
+         if (i >= arrDependentCloudName.length)
+         {
+            break;
+         }
+         logger.debug("Creating dependent cloud for " + dependentCloudName);
+         CloudNumber dependentCloudNumber = registrationManager.registerDependent(
+               CloudName.create(cloudName), regSession.getPassword(),
+               CloudName.create(dependentCloudName),
+               arrDependentCloudPasswords[i],
+               arrDependentCloudBirthDates[i]);
+         if (dependentCloudNumber != null)
+         {
+            logger.info("Dependent Cloud Number "
+                  + dependentCloudNumber.toString());
+            PersonalCloudDependentController.saveDependent(dependentCloudName, payment, cloudName);         
+         } else
+         {
+            logger.error("Dependent Cloud Could not be registered");
+            errors = true;
+         }
+         if(payment == null && giftCodes != null && giftCodes.length > 0)
+         {
+            String responseId = UUID.randomUUID().toString();
+            // make a new record in the giftcode_redemption table
+            GiftCodeRedemptionModel giftCodeRedemption = new GiftCodeRedemptionModel();
+            giftCodeRedemption.setCloudNameCreated(dependentCloudName);
+            giftCodeRedemption.setGiftCodeId(giftCodes[i]);
+            giftCodeRedemption.setRedemptionId(responseId);
+            giftCodeRedemption.setTimeCreated(new Date());
+            try
+            {
+               dao.getGiftCodeRedemptionDAO().insert(giftCodeRedemption);
+
+            } catch (DAOException e)
+            {
+               logger.error("Error in updating giftcode redemption information " + e.getMessage());
+               errors = true;
+            }
+         }
+         if (errors)
+         {
+            CSPModel cspModel = null;
+           
+            try
+            {
+               cspModel = dao.getCSPDAO().get(this.getCspCloudName());
+            } catch (DAOException e1)
+            {
+               logger.debug("Cannot connect to DB to lookup info...");
+            }
+            mv = new ModelAndView("dependent");
+            mv.addObject("error", "Failed to register dependent cloud. "
+                  + registrationManager.getCSPContactInfo());     
+            mv.addObject("dependentForm", dependentForm);
+            mv.addObject("cspModel", cspModel);
+            return mv;
+         }
+         i++;
+      }
+      if(i < arrDependentCloudName.length)
+      {
+         mv = new ModelAndView("creditCardPayment");
+         CSPModel cspModel = null;
+
+         try
+         {
+            cspModel = DAOFactory.getInstance().getCSPDAO()
+                  .get(this.getCspCloudName());
+         } catch (DAOException e)
+         {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+         }
+
+         PaymentForm paymentForm = new PaymentForm();
+         paymentForm.setTxnType(PaymentForm.TXN_TYPE_DEP);
+         paymentForm.setNumberOfClouds(arrDependentCloudName.length - i);
+         mv.addObject("paymentInfo", paymentForm);
+         
+         BigDecimal amount = cspModel.getCostPerCloudName().multiply(
+               new BigDecimal(arrDependentCloudName.length - i));
+
+         String desc = "Personal cloud  " + regSession.getCloudName();
+         mv.addObject("cspModel", cspModel);
+         if (cspModel.getPaymentGatewayName().equals("STRIPE"))
+         {
+            logger.debug("Payment gateway is STRIPE");
+            mv.addObject("StripeJavaScript",
+                  StripePaymentProcessor.getJavaScript(cspModel, amount, desc));
+         } else if (cspModel.getPaymentGatewayName().equals("SAGEPAY"))
+         {
+            // TBD
+         }
+         mv.addObject("paymentInfo", paymentForm);
          return mv;
+        
       }
-      // DependentCloudModel dependentCloud = this.saveDependent(dependentForm,
-      // payment);
+      regSession.setDependentForm(null);
       mv = new ModelAndView("dependentDone");
-      // mv.addObject("dependentModel" , dependentCloud);
+      
       return mv;
    }
 
