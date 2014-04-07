@@ -2,7 +2,7 @@
 
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title th:text="#{invite.text.summary}">Invite &amp; Gift Cards Summary!</title>
+  <title th:text="#{invite.text.header}">Invite &amp; Gift Cards!</title>
   <meta charset="utf-8"/>
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
   <meta name="description" content="Invite"/>
@@ -68,28 +68,38 @@
                 
             </div> <!-- end section group -->
             	
-      <form action="#" th:object="${inviteModel}" th:action="@{/inviteDone}" method="get">
+      <form action="#" th:object="${inviteForm}" th:action="@{/inviteReview}" method="post">
         <table id="inviteTable" width="100%">
           <tr>
-            <td colspan="2"><p class="headerText" th:text="#{invite.text.sent}">Gift Cards Have Been Sent!</p>
+            <td colspan="2"><p class="headerText" th:text="#{invite.text.header}">Invites &amp; Gift Cards!</p>
+              <p class="subHeaderText" th:text="#{invite.text.invite}">Invite friends and family to enjoy the benefits of the Respect Network First Million Members campaign!</p>
               <p class="subHeaderText" th:if="${error}" th:text="${error}" style="color: orange">System Error</p>
             </td>
           </tr>
           <tr>
-            <td span="2">
-              <span th:text="#{invite.text.msg}">An email has been sent to</span>
-              <span th:text="${inviteModel.invitedEmailAddress}">foo@bar.com</span>
-              <span th:if="${giftCardList != null}" th:text="#{invite.text.alongwith}">along with</span>
-              <span th:if="${giftCardList != null}" th:text="${#lists.size(giftCardList)}">0</span>
-              <span th:if="${giftCardList != null and #lists.size(giftCardList) &gt; 1 }" th:text="#{invite.text.giftcards}">Gift Cards</span>
-              <span th:if="${giftCardList != null and #lists.size(giftCardList) ==   1 }" th:text="#{invite.text.giftcard}">Gift Card</span>
-              <span th:if="${giftCardList != null}" th:text="#{invite.text.total}">totaling</span>
-              <span th:if="${giftCardList != null}" th:text="${cspModel.currency}">USD</span>
-              <span th:if="${giftCardList != null}" th:text="${#numbers.formatDecimal(cspModel.costPerCloudName.multiply(__${#lists.size(giftCardList)}__), 0, 'COMMA', 2, 'POINT')}">25.00</span>
-            </td>
+            <td colspan="2"><input style="width:100%" maxlength="64" type="text" id="emailAddress" name="emailAddress" value="" th:value="${inviteForm.emailAddress}" placeholder="Invitee's email address" th:placeholder="#{invite.text.email}" required="required" autofocus="autofocus"/></td>
+          </tr>
+          <tr th:if="${#fields.hasErrors('emailAddress')}">
+            <td colspan="2"><p style="color: orange; font-size: 18px;" th:text="#{invite.error.email}">email address is wrong</p></td>
           </tr>
           <tr>
-            <td colspan="2" align="center"><input type="submit" value="Done!" th:value="#{invite.text.done}" name="submit" class="submit" /></td>
+            <td><input type="checkbox" id="giftCardFlag" name="giftCardFlag" value="true" th:checked="${inviteForm.giftCardFlag}"/></td>
+            <td><span th:text="#{invite.text.include}">Include</span> <span th:text="${cspModel.currency}">$</span> <span th:text="${#numbers.formatDecimal(cspModel.costPerCloudName, 0, 'COMMA', 2, 'POINT')}">25.00</span> <span th:text="#{invite.text.giftcards}">Gift Cards</span> <select id="giftCardQuantity" name="giftCardQuantity" >
+                <option th:each="quantity : ${quantityList}" th:value="${quantity}" th:text="${quantity}" th:selected="${quantity.equals(inviteForm.giftCardQuantity)}" >0</option>
+              </select>
+            </td>
+          </tr>
+          <tr th:if="${#fields.hasErrors('giftCardQuantity')}">
+             <td colspan="2"><p style="color: orange; font-size: 18px;" th:text="#{invite.error.quantity}">gift card quantity is invalid</p></td>
+          </tr>
+          <tr>
+            <td colspan="2"><textarea style="width:100%" rows="5" id="emailMessage" name="emailMessage" placeholder="Add a personal message to the email" th:placeholder="#{invite.text.message}" th:field="${inviteForm.emailMessage}"></textarea></td>
+          </tr>
+          <tr th:if="${#fields.hasErrors('emailMessage')}">
+             <td colspan="2"><p style="color: orange; font-size: 18px;" th:text="#{invite.error.message}">your message is invalid</p></td>
+          </tr>
+          <tr>
+            <td colspan="2" align="center"><input type="submit" value="Next" th:value="#{invite.text.continue}" name="submit" class="submit" /></td>
           </tr>
         </table>
       </form>

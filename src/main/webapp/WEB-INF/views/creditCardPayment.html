@@ -70,7 +70,7 @@
                 
             </div> <!-- end section group -->
 
-            <form action="#" th:object="${paymentInfo}" th:action="@{/stripeConnect}" method="post">
+            <form action="#" th:object="${paymentInfo}" th:action="@{/ccpayment}" method="post">
                     <div th:if="${StripeJavaScript}">
                        <table id="sTable">
                     
@@ -90,6 +90,9 @@
 	                 
                        </table>
                     </div> 
+            <input type="hidden" name="numberOfClouds" value="" id="numberOfClouds"  th:value="*{numberOfClouds}" />                
+			<input type="hidden" name="txnType" value="" id="txnType"  th:value="*{txnType}" />					
+                    
 		 </form>
 
         <div class="bottom">

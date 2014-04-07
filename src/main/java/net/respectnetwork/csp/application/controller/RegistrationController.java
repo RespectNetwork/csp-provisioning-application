@@ -1,7 +1,6 @@
 package net.respectnetwork.csp.application.controller;
 
 import java.io.UnsupportedEncodingException;
-import java.math.BigDecimal;
 import java.net.URLDecoder;
 import java.util.Map;
 import java.util.UUID;
@@ -13,13 +12,12 @@ import javax.validation.Valid;
 import net.respectnetwork.csp.application.dao.DAOException;
 import net.respectnetwork.csp.application.dao.DAOFactory;
 import net.respectnetwork.csp.application.exception.UserRegistrationException;
+import net.respectnetwork.csp.application.form.PaymentForm;
 import net.respectnetwork.csp.application.form.SignUpForm;
 import net.respectnetwork.csp.application.form.UserDetailsForm;
 import net.respectnetwork.csp.application.form.ValidateForm;
 import net.respectnetwork.csp.application.manager.RegistrationManager;
-import net.respectnetwork.csp.application.manager.StripePaymentProcessor;
 import net.respectnetwork.csp.application.model.CSPModel;
-import net.respectnetwork.csp.application.model.InviteModel;
 import net.respectnetwork.csp.application.session.RegistrationSession;
 import net.respectnetwork.sdk.csp.validation.CSPValidationException;
 
@@ -345,7 +343,24 @@ public class RegistrationController
       if (!errors)
       {
 
+         CSPModel cspModel = null;
+
+         try
+         {
+            cspModel = DAOFactory.getInstance().getCSPDAO()
+                  .get(this.getCspCloudName());
+         } catch (DAOException e)
+         {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+         }
+         
          mv = new ModelAndView("payment");
+         PaymentForm paymentForm = new PaymentForm();
+         paymentForm.setTxnType(PaymentForm.TXN_TYPE_SIGNUP);
+         paymentForm.setNumberOfClouds(1);
+         
+         mv.addObject("paymentInfo", paymentForm);
 
       }
 

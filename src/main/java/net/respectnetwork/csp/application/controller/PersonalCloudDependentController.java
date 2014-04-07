@@ -11,6 +11,7 @@ import net.respectnetwork.csp.application.dao.DAOException;
 import net.respectnetwork.csp.application.dao.DAOFactory;
 import net.respectnetwork.csp.application.exception.UserRegistrationException;
 import net.respectnetwork.csp.application.form.DependentForm;
+import net.respectnetwork.csp.application.form.PaymentForm;
 import net.respectnetwork.csp.application.manager.RegistrationManager;
 import net.respectnetwork.csp.application.manager.StripePaymentProcessor;
 import net.respectnetwork.csp.application.model.CSPModel;
@@ -219,124 +220,50 @@ public class PersonalCloudDependentController
             return mv;
 			
 		}
-		
+		/*
 		BigDecimal amount   = cspModel.getCostPerCloudName();
 		String     desc     = this.getPaymentDescription(dependentForm, request);
+		
 		mv = new ModelAndView("dependentSubmit");
 
 		mv.addObject("cspModel"    , cspModel);
 		mv.addObject("javaScript"  , StripePaymentProcessor.getJavaScript(cspModel, amount, desc));
 
 		model.addAttribute("dependentForm", dependentForm);
+		*/
+		mv = new ModelAndView("payment");
+		PaymentForm paymentForm = new PaymentForm();
+      paymentForm.setTxnType(PaymentForm.TXN_TYPE_DEP);
+      paymentForm.setNumberOfClouds(1);
+      mv.addObject("paymentInfo", paymentForm);
 		this.setDependentForm(dependentForm);
 		return mv;
 	}
 
-	@RequestMapping(value = "/dependentPayment", method = RequestMethod.POST)
-	public ModelAndView showDependentPaymentForm( Model model, HttpServletRequest request ) throws DAOException
-	{
-		boolean errors = false ;
-		
-		String       cloudName  = this.getCloudName();
-		DependentForm   dependentForm = this.getDependentForm();
 
-		logger.info("showing dependent payment page - " + cloudName + " : " + dependentForm.getDependentCloudName());
-
-		String       cspHomeURL = request.getContextPath();
-		ModelAndView mv         = null;
-		CSPModel     cspModel   = null;
-
-		if( cloudName == null )
-		{
-			mv = new ModelAndView("login");
-			mv.addObject("postURL", cspHomeURL + "/cloudPage");
-			return mv;
-		}
-
-		// nullify session variable
-
-		this.setDependentForm(null);
-
-		cspModel = DAOFactory.getInstance().getCSPDAO().get(this.getCspCloudName());
-		
-		BigDecimal amount   = cspModel.getCostPerCloudName();
-		String     desc     = this.getPaymentDescription(dependentForm, request);
-
-		String     token    = StripePaymentProcessor.getToken(request);
-		if( token == null )
-		{
-			mv = new ModelAndView("dependentSubmit");
-
-			mv.addObject("error"       , "Failed to obtain payment token. Please try again!");
-			mv.addObject("cspModel"    , cspModel);
-			mv.addObject("javaScript"  , StripePaymentProcessor.getJavaScript(cspModel, amount, desc));
-
-			model.addAttribute("dependentForm", dependentForm);
-			this.setDependentForm(dependentForm);
-
-            return mv;
-		}
-
-		PaymentModel payment = StripePaymentProcessor.makePayment(cspModel, amount, desc, token);
-
-		if( payment == null )
-		{
-			mv = new ModelAndView("dependentSubmit");
-
-			mv.addObject("error"       , "Failed to process payment. Please try again!");
-			mv.addObject("cspModel"    , cspModel);
-			mv.addObject("javaScript"  , StripePaymentProcessor.getJavaScript(cspModel, amount, desc));
-
-			model.addAttribute("dependentForm", dependentForm);
-			this.setDependentForm(dependentForm);
-
-            return mv;
-		}
-		
-		//register the dependent cloudname
-	
-		CloudNumber dependentCloudNumber = theManager.registerDependent(CloudName.create(cloudName), regSession.getPassword(), CloudName.create(dependentForm.getDependentCloudName()),  dependentForm.getDependentCloudPassword(),dependentForm.getDependentBirthDate());
-		if(dependentCloudNumber != null) {
-			logger.info("Dependent Cloud Number " + dependentCloudNumber.toString());
-		} else {
-			logger.error("Dependent Cloud Could not be registered");
-			errors = true;
-		}
-		 
-		if(errors){
-			mv = new ModelAndView("dependentSubmit");
-
-			mv.addObject("error"       , "Failed to register dependent cloud. " + theManager.getCSPContactInfo());
-			mv.addObject("cspModel"    , cspModel);
-			mv.addObject("javaScript"  , StripePaymentProcessor.getJavaScript(cspModel, amount, desc));
-
-			model.addAttribute("dependentForm", dependentForm);
-			this.setDependentForm(dependentForm);
-
-            return mv;
-		}
-		DependentCloudModel dependentCloud = this.saveDependent(dependentForm, payment);
-		mv = new ModelAndView("dependentDone");
-		mv.addObject("cspModel"    , cspModel);
-		mv.addObject("dependentModel" , dependentCloud);
-		return mv;
-	}
-
-	private DependentCloudModel saveDependent( DependentForm dependentForm, PaymentModel payment) throws DAOException
+	public  static DependentCloudModel saveDependent( DependentForm dependentForm, PaymentModel payment , String cloudName) 
 	{
 		DependentCloudModel dependentCloud = null;
 		DAOFactory dao = DAOFactory.getInstance();
 
 		if( payment != null )
 		{
-			dao.getPaymentDAO().insert(payment);
-			
 			dependentCloud = new DependentCloudModel();
 			dependentCloud.setDependentCloudName(dependentForm.getDependentCloudName());
-			dependentCloud.setGuardianCloudName(this.getCloudName());
-			dependentCloud.setPaymentId(payment.getPaymentId());
+			dependentCloud.setGuardianCloudName(cloudName);
+			if(payment != null)
+			{
+			   dependentCloud.setPaymentId(payment.getPaymentId());
+			}
 			dependentCloud.setTimeCreated(new Date());
-			dao.getDependentCloudDAO().insert(dependentCloud);
+			try {
+			   dao.getDependentCloudDAO().insert(dependentCloud);
+			}
+			catch(DAOException ex)
+			{
+			   logger.debug("Error while saving dependent record in DB " + ex.getMessage());
+			   return null;
+			}
 		}
 		return dependentCloud;
 	}

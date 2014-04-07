@@ -15,6 +15,8 @@ import net.respectnetwork.csp.application.dao.DAOException;
 import net.respectnetwork.csp.application.dao.DAOFactory;
 import net.respectnetwork.csp.application.dao.InviteResponseDAO;
 import net.respectnetwork.csp.application.form.AccountDetailsForm;
+import net.respectnetwork.csp.application.form.DependentForm;
+import net.respectnetwork.csp.application.form.InviteForm;
 import net.respectnetwork.csp.application.form.PaymentForm;
 import net.respectnetwork.csp.application.invite.InvitationManager;
 import net.respectnetwork.csp.application.manager.PersonalCloudManager;
@@ -31,6 +33,7 @@ import net.respectnetwork.csp.application.dao.DAOFactory;
 import net.respectnetwork.csp.application.model.InviteModel;
 import net.respectnetwork.csp.application.model.DependentCloudModel;
 
+import org.apache.http.HttpRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,10 +83,7 @@ public class PersonalCloudController
     */
    private PersonalCloudManager personalCloudManager;
 
-   /**
-    * CSP Name
-    */
-   private String               cspName;
+   
 
    /** Registration Session */
    private RegistrationSession  regSession;
@@ -124,24 +124,7 @@ public class PersonalCloudController
       this.invitationManager = invitationManager;
    }
 
-   /**
-    * @return the csp
-    */
-   public String getCspName()
-   {
-      return cspName;
-   }
-
-   /**
-    * @param csp
-    *           the cspName to set
-    */
-   @Autowired
-   @Qualifier("cspName")
-   public void setCspName(String cspName)
-   {
-      this.cspName = cspName;
-   }
+   
 
    /**
     * @return the regSession
@@ -224,7 +207,6 @@ public class PersonalCloudController
             if (cloudNumber != null)
             {
                myCSP.authenticateInCloud(cloudNumber, secretToken);
-
                if (regSession != null && regSession.getCloudName() == null)
                {
 
@@ -334,18 +316,20 @@ public class PersonalCloudController
       return mv;
    }
 
-   @RequestMapping(value = "/stripeConnect", method = RequestMethod.POST)
-   public ModelAndView processStripeResponse(
+   @RequestMapping(value = "/ccpayment", method = RequestMethod.POST)
+   public ModelAndView processCCPayment(
          @Valid @ModelAttribute("paymentInfo") PaymentForm paymentForm,
          HttpServletRequest request, Model model, BindingResult result)
    {
-      logger.info("processing STRIPE Response");
+      logger.info("processing CC payment");
 
       boolean errors = false;
+      String errorText = "";
 
       String cloudName = regSession.getCloudName();
+      
 
-      ModelAndView mv = getCloudPage(request, cloudName);
+      ModelAndView mv = null; 
 
       String sessionIdentifier = regSession.getSessionId();
       String email = regSession.getVerifiedEmail();
@@ -353,26 +337,34 @@ public class PersonalCloudController
       String password = regSession.getPassword();
       logger.debug(sessionIdentifier + "--" + cloudName + "--" + email + "--"
             + phone + "--" + password);
-
+      
+      String txnType = paymentForm.getTxnType();
+       
+      logger.debug("Transaction type = " + txnType);
+      
+      logger.debug("Number of clouds being purchased "
+            + paymentForm.getNumberOfClouds());
+      
       // Check Session
-      if (sessionIdentifier == null || cloudName == null || email == null
-            || phone == null || password == null)
+      if (sessionIdentifier == null || cloudName == null || password == null)
       {
          errors = true;
-         mv.addObject("error", "Invalid Session");
+         errorText = "Invalid Session";
+         
          logger.debug("Invalid Session ...");
       }
       CSPModel cspModel = null;
       DAOFactory dao = DAOFactory.getInstance();
       try
       {
-         cspModel = dao.getCSPDAO().get(this.getCspName());
+         cspModel = dao.getCSPDAO().get(this.getCspCloudName());
       } catch (DAOException e1)
       {
          // TODO Auto-generated catch block
          e1.printStackTrace();
          errors = true;
-         mv.addObject("error", "Cannot connect to DB to lookup information");
+         errorText = "Cannot connect to DB to lookup information";
+         
          logger.debug("Cannot connect to DB to lookup info...");
       }
 
@@ -399,28 +391,68 @@ public class PersonalCloudController
                         + e1.getMessage());
                   logger.info("Payment record info \n" + payment.toString());
                }
-               try
+
+               
+
+               if (txnType.equals(PaymentForm.TXN_TYPE_SIGNUP))
                {
-                  logger.debug("Going to create the personal cloud now for CC path ...");
-                  registrationManager.registerUser(CloudName.create(cloudName),
-                        phone, email, password);
+                  if (this.registerCloudName(cloudName, phone, email, password))
+                  {
+                     logger.debug("Going to create the personal cloud now for CC path ...");
+                     mv = getCloudPage(request, cloudName);
+                     AccountDetailsForm accountForm = new AccountDetailsForm();
+                     accountForm.setCloudName(cloudName);
+                     mv.addObject("accountInfo", accountForm);
 
-                  AccountDetailsForm accountForm = new AccountDetailsForm();
-                  accountForm.setCloudName(cloudName);
-                  mv.addObject("accountInfo", accountForm);
-
-                  logger.debug("Sucessfully Registered {}", cloudName);
-
-               } catch (Exception e)
-               {
-                  logger.warn("Registration Error {}", e.getMessage());
-                  mv.addObject("error", e.getMessage());
+                  } else
+                  {
+                     errors = true;
+                     errorText ="Could not register cloudname";
+                  }
 
                }
-
+               if (txnType.equals(PaymentForm.TXN_TYPE_DEP))
+               {
+                  if((mv = createDependentClouds(cloudName,payment)) != null)
+                  {
+                     return mv;
+                  }
+                  else
+                  {
+                     errors = true;
+                     errorText ="Could not register dependent cloud";
+                  }
+               }
+               if(txnType.equals(PaymentForm.TXN_TYPE_BUY_GC))
+               {
+                  if((mv = this.createGiftCards(request, cloudName, payment, cspModel)) != null)
+                  {
+                     return mv;
+                  }
+                  else
+                  {
+                     errors = true;
+                     errorText ="Errors in gift card processing";
+                  }
+               }
             }
-         }
 
+         }
+      } 
+      if(errors)
+      {
+         if(txnType.equals(PaymentForm.TXN_TYPE_SIGNUP))
+         {
+            mv = new ModelAndView("signup");
+         }
+         else if(cloudName == null || password == null || sessionIdentifier == null)
+         {
+            mv = new ModelAndView("login");
+         } else
+         {
+            mv = getCloudPage(request, cloudName);
+         }
+         mv.addObject("error", errorText);
       }
 
       return mv;
@@ -456,15 +488,18 @@ public class PersonalCloudController
 
    @RequestMapping(value = "/makePayment", method = RequestMethod.POST)
    public ModelAndView makePayment(
-         @Valid @ModelAttribute("paymentInfo") PaymentForm paymentForm,
+         @Valid @ModelAttribute("paymentInfo") PaymentForm paymentFormIn,
          HttpServletRequest request, Model model, BindingResult result)
    {
       logger.info("processing makePayment");
 
+      logger.debug("payment form binding result " + result.toString());
+
       boolean errors = false;
       String errorText = "";
 
-      ModelAndView mv = new ModelAndView("signup");
+      ModelAndView mv = null;
+      PaymentForm paymentForm = new PaymentForm(paymentFormIn);
 
       String cloudName = regSession.getCloudName();
       String sessionIdentifier = regSession.getSessionId();
@@ -475,17 +510,180 @@ public class PersonalCloudController
             + phone + "--" + password);
 
       // Check Session
-      if (sessionIdentifier == null || cloudName == null || email == null
-            || phone == null || password == null)
+      if (sessionIdentifier == null || cloudName == null || password == null)
       {
          errors = true;
+         mv = new ModelAndView("signup");
          mv.addObject("error", "Invalid Session");
          logger.debug("Invalid Session ...");
          return mv;
       }
 
-      
-      if ((request.getParameter("paymentType") != null) && (request.getParameter("paymentType").equals("creditCard"))) 
+      String paymentTypeGC = request.getParameter("paymentTypeGC");
+      String paymentTypeCC = request.getParameter("paymentTypeCC");
+      if (paymentTypeGC != null)
+      {
+
+         logger.debug("Payment with GC");
+      }
+      if (paymentTypeCC != null)
+      {
+
+         logger.debug("Payment with CC");
+      } else
+      {
+
+      }
+
+      if (paymentTypeGC != null && request.getParameter("giftCodes") == null)
+      {
+         mv = new ModelAndView("payment");
+         errors = true;
+         mv.addObject(
+               "error",
+               "Payment with gift card is checked. However, no gift card has been provided. Please provide one.");
+         logger.debug("Invalid choice for gift card ...");
+         return mv;
+
+      }
+
+      String txnType = paymentForm.getTxnType();
+
+      logger.debug("Number of clouds being purchased "
+            + paymentForm.getNumberOfClouds());
+      logger.debug("Transaction type " + txnType);
+
+      // process gift card payments first
+
+      boolean validGiftCard = false;
+
+      DAOFactory dao = DAOFactory.getInstance();
+      String giftCodesVal = request.getParameter("giftCodes");
+      logger.debug("Giftcodes " + giftCodesVal);
+      String[] giftCodes = null;
+      if (giftCodesVal != null && !giftCodesVal.isEmpty())
+      {
+         giftCodes = giftCodesVal.split(" ");
+         if (giftCodes != null
+               && paymentForm.getNumberOfClouds() < giftCodes.length)
+         {
+            errors = true;
+            errorText = "Number of clouds being purchased is less than the number of gift codes provided";
+
+         } else
+         {
+            int i = 0;
+
+            for (String giftCode : giftCodes)
+            {
+               logger.debug("Processing giftcode " + giftCode);
+               try
+               {
+                  GiftCodeModel giftCodeObj = dao.getGiftCodeDAO()
+                        .get(giftCode);
+                  if (giftCodeObj != null)
+                  {
+                     GiftCodeRedemptionModel gcrObj = dao
+                           .getGiftCodeRedemptionDAO().get(giftCode);
+                     if (gcrObj != null)
+                     {
+                        errors = true;
+                        errorText += "This giftcode , id "
+                              + giftCode
+                              + " has already been redeemed. Please remove it from the list. \n";
+
+                     }
+
+                  } else
+                  {
+                     errors = true;
+                     errorText += "The giftcode , id " + giftCode
+                           + " is not valid. Please check the giftcode id.\n";
+                  }
+               } catch (DAOException e2)
+               {
+                  // TODO Auto-generated catch block
+                  e2.printStackTrace();
+               }
+
+               i++;
+            }
+         }
+      }
+
+      if (errors)
+      {
+         mv = new ModelAndView("payment");
+         mv.addObject("error", errorText);
+         return mv;
+      }
+
+      if (!errors && giftCodes != null && giftCodes.length > 0)
+      {
+         String giftcode = giftCodes[0];
+         validGiftCard = true;
+
+         // need a new unique response id
+         String responseId = UUID.randomUUID().toString();
+         // make entries in the giftcode_redemption
+         // table that a new cloud has been registered against a gift code
+         if (giftcode != null)
+         {
+            if (txnType.equals(PaymentForm.TXN_TYPE_SIGNUP))
+            {
+               if (this.registerCloudName(cloudName, phone, email, password))
+               {
+                  logger.debug("Going to create the personal cloud now for gift code path...");
+                  mv = getCloudPage(request, cloudName);
+                  AccountDetailsForm accountForm = new AccountDetailsForm();
+                  accountForm.setCloudName(cloudName);
+                  mv.addObject("accountInfo", accountForm);
+
+                  // make a new record in the giftcode_redemption table
+                  GiftCodeRedemptionModel giftCodeRedemption = new GiftCodeRedemptionModel();
+                  giftCodeRedemption.setCloudNameCreated(cloudName);
+                  giftCodeRedemption.setGiftCodeId(regSession.getGiftCode());
+                  giftCodeRedemption.setRedemptionId(responseId);
+                  giftCodeRedemption.setTimeCreated(new Date());
+                  try
+                  {
+                     dao.getGiftCodeRedemptionDAO().insert(giftCodeRedemption);
+
+                  } catch (DAOException e)
+                  {
+                     // TODO Auto-generated catch block
+                     e.printStackTrace();
+                  }
+               }
+            }
+            if (txnType.equals(PaymentForm.TXN_TYPE_DEP))
+            {
+               return createDependentClouds(cloudName,null);
+            }
+
+         }
+
+      }
+
+      if (validGiftCard && txnType.equals(PaymentForm.TXN_TYPE_SIGNUP))
+      {
+         return mv;
+      }
+
+      if (giftCodes != null
+            && (paymentForm.getNumberOfClouds() == giftCodes.length))
+      {
+         return mv;
+      }
+
+      // reduce the purchase quantity by the number of valid gift codes that
+      // have been processed above
+      if (validGiftCard)
+      {
+         paymentForm.setNumberOfClouds(paymentForm.getNumberOfClouds()
+               - giftCodes.length);
+      }
+      if (paymentTypeCC != null)
       {
          mv = new ModelAndView("creditCardPayment");
          CSPModel cspModel = null;
@@ -499,116 +697,134 @@ public class PersonalCloudController
             // TODO Auto-generated catch block
             e.printStackTrace();
          }
-        
 
-         BigDecimal amount = cspModel.getCostPerCloudName();
+         BigDecimal amount = cspModel.getCostPerCloudName().multiply(
+               new BigDecimal(paymentForm.getNumberOfClouds()));
+
          String desc = "Personal cloud  " + regSession.getCloudName();
          mv.addObject("cspModel", cspModel);
-         if(cspModel.getPaymentGatewayName().equals("STRIPE"))
+         if (cspModel.getPaymentGatewayName().equals("STRIPE"))
          {
             logger.debug("Payment gateway is STRIPE");
             mv.addObject("StripeJavaScript",
                   StripePaymentProcessor.getJavaScript(cspModel, amount, desc));
          } else if (cspModel.getPaymentGatewayName().equals("SAGEPAY"))
          {
-            //TBD
+            // TBD
          }
-
+         mv.addObject("paymentInfo", paymentForm);
          return mv;
       }
-      mv = new ModelAndView("payment");
-      String giftCode = request.getParameter("giftCode");
-      if ((giftCode != null) && (!giftCode.isEmpty()))
+
+      return mv;
+   }
+
+   private ModelAndView createDependentClouds(String cloudName , PaymentModel payment)
+   {
+      ModelAndView mv = null;
+      boolean errors = false;
+      DependentForm dependentForm = regSession.getDependentForm();
+
+      regSession.setDependentForm(null);
+
+      // register the dependent cloudname
+
+      CloudNumber dependentCloudNumber = registrationManager.registerDependent(
+            CloudName.create(cloudName), regSession.getPassword(),
+            CloudName.create(dependentForm.getDependentCloudName()),
+            dependentForm.getDependentCloudPassword(),
+            dependentForm.getDependentBirthDate());
+      if (dependentCloudNumber != null)
       {
-         regSession.setGiftCode(giftCode);
+         logger.info("Dependent Cloud Number "
+               + dependentCloudNumber.toString());
+         PersonalCloudDependentController.saveDependent(dependentForm, payment, cloudName);         
+      } else
+      {
+         logger.error("Dependent Cloud Could not be registered");
+         errors = true;
       }
 
-      DAOFactory dao = DAOFactory.getInstance();
+      if (errors)
+      {
+         mv = new ModelAndView("dependent");
+         mv.addObject("error", "Failed to register dependent cloud. "
+               + registrationManager.getCSPContactInfo());       
+         return mv;
+      }
+      // DependentCloudModel dependentCloud = this.saveDependent(dependentForm,
+      // payment);
+      mv = new ModelAndView("dependentDone");
+      // mv.addObject("dependentModel" , dependentCloud);
+      return mv;
+   }
+
+   private boolean registerCloudName(String cloudName, String phone,
+         String email, String password)
+   {
       try
       {
-         GiftCodeModel giftCodeObj = dao.getGiftCodeDAO().get(giftCode);
-         if (giftCodeObj != null)
-         {
-            GiftCodeRedemptionModel gcrObj = dao.getGiftCodeRedemptionDAO()
-                  .get(giftCode);
-            if (gcrObj != null)
-            {
-               errors = true;
-               errorText = "This giftcode has already been redeemed.";
+         registrationManager.registerUser(CloudName.create(cloudName), phone,
+               email, password);
 
-            }
-
-         } else
-         {
-            errors = true;
-            errorText = "The giftcode is not valid. Please check the giftcode id.";
-         }
-      } catch (DAOException e2)
+         logger.debug("Sucessfully Registered {}", cloudName);
+         return true;
+      } catch (Xdi2ClientException e1)
       {
-         // TODO Auto-generated catch block
-         e2.printStackTrace();
+
+         logger.debug("Xdi2ClientException in registering cloud "
+               + e1.getMessage());
+      } catch (CSPRegistrationException e1)
+      {
+
+         logger.debug("CSPRegistrationException in registering cloud "
+               + e1.getMessage());
       }
+      return false;
+
+   }
+   
+   private ModelAndView createGiftCards(HttpServletRequest request , String cloudName , PaymentModel payment , CSPModel cspModel)
+   {
+      ModelAndView mv = getCloudPage(request, cloudName);
+      boolean errors = false;
+      String errorText = "";
+      
+      InviteForm   inviteForm = regSession.getInviteForm();
+      
+      regSession.setInviteForm(null);
+
+      InviteModel inviteModel = null;
+      try
+      {
+         inviteModel = DAOFactory.getInstance().getInviteDAO().get(inviteForm.getInviteId());
+         if( inviteModel != null )
+         {
+             logger.error("InviteModel already exist - " + inviteModel);
+             errors = true;
+             errorText = "Invite id has already been used before !";
+         }
+         
+         List<GiftCodeModel> giftCardList = new ArrayList<GiftCodeModel>();
+
+         InviteModel invite = PersonalCloudInviteController.saveInvite(inviteForm, payment, giftCardList, request.getLocale(),cspModel.getCspCloudName(),cloudName);
+         mv = new ModelAndView("inviteDone");
+         mv.addObject("cspModel"    , cspModel);
+         mv.addObject("inviteModel" , invite);
+         mv.addObject("giftCardList", giftCardList);
+         
+      } catch (DAOException e)
+      {
+         logger.debug(e.getMessage());
+         errors = true;
+         errorText = "System error";
+      }
+      
 
       if(errors)
       {
          mv.addObject("error", errorText);
-         return mv;
       }
-
-      if (!errors)
-      {
-
-         mv = getCloudPage(request, cloudName);
-         // need a new unique response id
-         String responseId = UUID.randomUUID().toString();
-         // make entries in the giftcode_redemption
-         // table that a new cloud has been registered against a gift code
-         if ((regSession.getGiftCode() != null)
-               && !regSession.getGiftCode().isEmpty())
-         {
-
-            logger.debug("Going to create the personal cloud now for gift code path...");
-            try
-            {
-               registrationManager.registerUser(CloudName.create(cloudName),
-                     phone, email, password);
-
-               AccountDetailsForm accountForm = new AccountDetailsForm();
-               accountForm.setCloudName(cloudName);
-               mv.addObject("accountInfo", accountForm);
-
-               logger.debug("Sucessfully Registered {}", cloudName);
-            } catch (Xdi2ClientException e1)
-            {
-
-               // TODO Auto-generated catch block
-               e1.printStackTrace();
-            } catch (CSPRegistrationException e1)
-            {
-
-               // TODO Auto-generated catch block
-               e1.printStackTrace();
-            }
-
-            // make a new record in the giftcode_redemption table
-            GiftCodeRedemptionModel giftCodeRedemption = new GiftCodeRedemptionModel();
-            giftCodeRedemption.setCloudNameCreated(cloudName);
-            giftCodeRedemption.setGiftCodeId(regSession.getGiftCode());
-            giftCodeRedemption.setRedemptionId(responseId);
-            giftCodeRedemption.setTimeCreated(new Date());
-            try
-            {
-               dao.getGiftCodeRedemptionDAO().insert(giftCodeRedemption);
-
-            } catch (DAOException e)
-            {
-               // TODO Auto-generated catch block
-               e.printStackTrace();
-            }
-
-         }
-      }
-
       return mv;
    }
 

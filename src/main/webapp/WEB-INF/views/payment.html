@@ -97,17 +97,17 @@
 	        
 	                    <tr >
 	                       <td>
-	                       <input type="radio" id="paymentType" name="paymentType" value="giftCard" /><br></br>
+	                       <input type="checkbox" id="paymentTypeGC" name="paymentTypeGC" value="giftCard" /><br></br>
 	                       </td>
 	                        <td>
-	                            Gift Code
-	                            <input type="text" name="giftCode"  id="giftCode" 
+	                            Gift Code(s) - separated by spaces
+	                            <input type="text" name="giftCodes"  id="giftCodes" 
 	                             />
 	                        </td>
 	                    </tr>
 	                    <tr>
 	                       <td>
-	                          <input type="radio" id="paymentType" name="paymentType" value="creditCard">Pay with a credit card </input><br></br>
+	                          <input type="checkbox" id="paymentTypeCC" name="paymentTypeCC" value="creditCard">Pay with a credit card </input><br></br>
 	                       </td>
 	                    </tr>
 	                    <tr>
@@ -118,6 +118,9 @@
 	                      </td>
 	                    </tr>
 	        </table>
+	        
+	        <input type="hidden" name="numberOfClouds" value="" id="numberOfClouds"  th:value="*{numberOfClouds}" />                
+			<input type="hidden" name="txnType" value="" id="txnType"  th:value="*{txnType}" />					
         </form>
 
 

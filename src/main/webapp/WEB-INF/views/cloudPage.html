@@ -69,11 +69,12 @@
               <li class="editprofile"><a href="#">Edit Profile</a></li>
             </ul>
             <form method="get" action="/invite" th:action="@{/invite}">
-              <button id="full" type="submit">Invites &amp; Gift Cards</button>
+              <button id="full" type="submit">Gift Cards</button>
             </form>
             <form method="get" action="/dependent" th:action="@{/dependent}">
               <button id="full" type="submit">Add Family Clouds</button>
             </form>
+<!--            
             <div class="group" id="list" th:if="${inviteList != null and #lists.size(inviteList) &gt; 0 }">
               <div class="col span_7_of_7">
                 Recent Invites
@@ -96,8 +97,10 @@
                 <div class="col span_1_of_7">&nbsp;</div>
               </div>
             </div>
+-->            
           </div>
         </div>
+        
         <div class="col span_8_of_11">
           <div class="inner">
             <h4>Congratulations &amp; welcome to the future of personal data.</h4>

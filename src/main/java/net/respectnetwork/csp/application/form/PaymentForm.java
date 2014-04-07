@@ -1,6 +1,8 @@
 package net.respectnetwork.csp.application.form;
 
 
+import java.math.BigDecimal;
+
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
@@ -11,44 +13,54 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  */
 public class PaymentForm {
 	
-    /** Gift Code */
-    private String giftCode;
+   public final static String GIFTCARD_PAYMENT = "giftCard";
+   public final static String CC_PAYMENT = "creditCard";
+   
+   public final static String TXN_TYPE_SIGNUP = "signup"; 
+   public final static String TXN_TYPE_BUY_GC = "buyGiftCard";
+   public final static String TXN_TYPE_DEP = "buyDependentCloud";
+   
 
+   private String giftCodes;
+   
     /** CSP Terms and Conditions */
     private boolean cspTandC;
-    
-    /** CardNumber */
-    private String cardNumber;
 
-    /** CCV */
-    private String cvv;
+    
+    /** customer email */    
+    String customerEmail ;
+    
+    /** customer name */
+    String customerName ;
 
-    /** Exp. Month */
-    private String expMonth;
     
-    /** Exp. Year */
-    private String expYear;
-
-    /** payment id - this is a unique id which refers to this payment transaction , either via a gift card or via a CC */
+    /** signup or buyGiftCard or buyDependentCloud */
+    String txnType ;
     
-    private String paymentId;
+    /** number of clouds being purchased */
+    int numberOfClouds;
     
-	/**
-     * @return the Gift Code
-     */
-    public String getGiftCode() {
-        return giftCode;
+    public PaymentForm()
+    {
+       this.giftCodes = null;
+       this.cspTandC = false;
+       this.txnType = null;
+       this.customerEmail = null;
+       this.customerName = null;
+       this.numberOfClouds = 0;
     }
 
-    /**
-     * @param giftCode the giftCode to set
-     */
-    public void setGiftCode(String giftCode) {
-        this.giftCode = giftCode;
-    }
+   public PaymentForm(PaymentForm paymentFormIn)
+   {
+      this.giftCodes = paymentFormIn.giftCodes;
+      this.cspTandC = paymentFormIn.cspTandC;
+      this.txnType = paymentFormIn.txnType;
+      this.customerEmail = paymentFormIn.customerEmail;
+      this.customerName = paymentFormIn.customerName;
+      this.numberOfClouds = paymentFormIn.numberOfClouds;
+   }
 
-
-    /**
+   /**
      * @return the cspTandC
      */
     public boolean isCspTandC() {
@@ -62,62 +74,6 @@ public class PaymentForm {
         this.cspTandC = cspTandC;
     }
 
-    /**
-     * @return the cardNumber
-     */
-    public String getCardNumber() {
-        return cardNumber;
-    }
-
-    /**
-     * @param cardNumber the cardNumber to set
-     */
-    public void setCardNumber(String cardNumber) {
-        this.cardNumber = cardNumber;
-    }
-
-    /**
-     * @return the cvv
-     */
-    public String getCvv() {
-        return cvv;
-    }
-
-    /**
-     * @param ccv the cvv to set
-     */
-    public void setCvv(String cvv) {
-        this.cvv = cvv;
-    }
-
-    /**
-     * @return the expMonth
-     */
-    public String getExpMonth() {
-        return expMonth;
-    }
-
-    /**
-     * @param expMonth the expMonth to set
-     */
-    public void setExpMonth(String expMonth) {
-        this.expMonth = expMonth;
-    }
-
-    /**
-     * @return the expYear
-     */
-    public String getExpYear() {
-        return expYear;
-    }
-
-    /**
-     * @param expYear the expYear to set
-     */
-    public void setExpYear(String expYear) {
-        this.expYear = expYear;
-    }
-
 
 
     /**
@@ -126,12 +82,8 @@ public class PaymentForm {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("[giftCode=").append(giftCode)
+        builder.append("[giftCodes=").append(giftCodes)
             .append(", cspTandC=").append(cspTandC)
-            .append(", cardNumber=").append(cardNumber)
-            .append(", ccv=").append(cvv)
-            .append(", expMonth=").append(expMonth)
-            .append(", expYear=").append(expYear)
             .append("]");
         return builder.toString();
     }
@@ -142,12 +94,8 @@ public class PaymentForm {
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-        .append(giftCode)
+        .append(giftCodes)
         .append(cspTandC)
-        .append(cardNumber)
-        .append(cvv)
-        .append(expMonth)
-        .append(expYear)
         .toHashCode();
     }
     
@@ -159,24 +107,63 @@ public class PaymentForm {
         if(obj instanceof PaymentForm){
             final PaymentForm other = (PaymentForm) obj;
             return new EqualsBuilder()
-                .append(giftCode, other.giftCode)
+                .append(giftCodes, other.giftCodes)
                 .append(cspTandC, other.cspTandC)
-                .append(cardNumber, other.cardNumber)
-                .append(cvv, other.cvv)
-                .append(expMonth, other.expMonth)
-                .append(expYear, other.expYear)
                 .isEquals();
         } else{
             return false;
         }
     }
 
-	public String getPaymentId() {
-		return paymentId;
-	}
+   public String getGiftCodes()
+   {
+      return giftCodes;
+   }
 
-	public void setPaymentId(String paymentId) {
-		this.paymentId = paymentId;
-	}
+   public void setGiftCodes(String giftCodes)
+   {
+      this.giftCodes = giftCodes;
+   }
+
+   public String getCustomerEmail()
+   {
+      return customerEmail;
+   }
+
+   public void setCustomerEmail(String customerEmail)
+   {
+      this.customerEmail = customerEmail;
+   }
+
+   public String getCustomerName()
+   {
+      return customerName;
+   }
+
+   public void setCustomerName(String customerName)
+   {
+      this.customerName = customerName;
+   }
+
+   public String getTxnType()
+   {
+      return txnType;
+   }
+
+   public void setTxnType(String txnType)
+   {
+      this.txnType = txnType;
+   }
+
+   public int getNumberOfClouds()
+   {
+      return numberOfClouds;
+   }
+
+   public void setNumberOfClouds(int numberOfClouds)
+   {
+      this.numberOfClouds = numberOfClouds;
+   }
+
 	
 }
