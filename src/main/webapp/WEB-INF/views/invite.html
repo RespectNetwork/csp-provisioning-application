@@ -77,14 +77,14 @@
             </td>
           </tr>
           <tr>
-            <td colspan="2"><input style="width:100%" maxlength="64" type="text" id="emailAddress" name="emailAddress" value="" th:value="${inviteForm.emailAddress}" placeholder="Your email address" th:placeholder="#{invite.text.email}" required="required" autofocus="autofocus"/></td>
+            <td colspan="2"><input style="width:100%" maxlength="64" type="text" id="emailAddress" name="emailAddress" value="" th:value="${inviteForm.emailAddress}" placeholder="Your email address"  required="required" autofocus="autofocus"/></td>
           </tr>
           <tr th:if="${#fields.hasErrors('emailAddress')}">
             <td colspan="2"><p style="color: orange; font-size: 18px;" th:text="#{invite.error.email}">email address is wrong</p></td>
           </tr>
           <tr>
             <td><input type="hidden" id="giftCardFlag" name="giftCardFlag" value="true" /></td>
-            <td><span th:text="#{invite.text.include}">Include</span> <span th:text="${cspModel.currency}">$</span> <span th:text="${#numbers.formatDecimal(cspModel.costPerCloudName, 0, 'COMMA', 2, 'POINT')}">25.00</span> <span th:text="#{invite.text.giftcards}">Gift Cards</span> <select id="giftCardQuantity" name="giftCardQuantity" >
+            <td><span th:text="#{invite.text.include}">Number of </span> <span th:text="${cspModel.currency}">$</span> <span th:text="${#numbers.formatDecimal(cspModel.costPerCloudName, 0, 'COMMA', 2, 'POINT')}">25.00</span> <span th:text="#{invite.text.giftcards}">Gift Cards</span> <select id="giftCardQuantity" name="giftCardQuantity" >
                 <option th:each="quantity : ${quantityList}" th:value="${quantity}" th:text="${quantity}" th:selected="${quantity.equals(inviteForm.giftCardQuantity)}" >0</option>
               </select>
             </td>

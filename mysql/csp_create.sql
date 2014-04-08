@@ -80,4 +80,3 @@ create table  dependent_cloud
 ,	primary key (guardian_cloudname, dependent_cloudname)
 );
 
-alter  table dependent_cloud add (constraint fk_dependent_cloud_payment_id foreign key (payment_id) references payment(payment_id));

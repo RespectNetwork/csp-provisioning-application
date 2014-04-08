@@ -776,7 +776,13 @@ public class PersonalCloudController
          {
             logger.info("Dependent Cloud Number "
                   + dependentCloudNumber.toString());
-            PersonalCloudDependentController.saveDependent(dependentCloudName, payment, cloudName);         
+            if(payment != null) 
+            {
+               PersonalCloudDependentController.saveDependent(dependentCloudName, payment, cloudName,null);
+            } else
+            {
+               PersonalCloudDependentController.saveDependent(dependentCloudName, null, cloudName,giftCodes[i]);
+            }
          } else
          {
             logger.error("Dependent Cloud Could not be registered");

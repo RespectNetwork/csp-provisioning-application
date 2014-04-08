@@ -208,7 +208,7 @@ public class PersonalCloudDependentController
    }
 
    public static DependentCloudModel saveDependent(String dependentCloudName,
-         PaymentModel payment, String cloudName)
+         PaymentModel payment, String cloudName , String giftCode)
    {
       DependentCloudModel dependentCloud = null;
       DAOFactory dao = DAOFactory.getInstance();
@@ -219,6 +219,9 @@ public class PersonalCloudDependentController
       if (payment != null)
       {
          dependentCloud.setPaymentId(payment.getPaymentId());
+      } else
+      {
+         dependentCloud.setPaymentId(giftCode);
       }
       dependentCloud.setTimeCreated(new Date());
       try
