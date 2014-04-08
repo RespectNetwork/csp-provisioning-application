@@ -1,220 +1,139 @@
 <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Respect Network</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
 
-<html xmlns:th="http://www.thymeleaf.org">
+    <!-- CSS -->
+    <link href="css/bootstrap.css" rel="stylesheet" />
+    <link href="css/style.css" rel="stylesheet" />
+   <style type="text/css" >
 
-<head>
-<meta charset="utf-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+      /* Sticky footer styles
+      -------------------------------------------------- */
 
-<title>Sign up for your personal cloud</title>
-<meta name="description" content="Invite"/>
+      html,
+      body {
+        height: 100%;
+        /* The html and body elements cannot have any padding or margin. */
+      }
 
-<!-- Responsive and mobile friendly stuff -->
-	<meta name="HandheldFriendly" content="True"/>
-	<meta name="MobileOptimized" content="320"/>
+      /* Wrapper for page content to push down footer */
+      #wrap {
+        min-height: 100%;
+        height: auto !important;
+        height: 100%;
+        /* Negative indent footer by it's height */
+        margin: 0 auto -60px;
+      }
 
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
+      /* Set the fixed height of the footer here */
+      #push,
+      #footer {
+        height: 60px;
+      }
+      #footer {
+        border-top: solid 1px #d9d9d9;
+      }
 
-<!--
-	<link rel="stylesheet" href="../../css/csp.css" th:href="@{/css/csp.css}"/>
+      /* Lastly, apply responsive CSS fixes as necessary */
+      @media (max-width: 767px) {
+        #footer {
+          margin-left: -20px;
+          margin-right: -20px;
+          padding-left: 20px;
+          padding-right: 20px;
+        }
+      }
 
-	<link rel="stylesheet" href="../../css/html5reset.css" th:href="@{/css/csp.css}" media="all"/>
-	<link rel="stylesheet" href="../../css/responsivegridsystem.css" th:href="@{/css/responsivegridsystem.css}" media="all"/>
-	<link rel="stylesheet" href="../../css/col.css" th:href="@{/css/col.css}" media="all"/>
-	<link rel="stylesheet" href="../../css/5cols.css" th:href="@{/css/5cols.css}" media="all"/>
-	<link rel="stylesheet" href="../../css/6cols.css" th:href="@{/css/6cols.css}" media="all"/>
-	<link rel="stylesheet" href="../../css/7cols.css" th:href="@{/css/7cols.css}" media="all"/>
-	<link rel="stylesheet" href="../../css/8cols.css" th:href="@{/css/8cols.css}" media="all"/>
-	<link rel="stylesheet" href="../../css/9cols.css" th:href="@{/css/9cols.css}" media="all"/>
-	<link rel="stylesheet" href="../../css/10cols.css" th:href="@{/css/10cols.css}" media="all"/>
-	<link rel="stylesheet" href="../../css/11cols.css" th:href="@{/css/11cols.css}" media="all"/>
-	<link rel="stylesheet" href="../../css/12cols.css" th:href="@{/css/12cols.css}" media="all"/>
--->
-	<!-- <style type="text/css">
-  	/*  THIS IS JUST TO GET THE GRID TO SHOW UP.  YOU DONT NEED THIS IN YOUR CODE */
-  		#maincontent .col { background: #fff; }
-      	</style>
-    -->
-	<link rel="stylesheet" media="all" href="css/styles.css" type="text/css"/>
-	<link href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet"/>	
 
-  <link rel="stylesheet" href="css/html5reset.css" media="all"/>
-  <link rel="stylesheet" href="css/responsivegridsystem.css" media="all"/>
-  <link rel="stylesheet" href="css/col.css" media="all"/>
-  <link rel="stylesheet" href="css/5cols.css" media="all"/>
-  <link rel="stylesheet" href="css/6cols.css" media="all"/>
-  <link rel="stylesheet" href="css/7cols.css" media="all"/>
-  <link rel="stylesheet" href="css/8cols.css" media="all"/>
-  <link rel="stylesheet" href="css/9cols.css" media="all"/>
-  <link rel="stylesheet" href="css/10cols.css" media="all"/>
-  <link rel="stylesheet" href="css/11cols.css" media="all"/>
-  <link rel="stylesheet" href="css/12cols.css" media="all"/>
 
-	
+      /* Custom page CSS
+      -------------------------------------------------- */
+      /* Not required for template or sticky footer method. */
 
-<!-- Responsive Stylesheets -->
-	<link rel="stylesheet" media="only screen and (max-width: 1024px) and (min-width: 769px)" href="/css/1024.css"/>
-  <link rel="stylesheet" media="only screen and (max-width: 768px) and (min-width: 481px)" href="/css/768.css"/>
-  <link rel="stylesheet" media="only screen and (max-width: 480px)" href="/css/480.css"/>
+      #wrap > .container {
+        padding-top: 150px;
+      }
+      .container .credit {
+        margin: 20px 0;
+        text-align:center;
+      }
 
-<!-- Scripts-->	
-<script src="../../js/libs/modernizr-2.0.6.min.js" th:src="@{/js/libs/modernizr-2.0.6.min.js}"></script>
+      code {
+        font-size: 80%;
+      }
 
-<script src="../../js/libs/responsivegridsystem.js" th:src="@{/js/libs/responsivegridsystem.js}"></script>
+    </style>
+    <link href="css/bootstrap-responsive.css" rel="stylesheet" />
 
-</head>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.js"></script>
+    <![endif]-->
 
-<body>
-<div id="wrapper">
-    
-	<div id="maincontentcontainer">
-		
-        <div id="maincontent">
-        	
-            <div class="section group">
-                
-                <div class="col span_4_of_11">
-                <div id="header">
-                	<img src="img/RespectLogo1.png" alt="Respect Network"/>
-                </div> <!-- end id header -->
-                </div> <!-- end class -->
-                <div class="col span_7_of_11">
-                &nbsp;
-                </div>
-                
-            </div> <!-- end section group -->
-            
-            
-		
-		<!-- 
-			<div class="col span_7_of_11">
-         		<div class="signup">
-                    <h2>Choose your cloud name</h2>
-                    <p>This is a cloud for individuals only, business clouds will be available in July 2014.</p>
-                        
-                    <div class="group">
-                        
-                        <div class="col span_1_of_11">
-                        <a href="#" class="tooltip">i</a>
-                        </div>
-                        
-                        <div class="col span_9_of_11">
-                        <input type="text" value="=">
-                        </div>
-                        
-                        <div class="col span_1_of_11">
-                        <div class="alert">&nbsp;</div>
-                        </div>
-                        
-                     </div>
-                        
-                    </div>
-                 </div>
-		-->
-        
-            <form action="#" role="form" th:object="${signUpInfo}" th:action="@{/signup}" method="post">
-            
-            <!--
-                <table id="signUpTable">
-                    <tr>
-                        <td>
-                            <p id="headerText">Choose Your Cloud Name</p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <p id="subHeaderText">All personal cloud names begin with an = sign.</p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <input type="text" name="cloudName" value="" id="cloudName" placeholder="=you" required="required" autofocus="autofocus" th:value="*{cloudName}" />
-                            <p id="error" th:text="${cloudNameError}">CN Error</p>
-                            <p id="error" th:text="${error}">System Error</p>                        
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                        	<input type="submit" value="Next" name="submit" class="submit" />
-                        	
-                        </td>
-                    </tr>
-                </table>
-                
-                
-				<input type="hidden" name="inviteCode" value="" id="inviteCode"  th:value="*{inviteCode}" />                
-				<input type="hidden" name="giftCode" value="" id="giftCode"  th:value="*{giftCode}" />
-			-->	
-			<div class="section group">
-				<div class="col span_7_of_11">
-					<div class="signup">
-                    	<h2>Choose your cloud name</h2>
-                    	<p>This is a cloud for individuals only, business clouds will be available in July 2014.</p>
-                        
-                    <div class="group">
-                        
-                        <div class="col span_1_of_11">
-                        <a href="#" class="tooltip">i</a>
-                        </div>
-                        
-                        <div class="col span_9_of_11">
-                            <input type="text" name="cloudName" value="" id="cloudName" placeholder="=you" required="required" autofocus="autofocus" th:value="*{cloudName}" />
-                            <p id="error" th:text="${cloudNameError}">CN Error</p>
-                            <p id="error" th:text="${error}">System Error</p>
-                        </div>
-                        
-                        <div class="col span_1_of_11">
-                        
-                        	<div class="alert">&nbsp;
-                        	</div>
-                        	
-                        </div>
-                        
-                        <div class="col span_11_of_12">
-                        	
-                        	<button type="submit" name="submit" id="submit" class="btn btn-default">Next</button>
-                        </div>
-                        
-                        <div class="col span_1_of_12">
-                        	&nbsp;
-                        </div>
-                        
-                     </div> <!-- end group -->
-                        
-                    </div> <!-- end signup -->
-				</div><!-- end span_7_of_11 -->
-				<div class="col span_4_of_11">
+    <!-- Fav and touch icons -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="img/ico/apple-touch-icon-144-precomposed.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/ico/apple-touch-icon-114-precomposed.png" />
+      <link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/ico/apple-touch-icon-72-precomposed.png" />
+                    <link rel="apple-touch-icon-precomposed" href="img/ico/apple-touch-icon-57-precomposed.png" />
+                                   <link rel="shortcut icon" href="img/ico/favicon.png" />
+  </head>
+
+  <body>
+
+
+    <!-- Part 1: Wrap all page content here -->
+    <div id="wrap">
+
+      <!-- Fixed navbar -->
+      <div class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+          <div class="container">
+          <div class="row">  
+          	<div class="span1">
+          	</div>
+          	<div class="span4"><img src="img/RespectNetwork_Logo_H_90.jpg" />
+          	</div>
+          	<div class="span4">
+          	</div>
+          	<div class="span3">
+          	 <ul class="nav">
+                <li><a href="#">Press</a></li>
+                <li><a href="#about">FAQ</a></li>
+             </ul>
+         		</div>
+          </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Begin page content -->
+      <div class="container">
+				<div class="middle"> Choose your cloud name 
+					<form action="#" role="form" th:object="${signUpInfo}" th:action="@{/signup}" method="post">
+
+            <input type="text" class="inputCloudName" name="cloudName" value="" id="cloudName" placeholder="=you" required="required" autofocus="autofocus" th:value="*{cloudName}" />
+ 							<p class="secondary">e.g., =jane, =janedoe, =jane.doe
+							</p>
+						<button type="submit" name="submit" id="submit" class="button">Submit</button>
+					</form>
+					<div class="csp">YOUR CLOUD SERVICE PROVIDER | <img src="img/paoga_logo.png" />
+					</div>
 				</div>
-			</div> <!-- end section group -->		
-				
-         </form>
-           
-       
-       
-       
-       	<div class="bottom">
-            	<div class="group">
-            	  <div class="col span_7_of_11">
-                  </div>
-                  
-                  <div class="col span_4_of_11">
-                    <div id="logo">
-                    <img src="img/logo.png" alt="Happy Cloud Co."/>
-                    </div><!-- end logo -->
-                  </div><!-- end class -->
-                </div><!-- end group -->
-            </div><!-- end bottom -->
-                 
-       </div>  <!-- end maincontent -->
-       </div>  <!-- end maincontentcontainer -->
-        <footer>
-			<div class="col span_11_of_11">
-			<p>&copy; 2014 All Rights Reserved  |  Respect Network personal cloud services</p>
 			</div>
 
-		</footer>
+    <div id="footer">
+      <div class="container">
+        <p class="muted credit">Copyright C 2014 Respect Network. All rights reserved.</p>
+      </div>
+    </div>
 
-    
- </div> <!-- end wrapper -->
-</body>
+</div>
+
+
+  </body>
 </html>
