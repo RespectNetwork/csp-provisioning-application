@@ -70,126 +70,25 @@
                 
             </div> <!-- end section group -->
 
-            <form action="#" th:object="${paymentInfo}" th:action="${postURL}" method="post">
-                    <div th:if="${StripeJavaScript}">
-                       <table id="sTable">
-	                    <tr>
-	                    <td  th:utext="${StripeJavaScript}">
-	              			<script               
-	              				src="https://checkout.stripe.com/checkout.js"
-	                             class="stripe-button"
-	                             data-key=""
-	                             data-amount="2500"
-	                             data-name="One Personal Cloud"
-	                             data-description="$25 USD"
-	                             data-image="img/cloud.png">
-	              			</script>
-	            		</td>
-	                    </tr>
-                       </table>
-                    </div> 
+            <form action="#"  th:action="${postURL}" method="post">
+                    
                     <div th:if="${SagePay}">
                        <table id="sTable">
-						<tr> 
-						<td>
-							<p class="subHeaderText">Billing Surname</p>							
-						</td>
-						
-						</tr>
-						<tr>					
-						<td> 
-							<input type="text" name="BillingSurname"  id="BillingSurname" placeholder="Surname" required="required" /> 
-						</td> 
-						</tr>
-						<tr> 
-						<td>
-							<p class="subHeaderText">Billing FirstNames</p>							
-						</td>
-						
-						</tr>
-												                        
-						<tr> 
-						<td> 
-							<input type="text" name="BillingFirstNames"  id="BillingFirstNames" placeholder="FirstName" required="required" /> 
-						</td> 
-						</tr>
-						<tr> 
-						<td>
-							<p class="subHeaderText">Billing Address1</p>							
-						</td>
-						
-						</tr>
-												
-						<tr> 
-						<td> 
-							<input type="text" name="BillingAddress1"  id="BillingAddress1" placeholder="Address1" required="required" /> 
-						</td> 
-						</tr>
-						<tr> 
-						<td>
-							<p class="subHeaderText">Billing City</p>							
-						</td>
-						
-						</tr>
-												
 						
 						<tr> 
 						<td> 
-							<input type="text" name="BillingCity"  id="BillingCity" placeholder="City" required="required" /> 
-						</td> 
-						</tr>
-						
-						<tr> 
-						<td>
-							<p class="subHeaderText">Billing Postal Code</p>							
-						</td>
-						
-						</tr>
-						<tr> 
-						<td> 
-							<input type="text" name="BillingPostCode"  id="BillingPostCode" placeholder="Zip" required="required" /> 
-						</td> 
-						</tr>
-						<tr> 
-						<td>
-							<p class="subHeaderText">Billing State (Required for US only)</p>							
-						</td>
-						
-						</tr>
-												
-						<tr> 
-						<td> 
-							<input type="text" name="BillingState"  id="BillingState" placeholder="State" required="required" /> 
-						</td> 
-						</tr>
-						<tr> 
-						<td>
-							<p class="subHeaderText">Billing Country</p>							
-						</td>
-						
-						</tr>
-												
-						<tr> 
-						<td> 
-							<input type="text" name="BillingCountry"  id="BillingCountry" placeholder="Country" required="required" /> 
-						</td> 
-						</tr>
-						
-						<tr> 
-						<td> 
-							<button type="submit" name="submit" class="btn btn-default">Next</button> 
+							<button type="submit" name="submit" class="btn btn-default">Process Payment</button> 
 						</td> 
 						</tr>
 						
 						</table>
 						
-                    	
-                    	
+                    	<input type="hidden" name="VPSProtocol" value="2.23" id="VPSProtocol" />
+                    	<input type="hidden" name="TxType" value="PAYMENT" id="TxType"   />
+                    	<input type="hidden" name="Vendor" value="" id="Vendor"  th:value="${vendor}" />
+                    	<input type="hidden" name="Crypt" value="" id="Crypt"  th:value="${crypt}" />
                     	
                     </div>
-            <input type="hidden" name="numberOfClouds" value="" id="numberOfClouds"  th:value="*{numberOfClouds}" />                
-			<input type="hidden" name="txnType" value="" id="txnType"  th:value="*{txnType}" />	
-			<input type="hidden" name="amount" value="" id="amount"  th:value="${amount}" />				
                     
 		 </form>
 

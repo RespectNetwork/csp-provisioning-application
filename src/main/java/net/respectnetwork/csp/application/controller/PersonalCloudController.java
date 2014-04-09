@@ -3,17 +3,17 @@ package net.respectnetwork.csp.application.controller;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import net.respectnetwork.csp.application.dao.DAOException;
 import net.respectnetwork.csp.application.dao.DAOFactory;
-import net.respectnetwork.csp.application.dao.InviteResponseDAO;
 import net.respectnetwork.csp.application.form.AccountDetailsForm;
 import net.respectnetwork.csp.application.form.DependentForm;
 import net.respectnetwork.csp.application.form.InviteForm;
@@ -22,18 +22,16 @@ import net.respectnetwork.csp.application.invite.InvitationManager;
 import net.respectnetwork.csp.application.manager.PersonalCloudManager;
 import net.respectnetwork.csp.application.manager.RegistrationManager;
 import net.respectnetwork.csp.application.manager.StripePaymentProcessor;
+
 import net.respectnetwork.csp.application.model.CSPModel;
+import net.respectnetwork.csp.application.model.DependentCloudModel;
 import net.respectnetwork.csp.application.model.GiftCodeModel;
 import net.respectnetwork.csp.application.model.GiftCodeRedemptionModel;
-import net.respectnetwork.csp.application.model.InviteResponseModel;
+import net.respectnetwork.csp.application.model.InviteModel;
 import net.respectnetwork.csp.application.model.PaymentModel;
 import net.respectnetwork.csp.application.session.RegistrationSession;
 import net.respectnetwork.sdk.csp.exception.CSPRegistrationException;
-import net.respectnetwork.csp.application.dao.DAOFactory;
-import net.respectnetwork.csp.application.model.InviteModel;
-import net.respectnetwork.csp.application.model.DependentCloudModel;
 
-import org.apache.http.HttpRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,13 +49,12 @@ import xdi2.client.exceptions.Xdi2ClientException;
 import xdi2.core.xri3.CloudName;
 import xdi2.core.xri3.CloudNumber;
 
-import com.stripe.Stripe;
-import com.stripe.exception.APIConnectionException;
-import com.stripe.exception.APIException;
-import com.stripe.exception.AuthenticationException;
-import com.stripe.exception.CardException;
-import com.stripe.exception.InvalidRequestException;
-import com.stripe.model.Charge;
+import com.sagepay.sdk.api.ApiFactory;
+import com.sagepay.sdk.api.IFormApi;
+import com.sagepay.sdk.api.ResponseStatus;
+import com.sagepay.sdk.api.messages.IFormPayment;
+import com.sagepay.sdk.api.messages.IFormPaymentResult;
+import com.sagepay.util.web.RequestState;
 
 @Controller
 public class PersonalCloudController
@@ -686,9 +683,10 @@ public class PersonalCloudController
          paymentForm.setNumberOfClouds(paymentForm.getNumberOfClouds()
                - giftCodes.length);
       }
-      if (paymentTypeCC != null)
+      if (paymentTypeCC != null && paymentForm.getNumberOfClouds() > 0)
       {
          mv = new ModelAndView("creditCardPayment");
+         String cspHomeURL = request.getContextPath();
          CSPModel cspModel = null;
 
          try
@@ -705,16 +703,25 @@ public class PersonalCloudController
                new BigDecimal(paymentForm.getNumberOfClouds()));
 
          String desc = "Personal cloud  " + regSession.getCloudName();
-         mv.addObject("cspModel", cspModel);
+         
          if (cspModel.getPaymentGatewayName().equals("STRIPE"))
          {
+            
             logger.debug("Payment gateway is STRIPE");
             mv.addObject("StripeJavaScript",
                   StripePaymentProcessor.getJavaScript(cspModel, amount, desc));
+            mv.addObject("postURL",
+                  cspHomeURL + "/ccpayment");
          } else if (cspModel.getPaymentGatewayName().equals("SAGEPAY"))
          {
-            // TBD
+            
+            mv.addObject("postURL",
+                  cspHomeURL +"/submitCustomerDetail");
+            mv.addObject("SagePay","SAGEPAY");
+            mv.addObject("amount",amount.toPlainString());
+            return mv;
          }
+         mv.addObject("cspModel", cspModel);
          mv.addObject("paymentInfo", paymentForm);
          return mv;
       }
@@ -939,5 +946,139 @@ public class PersonalCloudController
       }
       return mv;
    }
+   private String getSagePayCrypt(HttpServletRequest request, BigDecimal amount,String currency, String key)
+   {
+      IFormApi api = ApiFactory.getFormApi();
+      IFormPayment msg =  ApiFactory.getFormApi().newFormPaymentRequest();
+   
+      String cspHomeURL = request.getContextPath();
+      
+      
+      msg.setSuccessUrl(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + cspHomeURL + "/sagePayCallback/"); 
+      msg.setFailureUrl(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + cspHomeURL + "/sagePayCallback/"); 
+      msg.setVendorTxCode(UUID.randomUUID().toString());
+      msg.setDescription("Purchase Personal Cloud(s)");
+      msg.setCustomerName(request.getParameter("BillingFirstNames") + " " + request.getParameter("BillingSurname"));
+      msg.setBillingFirstnames(request.getParameter("BillingFirstNames"));
+      msg.setBillingSurname(request.getParameter("BillingSurname"));
+      msg.setBillingAddress1(request.getParameter("BillingAddress1"));
+      msg.setBillingCity(request.getParameter("BillingCity"));
+      msg.setBillingCountry(request.getParameter("BillingCountry"));
+      msg.setBillingPostCode(request.getParameter("BillingPostCode"));
+      
+      msg.setDeliveryFirstnames(request.getParameter("BillingFirstNames"));
+      msg.setDeliverySurname(request.getParameter("BillingSurname"));
+      msg.setDeliveryAddress1(request.getParameter("BillingAddress1"));
+      msg.setDeliveryCity(request.getParameter("BillingCity"));
+      msg.setDeliveryCountry(request.getParameter("BillingCountry"));
+      msg.setDeliveryPostCode(request.getParameter("BillingPostCode"));
 
+      msg.setCurrency(currency);
+      msg.setAmount(amount);
+      
+      api.encrypt(key, msg);
+      
+      Map<String,String> map = api.toMap(IFormPayment.class, msg);
+      
+      String crypt = map.get("Crypt");
+      
+      logger.debug("Crypt " + crypt);
+      
+      return crypt;
+   }
+   @RequestMapping(value = "/sagePayCallback", method = RequestMethod.GET)
+   public ModelAndView sagePayCallbackProcessing(
+         HttpServletRequest request, Model model , HttpServletResponse response)
+   {
+      
+      String sessionIdentifier = regSession.getSessionId();
+      String email = regSession.getVerifiedEmail();
+      String phone = regSession.getVerifiedMobilePhone();
+      String password = regSession.getPassword();
+      String cloudName = regSession.getCloudName();
+      logger.debug(sessionIdentifier + "--" + cloudName + "--" + email + "--"
+            + phone + "--" + password);
+      
+      final RequestState rs = new RequestState(request, response, request.getSession().getServletContext());
+      
+   
+      ModelAndView mv = null  ; //
+      
+      CSPModel cspModel = null;
+
+      try
+      {
+         cspModel = DAOFactory.getInstance().getCSPDAO()
+               .get(this.getCspCloudName());
+      } catch (DAOException e)
+      {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+      }
+
+      String crypt= rs.params.getMandatoryString("crypt");
+      IFormApi api = ApiFactory.getFormApi();
+      /*
+       * API Call 
+       * 
+       * Decrypt the returned parameter into a result object.
+       */
+      IFormPaymentResult fps = 
+         api.decrypt(cspModel.getPassword(), crypt);
+      logger.debug("Form Payment Result: " + fps.toString());
+      ResponseStatus status = fps.getStatus();
+      if(status.equals(ResponseStatus.OK)) 
+      {
+         logger.debug("SagePay payment was processed successfully " + status.toString() );
+         this.registerCloudName(cloudName, phone, email, password);
+         mv = getCloudPage(request, regSession.getCloudName());
+         
+         
+         
+      }
+      else {
+         String reason="";
+         // Determine the reason this transaction was unsuccessful
+         if (status.equals(ResponseStatus.NOTAUTHED))
+            reason = "You payment was declined by the bank.  This could be due to insufficient funds, or incorrect card details.";
+         else if (status.equals(ResponseStatus.ABORT))
+            reason = "You chose to Cancel your order on the payment pages.";
+         else if (status.equals(ResponseStatus.REJECTED)) 
+            reason = "Your order did not meet our minimum fraud screening requirements.";
+         else if (status.equals(ResponseStatus.INVALID) || status.equals(ResponseStatus.MALFORMED))
+            reason = "We could not process your order because we have been unable to register your transaction with our Payment Gateway.";
+         else if (status.equals(ResponseStatus.ERROR))
+            reason = "We could not process your order because our Payment Gateway service was experiencing difficulties.";
+         else
+            reason = "The transaction process failed. Please contact us with the date and time of your order and we will investigate.";
+         mv = new ModelAndView("signup");
+      }  
+      
+      return mv;
+   }
+
+   @RequestMapping(value = "/submitCustomerDetail", method = RequestMethod.POST)
+   public ModelAndView processBillingDetail(
+         
+         HttpServletRequest request, HttpServletResponse response)
+   {
+      CSPModel cspModel = null;
+
+      try
+      {
+         cspModel = DAOFactory.getInstance().getCSPDAO()
+               .get(this.getCspCloudName());
+      } catch (DAOException e)
+      {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+      }
+      ModelAndView mv =  new ModelAndView("submitCustomerDetail");
+      mv.addObject("postURL",
+            cspModel.getPaymentUrlTemplate());
+      mv.addObject("SagePay","SAGEPAY");
+      mv.addObject("vendor",cspModel.getUsername());
+      mv.addObject("crypt",getSagePayCrypt(request, new BigDecimal(request.getParameter("amount")),cspModel.getCurrency(),cspModel.getPassword()));
+      return mv;
+   }
 }

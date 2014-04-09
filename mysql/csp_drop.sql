@@ -5,3 +5,4 @@ drop table  giftcode;
 drop table  invite;
 drop table  payment;
 drop table  csp;
+drop table signup_info;

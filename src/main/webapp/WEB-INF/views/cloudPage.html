@@ -28,11 +28,11 @@
   <link rel="stylesheet" href="css/11cols.css" media="all"/>
   <link rel="stylesheet" href="css/12cols.css" media="all"/>
   <!-- Responsive Stylesheets -->
-  <link rel="stylesheet" media="only screen and (max-width: 1024px) and (min-width: 769px)" href="/css/1024.css"/>
-  <link rel="stylesheet" media="only screen and (max-width: 768px) and (min-width: 481px)" href="/css/768.css"/>
-  <link rel="stylesheet" media="only screen and (max-width: 480px)" href="/css/480.css"/>
+  <link rel="stylesheet" media="only screen and (max-width: 1024px) and (min-width: 769px)" href="css/1024.css"/>
+  <link rel="stylesheet" media="only screen and (max-width: 768px) and (min-width: 481px)" href="css/768.css"/>
+  <link rel="stylesheet" media="only screen and (max-width: 480px)" href="css/480.css"/>
   <!-- All JavaScript at the bottom, except for Modernizr which enables HTML5 elements and feature detects -->
-  <script src="js/libs/modernizr-2.5.3-min.js"></script>
+  <script src="/js/libs/modernizr-2.5.3-min.js"></script>
   <!-- <style type="text/css">
   /*  THIS IS JUST TO GET THE GRID TO SHOW UP.  YOU DONT NEED THIS IN YOUR CODE */
   #maincontent .col { background: #fff; }
@@ -42,7 +42,7 @@
   <link href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet"/>
   <script th:if="${inviteList != null}" th:text="${'var inviteListSize = ' + #lists.size(inviteList) + ';'}">var inviteListSize = 0;</script>
   <script th:if="${inviteList == null}">var inviteListSize = 0;</script>
-  <script src="js/libs/home.js"></script>
+  <script src="/js/libs/home.js"></script>
 </head>
 <body>
 <div id="wrapper">
@@ -60,7 +60,7 @@
         <div class="col span_3_of_11 profile">
           <div class="incol">
             <div id="profile">
-              <a href="#"><img src="img/img_edit.png"/>Edit</a>
+              <a href="#"><img src="imgimg_edit.png"/>Edit</a>
             </div>
             <h3 th:text="${cloudName}">=BobaFett</h3>
             <ul id="stats">

@@ -14,7 +14,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.respectnetwork.csp.application.dao.DAOException;
+import net.respectnetwork.csp.application.dao.DAOFactory;
 import net.respectnetwork.csp.application.exception.UserRegistrationException;
+import net.respectnetwork.csp.application.model.SignupInfoModel;
 import net.respectnetwork.sdk.csp.BasicCSPInformation;
 import net.respectnetwork.sdk.csp.CSP;
 import net.respectnetwork.sdk.csp.UserValidator;
@@ -435,6 +438,23 @@ public class RegistrationManager {
         // Step 8: Change Secret Token
 
         cspRegistrar.setCloudSecretTokenInCSP(cloudNumber, userPassword);
+        
+        //Step 9 : save the email and phone in local DB
+        
+        DAOFactory dao = DAOFactory.getInstance();
+        SignupInfoModel signupInfo  = new SignupInfoModel();
+        signupInfo.setCloudName(cloudName.toString());
+        signupInfo.setEmail(verifiedEmail);
+        signupInfo.setPhone(verifiedPhone);
+        
+        try
+      {
+         dao.getSignupInfoDAO().insert(signupInfo);
+      } catch (DAOException e)
+      {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+      }
         
         return cloudNumber;
 

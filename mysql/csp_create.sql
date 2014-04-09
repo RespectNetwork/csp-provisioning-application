@@ -80,3 +80,10 @@ create table  dependent_cloud
 ,	primary key (guardian_cloudname, dependent_cloudname)
 );
 
+create table  signup_info
+(	cloudname	varchar(255)	not null
+,	email	varchar(128)	
+,	phone		varchar(36)	
+,	primary key (cloudname)
+);
+

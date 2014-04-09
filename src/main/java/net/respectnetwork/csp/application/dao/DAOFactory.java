@@ -19,6 +19,7 @@ public class DAOFactory
 	private GiftCodeDAO           giftCodeDAO;
 	private GiftCodeRedemptionDAO giftCodeRedemptionDAO;
 	private DependentCloudDAO     dependentCloudDAO;
+	private SignupInfoDAO         signupInfoDAO;
 
 	public static DAOFactory getInstance()
 	{
@@ -59,6 +60,7 @@ public class DAOFactory
 		this.giftCodeDAO = null;
 		this.giftCodeRedemptionDAO = null;
 		this.dependentCloudDAO = null;
+		this.signupInfoDAO = null;
 	}
 
 	public CSPDAO getCSPDAO()
@@ -130,4 +132,14 @@ public class DAOFactory
 	{
 		this.dependentCloudDAO = dependentCloudDAO;
 	}
+
+   public SignupInfoDAO getSignupInfoDAO()
+   {
+      return signupInfoDAO;
+   }
+
+   public void setSignupInfoDAO(SignupInfoDAO signupInfoDAO)
+   {
+      this.signupInfoDAO = signupInfoDAO;
+   }
 }
