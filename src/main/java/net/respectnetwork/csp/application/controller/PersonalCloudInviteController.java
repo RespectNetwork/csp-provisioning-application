@@ -220,14 +220,28 @@ public class PersonalCloudInviteController
 		inviteForm.setInviteId(UUID.randomUUID().toString());
 
 		mv = new ModelAndView("creditCardPayment");
+		PaymentForm paymentForm = new PaymentForm();
+      paymentForm.setTxnType(PaymentForm.TXN_TYPE_BUY_GC);
+      if(regSession != null)
+      {
+         regSession.setTransactionType(PaymentForm.TXN_TYPE_BUY_GC);
+      }
+      paymentForm.setNumberOfClouds(inviteForm.getGiftCardQuantity().intValue());
+      mv.addObject("paymentInfo", paymentForm);
+      
 		if(cspModel.getPaymentGatewayName().equals("STRIPE")) 
 		{
 		   mv.addObject("StripeJavaScript"  , StripePaymentProcessor.getJavaScript(cspModel, amount, desc));
-		}
-		PaymentForm paymentForm = new PaymentForm();
-		paymentForm.setTxnType(PaymentForm.TXN_TYPE_BUY_GC);
-		paymentForm.setNumberOfClouds(inviteForm.getGiftCardQuantity().intValue());
-		mv.addObject("paymentInfo", paymentForm);
+		} 
+		else if (cspModel.getPaymentGatewayName().equals("SAGEPAY"))
+      {
+         
+         mv.addObject("postURL",
+               cspHomeURL +"/submitCustomerDetail");
+         mv.addObject("SagePay","SAGEPAY");
+         mv.addObject("amount",amount.toPlainString());        
+      }
+		
 		
 		this.setInviteForm(inviteForm);
 

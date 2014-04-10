@@ -40,6 +40,18 @@
       }
 
       /* Lastly, apply responsive CSS fixes as necessary */
+      @media (max-width: 979px) {
+        #footer {
+          margin-left: -20px;
+          margin-right: -20px;
+          padding-left: 20px;
+          padding-right: 20px;
+        }
+        .bodyContainer {
+					padding-top: 50px !important;
+				}
+      }
+      
       @media (max-width: 767px) {
         #footer {
           margin-left: -20px;
@@ -47,9 +59,16 @@
           padding-left: 20px;
           padding-right: 20px;
         }
+        .bodyContainer {
+					padding-top: 50px !important;
+				}
       }
-
-
+      @media (max-width: 450px) {
+				#feedback { 
+  			top: 80%;
+  			z-index: 9999;
+			}
+}
 
       /* Custom page CSS
       -------------------------------------------------- */
@@ -58,6 +77,11 @@
       #wrap > .container {
         padding-top: 150px;
       }
+      
+      .bodyContainer {
+      	padding-top: 125px;
+      }
+      
       .container .credit {
         margin: 20px 0;
         text-align:center;
@@ -66,6 +90,34 @@
       code {
         font-size: 80%;
       }
+      
+/* floating Help button
+------------------------------------------------------*/
+#feedback { 
+  height: 104px; 
+  width: 104px; 
+  position: fixed; 
+  top: 95%;
+  left: 150px;
+  z-index: 9999;
+}
+#feedback a { 
+  display: block; 
+  background: #fff; 
+  height: 15px; 
+  width: 70px; 
+  padding: 8px 16px;
+  color: #efefef; 
+  font-size: 17px; 
+  text-decoration: none; 
+  text-align:center;
+}
+
+#feedback a:hover { 
+  background: #06c; 
+}
+
+      
 
     </style>
     <link href="css/bootstrap-responsive.css" rel="stylesheet" />
@@ -93,26 +145,22 @@
       <div class="navbar navbar-fixed-top">
         <div class="navbar-inner">
           <div class="container">
-          <div class="row">  
-          	<div class="span1">
+          <div class="row-fluid">  
+          	<div class="span4 smallTop"><img src="img/RespectNetwork_Logo_H_RGB.png" />
           	</div>
-          	<div class="span4"><img src="img/RespectNetwork_Logo_H_90.jpg" />
+          	<div class="span4 midHdr">
           	</div>
-          	<div class="span4">
-          	</div>
-          	<div class="span3">
-          	 <ul class="nav">
-                <li><a href="#">Press</a></li>
-                <li><a href="#about">FAQ</a></li>
-             </ul>
+          	<div class="span4 bigTop">
+             <p class="secondary">Press | FAQs</p>
          		</div>
           </div>
+
           </div>
         </div>
       </div>
 
       <!-- Begin page content -->
-      <div class="container">
+      <div class="bodyContainer">
 				<div class="middle"> Choose your cloud name 
 					<form action="#" role="form" th:object="${signUpInfo}" th:action="@{/signup}" method="post">
 
@@ -121,15 +169,18 @@
 							</p>
 						<button type="submit" name="submit" id="submit" class="button">Submit</button>
 					</form>
-					<div class="csp">YOUR CLOUD SERVICE PROVIDER | <img src="img/paoga_logo.png" />
+					<div class="csp">YOUR CLOUD SERVICE PROVIDER | <img src="img/paoga_logo.png" /> &nbsp;
 					</div>
 				</div>
 			</div>
 
     <div id="footer">
-      <div class="container">
-        <p class="muted credit">Copyright C 2014 Respect Network. All rights reserved.</p>
-      </div>
+    	<div id="feedback">
+  			<a href="/feedback_url/">Help</a>
+		</div>
+<!--      <div class="container">
+        <p class="muted credit">Copyright &copy 2014 Respect Network. All rights reserved.</p>
+      </div>-->
     </div>
 
 </div>

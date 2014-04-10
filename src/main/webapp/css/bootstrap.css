@@ -466,6 +466,7 @@ a:focus {
 .row-fluid .span4 {
   width: 31.914893617021278%;
   *width: 31.861702127659576%;
+  text-align:center;
 }
 
 .row-fluid .span3 {
@@ -1057,7 +1058,6 @@ select,
 textarea {
   font-size: 14px;
   font-weight: normal;
-  line-height: 20px;
 }
 
 input,
@@ -1093,9 +1093,8 @@ input[type="color"],
   height: 40px;
   padding: 4px 6px;
   margin-bottom: 10px;
-  font-size: 14px;
-  line-height: 20px;
-  color: #555555;
+  font-size: 24px;
+  color: #b6b6b6;
   vertical-align: middle;
   -webkit-border-radius: 4px;
      -moz-border-radius: 4px;
@@ -4597,7 +4596,6 @@ input[type="submit"].btn.btn-mini {
   position: relative;
   left: 0;
   display: block;
-  float: left;
   margin: 0 10px 0 0;
 }
 

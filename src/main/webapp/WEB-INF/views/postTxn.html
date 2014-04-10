@@ -1,5 +1,9 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<!-- HTML5 Boilerplate -->
+<!--[if lt IE 7]>      <html xmlns:th="http://www.thymeleaf.org" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html xmlns:th="http://www.thymeleaf.org" class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html xmlns:th="http://www.thymeleaf.org" class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html xmlns:th="http://www.thymeleaf.org" class="no-js"> <!--<![endif]-->
 <head>
     <meta charset="utf-8" />
     <title>Respect Network</title>
@@ -133,12 +137,10 @@
       <link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/ico/apple-touch-icon-72-precomposed.png" />
                     <link rel="apple-touch-icon-precomposed" href="img/ico/apple-touch-icon-57-precomposed.png" />
                                    <link rel="shortcut icon" href="img/ico/favicon.png" />
-
-
 </head>
-
 <body>
- <!-- Part 1: Wrap all page content here -->
+
+<!-- Part 1: Wrap all page content here -->
     <div id="wrap">
 
       <!-- Fixed navbar -->
@@ -162,30 +164,20 @@
       <!-- Begin page content -->
       <div class="bodyContainer">
 				<div class="middle2"> 
-					<form class="form-horizontal" role="form"  th:action="${postURL}" method="post">
-
-  					<div class="form-group">
-    					<label for="cloudname" class="col-xs-4 control-label">Hello ! </label>
-    					<div class="col-xs-2">
-    					<input type="text"  class="form-control" id="cloudname" name="cloudname"  placeholder="=you"  ></input>
-    					</div>
-  					</div>
-  					<div class="form-group">
-    				<label for="password" class="col-xs-4 control-label">Password</label>
-    				<div class="col-xs-2">
-    				<input type="password" class="form-control" id="secrettoken" name="secrettoken" placeholder="Your secret token" />
-    				</div>
-  					</div>
-  					<div class="form-group">
-    				<div class="col-sm-offset-2 col-sm-10">
-  					<button type="submit" name="login" class="btn btn-default">Login</button>
-   
-   					</div>
-   					</div>
-					</form>				
-<div class="cspMain">YOUR CLOUD SERVICE PROVIDER | <img src="img/paoga_logo.png" /> &nbsp;
+				
+		  
+          <br></br>
+          
+          <form  action="#" role="form" name="txnCompletionForm" th:action="${postURL}" method="post">
+          	  <p><span th:text="${statusText}"/></p>
+          	  <input type="hidden" id="cloudname" name="cloudname" th:value="${cloudName}" />         	  
+  			  <input type="hidden" id="statusText" name="statusText" th:value="${statusText}" />
+  			  <input type="hidden" id="nextHop" name="nextHop" th:value="${nextHop}" />
+              <button id="continue" name="continue" type="submit" class="button">Continue</button>
+          </form>
+				<div class="cspMain">YOUR CLOUD SERVICE PROVIDER | <img src="img/paoga_logo.png" /> &nbsp;
 				</div>
-									
+											
 			</div>
 	</div>	  
 
@@ -200,6 +192,5 @@
 
 
 </div>
- 
 </body>
 </html>

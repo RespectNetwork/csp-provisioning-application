@@ -9,10 +9,12 @@
 .midHdr {
 	font-family: AvenirNext-Demibold;
 	padding-top: 50px;
-
   font-size: 28px;
   color: #02e4ff;
+}
 
+.rightHdr {
+	margin-left: 30px !important;
 }
 
 .pull-right {
@@ -20,15 +22,26 @@
 	font-size: 14px;
 	color: #999A9B;
 	padding-top: 5px;
-
 }
 
 .pull-left {
 	float: left;
 }
 
+.smallTop {
+	margin-top: 30px;
+}
+
+.bigTop {
+	margin-top: 60px;
+}
+
+.margin-bottom {
+	margin-bottom: 0px;
+}
+
 .details {
-	height: 370px;
+	height: 370px;	
 }
 
 .middle {
@@ -37,7 +50,13 @@
 	height: 370px;
 }
 
-.primary, .cloud, .footer, .midHdr, .inputForm, .middle {
+.middle2 {
+	font-size: 24px;
+	padding: 25px 0 75px;
+	height: 400px;
+}
+
+.primary, .cloud, .footer, .inputForm, .middle, .middle2 {
 	text-align: center;
 }
 
@@ -49,19 +68,28 @@
 
 }
 
-.csp {
- padding-top: 200px;
+.cspMain {
+ padding-top: 0px;
  font-size: 14px;
  float:right;
 }
 
-.details .csp {
-	padding-top: 75px;
+.csp {
+	padding:130px;
+	font-size: 14px;
+  float:right;
+
+}
+
+.cspMedium {
+	padding-top: 25px;
+	padding-bottom: 10px;
 }
 
 .primary {
 	font-size:24px;
 	margin: 50 0 50px;
+
 }
 
 .secondary {
@@ -97,8 +125,7 @@
 	text-align: center;
 }
 
-.inputFields
-{
+.inputFields {
 	margin-top: 30px;
 	-moz-border-radius:5px; /* Firefox */
 	-webkit-border-radius: 5px; /* Safari, Chrome */
@@ -124,7 +151,90 @@
   border: 0px;
   font: bold 12px "AvenirNext", helvetica, arial, sans-serif;
 	height: 40px;
+	margin-top:20px;
 }
 
+@media (min-width: 768px) and (max-width: 979px) {
+	.inputFields {
+		width:300px;
+		height:35px;
+		font-size: 20px;
 
+	}
+	.inputCloudName {
+		width: 300px;
+		height: 45px;
+	}
+
+	.primary {
+		margin: 30 0 30px;
+	}
+	
+	.middle {
+		font-size: 30px;
+		padding: 52px 0 35;
+		height: 300px;
+	}
+	
+	.middle2 {
+		font-size: 20px;
+		padding: 30px 0 35;
+		height: 390px;
+	}
+	
+	.csp {
+ 		padding-top: 80px;
+ 		font-size: 14px;
+ 		float:right;
+	}
+	
+	.cspMain {
+ 		padding-top: 0px;
+ 		font-size: 14px;
+		float:right;
+	}
+
+}
+
+@media (max-width: 767px) {
+	.midHdr {
+		font-family: AvenirNext-Demibold;
+		padding-top: 25px;
+  	font-size: 20px;
+  	color: #02e4ff;
+	}
+
+	.inputCloudName {
+		width: 250px;
+		height: 35px;
+	}
+	
+	.inputFields {
+		width: 250px;
+		height: 25px;
+		font-size: 14px;
+	}
+
+	.middle {
+		font-size: 24px;
+		padding: 25px 0 35px;
+		height: 270px;
+	}
+	
+	.middle2 {
+	 	font-size: 18px;
+		padding: 15px 0 17;
+		height: 390px;
+	}
+	
+	.csp {
+ 		padding-top: 30px;
+ 		font-size: 12px;
+ 		float:right;
+	}
+	.bigTop {
+		margin-top: 0px;
+	}
+
+}
 

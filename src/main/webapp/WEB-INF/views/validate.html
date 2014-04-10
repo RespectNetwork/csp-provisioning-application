@@ -1,123 +1,201 @@
 <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Respect Network</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
 
-<html xmlns:th="http://www.thymeleaf.org">
+    <!-- CSS -->
+    <link href="css/bootstrap.css" rel="stylesheet" />
+    <link href="css/style.css" rel="stylesheet" />
+   <style type="text/css" >
 
-<head>
-<meta charset="utf-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+      /* Sticky footer styles
+      -------------------------------------------------- */
 
-<title></title>
-<meta name="description" content="Invite "/>
+      html,
+      body {
+        height: 100%;
+        /* The html and body elements cannot have any padding or margin. */
+      }
 
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<!--
-<link rel="stylesheet" href="../../css/csp.css" th:href="@{/css/csp.css}"/>
--->
+      /* Wrapper for page content to push down footer */
+      #wrap {
+        min-height: 100%;
+        height: auto !important;
+        height: 100%;
+        /* Negative indent footer by it's height */
+        margin: 0 auto -60px;
+      }
 
-	<!-- <style type="text/css">
-  	/*  THIS IS JUST TO GET THE GRID TO SHOW UP.  YOU DONT NEED THIS IN YOUR CODE */
-  		#maincontent .col { background: #fff; }
-      	</style>
-    -->
-	<link rel="stylesheet" media="all" href="css/styles.css" type="text/css"/>
-	<link href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet"/>	
+      /* Set the fixed height of the footer here */
+      #push,
+      #footer {
+        height: 60px;
+      }
+      #footer {
+        border-top: solid 1px #d9d9d9;
+      }
 
-  <link rel="stylesheet" href="css/html5reset.css" media="all"/>
-  <link rel="stylesheet" href="css/responsivegridsystem.css" media="all"/>
-  <link rel="stylesheet" href="css/col.css" media="all"/>
-  <link rel="stylesheet" href="css/5cols.css" media="all"/>
-  <link rel="stylesheet" href="css/6cols.css" media="all"/>
-  <link rel="stylesheet" href="css/7cols.css" media="all"/>
-  <link rel="stylesheet" href="css/8cols.css" media="all"/>
-  <link rel="stylesheet" href="css/9cols.css" media="all"/>
-  <link rel="stylesheet" href="css/10cols.css" media="all"/>
-  <link rel="stylesheet" href="css/11cols.css" media="all"/>
-  <link rel="stylesheet" href="css/12cols.css" media="all"/>
+      /* Lastly, apply responsive CSS fixes as necessary */
+      @media (min-width: 768px) and (max-width: 979px) {
+        #footer {
+          margin-left: -20px;
+          margin-right: -20px;
+          padding-left: 20px;
+          padding-right: 20px;
+        }
+        .bodyContainer {
+					padding-top: 5px !important;
+				}
+      }
+      
+      @media (max-width: 767px) {
+        #footer {
+          margin-left: -20px;
+          margin-right: -20px;
+          padding-left: 20px;
+          padding-right: 20px;
+        }
+        .bodyContainer {
+					padding-top: 50px !important;
+				}
+      }
+      @media (max-width: 450px) {
+				#feedback { 
+  			top: 80%;
+  			z-index: 9999;
+			}
+			.bodyContainer {
+				padding-top: 10px !important;
+			}
 
-	
+}
 
-<!-- Responsive Stylesheets -->
-	<link rel="stylesheet" media="only screen and (max-width: 1024px) and (min-width: 769px)" href="/css/1024.css"/>
-  <link rel="stylesheet" media="only screen and (max-width: 768px) and (min-width: 481px)" href="/css/768.css"/>
-  <link rel="stylesheet" media="only screen and (max-width: 480px)" href="/css/480.css"/>
+      /* Custom page CSS
+      -------------------------------------------------- */
+      /* Not required for template or sticky footer method. */
 
-<!-- Scripts-->	
-<script src="../../js/libs/modernizr-2.0.6.min.js" th:src="@{/js/libs/modernizr-2.0.6.min.js}"></script>
+      #wrap > .container {
+        padding-top: 150px;
+      }
+      
+      .bodyContainer {
+      	padding-top: 125px;
+      }
+      
+      .container .credit {
+        margin: 20px 0;
+        text-align:center;
+      }
 
-<script src="../../js/libs/responsivegridsystem.js" th:src="@{/js/libs/responsivegridsystem.js}"></script>
+      code {
+        font-size: 80%;
+      }
+      
+/* floating Help button
+------------------------------------------------------*/
+#feedback { 
+  height: 104px; 
+  width: 104px; 
+  position: fixed; 
+  top: 95%;
+  left: 150px;
+  z-index: 9999;
+}
+#feedback a { 
+  display: block; 
+  background: #fff; 
+  height: 15px; 
+  width: 70px; 
+  padding: 8px 16px;
+  color: #efefef; 
+  font-size: 17px; 
+  text-decoration: none; 
+  text-align:center;
+}
+
+#feedback a:hover { 
+  background: #06c; 
+}
+
+      
+
+    </style>
+    <link href="css/bootstrap-responsive.css" rel="stylesheet" />
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="img/ico/apple-touch-icon-144-precomposed.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/ico/apple-touch-icon-114-precomposed.png" />
+      <link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/ico/apple-touch-icon-72-precomposed.png" />
+                    <link rel="apple-touch-icon-precomposed" href="img/ico/apple-touch-icon-57-precomposed.png" />
+                                   <link rel="shortcut icon" href="img/ico/favicon.png" />
+  </head>
+
+  <body>
 
 
-</head>
+    <!-- Part 1: Wrap all page content here -->
+    <div id="wrap">
 
-<body>
-    <div id="wrapper">
-    
-	<div id="maincontentcontainer">
-		
-        <div id="maincontent">
-        	
-            <div class="section group">
-                
-                <div class="col span_4_of_11">
-                <div id="header">
-                	<img src="img/RespectLogo1.png" alt="Respect Network"/>
-                </div> <!-- end id header -->
-                </div> <!-- end class -->
-                <div class="col span_7_of_11">
-                &nbsp;
-                </div>
-                
-            </div> <!-- end section group -->
-            
-            <form action="#" th:object="${validateInfo}" th:action="@{/validatecodes}" method="post">
-                <table id="signUpTable">
-                    <tr>
-                        <td>
-                            <p id="subHeaderText">Verification codes have been sent to your email and phone. Enter those codes in the fields below.</p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><input type="text" name="emailCode" value=""
-                            id="emailCode" placeholder="email code" required="required"
-                            autofocus="autofocus" th:value="*{emailCode}" /></td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <input type="text" name="smsCode" value="" id="smsCode"
-                                placeholder="sms code" required="required" autofocus="autofocus"
+      <!-- Fixed navbar -->
+      <div class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+          <div class="container">
+          <div class="row-fluid">  
+          	<div class="span4 smallTop"><img src="img/RespectNetwork_Logo_H_RGB.png" />
+          	</div>
+          	<div class="span4 midHdr"><span th:text="${cloudName}"/>
+          	</div>
+          	<div class="span4 bigTop">
+             <p class="secondary">Press | FAQs</p>
+         		</div>
+          </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Begin page content -->
+      <div class="bodyContainer">
+				<div class="middle2"> Verification codes have been sent to your email and phone. <br/>Enter those codes in the fields below. 
+					<form action="#" th:object="${validateInfo}" th:action="@{/validatecodes}" method="post" class="margin-top">
+
+ 						<input type="text" class="inputFields" name="emailCode"  id="emailCode" placeholder="email code" required="required" th:value="*{emailCode}" />
+						<p class="secondary"><span th:text="|Sent to ${verifyingEmail}|"> </span></p>
+						
+						<input type="text" class="inputFields" name="smsCode" id="smsCode" placeholder="text code" required="required"
                                 th:value="*{smsCode}" />
-                                <p id="error" th:text="${codeValidationError}">Validation Error</p>                            
-                            </td>
-                    </tr>                    
-                    <tr>
-                        <td>
-                            <input type="submit" value="Verify" name="submit" class="submit" />
-                        </td>
-                    </tr>
-                </table>
-            </form>
-			<div class="bottom">
-            	<div class="group">
-            	  <div class="col span_7_of_11">
-                  </div>
-                  
-                  <div class="col span_4_of_11">
-                    <div id="logo">
-                    <img src="img/logo.png" alt="Happy Cloud Co."/>
-                    </div><!-- end logo -->
-                  </div><!-- end class -->
-                </div><!-- end group -->
-            </div><!-- end bottom -->
- 			</div>  <!-- end maincontent -->
-       </div>  <!-- end maincontentcontainer -->
-        <footer>
-			<div class="col span_11_of_11">
-			<p>&copy; 2014 All Rights Reserved  |  Respect Network personal cloud services</p>
+             			<p class="secondary"> <span th:text="|Sent to ${verifyingPhone}|"></span></p>
+     					
+     				<p class="secondary"> <input type="checkbox" class="inputFields" name="terms"  required="required" />
+     				I agree to the <a href="#">Respect Trust Framework</a> and the one-person one-account rule.</p>
+						<button type="submit" name="submit" id="submit" class="button" >Verify</button>
+						
+				</form>
+				<div class="cspMain">YOUR CLOUD SERVICE PROVIDER | <img src="img/paoga_logo.png" /> &nbsp;
+				</div>
+									
 			</div>
+	</div>	  
 
-		</footer>
+    <div id="footer">
+    	<div id="feedback">
+  			<a href="/feedback_url/">Help</a>
+		</div>
+<!--      <div class="container">
+        <p class="muted credit">Copyright &copy 2014 Respect Network. All rights reserved.</p>
+      </div>-->
+    </div>
 
-    
- </div> <!-- end wrapper -->
-</body>
+
+</div>
+  </body>
 </html>

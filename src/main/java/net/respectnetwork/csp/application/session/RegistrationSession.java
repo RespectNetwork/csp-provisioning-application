@@ -49,6 +49,9 @@ public class RegistrationSession implements Serializable {
     /** RN post registration URL */
     private String RNPostRegistrationURL = null;
     
+    /** Transaction Type */
+    private String transactionType = null;
+    
     /**
      * @return the SessionId
      */
@@ -221,6 +224,16 @@ public class RegistrationSession implements Serializable {
    public void setRNPostRegistrationURL(String rNPostRegistrationURL)
    {
       RNPostRegistrationURL = rNPostRegistrationURL;
+   }
+
+   public String getTransactionType()
+   {
+      return transactionType;
+   }
+
+   public void setTransactionType(String transactionType)
+   {
+      this.transactionType = transactionType;
    }
 
 }

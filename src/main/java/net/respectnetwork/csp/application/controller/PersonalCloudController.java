@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -23,12 +22,10 @@ import net.respectnetwork.csp.application.manager.PersonalCloudManager;
 import net.respectnetwork.csp.application.manager.RegistrationManager;
 import net.respectnetwork.csp.application.manager.StripePaymentProcessor;
 import net.respectnetwork.csp.application.model.CSPModel;
-import net.respectnetwork.csp.application.model.DependentCloudModel;
 import net.respectnetwork.csp.application.model.GiftCodeModel;
 import net.respectnetwork.csp.application.model.GiftCodeRedemptionModel;
 import net.respectnetwork.csp.application.model.InviteModel;
 import net.respectnetwork.csp.application.model.PaymentModel;
-import net.respectnetwork.csp.application.session.CustomHeaderHttpServletRequestWrapper;
 import net.respectnetwork.csp.application.session.RegistrationSession;
 import net.respectnetwork.sdk.csp.exception.CSPRegistrationException;
 
@@ -44,7 +41,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.View;
 
 import xdi2.client.exceptions.Xdi2ClientException;
 import xdi2.core.xri3.CloudName;
@@ -1037,15 +1033,65 @@ public class PersonalCloudController
       ResponseStatus status = fps.getStatus();
       if(status.equals(ResponseStatus.OK)) 
       {
+         PaymentModel payment = new PaymentModel();
+         payment.setPaymentId(fps.getVendorTxCode());
+         payment.setCspCloudName(cspModel.getCspCloudName());
+         payment.setPaymentReferenceId(fps.getVpsTxId());
+         payment.setPaymentResponseCode(fps.getStatus().toString());
+         payment.setAmount(fps.getAmount());
+         payment.setCurrency(cspModel.getCurrency());
+         
+         DAOFactory dao = DAOFactory.getInstance();
+         
+         try
+         {
+            dao.getPaymentDAO().insert(payment);
+         } catch (DAOException e1)
+         {
+            logger.error("Could not insert payment record in the DB "
+                  + e1.getMessage());
+            logger.info("Payment record info \n" + payment.toString());
+         }
+         
          logger.debug("SagePay payment was processed successfully " + status.toString() );
-         this.registerCloudName(cloudName, phone, email, password);
-         CustomHeaderHttpServletRequestWrapper wrappedReq = new CustomHeaderHttpServletRequestWrapper(request);
-         String cspHomeURL =   request.getContextPath();
+         String forwardingPage = request.getContextPath();
+         String txnType = "";
+         if(regSession != null)
+         {
+            txnType =  regSession.getTransactionType();
+         }
+         if(txnType.equals(PaymentForm.TXN_TYPE_SIGNUP))
+         {     
+            this.registerCloudName(cloudName, phone, email, password);
+            forwardingPage += "/cloudPage";
+         }
+         else if (txnType.equals(PaymentForm.TXN_TYPE_DEP))
+         {
+            if((mv = createDependentClouds(cloudName,payment,null)) != null)
+            {
+               forwardingPage += "/dependentDone";
+            }
+
+         }
+         else if(txnType.equals(PaymentForm.TXN_TYPE_BUY_GC))
+         {
+            if((mv = this.createGiftCards(request, cloudName, payment, cspModel)) != null)
+            {
+               forwardingPage += "/cloudPage";
+            }
+         }
+         else
+         {
+            forwardingPage += "/login";
+         }
          
          mv = new ModelAndView("AutoSubmitForm");
-         mv.addObject("URL", cspHomeURL + "/cloudPage");
+         //mv.addObject("URL", forwardingPage);
+         mv.addObject("URL", request.getContextPath() + "/transactionSuccessFailure");
          mv.addObject("cloudName", cloudName);
          
+         mv.addObject("statusText", "Congratulations " + cloudName + "! You have successfully purchased a cloudname.");
+         mv.addObject("nextHop", forwardingPage);
          
       }
       else {
@@ -1065,8 +1111,34 @@ public class PersonalCloudController
             reason = "The transaction process failed. Please contact us with the date and time of your order and we will investigate.";
          
          mv = new ModelAndView("AutoSubmitForm");
-         String cspHomeURL =   request.getContextPath();
-         mv.addObject("URL", cspHomeURL + "/signup");
+         String forwardingPage = request.getContextPath();
+         String txnType = "";
+         if(regSession != null)
+         {
+            txnType =  regSession.getTransactionType();
+         }
+         if(txnType.equals(PaymentForm.TXN_TYPE_SIGNUP))
+         {     
+            forwardingPage += "/signup";
+         }
+         else if (txnType.equals(PaymentForm.TXN_TYPE_DEP))
+         {
+            forwardingPage += "/cloudPage";
+         }
+         else if(txnType.equals(PaymentForm.TXN_TYPE_BUY_GC))
+         {
+              forwardingPage += "/cloudPage";
+         }
+         else
+         {
+            forwardingPage += "/login";
+         }
+         
+         mv.addObject("URL", request.getContextPath() + "/transactionSuccessFailure");
+         mv.addObject("cloudName", cloudName);
+         mv.addObject("statusText", reason);
+         mv.addObject("nextHop", forwardingPage);
+         
       }  
       
       return mv;
@@ -1094,6 +1166,35 @@ public class PersonalCloudController
       mv.addObject("SagePay","SAGEPAY");
       mv.addObject("vendor",cspModel.getUsername());
       mv.addObject("crypt",getSagePayCrypt(request, new BigDecimal(request.getParameter("amount")),cspModel.getCurrency(),cspModel.getPassword()));
+      return mv;
+   }
+   
+   @RequestMapping(value = "/rnInvite", method = RequestMethod.GET)
+   public ModelAndView goToRNInvitePage(HttpServletRequest request, Model model)
+   {
+      logger.info("Going to RN Invite page");
+
+      //TBD
+      ModelAndView mv = null;
+      mv = new ModelAndView("AutoSubmitForm");
+      mv.addObject("URL", "www.respectnetwork.net");
+      mv.addObject("cloudName", regSession.getCloudName());
+      
+      return mv;
+   }
+   
+   @RequestMapping(value = "/transactionSuccessFailure", method = RequestMethod.POST)
+   public ModelAndView showTransactionSuccessFailureForm(HttpServletRequest request, Model model)
+   {
+      logger.info("showing transactionSuccessFailure form " + request.getParameter("nextHop") + "::" + request.getParameter("cloudname"));
+
+      ModelAndView mv = null;
+      String formPostURL = request.getParameter("nextHop");
+
+      mv = new ModelAndView("postTxn");
+      mv.addObject("postURL", formPostURL);
+      mv.addObject("cloudName", request.getParameter("cloudname"));
+      mv.addObject("statusText", request.getParameter("statusText"));
       return mv;
    }
 }

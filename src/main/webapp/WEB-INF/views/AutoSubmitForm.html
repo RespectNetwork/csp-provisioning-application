@@ -19,7 +19,9 @@
 	
 <form class="form-horizontal" role="form" name="autoform"  th:action="${URL}" method="post">
   
-  <input type="hidden" name="cloudname" th:field="${cloudName}" />
+  <input type="hidden" id="cloudname" name="cloudname" th:value="${cloudName}" />
+  <input type="hidden" id="statusText" name="statusText" th:value="${statusText}" />
+  <input type="hidden" id="nextHop" name="nextHop" th:value="${nextHop}" />
   <input type="submit" value="submit" style="display: none;" border="0"/>
 </form>
 

@@ -292,6 +292,9 @@ public class RegistrationController
          mv = new ModelAndView("validate");
          ValidateForm validateForm = new ValidateForm();
          mv.addObject("validateInfo", validateForm);
+         mv.addObject("cloudName", regSession.getCloudName());
+         mv.addObject("verifyingEmail", userDetailsForm.getEmail());
+         mv.addObject("verifyingPhone", userDetailsForm.getMobilePhone());
 
          // Add CloudName/ Email / Password and Phone to Session
 
@@ -358,6 +361,10 @@ public class RegistrationController
          mv = new ModelAndView("payment");
          PaymentForm paymentForm = new PaymentForm();
          paymentForm.setTxnType(PaymentForm.TXN_TYPE_SIGNUP);
+         if(regSession != null)
+         {
+            regSession.setTransactionType(PaymentForm.TXN_TYPE_SIGNUP);
+         }
          paymentForm.setNumberOfClouds(1);
          
          mv.addObject("paymentInfo", paymentForm);
