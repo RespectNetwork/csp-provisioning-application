@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+<title></title>
+</head>
+
+<body onload="submitForm()">
+	<script LANGUAGE="JavaScript">
+	
+	<!-- <![CDATA[ -->
+	 
+    function submitForm() { document.forms['autoform'].submit(); }         
+	<!-- ]]> -->
+	</script>
+    
+	
+<form class="form-horizontal" role="form" name="autoform"  th:action="${URL}" method="post">
+  
+  <input type="hidden" name="cloudname" th:field="${cloudName}" />
+  <input type="submit" value="submit" style="display: none;" border="0"/>
+</form>
+
+</body>
+</html>

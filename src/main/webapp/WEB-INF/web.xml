@@ -27,7 +27,7 @@
         
     <servlet-mapping>
         <servlet-name>ConnectionManager</servlet-name>
-        <url-pattern>/</url-pattern>
+        <url-pattern>/*</url-pattern>
     </servlet-mapping>
 
 </web-app>

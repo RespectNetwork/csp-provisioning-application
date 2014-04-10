@@ -107,6 +107,8 @@ public class RegistrationManager {
      */
     private String cspContactEmail;
     
+    private String cspHomeURL;
+    
     
     
     /**
@@ -623,6 +625,16 @@ public class RegistrationManager {
     	
     	return "Please contact the CSP at " + this.cspContactPhone + " or via email at " + this.cspContactEmail;
     }
+
+   public String getCspHomeURL()
+   {
+      return cspHomeURL;
+   }
+
+   public void setCspHomeURL(String cspHomeURL)
+   {
+      this.cspHomeURL = cspHomeURL;
+   }
     
 
 }

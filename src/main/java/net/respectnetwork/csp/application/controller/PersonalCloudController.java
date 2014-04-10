@@ -22,13 +22,13 @@ import net.respectnetwork.csp.application.invite.InvitationManager;
 import net.respectnetwork.csp.application.manager.PersonalCloudManager;
 import net.respectnetwork.csp.application.manager.RegistrationManager;
 import net.respectnetwork.csp.application.manager.StripePaymentProcessor;
-
 import net.respectnetwork.csp.application.model.CSPModel;
 import net.respectnetwork.csp.application.model.DependentCloudModel;
 import net.respectnetwork.csp.application.model.GiftCodeModel;
 import net.respectnetwork.csp.application.model.GiftCodeRedemptionModel;
 import net.respectnetwork.csp.application.model.InviteModel;
 import net.respectnetwork.csp.application.model.PaymentModel;
+import net.respectnetwork.csp.application.session.CustomHeaderHttpServletRequestWrapper;
 import net.respectnetwork.csp.application.session.RegistrationSession;
 import net.respectnetwork.sdk.csp.exception.CSPRegistrationException;
 
@@ -44,6 +44,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.View;
 
 import xdi2.client.exceptions.Xdi2ClientException;
 import xdi2.core.xri3.CloudName;
@@ -72,7 +73,7 @@ public class PersonalCloudController
    /**
     * Registration Service : to register dependent clouds
     */
-   private RegistrationManager  registrationManager;
+   private  RegistrationManager  registrationManager;
 
    /**
     * Personal Cloud Service : to authenticate to personal cloud and get/set
@@ -216,7 +217,7 @@ public class PersonalCloudController
                            + sessionId);
                   }
                   logger.info("Setting cloudname as  "
-                        + request.getParameter("cloudname"));
+                        + cloudName);
                   if (request.getParameter("cloudname") != null)
                   {
                      regSession.setCloudName(request.getParameter("cloudname"));
@@ -231,7 +232,7 @@ public class PersonalCloudController
                }
                mv = getCloudPage(request, regSession.getCloudName());
                logger.info("Successfully authenticated to the personal cloud for "
-                     + request.getParameter("cloudname"));
+                     + cloudName);
             } else
             {
                errors = true;
@@ -458,12 +459,18 @@ public class PersonalCloudController
    public static ModelAndView getCloudPage(HttpServletRequest request,
          String cloudName)
    {
+      
+      logger.debug("Request servlet path " + request.getServletPath());
+      logger.debug("Paths " + request.getPathInfo()  + "-" + request.getRequestURI() + "-" + request.getPathTranslated() );
       ModelAndView mv = new ModelAndView("cloudPage");
-      String cspHomeURL = request.getContextPath();
-
+      
+      String cspHomeURL =   request.getContextPath();
+      logger.debug("getCloudPage :: cspHomeURL " + cspHomeURL);
       mv.addObject("logoutURL", cspHomeURL + "/logout");
       mv.addObject("cloudName", cloudName);
 
+
+/*
       try
       {
          DAOFactory dao = DAOFactory.getInstance();
@@ -479,7 +486,7 @@ public class PersonalCloudController
       {
          logger.error("Failed to perform DAO opertations", e);
       }
-
+*/
       return mv;
    }
 
@@ -998,7 +1005,8 @@ public class PersonalCloudController
       String cloudName = regSession.getCloudName();
       logger.debug(sessionIdentifier + "--" + cloudName + "--" + email + "--"
             + phone + "--" + password);
-      
+      logger.debug("Request servlet path " + request.getServletPath());
+      logger.debug("Paths " + request.getPathInfo()  + "-" + request.getRequestURI() + "-" + request.getPathTranslated() );
       final RequestState rs = new RequestState(request, response, request.getSession().getServletContext());
       
    
@@ -1031,8 +1039,12 @@ public class PersonalCloudController
       {
          logger.debug("SagePay payment was processed successfully " + status.toString() );
          this.registerCloudName(cloudName, phone, email, password);
-         mv = getCloudPage(request, regSession.getCloudName());
+         CustomHeaderHttpServletRequestWrapper wrappedReq = new CustomHeaderHttpServletRequestWrapper(request);
+         String cspHomeURL =   request.getContextPath();
          
+         mv = new ModelAndView("AutoSubmitForm");
+         mv.addObject("URL", cspHomeURL + "/cloudPage");
+         mv.addObject("cloudName", cloudName);
          
          
       }
@@ -1051,7 +1063,10 @@ public class PersonalCloudController
             reason = "We could not process your order because our Payment Gateway service was experiencing difficulties.";
          else
             reason = "The transaction process failed. Please contact us with the date and time of your order and we will investigate.";
-         mv = new ModelAndView("signup");
+         
+         mv = new ModelAndView("AutoSubmitForm");
+         String cspHomeURL =   request.getContextPath();
+         mv.addObject("URL", cspHomeURL + "/signup");
       }  
       
       return mv;

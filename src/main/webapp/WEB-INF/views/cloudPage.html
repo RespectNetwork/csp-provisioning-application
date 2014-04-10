@@ -16,6 +16,7 @@
   <meta name="MobileOptimized" content="320"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <!-- Stylesheets -->
+  <!--
   <link rel="stylesheet" href="css/html5reset.css" media="all"/>
   <link rel="stylesheet" href="css/responsivegridsystem.css" media="all"/>
   <link rel="stylesheet" href="css/col.css" media="all"/>
@@ -27,119 +28,120 @@
   <link rel="stylesheet" href="css/10cols.css" media="all"/>
   <link rel="stylesheet" href="css/11cols.css" media="all"/>
   <link rel="stylesheet" href="css/12cols.css" media="all"/>
+  -->
+  	
   <!-- Responsive Stylesheets -->
+  <!--
   <link rel="stylesheet" media="only screen and (max-width: 1024px) and (min-width: 769px)" href="css/1024.css"/>
   <link rel="stylesheet" media="only screen and (max-width: 768px) and (min-width: 481px)" href="css/768.css"/>
   <link rel="stylesheet" media="only screen and (max-width: 480px)" href="css/480.css"/>
+  -->
   <!-- All JavaScript at the bottom, except for Modernizr which enables HTML5 elements and feature detects -->
-  <script src="/js/libs/modernizr-2.5.3-min.js"></script>
+  <script src="js/libs/modernizr-2.5.3-min.js"></script>
   <!-- <style type="text/css">
   /*  THIS IS JUST TO GET THE GRID TO SHOW UP.  YOU DONT NEED THIS IN YOUR CODE */
   #maincontent .col { background: #fff; }
       </style>
     -->
-  <link rel="stylesheet" media="all" href="css/styles.css" type="text/css"/>
+<!--  <link rel="stylesheet" media="all" href="css/styles.css" type="text/css"/> -->
   <link href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet"/>
-  <script th:if="${inviteList != null}" th:text="${'var inviteListSize = ' + #lists.size(inviteList) + ';'}">var inviteListSize = 0;</script>
-  <script th:if="${inviteList == null}">var inviteListSize = 0;</script>
-  <script src="/js/libs/home.js"></script>
+  
+  <!-- CSS -->
+    <link href="css/bootstrap.css" rel="stylesheet" />
+    <link href="css/style.css" rel="stylesheet" />
+   <style type="text/css" >
+
+      /* Sticky footer styles
+      -------------------------------------------------- */
+
+      html,
+      body {
+        height: 100%;
+        /* The html and body elements cannot have any padding or margin. */
+      }
+
+      /* Wrapper for page content to push down footer */
+      #wrap {
+        min-height: 100%;
+        height: auto !important;
+        height: 100%;
+        /* Negative indent footer by it's height */
+        margin: 0 auto -60px;
+      }
+
+      /* Set the fixed height of the footer here */
+      #push,
+      #footer {
+        height: 60px;
+      }
+      #footer {
+        border-top: solid 1px #d9d9d9;
+      }
+
+      /* Lastly, apply responsive CSS fixes as necessary */
+      @media (max-width: 767px) {
+        #footer {
+          margin-left: -20px;
+          margin-right: -20px;
+          padding-left: 20px;
+          padding-right: 20px;
+        }
+      }
+
+
+
+      /* Custom page CSS
+      -------------------------------------------------- */
+      /* Not required for template or sticky footer method. */
+
+      #wrap > .container {
+        padding-top: 150px;
+      }
+      .container .credit {
+        margin: 20px 0;
+        text-align:center;
+      }
+
+      code {
+        font-size: 80%;
+      }
+
+    </style>
+    <link href="css/bootstrap-responsive.css" rel="stylesheet" />
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="img/ico/apple-touch-icon-144-precomposed.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/ico/apple-touch-icon-114-precomposed.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/ico/apple-touch-icon-72-precomposed.png" />
+    <link rel="apple-touch-icon-precomposed" href="img/ico/apple-touch-icon-57-precomposed.png" />
+    <link rel="shortcut icon" href="img/ico/favicon.png" />
 </head>
 <body>
 <div id="wrapper">
-  <div id="maincontentcontainer">
-    <div id="maincontent">
-      <div class="title">
-        <div class="col span_11_of_11">
-          <div id="logo">
-            <img src="img/logo.png" alt="Happy Cloud Co."/>
-          </div>
-          <span id="topname">Welcome&nbsp;&nbsp;<span th:text="${cloudName}">=BobaFett</span>&nbsp;&nbsp;<a title="sign out" href="/logout" th:href="@{/logout}"><span class="fa fa-sign-out fa-1x"></span></a></span>
-        </div>
-      </div>
-      <div class="section group">
-        <div class="col span_3_of_11 profile">
-          <div class="incol">
-            <div id="profile">
-              <a href="#"><img src="imgimg_edit.png"/>Edit</a>
-            </div>
-            <h3 th:text="${cloudName}">=BobaFett</h3>
-            <ul id="stats">
-              <li class="membership">Lifetime Member</li>
-              <li class="joined">Joined: November 28, 2013</li>
-              <li class="editprofile"><a href="#">Edit Profile</a></li>
-            </ul>
-            <form method="get" action="/invite" th:action="@{/invite}">
-              <button id="full" type="submit">Gift Cards</button>
-            </form>
-            <form method="get" action="/dependent" th:action="@{/dependent}">
-              <button id="full" type="submit">Add Family Clouds</button>
-            </form>
-<!--            
-            <div class="group" id="list" th:if="${inviteList != null and #lists.size(inviteList) &gt; 0 }">
-              <div class="col span_7_of_7">
-                Recent Invites
-                <a href="javascript:showInviteList(true)"  id="showAll"  name="showAll"  style="display:block">Show All</a>
-                <a href="javascript:showInviteList(false)" id="showLess" name="showLess" style="display:none">Show Less</a>
-              </div>
-              <div th:each="inv : ${inviteList}" style="display:block;" id="inviteList" name="inviteList">
-                <div class="col span_6_of_7"><a target="_blank" href="#" th:href="${'mailto:' + inv.invitedEmailAddress}" title="last sent" th:title="${#dates.format(inv.timeCreated, 'yyyy-MM-dd HH:mm:ss')}"><span th:text="${inv.invitedEmailAddress}">anotheremail@anotherdomain.com</span></a></div>
-                <div class="col span_1_of_7" th:if="${inv.giftCardCount &gt; 0}"><span th:text="${inv.giftCardCount}">3</span></div>
-                <div class="col span_1_of_7" th:if="${inv.giftCardCount ==   0}"></div>
-              </div>
-            </div>
-            <div class="group" id="list" th:if="${dependentList != null and #lists.size(dependentList) &gt; 0 }">
-              <div class="col span_7_of_7">
-                Dependents
-                <a href="#">Manage</a>
-              </div>
-              <div th:each="dep : ${dependentList}">
-                <div class="col span_6_of_7" th:text="${dep.dependentCloudName}">=BobaJr</div>
-                <div class="col span_1_of_7">&nbsp;</div>
-              </div>
-            </div>
--->            
-          </div>
-        </div>
         
-        <div class="col span_8_of_11">
-          <div class="inner">
-            <h4>Congratulations &amp; welcome to the future of personal data.</h4>
-            <p>Please check out our elit nisi, ultrices at ligula vel, adipiscing vulputate dolor to get started. Aenean posuere, metus et tempor semper, orci orci sollicitudin felis, vel accumsan purus felis sed tortor.</p>
-          </div>
-        </div>
-        <div class="col span_4_of_11">
-          <div class="inner">
-            <h4>What can HappyCloud do for you and your personal cloud?</h4>
-            <p>Quisque urna ante, vehicula sed vehicula non, rhoncus vel urna. Maecenas tristique, metus eu gravida ultricies, justo nibh vehicula lacus, in scelerisque felis nibh vel nulla. Vestibulum sed magna est. Praesent sed imperdiet elit, mattis ullamcorper leo.</p>
-            <ul id="benefits">
-              <li>HappyCloud provides this.</li>
-              <li>You can also manage that.</li>
-              <li>We like bounty hunters</li>
-            </ul>
-            <p>Aenean posuere, metus et tempor semper, orci orci sollicitudin felis, vel accumsan purus felis sed tortor. Nulla nunc orci, dignissim gravida faucibus sed, dignissim eu urna. Morbi id interdum lorem. Nullam varius congue leo, vitae pulvinar nisi tempor volutpat.</p>
-            <p><a href="#">Learn More</a></p>
-          </div>
-         </div>
-         <div class="col span_4_of_11">
-           <div class="inner">
-             <h4>Respect Network provides the framework for your cloud</h4>
-             <p>Nulla nunc orci, dignissim gravida faucibus sed, dignissim eu urna. Morbi id interdum lorem. Nullam varius congue leo, vitae pulvinar nisi tempor volutpat.</p>
-             <img src="img/RespectLogo1.png" alt="Respect Network"/> 
-             <p>Praesent elit nisi, ultrices at ligula vel, adipiscing vulputate dolor. Aenean posuere, metus et tempor semper, orci orci sollicitudin felis, vel accumsan purus felis sed tortor. Aliquam porttitor congue lorem, ac consectetur arcu dignissim vitae.</p>
-             <p>Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Phasellus molestie mi ac eros tincidunt, in ullamcorper metus gravida.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+          <span id="topname">Welcome&nbsp;&nbsp;<span th:text="${cloudName}">=BobaFett</span>&nbsp;&nbsp;<a title="sign out" href="/logout" th:href="@{/logout}"><span class="fa fa-sign-out fa-1x"></span></a></span>
+          <br/>
+          <a href="www.respectnetwork.com">Invite your friends to join the Respect Network</a>
+          <br></br>
+          <form method="get" action="/testcsp/invite">
+              <button id="full" type="submit">Buy Personal Cloud Gift Cards</button>
+          </form>
+          <br></br>
+          <form method="get" action="/testcsp/dependent">
+              <button id="full" type="submit">Buy Clouds For Dependents</button>
+          </form>
+        
 </div>
 <footer>
   <div class="col span_11_of_11">
     <p>&copy; 2014 All Rights Reserved  |  HappyCloud personal cloud provided by Respect Network</p>
   </div>
 </footer>
-<script>
-showInviteList(false);
-</script>
+
 </body>
 </html>
