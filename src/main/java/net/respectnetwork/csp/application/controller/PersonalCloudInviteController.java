@@ -15,6 +15,7 @@ import net.respectnetwork.csp.application.dao.DAOException;
 import net.respectnetwork.csp.application.dao.DAOFactory;
 import net.respectnetwork.csp.application.form.InviteForm;
 import net.respectnetwork.csp.application.form.PaymentForm;
+import net.respectnetwork.csp.application.manager.BrainTreePaymentProcessor;
 import net.respectnetwork.csp.application.manager.StripePaymentProcessor;
 import net.respectnetwork.csp.application.model.CSPModel;
 import net.respectnetwork.csp.application.model.GiftCodeModel;
@@ -240,8 +241,14 @@ public class PersonalCloudInviteController
                cspHomeURL +"/submitCustomerDetail");
          mv.addObject("SagePay","SAGEPAY");
          mv.addObject("amount",amount.toPlainString());        
+      } else if (cspModel.getPaymentGatewayName().equals("BRAINTREE"))
+      {
+         logger.debug("Payment gateway is BRAINTREE");
+         mv.addObject("BrainTree" , BrainTreePaymentProcessor.getJavaScript(cspModel));
+         mv.addObject("postURL",
+               cspHomeURL + "/ccpayment");
+         mv.addObject("amount",amount.toPlainString());
       }
-		
 		
 		this.setInviteForm(inviteForm);
 

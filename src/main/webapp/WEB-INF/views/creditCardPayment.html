@@ -70,7 +70,7 @@
                 
             </div> <!-- end section group -->
 
-            <form action="#" th:object="${paymentInfo}" th:action="${postURL}" method="post">
+            <form id="cc_payment_form" action="#" th:object="${paymentInfo}" th:action="${postURL}" method="post">
                     <div th:if="${StripeJavaScript}">
                        <table id="sTable">
 	                    <tr>
@@ -186,6 +186,32 @@
                     	
                     	
                     	
+                    </div>
+                    <div th:if="${BrainTree}">
+                    <div>
+        					<p>
+          					<label>Card Number</label>
+          						<input type="text" size="20" autocomplete="off" data-encrypted-name="number" />
+        					</p>
+        					<p>
+          					<label>CVV</label>
+          						<input type="text" size="4" autocomplete="off" data-encrypted-name="cvv" />
+       	 					</p>
+        					<p>
+          					<label>Expiration (MM/YYYY)</label>
+          						<input type="text" size="2" name="month" /> / <input type="text" size="4" name="year" />
+        					</p>
+        					<input type="submit" id="submit" />
+      					
+    				</div>
+    					<script  src="https://js.braintreegateway.com/v1/braintree.js"></script>
+    					<script th:inline="javascript">
+    					/*<![CDATA[*/
+      						var braintree = Braintree.create([[${BrainTree}]]);
+      						braintree.onSubmitEncryptForm('cc_payment_form');
+      					/*]]>*/
+    					</script>
+
                     </div>
             <input type="hidden" name="numberOfClouds" value="" id="numberOfClouds"  th:value="*{numberOfClouds}" />                
 			<input type="hidden" name="txnType" value="" id="txnType"  th:value="*{txnType}" />	

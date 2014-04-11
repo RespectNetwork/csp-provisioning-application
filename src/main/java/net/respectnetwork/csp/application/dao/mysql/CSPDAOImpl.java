@@ -40,6 +40,9 @@ public class CSPDAOImpl extends BaseDAOImpl implements CSPDAO
 		csp.setPassword          (rset.getString    (5));
 		csp.setCostPerCloudName  (rset.getBigDecimal(6));
 		csp.setCurrency          (rset.getString    (7));
+		csp.setUser_key          (rset.getString    (8));
+		csp.setEnc_key          (rset.getString    (9));
+		csp.setEnv               (rset.getString    (10));
 
 		return csp;
 	}
@@ -56,7 +59,7 @@ public class CSPDAOImpl extends BaseDAOImpl implements CSPDAO
 
 		try
 		{
-			sql = "select csp_cloudname, payment_gateway_name, payment_url_template, username, password, cost_per_cloudname, currency, time_created from csp";
+			sql = "select csp_cloudname, payment_gateway_name, payment_url_template, username, password, cost_per_cloudname, currency,  user_key , enc_key , env from csp";
 			logger.info(sql);
 			stmt = conn.prepareStatement(sql);
 			rset = stmt.executeQuery();
@@ -108,7 +111,7 @@ public class CSPDAOImpl extends BaseDAOImpl implements CSPDAO
 
 		try
 		{
-			sql = "select csp_cloudname, payment_gateway_name, payment_url_template, username, password, cost_per_cloudname, currency, time_created from csp where csp_cloudname = ?";
+			sql = "select csp_cloudname, payment_gateway_name, payment_url_template, username, password, cost_per_cloudname, currency, user_key , enc_key , env from csp where csp_cloudname = ?";
 			logger.info(sql + " : " + cspCloudName);
 			stmt = conn.prepareStatement(sql);
 			stmt.setString(1, cspCloudName);

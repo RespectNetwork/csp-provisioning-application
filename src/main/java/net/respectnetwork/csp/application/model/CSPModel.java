@@ -16,6 +16,9 @@ public class CSPModel
 	private BigDecimal	costPerCloudName;
 	private String		currency;
 	private Date		timeCreated;
+	String            user_key;
+	String            enc_key;
+	String            env;
 
 	public CSPModel()
 	{
@@ -27,6 +30,9 @@ public class CSPModel
 		this.costPerCloudName = null;
 		this.currency = null;
 		this.timeCreated = null;
+		this.user_key = null;
+		this.enc_key = null;
+		this.env = null;
 	}
 
 	public String getCspCloudName()
@@ -134,6 +140,9 @@ public class CSPModel
 				.append(this.costPerCloudName, other.costPerCloudName)
 				.append(this.currency, other.currency)
 				.append(this.timeCreated, other.timeCreated)
+				.append(this.user_key, other.user_key)
+				.append(this.enc_key, other.enc_key)
+				.append(this.env, other.env)
 				.isEquals();
 	}
 
@@ -149,6 +158,9 @@ public class CSPModel
 				.append(this.costPerCloudName)
 				.append(this.currency)
 				.append(this.timeCreated)
+				.append(this.user_key)
+				.append(this.enc_key)
+				.append(this.env)
 				.toHashCode();
 	}
 
@@ -172,8 +184,44 @@ public class CSPModel
 		    .append(this.currency).append(']');
 		builder.append("[timeCreated=")
 		    .append(this.timeCreated).append(']');
+		builder.append("[user_key=")
+      .append(this.user_key).append(']');
+		builder.append("[enc_key=")
+      .append(this.enc_key).append(']');
+		builder.append("[env=")
+      .append(this.env).append(']');
 		builder.append(' ');
 		builder.append(super.toString());
 		return builder.toString();
 	}
+
+   public String getUser_key()
+   {
+      return user_key;
+   }
+
+   public void setUser_key(String user_key)
+   {
+      this.user_key = user_key;
+   }
+
+   public String getEnc_key()
+   {
+      return enc_key;
+   }
+
+   public void setEnc_key(String enc_key)
+   {
+      this.enc_key = enc_key;
+   }
+
+   public String getEnv()
+   {
+      return env;
+   }
+
+   public void setEnv(String env)
+   {
+      this.env = env;
+   }
 }

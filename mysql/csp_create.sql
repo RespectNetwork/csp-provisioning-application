@@ -7,6 +7,9 @@ create table  csp
 ,	cost_per_cloudname	numeric(9,2)	not null
 ,	currency		char(3)		not null
 ,	time_created		datetime	not null
+, 	user_key				varchar(128)
+, 	enc_key				varchar(2048)
+, 	env					varchar(64)
 );
 
 create table  payment

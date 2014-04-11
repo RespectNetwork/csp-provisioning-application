@@ -29,6 +29,13 @@
         <name>project</name>
         <url>file:${project.basedir}/repo</url>
     </repository>
+    
+    
+    <repository>
+      <id>Spark repository</id>
+      <url>http://www.sparkjava.com/nexus/content/repositories/spark/</url>
+    </repository>
+  
 	</repositories>
 
     <build>
@@ -478,6 +485,22 @@
             <artifactId>commons-dbcp</artifactId>
             <version>1.2.2</version>
         </dependency>
+        
+        <!-- braintree payment gateway -->
+        
+    <dependency>
+      <groupId>spark</groupId>
+      <artifactId>spark</artifactId>
+      <version>0.9.9.3-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>com.braintreepayments.gateway</groupId>
+      <artifactId>braintree-java</artifactId>
+      <version>2.28.0</version>
+    </dependency>
+    
+  
+  
 
     </dependencies>
 

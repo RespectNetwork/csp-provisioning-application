@@ -18,6 +18,7 @@ import net.respectnetwork.csp.application.form.DependentForm;
 import net.respectnetwork.csp.application.form.InviteForm;
 import net.respectnetwork.csp.application.form.PaymentForm;
 import net.respectnetwork.csp.application.invite.InvitationManager;
+import net.respectnetwork.csp.application.manager.BrainTreePaymentProcessor;
 import net.respectnetwork.csp.application.manager.PersonalCloudManager;
 import net.respectnetwork.csp.application.manager.RegistrationManager;
 import net.respectnetwork.csp.application.manager.StripePaymentProcessor;
@@ -364,15 +365,30 @@ public class PersonalCloudController
 
       if (!errors)
       {
-         BigDecimal amount = cspModel.getCostPerCloudName();
-         String desc = "A personal cloud for " + cloudName;
+         BigDecimal amount = cspModel.getCostPerCloudName().multiply(
+               new BigDecimal(paymentForm.getNumberOfClouds()));
+         logger.debug("Charging CC for " + amount.toPlainString());
+         String desc = "";
+         if(txnType.equals(PaymentForm.TXN_TYPE_SIGNUP))
+         {
+            desc = "Personal cloud for " + cloudName;
+         } else if (txnType.equals(PaymentForm.TXN_TYPE_BUY_GC))
+         {
+            desc = paymentForm.getNumberOfClouds() + " giftcodes for " + cloudName;
+         }
 
-         String token = StripePaymentProcessor.getToken(request);
-
-         if (token != null && !token.isEmpty())
-         { // this is a CC charge request
-            PaymentModel payment = StripePaymentProcessor.makePayment(cspModel,
+         
+         PaymentModel payment = null;
+         if(cspModel.getPaymentGatewayName().equals("STRIPE"))
+         {
+            String token = StripePaymentProcessor.getToken(request); 
+            payment = StripePaymentProcessor.makePayment(cspModel,
                   amount, desc, token);
+         } else if (cspModel.getPaymentGatewayName().equals("BRAINTREE"))
+         {
+            payment = BrainTreePaymentProcessor.makePayment(cspModel, amount, request);
+         }
+            
             if (payment != null)
             {
 
@@ -431,7 +447,7 @@ public class PersonalCloudController
                }
             }
 
-         }
+         
       } 
       if(errors)
       {
@@ -708,13 +724,13 @@ public class PersonalCloudController
          String desc = "Personal cloud  " + regSession.getCloudName();
          
          if (cspModel.getPaymentGatewayName().equals("STRIPE"))
-         {
-            
+         {           
             logger.debug("Payment gateway is STRIPE");
             mv.addObject("StripeJavaScript",
                   StripePaymentProcessor.getJavaScript(cspModel, amount, desc));
             mv.addObject("postURL",
                   cspHomeURL + "/ccpayment");
+            mv.addObject("amount",amount.toPlainString());
          } else if (cspModel.getPaymentGatewayName().equals("SAGEPAY"))
          {
             
@@ -723,11 +739,20 @@ public class PersonalCloudController
             mv.addObject("SagePay","SAGEPAY");
             mv.addObject("amount",amount.toPlainString());
             return mv;
+         } else if (cspModel.getPaymentGatewayName().equals("BRAINTREE"))
+         {
+            logger.debug("Payment gateway is BRAINTREE");
+            mv.addObject("BrainTree" , BrainTreePaymentProcessor.getJavaScript(cspModel));
+            mv.addObject("postURL",
+                  cspHomeURL + "/ccpayment");
+            
          }
          mv.addObject("cspModel", cspModel);
          mv.addObject("paymentInfo", paymentForm);
+         mv.addObject("amount",amount.toPlainString());
          return mv;
-      }
+      } 
+      
 
       return mv;
    }
