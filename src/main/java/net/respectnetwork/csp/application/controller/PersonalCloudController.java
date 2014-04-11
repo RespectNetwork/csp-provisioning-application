@@ -21,6 +21,7 @@ import net.respectnetwork.csp.application.invite.InvitationManager;
 import net.respectnetwork.csp.application.manager.BrainTreePaymentProcessor;
 import net.respectnetwork.csp.application.manager.PersonalCloudManager;
 import net.respectnetwork.csp.application.manager.RegistrationManager;
+import net.respectnetwork.csp.application.manager.SagePayPaymentProcessor;
 import net.respectnetwork.csp.application.manager.StripePaymentProcessor;
 import net.respectnetwork.csp.application.model.CSPModel;
 import net.respectnetwork.csp.application.model.GiftCodeModel;
@@ -311,10 +312,10 @@ public class PersonalCloudController
       return mv;
    }
 
-   @RequestMapping(value = "/ccpayment", method = RequestMethod.POST)
+   @RequestMapping(value = "/ccpayment", method = {RequestMethod.POST, RequestMethod.GET})
    public ModelAndView processCCPayment(
          @Valid @ModelAttribute("paymentInfo") PaymentForm paymentForm,
-         HttpServletRequest request, Model model, BindingResult result)
+         HttpServletRequest request, HttpServletResponse response , Model model, BindingResult result)
    {
       logger.info("processing CC payment");
 
@@ -334,6 +335,10 @@ public class PersonalCloudController
             + phone + "--" + password);
       
       String txnType = paymentForm.getTxnType();
+      if(txnType == null || txnType.isEmpty())
+      {
+         txnType = regSession.getTransactionType();
+      }
        
       logger.debug("Transaction type = " + txnType);
       
@@ -363,30 +368,42 @@ public class PersonalCloudController
          logger.debug("Cannot connect to DB to lookup info...");
       }
 
+      String forwardingPage = request.getContextPath();
+      
+      String statusText = "";
+      
       if (!errors)
       {
-         BigDecimal amount = cspModel.getCostPerCloudName().multiply(
+         
+         BigDecimal amount = null;
+         if (cspModel.getPaymentGatewayName().equals("STRIPE") || cspModel.getPaymentGatewayName().equals("BRAINTREE"))
+         {
+            amount = cspModel.getCostPerCloudName().multiply(
                new BigDecimal(paymentForm.getNumberOfClouds()));
-         logger.debug("Charging CC for " + amount.toPlainString());
-         String desc = "";
-         if(txnType.equals(PaymentForm.TXN_TYPE_SIGNUP))
-         {
-            desc = "Personal cloud for " + cloudName;
-         } else if (txnType.equals(PaymentForm.TXN_TYPE_BUY_GC))
-         {
-            desc = paymentForm.getNumberOfClouds() + " giftcodes for " + cloudName;
+            logger.debug("Charging CC for " + amount.toPlainString());
          }
 
          
          PaymentModel payment = null;
          if(cspModel.getPaymentGatewayName().equals("STRIPE"))
          {
+            String desc = "";
+            if(txnType.equals(PaymentForm.TXN_TYPE_SIGNUP))
+            {
+               desc = "Personal cloud for " + cloudName;
+            } else if (txnType.equals(PaymentForm.TXN_TYPE_BUY_GC))
+            {
+               desc = paymentForm.getNumberOfClouds() + " giftcodes for " + cloudName;
+            }
             String token = StripePaymentProcessor.getToken(request); 
             payment = StripePaymentProcessor.makePayment(cspModel,
                   amount, desc, token);
          } else if (cspModel.getPaymentGatewayName().equals("BRAINTREE"))
          {
             payment = BrainTreePaymentProcessor.makePayment(cspModel, amount, request);
+         } else if (cspModel.getPaymentGatewayName().equals("SAGEPAY"))
+         {
+            payment = SagePayPaymentProcessor.processSagePayCallback(request, response, cspModel);
          }
             
             if (payment != null)
@@ -401,9 +418,57 @@ public class PersonalCloudController
                         + e1.getMessage());
                   logger.info("Payment record info \n" + payment.toString());
                }
+               
+               
+               if(txnType.equals(PaymentForm.TXN_TYPE_SIGNUP))
+               {     
+                  if (this.registerCloudName(cloudName, phone, email, password))
+                  {
+                     forwardingPage += "/cloudPage";
+                     statusText = "Congratulations " + cloudName + "! You have successfully purchased a cloudname.";
+                  } else
+                  {
+                     forwardingPage += "/signup";
+                     statusText = "Sorry! The system encountered an error while registering your cloudname.";
+                     
+                  }
+               }
+               else if (txnType.equals(PaymentForm.TXN_TYPE_DEP))
+               {
+                  if((mv = createDependentClouds(cloudName,payment,null,request)) != null)
+                  {
+                     forwardingPage += "/dependentDone";
+                     statusText = "Congratulations " + cloudName + "! You have successfully purchased dependent clouds.";
+                  } else
+                  {
+                     forwardingPage += "/cloudPage";
+                     statusText = "Sorry! The system encountered an error while registering dependent clouds.";
+                     
+                  }
 
+               }
+               else if(txnType.equals(PaymentForm.TXN_TYPE_BUY_GC))
+               {
+                  if((mv = this.createGiftCards(request, cloudName, payment, cspModel)) != null)
+                  {
+                     forwardingPage += "/cloudPage";
+                     statusText = "Congratulations " + cloudName + "! You have successfully purchased giftcodes.";
+                  } else
+                  {
+                     forwardingPage += "/cloudPage";
+                     statusText = "Sorry! The system encountered an error while purchasing giftcodes.";                     
+                  }
+               }
+               else
+               {
+                  forwardingPage += "/login";
+                  statusText = "Sorry. Something bad happened while processing your request. Returning you to login page. Please try again.";
+               }
+               
                
 
+               
+               /*
                if (txnType.equals(PaymentForm.TXN_TYPE_SIGNUP))
                {
                   if (this.registerCloudName(cloudName, phone, email, password))
@@ -445,10 +510,14 @@ public class PersonalCloudController
                      errorText ="Errors in gift card processing";
                   }
                }
+               */
+            } else {
+               statusText = "Sorry ! Payment Processing Error";
             }
 
          
       } 
+      /*
       if(errors)
       {
          if(txnType.equals(PaymentForm.TXN_TYPE_SIGNUP))
@@ -464,7 +533,15 @@ public class PersonalCloudController
          }
          mv.addObject("error", errorText);
       }
-
+       */
+      mv = new ModelAndView("AutoSubmitForm");
+      
+      mv.addObject("URL", request.getContextPath() + "/transactionSuccessFailure");
+      mv.addObject("cloudName", cloudName);
+      
+      mv.addObject("statusText", statusText);
+      mv.addObject("nextHop", forwardingPage);
+      
       return mv;
    }
 
@@ -677,7 +754,7 @@ public class PersonalCloudController
             }
             if (txnType.equals(PaymentForm.TXN_TYPE_DEP))
             {
-               return createDependentClouds(cloudName,null,giftCodes);
+               return createDependentClouds(cloudName,null,giftCodes,request);
             }
 
          }
@@ -757,16 +834,13 @@ public class PersonalCloudController
       return mv;
    }
 
-   private ModelAndView createDependentClouds(String cloudName , PaymentModel payment , String [] giftCodes)
+   private ModelAndView createDependentClouds(String cloudName , PaymentModel payment , String [] giftCodes , HttpServletRequest request)
    {
       ModelAndView mv = null;
       boolean errors = false;
       DAOFactory dao = DAOFactory.getInstance();
       
       DependentForm dependentForm = regSession.getDependentForm();
-
-      //
-
       String[] arrDependentCloudName = dependentForm.getDependentCloudName().split(",");
       String[] arrDependentCloudPasswords = dependentForm
             .getDependentCloudPassword().split(",");
@@ -844,21 +918,7 @@ public class PersonalCloudController
          }
          if (errors)
          {
-            CSPModel cspModel = null;
-           
-            try
-            {
-               cspModel = dao.getCSPDAO().get(this.getCspCloudName());
-            } catch (DAOException e1)
-            {
-               logger.debug("Cannot connect to DB to lookup info...");
-            }
-            mv = new ModelAndView("dependent");
-            mv.addObject("error", "Failed to register dependent cloud. "
-                  + registrationManager.getCSPContactInfo());     
-            mv.addObject("dependentForm", dependentForm);
-            mv.addObject("cspModel", cspModel);
-            return mv;
+            return null;
          }
          i++;
       }
@@ -894,7 +954,18 @@ public class PersonalCloudController
                   StripePaymentProcessor.getJavaScript(cspModel, amount, desc));
          } else if (cspModel.getPaymentGatewayName().equals("SAGEPAY"))
          {
-            // TBD
+            
+            mv.addObject("postURL",
+                  request.getContextPath() +"/submitCustomerDetail");
+            mv.addObject("SagePay","SAGEPAY");
+            mv.addObject("amount",amount.toPlainString());        
+         } else if (cspModel.getPaymentGatewayName().equals("BRAINTREE"))
+         {
+            logger.debug("Payment gateway is BRAINTREE");
+            mv.addObject("BrainTree" , BrainTreePaymentProcessor.getJavaScript(cspModel));
+            mv.addObject("postURL",
+                  request.getContextPath() + "/ccpayment");
+            mv.addObject("amount",amount.toPlainString());
          }
          mv.addObject("paymentInfo", paymentForm);
          return mv;
@@ -938,9 +1009,10 @@ public class PersonalCloudController
       String errorText = "";
       
       InviteForm   inviteForm = regSession.getInviteForm();
-      
-      regSession.setInviteForm(null);
-
+      if(inviteForm == null)
+      {
+         logger.debug("createGiftCards :: inviteForm is null!");
+      }
       InviteModel inviteModel = null;
       try
       {
@@ -966,7 +1038,7 @@ public class PersonalCloudController
          errors = true;
          errorText = "System error";
       }
-      
+      regSession.setInviteForm(null);
 
       if(errors)
       {
@@ -974,201 +1046,7 @@ public class PersonalCloudController
       }
       return mv;
    }
-   private String getSagePayCrypt(HttpServletRequest request, BigDecimal amount,String currency, String key)
-   {
-      IFormApi api = ApiFactory.getFormApi();
-      IFormPayment msg =  ApiFactory.getFormApi().newFormPaymentRequest();
    
-      String cspHomeURL = request.getContextPath();
-      
-      
-      msg.setSuccessUrl(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + cspHomeURL + "/sagePayCallback/"); 
-      msg.setFailureUrl(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + cspHomeURL + "/sagePayCallback/"); 
-      msg.setVendorTxCode(UUID.randomUUID().toString());
-      msg.setDescription("Purchase Personal Cloud(s)");
-      msg.setCustomerName(request.getParameter("BillingFirstNames") + " " + request.getParameter("BillingSurname"));
-      msg.setBillingFirstnames(request.getParameter("BillingFirstNames"));
-      msg.setBillingSurname(request.getParameter("BillingSurname"));
-      msg.setBillingAddress1(request.getParameter("BillingAddress1"));
-      msg.setBillingCity(request.getParameter("BillingCity"));
-      msg.setBillingCountry(request.getParameter("BillingCountry"));
-      msg.setBillingPostCode(request.getParameter("BillingPostCode"));
-      
-      msg.setDeliveryFirstnames(request.getParameter("BillingFirstNames"));
-      msg.setDeliverySurname(request.getParameter("BillingSurname"));
-      msg.setDeliveryAddress1(request.getParameter("BillingAddress1"));
-      msg.setDeliveryCity(request.getParameter("BillingCity"));
-      msg.setDeliveryCountry(request.getParameter("BillingCountry"));
-      msg.setDeliveryPostCode(request.getParameter("BillingPostCode"));
-
-      msg.setCurrency(currency);
-      msg.setAmount(amount);
-      
-      api.encrypt(key, msg);
-      
-      Map<String,String> map = api.toMap(IFormPayment.class, msg);
-      
-      String crypt = map.get("Crypt");
-      
-      logger.debug("Crypt " + crypt);
-      
-      return crypt;
-   }
-   @RequestMapping(value = "/sagePayCallback", method = RequestMethod.GET)
-   public ModelAndView sagePayCallbackProcessing(
-         HttpServletRequest request, Model model , HttpServletResponse response)
-   {
-      
-      String sessionIdentifier = regSession.getSessionId();
-      String email = regSession.getVerifiedEmail();
-      String phone = regSession.getVerifiedMobilePhone();
-      String password = regSession.getPassword();
-      String cloudName = regSession.getCloudName();
-      logger.debug(sessionIdentifier + "--" + cloudName + "--" + email + "--"
-            + phone + "--" + password);
-      logger.debug("Request servlet path " + request.getServletPath());
-      logger.debug("Paths " + request.getPathInfo()  + "-" + request.getRequestURI() + "-" + request.getPathTranslated() );
-      final RequestState rs = new RequestState(request, response, request.getSession().getServletContext());
-      
-   
-      ModelAndView mv = null  ; //
-      
-      CSPModel cspModel = null;
-
-      try
-      {
-         cspModel = DAOFactory.getInstance().getCSPDAO()
-               .get(this.getCspCloudName());
-      } catch (DAOException e)
-      {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
-      }
-
-      String crypt= rs.params.getMandatoryString("crypt");
-      IFormApi api = ApiFactory.getFormApi();
-      /*
-       * API Call 
-       * 
-       * Decrypt the returned parameter into a result object.
-       */
-      IFormPaymentResult fps = 
-         api.decrypt(cspModel.getPassword(), crypt);
-      logger.debug("Form Payment Result: " + fps.toString());
-      ResponseStatus status = fps.getStatus();
-      if(status.equals(ResponseStatus.OK)) 
-      {
-         PaymentModel payment = new PaymentModel();
-         payment.setPaymentId(fps.getVendorTxCode());
-         payment.setCspCloudName(cspModel.getCspCloudName());
-         payment.setPaymentReferenceId(fps.getVpsTxId());
-         payment.setPaymentResponseCode(fps.getStatus().toString());
-         payment.setAmount(fps.getAmount());
-         payment.setCurrency(cspModel.getCurrency());
-         
-         DAOFactory dao = DAOFactory.getInstance();
-         
-         try
-         {
-            dao.getPaymentDAO().insert(payment);
-         } catch (DAOException e1)
-         {
-            logger.error("Could not insert payment record in the DB "
-                  + e1.getMessage());
-            logger.info("Payment record info \n" + payment.toString());
-         }
-         
-         logger.debug("SagePay payment was processed successfully " + status.toString() );
-         String forwardingPage = request.getContextPath();
-         String txnType = "";
-         if(regSession != null)
-         {
-            txnType =  regSession.getTransactionType();
-         }
-         if(txnType.equals(PaymentForm.TXN_TYPE_SIGNUP))
-         {     
-            this.registerCloudName(cloudName, phone, email, password);
-            forwardingPage += "/cloudPage";
-         }
-         else if (txnType.equals(PaymentForm.TXN_TYPE_DEP))
-         {
-            if((mv = createDependentClouds(cloudName,payment,null)) != null)
-            {
-               forwardingPage += "/dependentDone";
-            }
-
-         }
-         else if(txnType.equals(PaymentForm.TXN_TYPE_BUY_GC))
-         {
-            if((mv = this.createGiftCards(request, cloudName, payment, cspModel)) != null)
-            {
-               forwardingPage += "/cloudPage";
-            }
-         }
-         else
-         {
-            forwardingPage += "/login";
-         }
-         
-         mv = new ModelAndView("AutoSubmitForm");
-         //mv.addObject("URL", forwardingPage);
-         mv.addObject("URL", request.getContextPath() + "/transactionSuccessFailure");
-         mv.addObject("cloudName", cloudName);
-         
-         mv.addObject("statusText", "Congratulations " + cloudName + "! You have successfully purchased a cloudname.");
-         mv.addObject("nextHop", forwardingPage);
-         
-      }
-      else {
-         String reason="";
-         // Determine the reason this transaction was unsuccessful
-         if (status.equals(ResponseStatus.NOTAUTHED))
-            reason = "You payment was declined by the bank.  This could be due to insufficient funds, or incorrect card details.";
-         else if (status.equals(ResponseStatus.ABORT))
-            reason = "You chose to Cancel your order on the payment pages.";
-         else if (status.equals(ResponseStatus.REJECTED)) 
-            reason = "Your order did not meet our minimum fraud screening requirements.";
-         else if (status.equals(ResponseStatus.INVALID) || status.equals(ResponseStatus.MALFORMED))
-            reason = "We could not process your order because we have been unable to register your transaction with our Payment Gateway.";
-         else if (status.equals(ResponseStatus.ERROR))
-            reason = "We could not process your order because our Payment Gateway service was experiencing difficulties.";
-         else
-            reason = "The transaction process failed. Please contact us with the date and time of your order and we will investigate.";
-         
-         mv = new ModelAndView("AutoSubmitForm");
-         String forwardingPage = request.getContextPath();
-         String txnType = "";
-         if(regSession != null)
-         {
-            txnType =  regSession.getTransactionType();
-         }
-         if(txnType.equals(PaymentForm.TXN_TYPE_SIGNUP))
-         {     
-            forwardingPage += "/signup";
-         }
-         else if (txnType.equals(PaymentForm.TXN_TYPE_DEP))
-         {
-            forwardingPage += "/cloudPage";
-         }
-         else if(txnType.equals(PaymentForm.TXN_TYPE_BUY_GC))
-         {
-              forwardingPage += "/cloudPage";
-         }
-         else
-         {
-            forwardingPage += "/login";
-         }
-         
-         mv.addObject("URL", request.getContextPath() + "/transactionSuccessFailure");
-         mv.addObject("cloudName", cloudName);
-         mv.addObject("statusText", reason);
-         mv.addObject("nextHop", forwardingPage);
-         
-      }  
-      
-      return mv;
-   }
-
    @RequestMapping(value = "/submitCustomerDetail", method = RequestMethod.POST)
    public ModelAndView processBillingDetail(
          
@@ -1190,7 +1068,7 @@ public class PersonalCloudController
             cspModel.getPaymentUrlTemplate());
       mv.addObject("SagePay","SAGEPAY");
       mv.addObject("vendor",cspModel.getUsername());
-      mv.addObject("crypt",getSagePayCrypt(request, new BigDecimal(request.getParameter("amount")),cspModel.getCurrency(),cspModel.getPassword()));
+      mv.addObject("crypt",SagePayPaymentProcessor.getSagePayCrypt(request, new BigDecimal(request.getParameter("amount")),cspModel.getCurrency(),cspModel.getPassword()));
       return mv;
    }
    

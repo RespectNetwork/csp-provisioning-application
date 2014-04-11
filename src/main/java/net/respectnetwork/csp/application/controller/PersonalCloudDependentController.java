@@ -121,7 +121,7 @@ public class PersonalCloudDependentController
       return mv;
    }
 
-   @RequestMapping(value = "/dependentDone", method = RequestMethod.GET)
+   @RequestMapping(value = "/dependentDone", method = {RequestMethod.GET,RequestMethod.POST} )
    public ModelAndView showDependentDoneForm(Model model,
          HttpServletRequest request) throws DAOException
    {
@@ -201,6 +201,10 @@ public class PersonalCloudDependentController
       mv = new ModelAndView("payment");
       PaymentForm paymentForm = new PaymentForm();
       paymentForm.setTxnType(PaymentForm.TXN_TYPE_DEP);
+      if(regSession != null)
+      {
+         regSession.setTransactionType(PaymentForm.TXN_TYPE_DEP);
+      }
       paymentForm.setNumberOfClouds(arrDependentCloudName.length);
       mv.addObject("paymentInfo", paymentForm);
       this.setDependentForm(dependentForm);

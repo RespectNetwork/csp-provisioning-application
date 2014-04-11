@@ -42,7 +42,8 @@ public class DependentForm
 				.append(this.dependentCloudName, other.dependentCloudName)
 				.append(this.dependentCloudPassword, other.dependentCloudPassword)
 				.append(this.dependentBirthDate, other.dependentBirthDate)
-		
+				.append(this.consentFlag, other.consentFlag)
+				.append(this.consentText, other.consentText)
 				.isEquals();
 	}
 
@@ -52,6 +53,10 @@ public class DependentForm
 				.appendSuper(super.hashCode())
 				.append(this.dependentCloudName)
 				.append(this.dependentCloudPassword)
+				.append(this.dependentBirthDate)
+				.append(this.consentFlag)
+				.append(this.consentText)
+				
 				.toHashCode();
 	}
 
