@@ -164,12 +164,11 @@
       <!-- Begin page content -->
       <div class="bodyContainer">
 				<div class="middle2"> 
-				
-		  
-          <br></br>
-          <form method="get" action="/testcsp/rnInvite">
-              <button id="full" type="submit" class="button">Invite your friends to join Respect Network</button>
-          </form>
+          <div>
+ 			<a id="rnInvitePageBtn" href="http://www.respectnetwork.net/" th:href="${rnInvitePage}">
+  				<button class="button">Invite your friends to join Respect Network</button>
+ 			</a>
+		</div>
           <form method="get" action="/testcsp/invite">
               <button id="full" type="submit" class="button">Buy Personal Cloud Gift Cards</button>
           </form>

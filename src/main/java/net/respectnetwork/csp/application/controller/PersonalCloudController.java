@@ -1,6 +1,8 @@
 package net.respectnetwork.csp.application.controller;
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -88,6 +90,8 @@ public class PersonalCloudController
     * CSP Cloud Name
     */
    private String               cspCloudName;
+   
+   
 
    public String getCspCloudName()
    {
@@ -557,25 +561,15 @@ public class PersonalCloudController
       logger.debug("getCloudPage :: cspHomeURL " + cspHomeURL);
       mv.addObject("logoutURL", cspHomeURL + "/logout");
       mv.addObject("cloudName", cloudName);
-
-
-/*
+      
       try
       {
-         DAOFactory dao = DAOFactory.getInstance();
-
-         List<InviteModel> invList = dao.getInviteDAO().listGroupByInvited(
-               cloudName);
-         List<DependentCloudModel> depList = dao.getDependentCloudDAO().list(
-               cloudName);
-
-         mv.addObject("inviteList", invList);
-         mv.addObject("dependentList", depList);
-      } catch (DAOException e)
+         mv.addObject("rnInvitePage",  RegistrationManager.getCspInviteURL() + "?cloudName" +  URLEncoder.encode(cloudName,"UTF-8"));
+      } catch (UnsupportedEncodingException e)
       {
-         logger.error("Failed to perform DAO opertations", e);
+         // TODO Auto-generated catch block
+         e.printStackTrace();
       }
-*/
       return mv;
    }
 

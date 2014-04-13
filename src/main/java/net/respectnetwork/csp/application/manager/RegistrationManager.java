@@ -109,6 +109,8 @@ public class RegistrationManager {
     
     private String cspHomeURL;
     
+    private static String cspInviteURL;
+    
     
     
     /**
@@ -634,6 +636,16 @@ public class RegistrationManager {
    public void setCspHomeURL(String cspHomeURL)
    {
       this.cspHomeURL = cspHomeURL;
+   }
+
+   public static String getCspInviteURL()
+   {
+      return cspInviteURL;
+   }
+
+   public static void setCspInviteURL(String url)
+   {
+      cspInviteURL = url;
    }
     
 
