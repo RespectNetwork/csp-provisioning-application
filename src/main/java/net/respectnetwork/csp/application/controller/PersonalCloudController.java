@@ -501,7 +501,7 @@ public class PersonalCloudController
       
       try
       {
-         mv.addObject("rnInvitePage",  RegistrationManager.getCspInviteURL() + "?cloudName" +  URLEncoder.encode(cloudName,"UTF-8"));
+         mv.addObject("rnInvitePage",  RegistrationManager.getCspInviteURL() + "?cloudName=" +  URLEncoder.encode(cloudName,"UTF-8"));
       } catch (UnsupportedEncodingException e)
       {
          // TODO Auto-generated catch block

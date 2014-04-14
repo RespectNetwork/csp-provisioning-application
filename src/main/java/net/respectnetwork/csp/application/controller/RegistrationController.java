@@ -452,6 +452,7 @@ public class RegistrationController
 
       }
       mv.addObject("signupInfo", signUpForm);
+      mv.addObject("cloudName", cloudName);
       return mv;
    }
 
