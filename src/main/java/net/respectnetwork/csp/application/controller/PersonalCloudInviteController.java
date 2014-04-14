@@ -116,7 +116,7 @@ public class PersonalCloudInviteController
 	{
 		String       cloudName  = this.getCloudName();
 
-		logger.info("showing invite page - " + cloudName);
+		logger.info("showing invite page - " + cloudName );
 
 		String       cspHomeURL = request.getContextPath();
 		ModelAndView mv         = null;
@@ -131,7 +131,7 @@ public class PersonalCloudInviteController
 		}
 
 		cspModel = DAOFactory.getInstance().getCSPDAO().get(this.getCspCloudName());
-
+		logger.debug("showInviteForm :: CSP Cloud Name " + cspModel.getCspCloudName() );
 		mv = new ModelAndView("invite");
 		mv.addObject("cspModel"    , cspModel);
 		mv.addObject("quantityList", quantityList);
@@ -232,7 +232,11 @@ public class PersonalCloudInviteController
       
 		if(cspModel.getPaymentGatewayName().equals("STRIPE")) 
 		{
+		   logger.debug("Payment gateway is STRIPE");
 		   mv.addObject("StripeJavaScript"  , StripePaymentProcessor.getJavaScript(cspModel, amount, desc));
+		   mv.addObject("amount",amount.toPlainString());
+		   mv.addObject("postURL",
+               cspHomeURL + "/ccpayment");
 		} 
 		else if (cspModel.getPaymentGatewayName().equals("SAGEPAY"))
       {

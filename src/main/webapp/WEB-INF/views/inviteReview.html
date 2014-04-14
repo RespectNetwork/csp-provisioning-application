@@ -3,71 +3,55 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <title th:text="#{invite.text.summary}">Invite &amp; Gift Cards Summary!</title>
-  <meta charset="utf-8"/>
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-  <meta name="description" content="Invite"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <!--
-  <link rel="stylesheet" href="../../css/csp.css" th:href="@{/css/csp.css}"/>
-  <script src="../../js/libs/modernizr-2.0.6.min.js" th:src="@{/js/libs/modernizr-2.0.6.min.js}"></script>
-  -->
-    	<!-- <style type="text/css">
-  	/*  THIS IS JUST TO GET THE GRID TO SHOW UP.  YOU DONT NEED THIS IN YOUR CODE */
-  		#maincontent .col { background: #fff; }
-      	</style>
-    -->
-	<link rel="stylesheet" media="all" href="css/styles.css" type="text/css"/>
-	<link href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet"/>	
+  <meta charset="utf-8" />
+    <title>Respect Network</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
 
-  <link rel="stylesheet" href="css/html5reset.css" media="all"/>
-  <link rel="stylesheet" href="css/responsivegridsystem.css" media="all"/>
-  <link rel="stylesheet" href="css/col.css" media="all"/>
-  <link rel="stylesheet" href="css/5cols.css" media="all"/>
-  <link rel="stylesheet" href="css/6cols.css" media="all"/>
-  <link rel="stylesheet" href="css/7cols.css" media="all"/>
-  <link rel="stylesheet" href="css/8cols.css" media="all"/>
-  <link rel="stylesheet" href="css/9cols.css" media="all"/>
-  <link rel="stylesheet" href="css/10cols.css" media="all"/>
-  <link rel="stylesheet" href="css/11cols.css" media="all"/>
-  <link rel="stylesheet" href="css/12cols.css" media="all"/>
+    <!-- CSS -->
+    <link href="css/bootstrap.css" rel="stylesheet" />
+    <link href="css/style.css" rel="stylesheet" />
+    <link href="css/bootstrap-responsive.css" rel="stylesheet" />
 
-	
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.js"></script>
+    <![endif]-->
 
-<!-- Responsive Stylesheets -->
-	<link rel="stylesheet" media="only screen and (max-width: 1024px) and (min-width: 769px)" href="/css/1024.css"/>
-  <link rel="stylesheet" media="only screen and (max-width: 768px) and (min-width: 481px)" href="/css/768.css"/>
-  <link rel="stylesheet" media="only screen and (max-width: 480px)" href="/css/480.css"/>
-
-<!-- Scripts-->	
-<script src="../../js/libs/modernizr-2.0.6.min.js" th:src="@{/js/libs/modernizr-2.0.6.min.js}"></script>
-
-<script src="../../js/libs/responsivegridsystem.js" th:src="@{/js/libs/responsivegridsystem.js}"></script>
-
-<script src="https://code.jquery.com/jquery.js" th:src="@{/js/libs/jquery.js}"></script>
-
-<script src="../../js/libs/bootstrap.js" th:src="@{/js/libs/bootstrap.js}" ></script>
+    <!-- Fav and touch icons -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="img/ico/apple-touch-icon-144-precomposed.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/ico/apple-touch-icon-114-precomposed.png" />
+      <link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/ico/apple-touch-icon-72-precomposed.png" />
+                    <link rel="apple-touch-icon-precomposed" href="img/ico/apple-touch-icon-57-precomposed.png" />
+                                   <link rel="shortcut icon" href="img/ico/favicon.png" />
   
 </head>
 <body>
-<div id="wrapper">
+<div id="wrap">
     
-	<div id="maincontentcontainer">
-		
-        <div id="maincontent">
+	
         	
-            <div class="section group">
-                
-                <div class="col span_4_of_11">
-                <div id="header">
-                	<img src="img/RespectLogo1.png" alt="Respect Network"/>
-                </div> <!-- end id header -->
-                </div> <!-- end class -->
-                <div class="col span_7_of_11">
-                &nbsp;
-                </div>
-                
-            </div> <!-- end section group -->
+            <!-- Fixed navbar -->
+      <div class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+          <div class="container">
+          <div class="row-fluid">  
+          	<div class="span4 smallTop"><img src="img/RespectNetwork_Logo_H_RGB.png" />
+          	</div>
+          	<div class="span4 midHdr">
+          	</div>
+          	<div class="span4 bigTop">
+             <p class="secondary">PRESS | FAQs</p>
+         		</div>
+          </div>
 
+          </div>
+        </div>
+      </div>
+	<!-- Begin page content -->
+      <div class="bodyContainer">
+		<div class="middle">
       <form action="#" th:object="${inviteForm}" th:action="@{/inviteSubmit}" method="post">
         <input type="hidden" id="emailAddress" name="emailAddress" value="" th:value="${inviteForm.emailAddress}"/>
         <input type="hidden" id="emailMessage" name="emailMessage" value="" th:value="${inviteForm.emailMessage}"/>
@@ -75,7 +59,7 @@
         <input type="hidden" id="giftCardQuantity" name="giftCardQuantity" value="1" th:value="${inviteForm.giftCardQuantity}"/>
         <table id="inviteTable" width="100%">
           <tr>
-            <td colspan="2"><p class="headerText" th:text="#{invite.text.summary}">Invites &amp; Gift Cards Summary!</p>
+            <td colspan="2"><p class="headerText" th:text="#{invite.text.summary}">Gift Cards Summary!</p>
               <p class="subHeaderText" th:if="${error}" th:text="${error}" style="color: orange">System Error</p>
             </td>
           </tr>
@@ -104,33 +88,25 @@
             <td span="2"><span th:text="#{invite.text.note}">As you have purchased gift cards you will be taken next to a payment page. The invitations will be sent along with the gift card codes!</span></td>
           </tr>
           <tr>
-            <td colspan="2" align="center"><input type="submit" value="Send Invites!" th:value="#{invite.text.send}" name="submit" class="submit" /></td>
+            <td colspan="2" align="center"><button type="submit" value="Send Invites!" th:value="#{invite.text.send}" name="submit" class="button big" >Continue</button></td>
           </tr>
         </table>
       </form>
-			<div class="bottom">
-            	<div class="group">
-            	  <div class="col span_7_of_11">
-                  </div>
-                  
-                  <div class="col span_4_of_11">
-                    <div id="logo">
-                    <img src="img/logo.png" alt="Happy Cloud Co."/>
-                    </div><!-- end logo -->
-                  </div><!-- end class -->
-                </div><!-- end group -->
-            </div><!-- end bottom -->
- 			</div>  <!-- end maincontent -->
-       </div>  <!-- end maincontentcontainer -->
-        <footer>
-			<div class="col span_11_of_11">
-			<p>&copy; 2014 All Rights Reserved  |  Respect Network personal cloud services</p>
-			</div>
-
-		</footer>
-
+      </div>
+	</div>
+		<div id="footer">
+      	<div class="row-fluid">
+    			<div class="span11 cspMain">YOUR CLOUD SERVICE PROVIDER | <img src="img/csp_logo.png" /> &nbsp;
+					</div>
+				</div>
+  			<div class="border">
+  				<div id="feedback">
+  					<a href="/feedback_url/">Help</a>
+					</div>
+				</div>
+    </div>
     
- </div> <!-- end wrapper -->
+ </div> <!-- end wrap -->
 
 </body>
 </html>

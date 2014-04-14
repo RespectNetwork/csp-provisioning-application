@@ -13,7 +13,6 @@ public class InviteForm
 	@NotNull @Size(min=6, max=128) @Email
 	private String        emailAddress;
 
-	@NotNull @Size(min=1, max=2048)
 	private String        emailMessage;
 
 	@NotNull
@@ -27,7 +26,7 @@ public class InviteForm
 		this.inviteId = null;
 		this.emailAddress = "";
 		this.emailMessage = "";
-		this.giftCardFlag = Boolean.FALSE;
+		this.giftCardFlag = Boolean.TRUE;
 		this.giftCardQuantity = Integer.valueOf(1);
 	}
 

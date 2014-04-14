@@ -3,86 +3,60 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-<meta charset="utf-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+<meta charset="utf-8" />
+    <title>Respect Network</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
 
-<title></title>
-<meta name="description" content="Invite "/>
+    <!-- CSS -->
+    <link href="css/bootstrap.css" rel="stylesheet" />
+    <link href="css/style.css" rel="stylesheet" />
+    <link href="css/bootstrap-responsive.css" rel="stylesheet" />
 
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<!--
-<link rel="stylesheet" href="../../css/csp.css" th:href="@{/css/csp.css}"/>
--->
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.js"></script>
+    <![endif]-->
 
-	<!-- <style type="text/css">
-  	/*  THIS IS JUST TO GET THE GRID TO SHOW UP.  YOU DONT NEED THIS IN YOUR CODE */
-  		#maincontent .col { background: #fff; }
-      	</style>
-    -->
-	<link rel="stylesheet" media="all" href="css/styles.css" type="text/css"/>
-	<link href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet"/>	
-
-  <link rel="stylesheet" href="css/html5reset.css" media="all"/>
-  <link rel="stylesheet" href="css/responsivegridsystem.css" media="all"/>
-  <link rel="stylesheet" href="css/col.css" media="all"/>
-  <link rel="stylesheet" href="css/5cols.css" media="all"/>
-  <link rel="stylesheet" href="css/6cols.css" media="all"/>
-  <link rel="stylesheet" href="css/7cols.css" media="all"/>
-  <link rel="stylesheet" href="css/8cols.css" media="all"/>
-  <link rel="stylesheet" href="css/9cols.css" media="all"/>
-  <link rel="stylesheet" href="css/10cols.css" media="all"/>
-  <link rel="stylesheet" href="css/11cols.css" media="all"/>
-  <link rel="stylesheet" href="css/12cols.css" media="all"/>
-
-	
-
-<!-- Responsive Stylesheets -->
-	<link rel="stylesheet" media="only screen and (max-width: 1024px) and (min-width: 769px)" href="/css/1024.css"/>
-  <link rel="stylesheet" media="only screen and (max-width: 768px) and (min-width: 481px)" href="/css/768.css"/>
-  <link rel="stylesheet" media="only screen and (max-width: 480px)" href="/css/480.css"/>
-
-<!-- Scripts-->	
-<script src="../../js/libs/modernizr-2.0.6.min.js" th:src="@{/js/libs/modernizr-2.0.6.min.js}"></script>
-
-<script src="../../js/libs/responsivegridsystem.js" th:src="@{/js/libs/responsivegridsystem.js}"></script>
-
-
-
-</head>
+    <!-- Fav and touch icons -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="img/ico/apple-touch-icon-144-precomposed.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/ico/apple-touch-icon-114-precomposed.png" />
+      <link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/ico/apple-touch-icon-72-precomposed.png" />
+                    <link rel="apple-touch-icon-precomposed" href="img/ico/apple-touch-icon-57-precomposed.png" />
+                                   <link rel="shortcut icon" href="img/ico/favicon.png" />
+  </head>
 
 <body>
-<div id="wrapper">
+<div id="wrap">
     
-	<div id="maincontentcontainer">
-		
-        <div id="maincontent">
+	
         	
-            <div class="section group">
-                
-                <div class="col span_4_of_11">
-                <div id="header">
-                	<img src="img/RespectLogo1.png" alt="Respect Network"/>
-                </div> <!-- end id header -->
-                </div> <!-- end class -->
-                <div class="col span_7_of_11">
-                &nbsp;
-                </div>
-                
-            </div> <!-- end section group -->
+            <!-- Fixed navbar -->
+      		<div class="navbar navbar-fixed-top">
+        	<div class="navbar-inner">
+          	<div class="container">
+          	<div class="row-fluid">  
+          	<div class="span4 smallTop"><img src="img/RespectNetwork_Logo_H_RGB.png" />
+          	</div>
+          	<div class="span4 midHdr">
+          	</div>
+          	<div class="span4 bigTop">
+             <p class="secondary">PRESS | FAQs</p>
+         		</div>
+          	</div>
 
-            <form action="#"  th:action="${postURL}" method="post">
+          	</div>
+        	</div>
+      		</div>
+			<div class="bodyContainer">
+			<div class="middle"> 
+				
+					<p class="primary">				
+            		<form action="#"  th:action="${postURL}" method="post">
                     
                     <div th:if="${SagePay}">
-                       <table id="sTable">
-						
-						<tr> 
-						<td> 
-							<button type="submit" name="submit" class="btn btn-default">Process Payment</button> 
-						</td> 
-						</tr>
-						
-						</table>
-						
+						<button type="submit" name="submit" class="button big">Process Payment</button> 
                     	<input type="hidden" name="VPSProtocol" value="2.23" id="VPSProtocol" />
                     	<input type="hidden" name="TxType" value="PAYMENT" id="TxType"   />
                     	<input type="hidden" name="Vendor" value="" id="Vendor"  th:value="${vendor}" />
@@ -90,30 +64,23 @@
                     	
                     </div>
                     
-		 </form>
-
-        <div class="bottom">
-            	<div class="group">
-            	  <div class="col span_7_of_11">
-                  </div>
-                  
-                  <div class="col span_4_of_11">
-                    <div id="logo">
-                    <img src="img/logo.png" alt="Happy Cloud Co."/>
-                    </div><!-- end logo -->
-                  </div><!-- end class -->
-                </div><!-- end group -->
-            </div><!-- end bottom -->
- 			</div>  <!-- end maincontent -->
-       </div>  <!-- end maincontentcontainer -->
-        <footer>
-			<div class="col span_11_of_11">
-			<p>&copy; 2014 All Rights Reserved  |  Respect Network personal cloud services</p>
+		 		</form>
+				</p>		 		
 			</div>
-
-		</footer>
+			</div>
+        <div id="footer">
+      	<div class="row-fluid">
+    			<div class="span11 cspMain">YOUR CLOUD SERVICE PROVIDER | <img src="img/csp_logo.png" /> &nbsp;
+					</div>
+				</div>
+  			<div class="border">
+  				<div id="feedback">
+  					<a href="/feedback_url/">Help</a>
+					</div>
+				</div>
+    	</div>
 
     
- </div> <!-- end wrapper -->
+ </div> <!-- end wrap -->
 </body>
 </html>

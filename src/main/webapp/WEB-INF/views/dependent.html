@@ -58,7 +58,7 @@ $(document).ready(function(){
         </div>
         <div class="span4"></div>
         <div class="span4 smallTop">
-          <p class="cspHeader center"> &nbsp; Welcome =alice<!--<span th:text="${cloudName}"/>--></p>
+          <p class="cspHeader center"> &nbsp; Welcome <span th:text="${cloudName}"/></p>
         </div>
       </div>
 			</div>
@@ -98,11 +98,13 @@ $(document).ready(function(){
      			</div>
      	</div>
     	
-    	<button id="addAnotherDependent" class="button big" type="button">+ Add another dependent</button>
+    			<button id="addAnotherDependent" class="button big" type="button">+ Add another dependent</button>
     
+    			<br></br>
     			
-          	<button type="submit" name="submit" id="submit" class="button">Continue</button> &nbsp; &nbsp;
-          	<a href="/cloudPage">Cancel</a>
+				<br></br>          		
+				<button type="submit" name="submit" id="submit" class="button">Continue</button> &nbsp; &nbsp;
+          		<!-- <a href="/cloudPage">Cancel</a> -->
      	</form>
  
 	</div>
