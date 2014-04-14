@@ -441,7 +441,7 @@ public class PersonalCloudController
                {
                   if((mv = createDependentClouds(cloudName,payment,null,request)) != null)
                   {
-                     forwardingPage += "/dependentDone";
+                     forwardingPage += "/cloudPage";
                      statusText = "Congratulations " + cloudName + "! You have successfully purchased dependent clouds.";
                   } else
                   {
@@ -469,75 +469,12 @@ public class PersonalCloudController
                   statusText = "Sorry. Something bad happened while processing your request. Returning you to login page. Please try again.";
                }
                
-               
-
-               
-               /*
-               if (txnType.equals(PaymentForm.TXN_TYPE_SIGNUP))
-               {
-                  if (this.registerCloudName(cloudName, phone, email, password))
-                  {
-                     logger.debug("Going to create the personal cloud now for CC path ...");
-                     mv = getCloudPage(request, cloudName);
-                     AccountDetailsForm accountForm = new AccountDetailsForm();
-                     accountForm.setCloudName(cloudName);
-                     mv.addObject("accountInfo", accountForm);
-
-                  } else
-                  {
-                     errors = true;
-                     errorText ="Could not register cloudname";
-                  }
-
-               }
-               if (txnType.equals(PaymentForm.TXN_TYPE_DEP))
-               {
-                  if((mv = createDependentClouds(cloudName,payment,null)) != null)
-                  {
-                     return mv;
-                  }
-                  else
-                  {
-                     errors = true;
-                     errorText ="Could not register dependent cloud";
-                  }
-               }
-               if(txnType.equals(PaymentForm.TXN_TYPE_BUY_GC))
-               {
-                  if((mv = this.createGiftCards(request, cloudName, payment, cspModel)) != null)
-                  {
-                     return mv;
-                  }
-                  else
-                  {
-                     errors = true;
-                     errorText ="Errors in gift card processing";
-                  }
-               }
-               */
             } else {
                statusText = "Sorry ! Payment Processing Error";
             }
 
          
       } 
-      /*
-      if(errors)
-      {
-         if(txnType.equals(PaymentForm.TXN_TYPE_SIGNUP))
-         {
-            mv = new ModelAndView("signup");
-         }
-         else if(cloudName == null || password == null || sessionIdentifier == null)
-         {
-            mv = new ModelAndView("login");
-         } else
-         {
-            mv = getCloudPage(request, cloudName);
-         }
-         mv.addObject("error", errorText);
-      }
-       */
       mv = new ModelAndView("AutoSubmitForm");
       
       mv.addObject("URL", request.getContextPath() + "/transactionSuccessFailure");
@@ -606,23 +543,10 @@ public class PersonalCloudController
          return mv;
       }
 
-      String paymentTypeGC = request.getParameter("paymentTypeGC");
-      String paymentTypeCC = request.getParameter("paymentTypeCC");
-      if (paymentTypeGC != null)
-      {
-
-         logger.debug("Payment with GC");
-      }
-      if (paymentTypeCC != null)
-      {
-
-         logger.debug("Payment with CC");
-      } else
-      {
-
-      }
-
-      if (paymentTypeGC != null && request.getParameter("giftCodes") == null)
+      String paymentType = request.getParameter("paymentType");
+      
+      
+      if (paymentType != null && paymentType.contains("giftCard") && request.getParameter("giftCodes") == null)
       {
          mv = new ModelAndView("payment");
          errors = true;
@@ -639,14 +563,45 @@ public class PersonalCloudController
       logger.debug("Number of clouds being purchased "
             + paymentForm.getNumberOfClouds());
       logger.debug("Transaction type " + txnType);
+      DAOFactory dao = DAOFactory.getInstance();
+      String giftCodesVal = request.getParameter("giftCodes");
+      logger.debug("Giftcodes " + giftCodesVal);
+      
+      String forwardingPage = request.getContextPath();
+      String statusText = "";
+      
+      //check if its a promo
+      //check for valid promo codes in promo_code table
+      if(giftCodesVal != null && giftCodesVal.equalsIgnoreCase("NSR-IIS-MAY") && txnType.equals(PaymentForm.TXN_TYPE_SIGNUP))
+      {
+         if (this.registerCloudName(cloudName, phone, email, password))
+         {
+            forwardingPage += "/cloudPage";
+            statusText = "Congratulations " + cloudName + "! You have successfully purchased a cloudname.";
+            
+            //make an entry in promo_cloud table
+         } else
+         {
+            forwardingPage += "/signup";
+            statusText = "Sorry! The system encountered an error while registering your cloudname.";           
+         }
+         
+         mv = new ModelAndView("AutoSubmitForm");
+         
+         mv.addObject("URL", request.getContextPath() + "/transactionSuccessFailure");
+         mv.addObject("cloudName", cloudName);
+         
+         mv.addObject("statusText", statusText);
+         mv.addObject("nextHop", forwardingPage);
+         
+         return mv;
+      }
 
       // process gift card payments first
 
       boolean validGiftCard = false;
 
-      DAOFactory dao = DAOFactory.getInstance();
-      String giftCodesVal = request.getParameter("giftCodes");
-      logger.debug("Giftcodes " + giftCodesVal);
+      
       String[] giftCodes = null;
       if (giftCodesVal != null && !giftCodesVal.isEmpty())
       {
@@ -724,11 +679,15 @@ public class PersonalCloudController
                if (this.registerCloudName(cloudName, phone, email, password))
                {
                   logger.debug("Going to create the personal cloud now for gift code path...");
+                  /*
                   mv = getCloudPage(request, cloudName);
                   AccountDetailsForm accountForm = new AccountDetailsForm();
                   accountForm.setCloudName(cloudName);
                   mv.addObject("accountInfo", accountForm);
-
+                  */
+                  forwardingPage += "/cloudPage";
+                  statusText = "Congratulations " + cloudName + "! You have successfully purchased a cloudname.";
+                  
                   // make a new record in the giftcode_redemption table
                   GiftCodeRedemptionModel giftCodeRedemption = new GiftCodeRedemptionModel();
                   giftCodeRedemption.setCloudNameCreated(cloudName);
@@ -741,17 +700,40 @@ public class PersonalCloudController
 
                   } catch (DAOException e)
                   {
-                     // TODO Auto-generated catch block
-                     e.printStackTrace();
+                     logger.debug("Giftcode redemption entry failed - " + cloudName + ", giftcode=" + regSession.getGiftCode());
+                     logger.debug("DB error " + e.getMessage());
                   }
                }
-            }
-            if (txnType.equals(PaymentForm.TXN_TYPE_DEP))
+               else
+               {
+                  forwardingPage += "/signup";
+                  statusText = "Sorry! The system encountered an error while registering your cloudname.";
+                  
+               }
+            } 
+            else if (txnType.equals(PaymentForm.TXN_TYPE_DEP))
             {
-               return createDependentClouds(cloudName,null,giftCodes,request);
+               if ((mv = createDependentClouds(cloudName,null,giftCodes,request)) != null )
+               {
+                  forwardingPage += "/cloudPage";
+                  statusText = "Congratulations " + cloudName + "! You have successfully purchased dependent clouds.";
+               } else
+               {
+                  forwardingPage += "/cloudPage";
+                  statusText = "Sorry! The system encountered an error while registering dependent clouds.";
+                  
+               }
             }
+            mv = new ModelAndView("AutoSubmitForm");
+            
+            mv.addObject("URL", request.getContextPath() + "/transactionSuccessFailure");
+            mv.addObject("cloudName", cloudName);
+            
+            mv.addObject("statusText", statusText);
+            mv.addObject("nextHop", forwardingPage);
 
          }
+         
 
       }
 
@@ -773,7 +755,7 @@ public class PersonalCloudController
          paymentForm.setNumberOfClouds(paymentForm.getNumberOfClouds()
                - giftCodes.length);
       }
-      if (paymentTypeCC != null && paymentForm.getNumberOfClouds() > 0)
+      if (paymentType != null && paymentType.contains("creditCard") && paymentForm.getNumberOfClouds() > 0)
       {
          mv = new ModelAndView("creditCardPayment");
          String cspHomeURL = request.getContextPath();

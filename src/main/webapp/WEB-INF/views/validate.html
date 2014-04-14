@@ -27,15 +27,15 @@
         height: auto !important;
         height: 100%;
         /* Negative indent footer by it's height */
-        margin: 0 auto -60px;
+        margin: 0 auto -100px;
       }
 
       /* Set the fixed height of the footer here */
       #push,
       #footer {
-        height: 60px;
+        height: 100px;
       }
-      #footer {
+      .border {
         border-top: solid 1px #d9d9d9;
       }
 
@@ -137,13 +137,11 @@
       <link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/ico/apple-touch-icon-72-precomposed.png" />
                     <link rel="apple-touch-icon-precomposed" href="img/ico/apple-touch-icon-57-precomposed.png" />
                                    <link rel="shortcut icon" href="img/ico/favicon.png" />
-  </head>
+</head>
 
-  <body>
-
-
-    <!-- Part 1: Wrap all page content here -->
-    <div id="wrap">
+<body>
+<!-- Part 1: Wrap all page content here -->
+<div id="wrap">
 
       <!-- Fixed navbar -->
       <div class="navbar navbar-fixed-top">
@@ -155,7 +153,7 @@
           	<div class="span4 midHdr"><span th:text="${cloudName}"/>
           	</div>
           	<div class="span4 bigTop">
-             <p class="secondary">Press | FAQs</p>
+             <p class="secondary">PRESS | FAQs</p>
          		</div>
           </div>
 
@@ -165,37 +163,39 @@
 
       <!-- Begin page content -->
       <div class="bodyContainer">
-				<div class="middle2"> Verification codes have been sent to your email and phone. <br/>Enter those codes in the fields below. 
+				<div class="middle2"> Verification codes have been sent to your email and phone. <br />Enter those codes in the fields below. 
 					<form action="#" th:object="${validateInfo}" th:action="@{/validatecodes}" method="post" class="margin-top">
 
  						<input type="text" class="inputFields" name="emailCode"  id="emailCode" placeholder="email code" required="required" th:value="*{emailCode}" />
-						<p class="secondary"><span th:text="|Sent to ${verifyingEmail}|"> </span></p>
+						<p class="secondary"><span th:text="|Sent to ${verifyingEmail}|"></span></p>
 						
 						<input type="text" class="inputFields" name="smsCode" id="smsCode" placeholder="text code" required="required"
                                 th:value="*{smsCode}" />
              			<p class="secondary"> <span th:text="|Sent to ${verifyingPhone}|"></span></p>
      					
-     				<p class="secondary"> <input type="checkbox" class="inputFields" name="terms"  required="required" />
+     				<p class="secondary"> <input type="checkbox" class="inputFields" name="terms"  required="required" /> &nbsp;
      				I agree to the <a href="#">Respect Trust Framework</a> and the one-person one-account rule.</p>
-						<button type="submit" name="submit" id="submit" class="button" >Verify</button>
+						<input type="submit" name="submit" id="submit" class="button" value="Verify" />
 						
 				</form>
-				<div class="cspMain">YOUR CLOUD SERVICE PROVIDER | <img src="img/paoga_logo.png" /> &nbsp;
-				</div>
 									
 			</div>
 	</div>	  
 
-    <div id="footer">
-    	<div id="feedback">
-  			<a href="/feedback_url/">Help</a>
-		</div>
-<!--      <div class="container">
-        <p class="muted credit">Copyright &copy 2014 Respect Network. All rights reserved.</p>
-      </div>-->
+     <div id="footer">
+      	<div class="row-fluid">
+    			<div class="span11 cspMain">YOUR CLOUD SERVICE PROVIDER | <img src="img/csp_logo.png" /> &nbsp;
+					</div>
+				</div>
+  			<div class="border">
+  				<div id="feedback">
+  					<a href="/feedback_url/">Help</a>
+					</div>
+				</div>
     </div>
 
 
+
 </div>
-  </body>
+</body>
 </html>

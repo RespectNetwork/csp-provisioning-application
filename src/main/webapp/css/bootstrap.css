@@ -1025,7 +1025,7 @@ pre code {
 }
 
 form {
-  margin: 0 0 20px;
+  margin: 0 0 10px;
 }
 
 fieldset {
@@ -1071,7 +1071,7 @@ label {
   display: block;
   margin-bottom: 5px;
 }
-
+/*!
 select,
 textarea,
 input[type="text"],
@@ -1090,7 +1090,6 @@ input[type="tel"],
 input[type="color"],
 .uneditable-input {
   display: inline-block;
-  height: 40px;
   padding: 4px 6px;
   margin-bottom: 10px;
   font-size: 24px;
@@ -1100,7 +1099,7 @@ input[type="color"],
      -moz-border-radius: 4px;
           border-radius: 4px;
 }
-
+*/
 input,
 textarea,
 .uneditable-input {
@@ -1176,7 +1175,6 @@ input[type="checkbox"] {
 
 input[type="file"],
 input[type="image"],
-input[type="submit"],
 input[type="reset"],
 input[type="radio"],
 input[type="checkbox"] {
