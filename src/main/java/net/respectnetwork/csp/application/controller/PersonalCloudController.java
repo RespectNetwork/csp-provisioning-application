@@ -339,8 +339,7 @@ public class PersonalCloudController
        
       logger.debug("Transaction type = " + txnType);
       
-      logger.debug("Number of clouds being purchased "
-            + paymentForm.getNumberOfClouds());
+      
       
       // Check Session
       if (sessionIdentifier == null || cloudName == null || password == null)
@@ -378,6 +377,8 @@ public class PersonalCloudController
             amount = cspModel.getCostPerCloudName().multiply(
                new BigDecimal(paymentForm.getNumberOfClouds()));
             logger.debug("Charging CC for " + amount.toPlainString());
+            logger.debug("Number of clouds being purchased "
+                  + paymentForm.getNumberOfClouds());
          }
 
          
