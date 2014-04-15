@@ -38,7 +38,7 @@
 $(document).ready(function(){
   $("#addAnotherDependent").click(function(){
     
-    $( '<div ><table >  <tr> <td> <input type="text" name="dependentCloudName"  id="dependentCloudName" placeholder="=dependent name" required="required" /> </td> </tr> <tr><td><input type="password" name="dependentCloudPassword"  id="dependentCloudPassword" placeholder="password" required="required"/> </td></tr><tr><td><input type="text" name="dependentBirthDate" value="" id="dependentBirthDate" placeholder="MM/DD/YYYY" required="required"   /></td></tr></table></div>' ).appendTo("#allDependents");
+    $( '<div ><table ><tr><td><p class="payment3">Dependent&apos;s cloud name</p></td></tr>  <tr> <td> <input type="text" class="inputFields smallMarg" name="dependentCloudName"  id="dependentCloudName" placeholder="=dependent name" required="required" /> </td> </tr> <tr><td><input type="password" class="inputFields smallMarg" name="dependentCloudPassword"  id="dependentCloudPassword" placeholder="password" required="required"/> </td></tr><tr><td><p class="payment3">Dependent&apos;s birthdate:</p></td></tr><tr><td><input type="text" class="inputFields smallMarg" name="dependentBirthDate" value="" id="dependentBirthDate" placeholder="MM/DD/YYYY" required="required"   /></td></tr><tr><td><p class="secondary"> <input type="checkbox" name="consent" value="false" required="required" /> I consent to my dependent obtaining a personal cloud.</p></td></tr></table></div>' ).appendTo("#allDependents");
     });
 });
 </script>
