@@ -35,9 +35,17 @@ public class StripePaymentProcessor
 		return rtn;
 	}
 
-	public static String getJavaScript( CSPModel csp, BigDecimal amount, String desc )
+	public static String getJavaScript( CSPModel csp, BigDecimal amount, String dsc )
 	{
 		StringBuilder builder = new StringBuilder("\n");
+		String desc = "";
+		if(dsc == null || dsc.isEmpty())
+		{
+		   desc = "Purchase personal clouds in Respect Network";
+		} else
+		{
+		   desc = dsc;
+		}
 
 		builder.append("<script           class=\"stripe-button\"\n")
 		       .append("                    src=\"" + csp.getPaymentUrlTemplate().replaceAll("\"", "&quot;") + "\"\n")
@@ -45,7 +53,7 @@ public class StripePaymentProcessor
 		       .append("            data-amount=\"" + getAmount(amount) + "\"\n")
 		       .append("              data-name=\"" + csp.getPaymentGatewayName().replaceAll("\"", "&quot;") + "\"\n")
 		       .append("       data-description=\"" + desc.replaceAll("\"", "&quot;") + "\"\n")
-		       .append("             data-image=\"img/cloud.png\">\n")
+		       .append("             data-image=\"img/csp_logo.png\">\n")
 		       .append("</script>\n");
 
 		return builder.toString();
@@ -76,9 +84,17 @@ public class StripePaymentProcessor
 		return rtn;
 	}
 
-	public static PaymentModel makePayment( CSPModel csp, BigDecimal amount, String desc, String token )
+	public static PaymentModel makePayment( CSPModel csp, BigDecimal amount, String dsc, String token )
 	{
 		PaymentModel rtn = null;
+		String desc = "";
+      if(dsc == null || dsc.isEmpty())
+      {
+         desc = "Purchase personal clouds in Respect Network";
+      } else
+      {
+         desc = dsc;
+      }
 
 		Map<String, Object> chargeParams = new HashMap<String, Object>();
 		chargeParams.put("amount"     , "" + getAmount(amount));
