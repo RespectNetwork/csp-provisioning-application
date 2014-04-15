@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.UUID;
 
@@ -143,6 +144,18 @@ public class PersonalCloudController
       logger.info("showing login form");
 
       ModelAndView mv = null;
+      if (regSession != null)
+      {
+         regSession.setCloudName(null);
+         regSession.setPassword(null);
+         regSession.setVerifiedEmail(null);
+         regSession.setDependentForm(null);
+         regSession.setGiftCode(null);
+         regSession.setInviteCode(null);
+         regSession.setInviteForm(null);
+         regSession.setSessionId(null);
+         regSession.setVerifiedMobilePhone(null);
+      }
 
       String cspHomeURL = request.getContextPath();
       String formPostURL = cspHomeURL + "/cloudPage";
@@ -199,6 +212,7 @@ public class PersonalCloudController
             }
             if (cloudNumber != null)
             {
+              
                myCSP.authenticateInCloud(cloudNumber, secretToken);
                if (regSession != null && regSession.getCloudName() == null)
                {
@@ -228,6 +242,7 @@ public class PersonalCloudController
                mv = getCloudPage(request, regSession.getCloudName());
                logger.info("Successfully authenticated to the personal cloud for "
                      + cloudName);
+               
             } else
             {
                errors = true;
@@ -536,9 +551,28 @@ public class PersonalCloudController
          logger.debug("Invalid Session ...");
          return mv;
       }
-
-      String paymentType = request.getParameter("paymentType");
       
+      Enumeration<String> paramNames = request.getParameterNames(); 
+      while(paramNames.hasMoreElements())
+      {
+         String paramName = paramNames.nextElement();
+         logger.debug("p name " + paramName);
+         String[] paramValues = request.getParameterValues(paramName);
+         for(int i = 0 ; i < paramValues.length ; i++)
+         {
+            logger.debug("p value " + paramValues[i]);
+         }
+      }
+      
+      String paymentType = "";
+      String[] paramValues = request.getParameterValues("paymentType");
+      for(int i = 0 ; i < paramValues.length ; i++)
+      {
+         
+         paymentType += paramValues[i] + ",";
+      }
+      
+      logger.debug("Payment type(s) " + paymentType);
       
       if (paymentType != null && paymentType.contains("giftCard") && request.getParameter("giftCodes") == null)
       {
@@ -685,6 +719,8 @@ public class PersonalCloudController
          return mv;
       }
 
+      boolean ccpayments = false;
+      
       if (!errors && giftCodes != null && giftCodes.length > 0)
       {
          String giftcode = giftCodes[0];
@@ -737,8 +773,14 @@ public class PersonalCloudController
             {
                if ((mv = createDependentClouds(cloudName,null,giftCodes,request)) != null )
                {
-                  forwardingPage += "/cloudPage";
-                  statusText = "Congratulations " + cloudName + "! You have successfully purchased dependent clouds.";
+                  if(mv.getViewName().equals("dependentDone")) //all dependents have been paid for
+                  {
+                     forwardingPage += "/cloudPage";
+                     statusText = "Congratulations " + cloudName + "! You have successfully purchased dependent clouds.";
+                  } else //all dependents have not been paid for. So, go to creditCardPayment.
+                  {
+                     ccpayments = true;
+                  }
                } else
                {
                   forwardingPage += "/cloudPage";
@@ -772,6 +814,7 @@ public class PersonalCloudController
 
       // reduce the purchase quantity by the number of valid gift codes that
       // have been processed above
+ 
       if (validGiftCard)
       {
          paymentForm.setNumberOfClouds(paymentForm.getNumberOfClouds()
@@ -779,6 +822,7 @@ public class PersonalCloudController
       }
       if (paymentType != null && paymentType.contains("creditCard") && paymentForm.getNumberOfClouds() > 0)
       {
+         logger.debug("Going to show the CC payment screen now.");
          mv = new ModelAndView("creditCardPayment");
          String cspHomeURL = request.getContextPath();
          CSPModel cspModel = null;
@@ -923,6 +967,7 @@ public class PersonalCloudController
       if(i < arrDependentCloudName.length)
       {
          mv = new ModelAndView("creditCardPayment");
+         /*
          CSPModel cspModel = null;
 
          try
@@ -966,6 +1011,7 @@ public class PersonalCloudController
             mv.addObject("amount",amount.toPlainString());
          }
          mv.addObject("paymentInfo", paymentForm);
+         */
          return mv;
         
       }
