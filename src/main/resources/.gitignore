@@ -1,0 +1,13 @@
+/csp.dev.properties
+/csp.default.properties
+/csp.ote.properties
+/csp.prod.properties
+/csp.stage.properties
+/db.dev.properties
+/db.ote.properties
+/db.prod.properties
+/db.properties
+/log4j.properties
+/mail.properties
+/notification.properties
+/twilio.properties

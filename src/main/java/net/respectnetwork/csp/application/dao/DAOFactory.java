@@ -2,9 +2,7 @@ package net.respectnetwork.csp.application.dao;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class DAOFactory
 {
@@ -20,6 +18,8 @@ public class DAOFactory
 	private GiftCodeRedemptionDAO giftCodeRedemptionDAO;
 	private DependentCloudDAO     dependentCloudDAO;
 	private SignupInfoDAO         signupInfoDAO;
+	private PromoCodeDAO         promoCodeDAO;
+	private PromoCloudDAO         promoCloudDAO;
 
 	public static DAOFactory getInstance()
 	{
@@ -141,5 +141,25 @@ public class DAOFactory
    public void setSignupInfoDAO(SignupInfoDAO signupInfoDAO)
    {
       this.signupInfoDAO = signupInfoDAO;
+   }
+
+   public PromoCodeDAO getPromoCodeDAO()
+   {
+      return promoCodeDAO;
+   }
+
+   public void setPromoCodeDAO(PromoCodeDAO promoCodeDAO)
+   {
+      this.promoCodeDAO = promoCodeDAO;
+   }
+
+   public PromoCloudDAO getPromoCloudDAO()
+   {
+      return promoCloudDAO;
+   }
+
+   public void setPromoCloudDAO(PromoCloudDAO promoCloudDAO)
+   {
+      this.promoCloudDAO = promoCloudDAO;
    }
 }

@@ -6,7 +6,6 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,7 +14,6 @@ import javax.validation.Valid;
 
 import net.respectnetwork.csp.application.dao.DAOException;
 import net.respectnetwork.csp.application.dao.DAOFactory;
-import net.respectnetwork.csp.application.form.AccountDetailsForm;
 import net.respectnetwork.csp.application.form.DependentForm;
 import net.respectnetwork.csp.application.form.InviteForm;
 import net.respectnetwork.csp.application.form.PaymentForm;
@@ -30,6 +28,8 @@ import net.respectnetwork.csp.application.model.GiftCodeModel;
 import net.respectnetwork.csp.application.model.GiftCodeRedemptionModel;
 import net.respectnetwork.csp.application.model.InviteModel;
 import net.respectnetwork.csp.application.model.PaymentModel;
+import net.respectnetwork.csp.application.model.PromoCloudModel;
+import net.respectnetwork.csp.application.model.PromoCodeModel;
 import net.respectnetwork.csp.application.session.RegistrationSession;
 import net.respectnetwork.sdk.csp.exception.CSPRegistrationException;
 
@@ -49,13 +49,6 @@ import org.springframework.web.servlet.ModelAndView;
 import xdi2.client.exceptions.Xdi2ClientException;
 import xdi2.core.xri3.CloudName;
 import xdi2.core.xri3.CloudNumber;
-
-import com.sagepay.sdk.api.ApiFactory;
-import com.sagepay.sdk.api.IFormApi;
-import com.sagepay.sdk.api.ResponseStatus;
-import com.sagepay.sdk.api.messages.IFormPayment;
-import com.sagepay.sdk.api.messages.IFormPaymentResult;
-import com.sagepay.util.web.RequestState;
 
 @Controller
 public class PersonalCloudController
@@ -572,20 +565,48 @@ public class PersonalCloudController
       
       //check if its a promo
       //check for valid promo codes in promo_code table
-      if(giftCodesVal != null && giftCodesVal.equalsIgnoreCase("NSR-IIS-MAY") && txnType.equals(PaymentForm.TXN_TYPE_SIGNUP))
+      if(giftCodesVal != null && giftCodesVal.startsWith("PROMO") && txnType.equals(PaymentForm.TXN_TYPE_SIGNUP))
       {
-         if (this.registerCloudName(cloudName, phone, email, password))
+         PromoCodeModel promo = null;
+         try
          {
-            forwardingPage += "/cloudPage";
-            statusText = "Congratulations " + cloudName + "! You have successfully purchased a cloudname.";
-            
-            //make an entry in promo_cloud table
-         } else
+            promo = dao.getPromoCodeDAO().get(giftCodesVal);
+         } catch (DAOException e)
+         {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+         }
+         if(promo != null)
+         {
+            if (this.registerCloudName(cloudName, phone, email, password))
+            {
+               forwardingPage += "/cloudPage";
+               statusText = "Congratulations " + cloudName + "! You have successfully purchased a cloudname.";
+               
+               //make an entry in promo_cloud table
+               PromoCloudModel promoCloud = new PromoCloudModel();
+               promoCloud.setCloudname(cloudName);
+               promoCloud.setPromo_id(giftCodesVal);
+               promoCloud.setCsp_cloudname(this.getCspCloudName());
+               try
+               {
+                  dao.getPromoCloudDAO().insert(promoCloud);
+               } catch (DAOException e)
+               {
+                  // TODO Auto-generated catch block
+                  e.printStackTrace();
+               }
+               
+            } else
+            {
+               forwardingPage += "/signup";
+               statusText = "Sorry! The system encountered an error while registering your cloudname.";           
+            }
+         } else 
          {
             forwardingPage += "/signup";
-            statusText = "Sorry! The system encountered an error while registering your cloudname.";           
+            statusText = "Sorry! This promotion has expired or the promo code is not a valid one.";
          }
-         
          mv = new ModelAndView("AutoSubmitForm");
          
          mv.addObject("URL", request.getContextPath() + "/transactionSuccessFailure");
