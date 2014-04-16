@@ -7,3 +7,4 @@
 /target
 # Property files
 *.properties
+src/main/webapp/img/csp_logo.png
