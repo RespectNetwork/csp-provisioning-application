@@ -505,7 +505,7 @@ public class PersonalCloudController
       
       String cspHomeURL =   request.getContextPath();
       logger.debug("getCloudPage :: cspHomeURL " + cspHomeURL);
-      mv.addObject("logoutURL", cspHomeURL + "/logout");
+      mv.addObject("logoutURL", cspHomeURL + "/logout");     
       mv.addObject("cloudName", cloudName);
       
       try
