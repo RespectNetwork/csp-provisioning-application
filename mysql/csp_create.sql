@@ -90,3 +90,19 @@ create table  signup_info
 ,	primary key (cloudname)
 );
 
+create table promo_code
+( 	promo_id 		varchar(64),
+	start_date 		datetime,
+	end_date		datetime,
+	promo_limit 	int(11)
+);
+
+create table promo_cloud
+(	promo_id 		varchar(64),
+	cloudname		varchar(255),
+	creation_date	datetime,
+	csp_cloudname	varchar(255)
+);
+
+
+
