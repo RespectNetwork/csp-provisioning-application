@@ -384,7 +384,7 @@ public class PersonalCloudController
       String queryStr = "";
       String statusText = "";
       
-      mv = new ModelAndView("AutoSubmitForm");
+      
       
       if (!errors)
       {
@@ -485,13 +485,14 @@ public class PersonalCloudController
                }
                else if(txnType.equals(PaymentForm.TXN_TYPE_BUY_GC))
                {
+                  logger.debug("Going to create gift cards now for " + cloudName);
                   if((mv = this.createGiftCards(request, cloudName, payment, cspModel)) != null)
                   {
                      //forwardingPage += "/cloudPage";
                      forwardingPage = RegistrationManager.getCspInviteURL()  ;
                      try
                      {
-                        queryStr = "name=" +  URLEncoder.encode(cloudName,"UTF-8")+"&csp=" +  request.getContextPath().replace("/", "+") + "&" + regSession.getRnQueryString();
+                        queryStr = "name=" +  URLEncoder.encode(cloudName,"UTF-8")+"&csp=" +  URLEncoder.encode(request.getContextPath().replace("/", "+"),"UTF-8") + "&" + regSession.getRnQueryString();
                      } catch (UnsupportedEncodingException e)
                      {
                         // TODO Auto-generated catch block
@@ -519,7 +520,7 @@ public class PersonalCloudController
             }
       } 
       
-      
+      mv = new ModelAndView("AutoSubmitForm"); //DO NOT CHANGE THE REASSIGNMENT OF THE VIEW HERE
       mv.addObject("URL", request.getContextPath() + "/transactionSuccessFailure");
       mv.addObject("cloudName", cloudName);
       
@@ -543,15 +544,7 @@ public class PersonalCloudController
       logger.debug("getCloudPage :: cspHomeURL " + cspHomeURL);
       mv.addObject("logoutURL", cspHomeURL + "/logout");     
       mv.addObject("cloudName", cloudName);
-      String cspName = "+" + cspHomeURL;
-      try
-      {
-         mv.addObject("rnInvitePage",  RegistrationManager.getCspInviteURL() + "?name=" +  URLEncoder.encode(cloudName,"UTF-8")+"&csp=" + cspName );
-      } catch (UnsupportedEncodingException e)
-      {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
-      }
+      
       return mv;
    }
 
@@ -638,7 +631,7 @@ public class PersonalCloudController
       String forwardingPage = RegistrationManager.getCspInviteURL()  ;
       try
       {
-         queryStr = "name=" +  URLEncoder.encode(cloudName,"UTF-8")+"&csp=" +  request.getContextPath().replace("/", "+") + "&" + regSession.getRnQueryString();
+         queryStr = "name=" +  URLEncoder.encode(cloudName,"UTF-8")+"&csp=" +  URLEncoder.encode(request.getContextPath().replace("/", "+"),"UTF-8") + "&" + regSession.getRnQueryString();
       } catch (UnsupportedEncodingException e1)
       {
          // TODO Auto-generated catch block
@@ -667,7 +660,7 @@ public class PersonalCloudController
                   forwardingPage = RegistrationManager.getCspInviteURL()  ;
                   try
                   {
-                     queryStr = "name=" +  URLEncoder.encode(cloudName,"UTF-8")+"&csp=" +  request.getContextPath().replace("/", "+") + "&" + regSession.getRnQueryString();
+                     queryStr = "name=" +  URLEncoder.encode(cloudName,"UTF-8")+"&csp=" +  URLEncoder.encode(request.getContextPath().replace("/", "+"),"UTF-8") + "&" + regSession.getRnQueryString();
                   } catch (UnsupportedEncodingException e1)
                   {
                      // TODO Auto-generated catch block
@@ -710,7 +703,7 @@ public class PersonalCloudController
                   forwardingPage = RegistrationManager.getCspInviteURL()  ;
                   try
                   {
-                     queryStr = "name=" +  URLEncoder.encode(cloudName,"UTF-8")+"&csp=" +  request.getContextPath().replace("/", "+") + "&" + regSession.getRnQueryString();
+                     queryStr = "name=" +  URLEncoder.encode(cloudName,"UTF-8")+"&csp=" +  URLEncoder.encode(request.getContextPath().replace("/", "+"),"UTF-8") + "&" + regSession.getRnQueryString();
                   } catch (UnsupportedEncodingException e)
                   {
                      // TODO Auto-generated catch block
@@ -845,7 +838,7 @@ public class PersonalCloudController
                   forwardingPage = RegistrationManager.getCspInviteURL()  ;
                   try
                   {
-                     queryStr = "name=" +  URLEncoder.encode(cloudName,"UTF-8")+"&csp=" +  request.getContextPath().replace("/", "+") + "&" + regSession.getRnQueryString();
+                     queryStr = "name=" +  URLEncoder.encode(cloudName,"UTF-8")+"&csp=" +  URLEncoder.encode(request.getContextPath().replace("/", "+"),"UTF-8") + "&" + regSession.getRnQueryString();
                   } catch (UnsupportedEncodingException e)
                   {
                      // TODO Auto-generated catch block
@@ -887,7 +880,7 @@ public class PersonalCloudController
                      forwardingPage = RegistrationManager.getCspInviteURL()  ;
                      try
                      {
-                        queryStr = "name=" +  URLEncoder.encode(cloudName,"UTF-8")+"&csp=" +  request.getContextPath().replace("/", "+") + "&" + regSession.getRnQueryString();
+                        queryStr = "name=" +  URLEncoder.encode(cloudName,"UTF-8")+"&csp=" +  URLEncoder.encode(request.getContextPath().replace("/", "+"),"UTF-8") + "&" + regSession.getRnQueryString();
                      } catch (UnsupportedEncodingException e)
                      {
                         // TODO Auto-generated catch block
@@ -1174,9 +1167,11 @@ public class PersonalCloudController
       {
          logger.debug("createGiftCards :: inviteForm is null!");
       }
+      
       InviteModel inviteModel = null;
       try
       {
+         /*
          inviteModel = DAOFactory.getInstance().getInviteDAO().get(inviteForm.getInviteId());
          if( inviteModel != null )
          {
@@ -1184,7 +1179,7 @@ public class PersonalCloudController
              errors = true;
              errorText = "Invite id has already been used before !";
          }
-         
+        */ 
          List<GiftCodeModel> giftCardList = new ArrayList<GiftCodeModel>();
 
          InviteModel invite = PersonalCloudInviteController.saveInvite(inviteForm, payment, giftCardList, request.getLocale(),cspModel.getCspCloudName(),cloudName);

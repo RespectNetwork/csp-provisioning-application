@@ -52,7 +52,7 @@
 				<div class="middle"> Choose your cloud name 
 					<form action="#" role="form" th:object="${signUpInfo}" th:action="@{/signup}" method="post">
 
-            <input type="text" class="inputCloudName" name="cloudName" value="" id="cloudName" placeholder="=you" required="required" autofocus="autofocus" th:value="*{cloudName}" />
+            <input type="text" class="inputCloudName" name="cloudName" value="" id="cloudName" placeholder="=you" required="required" autofocus="autofocus" />
  							<p class="secondary">e.g., =jane, =janedoe, =jane.doe
 							</p>
 						<button type="submit" name="submit" id="submit" class="button">Submit</button>

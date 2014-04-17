@@ -138,6 +138,10 @@ public class PersonalCloudInviteController
 
 		inviteForm = new InviteForm();
 		model.addAttribute("inviteForm", inviteForm);
+		if(regSession != null)
+		{
+		   regSession.setTransactionType(PaymentForm.TXN_TYPE_BUY_GC);
+		}
 
 		return mv;
 	}
