@@ -46,6 +46,9 @@ public class RegistrationSession implements Serializable {
     
     private Map<String,String[]> RNParamMap = null;
     
+    /** Query String from RN to be relayed back */
+    private String rnQueryString = null;
+    
     /** RN post registration URL */
     private String RNPostRegistrationURL = null;
     
@@ -234,6 +237,16 @@ public class RegistrationSession implements Serializable {
    public void setTransactionType(String transactionType)
    {
       this.transactionType = transactionType;
+   }
+
+   public String getRnQueryString()
+   {
+      return rnQueryString;
+   }
+
+   public void setRnQueryString(String rnQueryString)
+   {
+      this.rnQueryString = rnQueryString;
    }
 
 }

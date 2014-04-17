@@ -2,6 +2,7 @@ package net.respectnetwork.csp.application.controller;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.Enumeration;
 import java.util.Map;
 import java.util.UUID;
 
@@ -392,6 +393,23 @@ public class RegistrationController
          BindingResult result)
    {
       
+      Enumeration<String> paramNames = request.getParameterNames(); 
+      while(paramNames.hasMoreElements())
+      {
+         String paramName = paramNames.nextElement();
+         logger.debug("p name " + paramName);
+         String[] paramValues = request.getParameterValues(paramName);
+         for(int i = 0 ; i < paramValues.length ; i++)
+         {
+            logger.debug("p value " + paramValues[i]);
+         }
+      }
+      String rnQueryString = request.getQueryString();
+      rnQueryString = rnQueryString.substring(rnQueryString.indexOf("&")+1);
+      logger.debug("Query String " + rnQueryString);
+      
+      
+      
       String remoteIPAddr = request.getHeader("X-FORWARDED-FOR");
       
       logger.debug("User agent " + request.getHeader("User-Agent"));
@@ -421,8 +439,7 @@ public class RegistrationController
       {
          cloudName = request.getParameter(URL_PARAM_NAME_REQ_CLOUDNAME);
       }
-      @SuppressWarnings("unchecked")
-      Map<String,String[]> rNParamMap = (Map<String,String[]>)request.getParameterMap();
+      
       
       logger.info("registerCloudName : registration request for cloudname " + cloudName);
       ModelAndView mv = new ModelAndView("signup");
@@ -441,7 +458,7 @@ public class RegistrationController
                String sessionId = UUID.randomUUID().toString();
                regSession.setSessionId(sessionId);
                regSession.setCloudName(cloudName);
-               regSession.setRNParamMap(rNParamMap);
+               regSession.setRnQueryString(rnQueryString);
             }
          } catch (UserRegistrationException e)
          {

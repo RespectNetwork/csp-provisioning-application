@@ -18,10 +18,11 @@
     
 	
 <form class="form-horizontal" role="form" name="autoform"  th:action="${URL}" method="post">
-  
   <input type="hidden" id="cloudname" name="cloudname" th:value="${cloudName}" />
   <input type="hidden" id="statusText" name="statusText" th:value="${statusText}" />
   <input type="hidden" id="nextHop" name="nextHop" th:value="${nextHop}" />
+  <input type="hidden" id="submitMethod" name="submitMethod" th:value="${submitMethod}" />
+  <input type="hidden" id="queryStr" name="queryStr" th:value="${queryStr}" />
   <input type="submit" value="submit" style="display: none;" border="0"/>
 </form>
 

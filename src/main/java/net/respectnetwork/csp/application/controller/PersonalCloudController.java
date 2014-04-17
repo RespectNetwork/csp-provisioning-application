@@ -380,8 +380,11 @@ public class PersonalCloudController
       }
 
       String forwardingPage = request.getContextPath();
-      
+      String method = "post";
+      String queryStr = "";
       String statusText = "";
+      
+      mv = new ModelAndView("AutoSubmitForm");
       
       if (!errors)
       {
@@ -437,12 +440,23 @@ public class PersonalCloudController
                {     
                   if (this.registerCloudName(cloudName, phone, email, password))
                   {
-                     forwardingPage += "/cloudPage";
+                     //forwardingPage += "/cloudPage";
+                     try
+                     {
+                        forwardingPage = RegistrationManager.getCspInviteURL()  ;
+                        queryStr = "name=" +  URLEncoder.encode(cloudName,"UTF-8")+"&csp=" +  request.getContextPath().replace("/", "+") + "&" + regSession.getRnQueryString();
+                        
+                     } catch (UnsupportedEncodingException e)
+                     {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                        forwardingPage += "/cloudPage";
+                     }
                      statusText = "Congratulations " + cloudName + "! You have successfully purchased a cloudname.";
                   } else
                   {
                      forwardingPage += "/signup";
-                     statusText = "Sorry! The system encountered an error while registering your cloudname.";
+                     statusText = "Sorry! The system encountered an error while registering your cloudname.\n" + registrationManager.getCSPContactInfo();
                      
                   }
                }
@@ -450,12 +464,21 @@ public class PersonalCloudController
                {
                   if((mv = createDependentClouds(cloudName,payment,null,request)) != null)
                   {
-                     forwardingPage += "/cloudPage";
+                     //forwardingPage += "/cloudPage";
+                     forwardingPage = RegistrationManager.getCspInviteURL()  ;
+                     try
+                     {
+                        queryStr = "name=" +  URLEncoder.encode(cloudName,"UTF-8")+"&csp=" +  request.getContextPath().replace("/", "+") + "&" + regSession.getRnQueryString();
+                     } catch (UnsupportedEncodingException e)
+                     {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                     }
                      statusText = "Congratulations " + cloudName + "! You have successfully purchased dependent clouds.";
                   } else
                   {
                      forwardingPage += "/cloudPage";
-                     statusText = "Sorry! The system encountered an error while registering dependent clouds.";
+                     statusText = "Sorry! The system encountered an error while registering dependent clouds.\n" + registrationManager.getCSPContactInfo();
                      
                   }
 
@@ -464,33 +487,46 @@ public class PersonalCloudController
                {
                   if((mv = this.createGiftCards(request, cloudName, payment, cspModel)) != null)
                   {
-                     forwardingPage += "/cloudPage";
+                     //forwardingPage += "/cloudPage";
+                     forwardingPage = RegistrationManager.getCspInviteURL()  ;
+                     try
+                     {
+                        queryStr = "name=" +  URLEncoder.encode(cloudName,"UTF-8")+"&csp=" +  request.getContextPath().replace("/", "+") + "&" + regSession.getRnQueryString();
+                     } catch (UnsupportedEncodingException e)
+                     {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                     }
                      statusText = "Congratulations " + cloudName + "! You have successfully purchased giftcodes.";
                   } else
                   {
                      forwardingPage += "/cloudPage";
-                     statusText = "Sorry! The system encountered an error while purchasing giftcodes.";                     
+                     statusText = "Sorry! The system encountered an error while purchasing giftcodes.\n" + registrationManager.getCSPContactInfo();                     
                   }
                }
                else
                {
                   forwardingPage += "/login";
-                  statusText = "Sorry. Something bad happened while processing your request. Returning you to login page. Please try again.";
+                  statusText = "Sorry! Something bad happened while processing your request. Returning you to login page. Please try again.\n" + registrationManager.getCSPContactInfo();
                }
                
             } else {
-               statusText = "Sorry ! Payment Processing Error";
+               //forwardingPage += "/login";
+               //statusText = "Sorry ! Payment Processing Error";
+               mv = new ModelAndView("payment");
+               mv.addObject("error", "Payment Processing error!\n" + registrationManager.getCSPContactInfo());
+               return mv;
             }
-
-         
       } 
-      mv = new ModelAndView("AutoSubmitForm");
+      
       
       mv.addObject("URL", request.getContextPath() + "/transactionSuccessFailure");
       mv.addObject("cloudName", cloudName);
       
       mv.addObject("statusText", statusText);
       mv.addObject("nextHop", forwardingPage);
+      mv.addObject("submitMethod", method);
+      mv.addObject("queryStr", queryStr);
       
       return mv;
    }
@@ -507,10 +543,10 @@ public class PersonalCloudController
       logger.debug("getCloudPage :: cspHomeURL " + cspHomeURL);
       mv.addObject("logoutURL", cspHomeURL + "/logout");     
       mv.addObject("cloudName", cloudName);
-      
+      String cspName = "+" + cspHomeURL;
       try
       {
-         mv.addObject("rnInvitePage",  RegistrationManager.getCspInviteURL() + "?cloudName=" +  URLEncoder.encode(cloudName,"UTF-8"));
+         mv.addObject("rnInvitePage",  RegistrationManager.getCspInviteURL() + "?name=" +  URLEncoder.encode(cloudName,"UTF-8")+"&csp=" + cspName );
       } catch (UnsupportedEncodingException e)
       {
          // TODO Auto-generated catch block
@@ -595,12 +631,22 @@ public class PersonalCloudController
       String giftCodesVal = request.getParameter("giftCodes");
       logger.debug("Giftcodes " + giftCodesVal);
       
-      String forwardingPage = request.getContextPath();
+      //String forwardingPage = request.getContextPath();
       String statusText = "";
-      
+      String method = "post";
+      String queryStr = "";
+      String forwardingPage = RegistrationManager.getCspInviteURL()  ;
+      try
+      {
+         queryStr = "name=" +  URLEncoder.encode(cloudName,"UTF-8")+"&csp=" +  request.getContextPath().replace("/", "+") + "&" + regSession.getRnQueryString();
+      } catch (UnsupportedEncodingException e1)
+      {
+         // TODO Auto-generated catch block
+         e1.printStackTrace();
+      }
       //check if its a promo
       //check for valid promo codes in promo_code table
-      if(giftCodesVal != null && giftCodesVal.startsWith("PROMO") && txnType.equals(PaymentForm.TXN_TYPE_SIGNUP))
+      if(giftCodesVal != null && giftCodesVal.startsWith("PROMO") ) // && txnType.equals(PaymentForm.TXN_TYPE_SIGNUP))
       {
          PromoCodeModel promo = null;
          try
@@ -613,43 +659,95 @@ public class PersonalCloudController
          }
          if(promo != null)
          {
-            if (this.registerCloudName(cloudName, phone, email, password))
+            if(txnType.equals(PaymentForm.TXN_TYPE_SIGNUP))
             {
-               forwardingPage += "/cloudPage";
-               statusText = "Congratulations " + cloudName + "! You have successfully purchased a cloudname.";
-               
-               //make an entry in promo_cloud table
-               PromoCloudModel promoCloud = new PromoCloudModel();
-               promoCloud.setCloudname(cloudName);
-               promoCloud.setPromo_id(giftCodesVal);
-               promoCloud.setCsp_cloudname(this.getCspCloudName());
-               try
+               if (this.registerCloudName(cloudName, phone, email, password))
                {
-                  dao.getPromoCloudDAO().insert(promoCloud);
-               } catch (DAOException e)
+                  //forwardingPage += "/cloudPage";
+                  forwardingPage = RegistrationManager.getCspInviteURL()  ;
+                  try
+                  {
+                     queryStr = "name=" +  URLEncoder.encode(cloudName,"UTF-8")+"&csp=" +  request.getContextPath().replace("/", "+") + "&" + regSession.getRnQueryString();
+                  } catch (UnsupportedEncodingException e1)
+                  {
+                     // TODO Auto-generated catch block
+                     e1.printStackTrace();
+                  }
+   
+                  statusText = "Congratulations " + cloudName + "! You have successfully purchased a cloudname.";
+                  
+                  //make an entry in promo_cloud table
+                  PromoCloudModel promoCloud = new PromoCloudModel();
+                  promoCloud.setCloudname(cloudName);
+                  promoCloud.setPromo_id(giftCodesVal);
+                  promoCloud.setCsp_cloudname(this.getCspCloudName());
+                  try
+                  {
+                     dao.getPromoCloudDAO().insert(promoCloud);
+                  } catch (DAOException e)
+                  {
+                     // TODO Auto-generated catch block
+                     e.printStackTrace();
+                  }
+                  
+               } else
                {
-                  // TODO Auto-generated catch block
-                  e.printStackTrace();
+                  forwardingPage += "/signup";
+                  statusText = "Sorry! The system encountered an error while registering your cloudname.\n" + registrationManager.getCSPContactInfo();           
                }
-               
-            } else
+            } else 
             {
                forwardingPage += "/signup";
-               statusText = "Sorry! The system encountered an error while registering your cloudname.";           
+               statusText = "Sorry! This promotion has expired or the promo code is not a valid one.\n" + registrationManager.getCSPContactInfo();
             }
-         } else 
+         } else if (txnType.equals(PaymentForm.TXN_TYPE_DEP))
          {
-            forwardingPage += "/signup";
-            statusText = "Sorry! This promotion has expired or the promo code is not a valid one.";
+            if ((mv = createDependentClouds(cloudName,null,null,request)) != null )
+            {
+               if(mv.getViewName().equals("dependentDone")) //all dependents have been paid for
+               {
+                  //forwardingPage += "/cloudPage";
+                  forwardingPage = RegistrationManager.getCspInviteURL()  ;
+                  try
+                  {
+                     queryStr = "name=" +  URLEncoder.encode(cloudName,"UTF-8")+"&csp=" +  request.getContextPath().replace("/", "+") + "&" + regSession.getRnQueryString();
+                  } catch (UnsupportedEncodingException e)
+                  {
+                     // TODO Auto-generated catch block
+                     e.printStackTrace();
+                  }
+                  statusText = "Congratulations " + cloudName + "! You have successfully purchased dependent clouds.";
+                  //make an entry in promo_cloud table
+                  PromoCloudModel promoCloud = new PromoCloudModel();
+                  promoCloud.setCloudname(cloudName);
+                  promoCloud.setPromo_id(giftCodesVal);
+                  promoCloud.setCsp_cloudname(this.getCspCloudName());
+                  try
+                  {
+                     dao.getPromoCloudDAO().insert(promoCloud);
+                  } catch (DAOException e)
+                  {
+                     // TODO Auto-generated catch block
+                     e.printStackTrace();
+                  }
+
+               } 
+            } else
+            {
+               forwardingPage += "/cloudPage";
+               statusText = "Sorry! The system encountered an error while registering dependent clouds.\n" + registrationManager.getCSPContactInfo();
+               
+            }
+
          }
          mv = new ModelAndView("AutoSubmitForm");
          
          mv.addObject("URL", request.getContextPath() + "/transactionSuccessFailure");
          mv.addObject("cloudName", cloudName);
-         
+         mv.addObject("submitMethod", method);
          mv.addObject("statusText", statusText);
          mv.addObject("nextHop", forwardingPage);
-         
+         mv.addObject("queryStr", queryStr);
          return mv;
       }
 
@@ -743,7 +841,16 @@ public class PersonalCloudController
                   accountForm.setCloudName(cloudName);
                   mv.addObject("accountInfo", accountForm);
                   */
-                  forwardingPage += "/cloudPage";
+                  //forwardingPage += "/cloudPage";
+                  forwardingPage = RegistrationManager.getCspInviteURL()  ;
+                  try
+                  {
+                     queryStr = "name=" +  URLEncoder.encode(cloudName,"UTF-8")+"&csp=" +  request.getContextPath().replace("/", "+") + "&" + regSession.getRnQueryString();
+                  } catch (UnsupportedEncodingException e)
+                  {
+                     // TODO Auto-generated catch block
+                     e.printStackTrace();
+                  }
                   statusText = "Congratulations " + cloudName + "! You have successfully purchased a cloudname.";
                   
                   // make a new record in the giftcode_redemption table
@@ -761,11 +868,12 @@ public class PersonalCloudController
                      logger.debug("Giftcode redemption entry failed - " + cloudName + ", giftcode=" + regSession.getGiftCode());
                      logger.debug("DB error " + e.getMessage());
                   }
+                  
                }
                else
                {
                   forwardingPage += "/signup";
-                  statusText = "Sorry! The system encountered an error while registering your cloudname.";
+                  statusText = "Sorry! The system encountered an error while registering your cloudname.\n" + registrationManager.getCSPContactInfo();
                   
                }
             } 
@@ -775,7 +883,16 @@ public class PersonalCloudController
                {
                   if(mv.getViewName().equals("dependentDone")) //all dependents have been paid for
                   {
-                     forwardingPage += "/cloudPage";
+                     //forwardingPage += "/cloudPage";
+                     forwardingPage = RegistrationManager.getCspInviteURL()  ;
+                     try
+                     {
+                        queryStr = "name=" +  URLEncoder.encode(cloudName,"UTF-8")+"&csp=" +  request.getContextPath().replace("/", "+") + "&" + regSession.getRnQueryString();
+                     } catch (UnsupportedEncodingException e)
+                     {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                     }
                      statusText = "Congratulations " + cloudName + "! You have successfully purchased dependent clouds.";
                   } else //all dependents have not been paid for. So, go to creditCardPayment.
                   {
@@ -784,7 +901,7 @@ public class PersonalCloudController
                } else
                {
                   forwardingPage += "/cloudPage";
-                  statusText = "Sorry! The system encountered an error while registering dependent clouds.";
+                  statusText = "Sorry! The system encountered an error while registering dependent clouds.\n" + registrationManager.getCSPContactInfo();
                   
                }
             }
@@ -792,10 +909,10 @@ public class PersonalCloudController
             
             mv.addObject("URL", request.getContextPath() + "/transactionSuccessFailure");
             mv.addObject("cloudName", cloudName);
-            
+            mv.addObject("submitMethod", method);
             mv.addObject("statusText", statusText);
             mv.addObject("nextHop", forwardingPage);
-
+            mv.addObject("queryStr", queryStr);
          }
          
 
@@ -930,7 +1047,7 @@ public class PersonalCloudController
             if(payment != null) 
             {
                PersonalCloudDependentController.saveDependent(dependentCloudName, payment, cloudName,null);
-            } else
+            } else if(giftCodes != null && giftCodes.length > 0)
             {
                PersonalCloudDependentController.saveDependent(dependentCloudName, null, cloudName,giftCodes[i]);
             }
@@ -1116,19 +1233,6 @@ public class PersonalCloudController
       return mv;
    }
    
-   @RequestMapping(value = "/rnInvite", method = RequestMethod.GET)
-   public ModelAndView goToRNInvitePage(HttpServletRequest request, Model model)
-   {
-      logger.info("Going to RN Invite page");
-
-      //TBD
-      ModelAndView mv = null;
-      mv = new ModelAndView("AutoSubmitForm");
-      mv.addObject("URL", "www.respectnetwork.net");
-      mv.addObject("cloudName", regSession.getCloudName());
-      
-      return mv;
-   }
    
    @RequestMapping(value = "/transactionSuccessFailure", method = RequestMethod.POST)
    public ModelAndView showTransactionSuccessFailureForm(HttpServletRequest request, Model model)
@@ -1136,12 +1240,13 @@ public class PersonalCloudController
       logger.info("showing transactionSuccessFailure form " + request.getParameter("nextHop") + "::" + request.getParameter("cloudname"));
 
       ModelAndView mv = null;
-      String formPostURL = request.getParameter("nextHop");
-
       mv = new ModelAndView("postTxn");
+      String formPostURL = request.getParameter("nextHop");
       mv.addObject("postURL", formPostURL);
       mv.addObject("cloudName", request.getParameter("cloudname"));
       mv.addObject("statusText", request.getParameter("statusText"));
+      mv.addObject("submitMethod", request.getParameter("submitMethod"));
+      mv.addObject("queryStr", request.getParameter("queryStr"));
       return mv;
    }
 }

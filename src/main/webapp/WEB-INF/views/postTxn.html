@@ -24,9 +24,21 @@
     <!-- Fav and touch icons -->
     <link rel="apple-touch-icon-precomposed" sizes="144x144" href="img/ico/apple-touch-icon-144-precomposed.png" />
     <link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/ico/apple-touch-icon-114-precomposed.png" />
-      <link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/ico/apple-touch-icon-72-precomposed.png" />
-                    <link rel="apple-touch-icon-precomposed" href="img/ico/apple-touch-icon-57-precomposed.png" />
-                                   <link rel="shortcut icon" href="img/ico/favicon.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/ico/apple-touch-icon-72-precomposed.png" />
+     <link rel="apple-touch-icon-precomposed" href="img/ico/apple-touch-icon-57-precomposed.png" />
+     <link rel="shortcut icon" href="img/ico/favicon.png" />
+<script>     
+     function goToRNlandingPage()
+	 {
+
+		query = document.getElementById('queryStr').value;
+		url = document.getElementById('postURL').value ;	
+		urlAndQs = "?" + query;
+		
+		window.open(url+urlAndQs);
+	 }
+</script>	
+
 </head>
 <body>
 
@@ -62,16 +74,30 @@
 				<!-- Congratulations  <span th:text="${cloudName}"/>  you are now a registered member of Respect Network. -->
 				<p><span th:text="${statusText}"/></p>
 					<p class="primary">
-          				<form  action="#" role="form" name="txnCompletionForm" th:action="${postURL}" method="post">
-          	
+					<div th:if="${#strings.length(queryStr) == 0}">
+          				<form  action="#" role="form" name="txnCompletionForm" th:action="${postURL}" th:method="${submitMethod}"> 
+          				
           				<input type="hidden" id="cloudname" name="cloudname" th:value="${cloudName}" />         	  
   			 			<input type="hidden" id="statusText" name="statusText" th:value="${statusText}" />
-  			  			<input type="hidden" id="nextHop" name="nextHop" th:value="${nextHop}" />
+  			  			
+  			  			<input type="hidden" id="postURL" name="postURL" th:value="${postURL}" />
+  			  			
 						<button type="submit" name="submit" id="submit" class="button big">Continue</button>
-					</form>
+						</form> 
+					</div>
+					<div th:if="${#strings.length(queryStr) > 0}">
+						<input type="hidden" id="cloudname" name="cloudname" th:value="${cloudName}" />         	  
+  			 			<input type="hidden" id="statusText" name="statusText" th:value="${statusText}" />
+  			  			
+  			  			<input type="hidden" id="postURL" name="postURL" th:value="${postURL}" />
+  			  			<input type="hidden" id="queryStr" name="queryStr" th:value="${queryStr}" />
+						 <button type="button" id="goToRN" class="button big" onclick="goToRNlandingPage();">Continue</button>
+					</div>
 					</p>
 				</div>
+				
 			</div>
+			
 		<div class="span2"></div>
 		</div>
 	</div>
