@@ -444,7 +444,7 @@ public class PersonalCloudController
                      try
                      {
                         forwardingPage = RegistrationManager.getCspInviteURL()  ;
-                        queryStr = "name=" +  URLEncoder.encode(cloudName,"UTF-8")+"&csp=" +  request.getContextPath().replace("/", "+") + "&" + regSession.getRnQueryString();
+                        queryStr = "name=" +  URLEncoder.encode(cloudName,"UTF-8")+"&csp=" +  URLEncoder.encode(request.getContextPath().replace("/", "+"),"UTF-8") + "&" + regSession.getRnQueryString();
                         
                      } catch (UnsupportedEncodingException e)
                      {
@@ -468,7 +468,7 @@ public class PersonalCloudController
                      forwardingPage = RegistrationManager.getCspInviteURL()  ;
                      try
                      {
-                        queryStr = "name=" +  URLEncoder.encode(cloudName,"UTF-8")+"&csp=" +  request.getContextPath().replace("/", "+") + "&" + regSession.getRnQueryString();
+                        queryStr = "name=" +  URLEncoder.encode(cloudName,"UTF-8")+"&csp=" +  URLEncoder.encode(request.getContextPath().replace("/", "+"),"UTF-8") + "&" + regSession.getRnQueryString();
                      } catch (UnsupportedEncodingException e)
                      {
                         // TODO Auto-generated catch block

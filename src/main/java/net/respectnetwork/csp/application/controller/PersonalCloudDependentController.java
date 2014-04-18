@@ -117,6 +117,7 @@ public class PersonalCloudDependentController
       mv.addObject("cspModel", cspModel);
       dependentForm = new DependentForm();
       model.addAttribute("dependentForm", dependentForm);
+      model.addAttribute("cloudName", cloudName);
       if(regSession != null)
       {
          regSession.setTransactionType(PaymentForm.TXN_TYPE_DEP);

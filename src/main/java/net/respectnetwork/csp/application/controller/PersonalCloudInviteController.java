@@ -135,7 +135,7 @@ public class PersonalCloudInviteController
 		mv = new ModelAndView("invite");
 		mv.addObject("cspModel"    , cspModel);
 		mv.addObject("quantityList", quantityList);
-
+		mv.addObject("cloudName", cloudName);
 		inviteForm = new InviteForm();
 		model.addAttribute("inviteForm", inviteForm);
 		if(regSession != null)
@@ -362,6 +362,7 @@ public class PersonalCloudInviteController
 		         svc.sendEmailNotification(invite.getInvitedEmailAddress(), builder2.toString());
 		         logger.info("invite email has been sent to " + invite.getInvitedEmailAddress());
 		         logger.debug("Subject: " + subject + "\n\n" + builder2.toString());
+		         //Thread.sleep(5000);
 		      }
 		      catch( Exception e )
 		      {

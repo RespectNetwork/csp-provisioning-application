@@ -17,7 +17,8 @@
     </beans:bean>
          
     <!-- Notifier  -->     
-    <beans:bean id="basicNotifier" class="net.respectnetwork.sdk.csp.notification.BasicNotificationService">
+   <!-- <beans:bean id="basicNotifier" class="net.respectnetwork.sdk.csp.notification.BasicOCENotificationService"> -->
+ 	<beans:bean id="basicNotifier" class="net.respectnetwork.sdk.csp.notification.BasicNotificationService">   
         <!-- Twilio Properties -->
         <beans:property name="authToken" value="${twilio.authToken}"/>
         <beans:property name="twillioAccountSID" value="${twilio.accountSID}"/>
@@ -37,6 +38,12 @@
         
         <beans:property name="mailDebug" value="${mail.debug}"/>
         
+        <!--  OCE mailer properties -->
+ 		<!--       
+        <beans:property name="OCEApiKey" value="${oce.apikey}"/>
+        <beans:property name="OCESecret" value="${oce.secret}"/>
+        <beans:property name="OCEendpoint" value="${oce.endpoint}"/>
+        -->
     </beans:bean>
     
     <!-- Token Manager -->
