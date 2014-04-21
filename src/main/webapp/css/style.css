@@ -1,5 +1,6 @@
 
 
+
 .page-header {
 	width: 960px;
 	margin-left: auto;
@@ -11,10 +12,22 @@
 	padding-top: 50px;
   font-size: 28px;
   color: #02e4ff;
+  text-align: center;
 }
 
 .rightHdr {
 	margin-left: 30px !important;
+}
+
+.cspHeader {
+	font-size: 20px;
+	margin-top: 20px;
+}
+
+.giftTotal{
+	float: right;
+	margin-top: 15px;
+	padding-right: 100px;
 }
 
 .pull-right {
@@ -28,12 +41,28 @@
 	float: left;
 }
 
+.float-right {
+	float: right;
+}
+
 .left {
 	text-align: left;
 }
 
 .center {
 	text-align: center;
+}
+
+.right: {
+	text-align: right;
+}
+
+.tinyTop{
+	margin-top: 15px;
+}
+
+.smallMarg {
+	margin-top: 10px;
 }
 
 .smallTop {
@@ -64,21 +93,29 @@
 	height: 400px;
 }
 
-.primary, .cloud, .footer, .inputForm, .middle, .middle2 {
+.primary, .cloud, .inputForm, .middle, .middle2 {
 	text-align: center;
 }
 
 
-/*.footer {
-	height: 90px;
-	font-size: 14px;
-	padding-top:200px;
-
+.helpButton {
+	margin-left: 80px;
+	width: 100px;
+	background-color: #999a9b;
+	text-align: center;
+	margin-bottom: -20px;
+	height: 30px;
+	padding-top:5px;
+	-webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  border: 0px;
+  vertical-align: bottom;
 }
-*/
 
 .cspMain {
  text-align:right;
+ border-bottom:  solid 1px #d9d9d9;
 }
 
 .csp {
@@ -91,11 +128,6 @@
 .cspMedium {
 	padding-top: 25px;
 	padding-bottom: 10px;
-}
-
-.primary {
-	font-size:24px;
-	margin: 50px 0 50px;
 }
 
 .equals {
@@ -119,13 +151,36 @@
 	margin: 0px 0 10px;
 }
 
+.payment4 {
+	font-size:24px;
+	margin: 20px 0 0px;
+	text-align: center;
+}
+
 .notes {
 	font-size:12px;
 }
 
+.primary {
+	font-size:24px;
+	margin: 50px 0 50px;
+}
+
+.primaryLeftJustified {
+	font-size:28px;
+	margin: 10px 0 10px;
+	text-align: left;
+}
+
 .secondary {
 	font-size:14px;
-	margin-top: 20px;
+	margin-top: 0px;
+}
+
+.leftHdr {
+	font-size:14px;
+	margin-top: 0px;
+	margin-left:150px;
 }
 
 .equation {
@@ -135,7 +190,7 @@
 }
 
 
-.inputCloudName, .pwdInputForm {
+.inputCloudName {
 	margin-top: 50px;
 	-moz-border-radius:5px; /* Firefox */
 	-webkit-border-radius: 5px; /* Safari, Chrome */
@@ -143,50 +198,59 @@
 	border-radius: 5px; /* CSS3 */
 	behavior:url("border-radius.htc");
 	height: 50px;
-	width: 400px;
+	width: 410px;
 	font-family: Avenir Next;
 	font-size: 24px;
-	color: #d9d9d9;
+	color: #b6b6b6;
 	text-align: center;
 }
 
-.pwdInputForm {
-	margin-top: 15px;
-	text-align: center;
-	-moz-border-radius:5px; /* Firefox */
-	-webkit-border-radius: 5px; /* Safari, Chrome */
-	-khtml-border-radius: 5px; /* KHTML */
-	border-radius: 5px; /* CSS3 */
-	height: 50px;
-	width: 400px;
-	font-size: 24px;
-	color: #d9d9d9;
-	text-align: center;
-	font-family: Avenir Next;
-}
 
 .inputFields {
-	margin-top: 30px;
 	-moz-border-radius:5px; /* Firefox */
 	-webkit-border-radius: 5px; /* Safari, Chrome */
 	-khtml-border-radius: 5px; /* KHTML */
 	border-radius: 5px; /* CSS3 */
 	behavior:url("border-radius.htc");
 	height: 50px;
-	width: 400px;
+	width: 410px;
 	font-size: 24px;
-	color: #d9d9d9;
+	color: #b6b6b6;
 	text-align: center;
-	font-family: Avenir Next;
 }
 
+.onblurtext {
+	color: #999a9b !important;
+	-moz-border-radius:5px; /* Firefox */
+	-webkit-border-radius: 5px; /* Safari, Chrome */
+	-khtml-border-radius: 5px; /* KHTML */
+	border-radius: 5px; /* CSS3 */
+	height: 50px;
+	width: 410px;
+	font-size: 24px;
+	text-align: center;
+}	
+	
 .mini {
 	width: 37px;
 	margin-top: 10px;
 }
 
+.error
+{
+	font-size:24px;
+}
+
+.date {
+	width: 116px;
+}
+.uberdinky {
+	width: 100px;
+	margin-top: 10px;
+}
+
 .dinky {
-	width: 120px;
+	width: 125px;
 	margin-top: 10px;
 }
 
@@ -195,7 +259,7 @@
 }
 
 .short {
-	width: 195px;
+	width: 185px;
 }
 
 .med {
@@ -204,10 +268,6 @@
 
 .skinny {
 	height: 40px;
-}
-
-.smallMarg {
-	margin-top: 10px;
 }
 
 .minusPad {
@@ -224,25 +284,25 @@
   border-radius: 4px;
   padding: 7px 0;
   border: 0px;
-  font: bold 12px "AvenirNext", helvetica, arial, sans-serif;
+  font: 20px "AvenirNext", helvetica, arial, sans-serif;
 	height: 40px;
 	margin-top:0px;
 }
 
 .big {
-	width:400px;
+	width:425px;
 }
 
 
 /* Bigger Tablets */
 @media (min-width: 768px) and (max-width: 979px) {
-  #footer {
+/*  #footer {
     margin-left: -20px;
     margin-right: -20px;
     padding-left: 20px;
     padding-right: 20px;
   }
-  
+*/  
   #wrap > .container {
     padding-top: 50px !important;
   }
@@ -286,6 +346,12 @@
 		height: 350px;
 	}
 	
+	.middle3 {
+		font-size: 24px;
+		padding: 20px 0 0px;
+		height: 250px;
+	}
+	
 	.csp {
  		padding-top: 80px;
  		font-size: 14px;
@@ -300,20 +366,25 @@
 	.bigTop {
 		margin-top: 45px;
 	}
-
-
+	
+	.big {
+		width:300px;
+	}
+	.midHdr {
+  	font-size: 24px;
+	}
 }
 
 /* Small Tablets and Big Ass Phones */
 
 @media (min-width: 451px) and (max-width: 767px) {
-  #footer {
+/*  #footer {
     margin-left: -20px;
     margin-right: -20px;
     padding-left: 20px;
     padding-right: 20px;
   }
-
+*/
   #wrap > .container {
     padding-top: 50px !important;
   }
@@ -391,6 +462,10 @@
     padding-top: 50px !important;
   }
 
+	.inputCloudName {
+		width: 250px;
+		height: 35px;
+	}
 
 	.bodyContainer {
 		padding-top: 10px !important;
@@ -414,9 +489,19 @@
 		font-size: 14px;
 	}
 	
+	.middle {
+		font-size: 20px;
+		padding: 10px 0 15px;
+	}
+
 	.big {
 		width:250px;
 	}
+	
+		.midHdr {
+  	font-size: 14px;
+	}
+
 }
 
 /* Sticky footer styles
@@ -436,15 +521,18 @@
         /* Negative indent footer by it's height */
         margin: 0 auto -100px;
       }
-
-      /* Set the fixed height of the footer here */
+ 
+      /* Set the fixed height of the footer here */ 
       #push,
       #footer {
         height: 100px;
       }
-      .border {
+   
+		 .border {
         border-top: solid 1px #d9d9d9;
       }
+      
+
 
       /* Custom page CSS
       -------------------------------------------------- */
@@ -469,7 +557,7 @@
       
 /* floating Help button
 ------------------------------------------------------*/
-#feedback { 
+#help { 
   height: 104px; 
   width: 104px; 
   position: fixed; 
@@ -477,18 +565,79 @@
   left: 150px;
   z-index: 9999;
 }
-#feedback a { 
+#help a { 
   display: block; 
-  background: #fff; 
+  background: #b6b6b6; 
   height: 15px; 
   width: 70px; 
   padding: 8px 16px;
-  color: #efefef; 
+  color: #fdfdfd; 
   font-size: 17px; 
   text-decoration: none; 
   text-align:center;
+  	-webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
 }
 
-#feedback a:hover { 
-  background: #06c; 
+#help a:hover { 
+  background: #b6b6b6; 
+}
+
+.test {
+	background-image:url("../img/RespectNetwork_Logo_H_RGB.png"); 
+	background-repeat: no-repeat;
+	height: 57px;
+	margin-left: 150px;
+}
+
+@media (min-width: 451px) and (max-width: 979px) {
+	.test {
+		background-image:url("../img/RespectNetwork_Logo_H_RGB.png"); 
+		background-repeat: no-repeat;
+		height: 57px;
+		margin-left: 75px;
+	}
+
+	.span4 {
+		width:300px;
+		float:left;
+	}
+
+	.leftHdr {
+		margin-left: 125px;
+	}
+}
+@media (max-width: 979px) and (min-width: 768px){
+	[class*="span"] {
+	margin-left: 0px;
+	}
+}
+
+@media (max-width: 450px) {
+	.test {
+		background-image:url("../img/icon_57.png"); 
+		background-repeat: no-repeat;
+		height: 57px;
+		margin-left: 50px;
+	}
+
+	.span4 {
+		width:103px;
+		float:left;
+	}
+
+	.leftHdr {
+		margin-left: 0px;
+	}
+}
+
+@media (min-width: 1200px) {
+	.row {
+		margin-left: 0px; 
+	}
+}
+
+.row {
+	margin-left: 0px; 
 }

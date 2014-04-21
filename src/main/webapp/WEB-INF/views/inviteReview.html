@@ -2,7 +2,7 @@
 
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title th:text="#{invite.text.summary}">Invite &amp; Gift Cards Summary!</title>
+  <title th:text="#{invite.text.header}">Invite &amp; Gift Cards!</title>
   <meta charset="utf-8" />
     <title>Respect Network</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -29,15 +29,13 @@
 </head>
 <body>
 <div id="wrap">
-    
-	
         	
             <!-- Fixed navbar -->
       <div class="navbar navbar-fixed-top">
         <div class="navbar-inner">
           <div class="container">
           <div class="row-fluid">  
-          	<div class="span4 smallTop"><img src="img/RespectNetwork_Logo_H_RGB.png" />
+          	<div class="span4 smallTop"><img src="img/csp_logo.png" />
           	</div>
           	<div class="span4 midHdr">
           	</div>
@@ -53,58 +51,34 @@
       <div class="bodyContainer">
 		<div class="middle">
       <form action="#" th:object="${inviteForm}" th:action="@{/inviteSubmit}" method="post">
+      	<div class="span5">
         <input type="hidden" id="emailAddress" name="emailAddress" value="" th:value="${inviteForm.emailAddress}"/>
         <input type="hidden" id="emailMessage" name="emailMessage" value="" th:value="${inviteForm.emailMessage}"/>
         <input type="hidden" id="giftCardFlag" name="giftCardFlag" value="" th:value="${inviteForm.giftCardFlag}"/>
         <input type="hidden" id="giftCardQuantity" name="giftCardQuantity" value="1" th:value="${inviteForm.giftCardQuantity}"/>
-        <table id="inviteTable" width="100%">
-          <tr>
-            <td colspan="2"><p class="headerText" th:text="#{invite.text.summary}">Gift Cards Summary!</p>
-              <p class="subHeaderText" th:if="${error}" th:text="${error}" style="color: orange">System Error</p>
-            </td>
-          </tr>
-          <tr>
-            <td colspan="2">
-              <table border="1" width="100%">
-                <tr>
-                  <td><span th:text="#{invite.head.invitee}">INVITEE</span></td>
-                  <td align="center"><span th:text="#{invite.head.giftcards}">GIFT CARDS</span></td>
-                </tr>
-                <tr>
-                  <td><span th:text="${inviteForm.emailAddress}">foo@bar.com</span></td>
-                  <td align="center" th:if="${inviteForm.giftCardFlag.equals(false)}">0</td>
-                  <td align="center" th:if="${inviteForm.giftCardFlag.equals(true)}"><span th:text="${inviteForm.giftCardQuantity}">0</span></td>
-                </tr>
-              </table>
-            </td>
-          </tr>
-          <tr th:if="${inviteForm.giftCardFlag.equals(true)}">
-            <td span="2"><span th:text="${inviteForm.giftCardQuantity}">0</span> <span th:if="${inviteForm.giftCardQuantity &gt; 1}" th:text="#{invite.text.giftcards}">Gift Cards</span><span th:if="${inviteForm.giftCardQuantity == 1}" th:text="#{invite.text.giftcard}">Gift Card</span> =
-                         <span th:text="${cspModel.currency}">USD</span>
-                         <span th:text="${#numbers.formatDecimal(cspModel.costPerCloudName.multiply(inviteForm.giftCardQuantity), 0, 'COMMA', 2, 'POINT')}">25.00</span>
-            </td>
-          </tr>
-          <tr th:if="${inviteForm.giftCardFlag.equals(true)}">
-            <td span="2"><span th:text="#{invite.text.note}">As you have purchased gift cards you will be taken next to a payment page. The invitations will be sent along with the gift card codes!</span></td>
-          </tr>
-          <tr>
-            <td colspan="2" align="center"><button type="submit" value="Send Invites!" th:value="#{invite.text.send}" name="submit" class="button big" >Continue</button></td>
-          </tr>
-        </table>
+        <p class="primaryLeftJustified">Gift Card purchase summary</p>
+        <br></br>
+        <p class="payment3"> Number of gift cards = <span th:text="${inviteForm.giftCardQuantity}">0</span></p>
+        <br></br>
+        <p class="payment3"> Total cost = 
+        	<span th:text="${cspModel.currency}">USD</span>
+            <span th:text="${#numbers.formatDecimal(cspModel.costPerCloudName.multiply(inviteForm.giftCardQuantity), 0, 'COMMA', 2, 'POINT')}">25.00</span> 
+        </p>
+        <br></br>
+        <button type="submit" name="submit" id="submit" class="button big">Continue</button>
+        </div>
       </form>
       </div>
 	</div>
-		<div id="footer">
-      	<div class="row-fluid">
-    			<div class="span11 cspMain">YOUR CLOUD SERVICE PROVIDER | <img src="img/csp_logo.png" /> &nbsp;
-					</div>
-				</div>
-  			<div class="border">
-  				<div id="feedback">
-  					<a href="/feedback_url/">Help</a>
-					</div>
-				</div>
-    </div>
+	<div id="footer">
+      	
+		<div class="help">
+  			<div id="help">
+  				<a href="/help_url/">Help</a>
+			</div>
+	 	</div>
+
+  	</div>
     
  </div> <!-- end wrap -->
 

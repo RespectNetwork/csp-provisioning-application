@@ -23,6 +23,12 @@
       <link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/ico/apple-touch-icon-72-precomposed.png" />
                     <link rel="apple-touch-icon-precomposed" href="img/ico/apple-touch-icon-57-precomposed.png" />
                                    <link rel="shortcut icon" href="img/ico/favicon.png" />
+	
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+	
+	<!--include the javascript that checks availability-->
+	<script src="js/libs/nameavailability.js"></script>
+                                   
   </head>
 
 <body>
@@ -34,7 +40,7 @@
         <div class="navbar-inner">
           <div class="container">
           <div class="row-fluid">  
-          	<div class="span4 smallTop"><img src="img/RespectNetwork_Logo_H_RGB.png" />
+          	<div class="span4 smallTop"><img src="img/csp_logo.png" />
           	</div>
           	<div class="span4 midHdr">
           	</div>
@@ -52,27 +58,85 @@
 				<div class="middle"> Choose your cloud name 
 					<form action="#" role="form" th:object="${signUpInfo}" th:action="@{/signup}" method="post">
 
-            <input type="text" class="inputCloudName" name="cloudName" value="" id="cloudName" placeholder="=you" required="required" autofocus="autofocus" />
+            <input type="text" class="inputCloudName" name="cloudName" value="" id="cloudName" placeholder="=you..." required="required" autofocus="autofocus" />
+ 			<br></br>           
+            <span class="error"  name="isAvailable" id="isAvailable"></span>
+            
  							<p class="secondary">e.g., =jane, =janedoe, =jane.doe
 							</p>
 						<button type="submit" name="submit" id="submit" class="button">Submit</button>
 					</form>
 				</div>
 			</div>
-
+</div>
      <div id="footer">
-      	<div class="row-fluid">
-    			<div class="span11 cspMain">YOUR CLOUD SERVICE PROVIDER | <img src="img/csp_logo.png" /> &nbsp;
-					</div>
-				</div>
-  			<div class="border">
-  				<div id="feedback">
-  					<a href="/feedback_url/">Help</a>
-					</div>
-				</div>
-    </div>
+      	
+		<div class="help">
+  			<div id="help">
+  				<a href="/help_url/">Help</a>
+			</div>
+	 	</div>
 
-  </div>
+  	</div>
+
+  
+<!--The following script hooks the HTML Elements to the javascript functionality-->
+	<!-- see the comments inside the javascript for details-->
+ <script>
+ 
+ $(document).ready(function () {
+ 
+ 		// the value of this var is the id of the input element 
+ 		// that the user is typing into
+ 		var cloudnameField = "#cloudName";
+ 
+	 	// the value of this var is the id of the display element 
+ 		// that will be used to convey information to the user
+ 		var messageSpan = "#isAvailable";
+ 
+ 		
+	    $(cloudnameField).checkCloud({
+	        completed: function(elem, success) {
+	        	
+	        	// success var will contain a 1 if the name is available
+	        	// and 0 if it not available.
+	        	
+	        	console.log('Checking cloud...');
+	            console.log(success);
+	        	
+	        	if(success==1)
+	        	{
+	        		// Make whatever changes to the UI to indicate that the name is
+	        		// available
+	        		$(messageSpan).html(" &radic; Your cloud name is available");
+	        		$(messageSpan).css('color', 'green');
+	        		 		      		
+	        	}else{
+	        	
+	        		// Make whatever changes to the UI to indicate that the name is
+	        		// unavailable
+	        		$(messageSpan).html("This cloud name is NOT available");	        		
+	        		$(messageSpan).css('color', 'red');	
+	        		      		
+	        	}
+	        	
+	            
+	        },
+	        changed: function(elem) {
+				//Called when user is typing
+	            console.log('Changing cloud...');
+	        },
+	        // indicates if the leading symbol should be removed prior to adding the 
+	        // name to the path
+	        stripSymbol:true, 
+	        
+	        // indicates the location of the availability service
+	        availibilityAPI: "http://cloudnameavailability.elasticbeanstalk.com/api/availability/equals/"
+	    }); 
+	});
+ 
+ 
+ </script>
 
 
 </body>

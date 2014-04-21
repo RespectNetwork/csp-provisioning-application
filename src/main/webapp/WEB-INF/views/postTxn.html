@@ -1,9 +1,10 @@
 <!DOCTYPE html>
+<html lang="en">
 <!-- HTML5 Boilerplate -->
 <!--[if lt IE 7]>      <html xmlns:th="http://www.thymeleaf.org" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]>         <html xmlns:th="http://www.thymeleaf.org" class="no-js lt-ie9 lt-ie8"> <![endif]-->
 <!--[if IE 8]>         <html xmlns:th="http://www.thymeleaf.org" class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> <html xmlns:th="http://www.thymeleaf.org" class="no-js"> <!--<![endif]-->
+<!--[if gt IE 8]> 	   <html xmlns:th="http://www.thymeleaf.org" class="no-js"> <![endif]-->
 <head>
     <meta charset="utf-8" />
     <title>Respect Network</title>
@@ -13,8 +14,8 @@
 
     <!-- CSS -->
     <link href="css/bootstrap.css" rel="stylesheet" />
-    <link href="css/style.css" rel="stylesheet" />
     <link href="css/bootstrap-responsive.css" rel="stylesheet" />
+    <link href="css/style.css" rel="stylesheet" />
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
@@ -24,10 +25,10 @@
     <!-- Fav and touch icons -->
     <link rel="apple-touch-icon-precomposed" sizes="144x144" href="img/ico/apple-touch-icon-144-precomposed.png" />
     <link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/ico/apple-touch-icon-114-precomposed.png" />
-    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/ico/apple-touch-icon-72-precomposed.png" />
-     <link rel="apple-touch-icon-precomposed" href="img/ico/apple-touch-icon-57-precomposed.png" />
-     <link rel="shortcut icon" href="img/ico/favicon.png" />
-<script>     
+      <link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/ico/apple-touch-icon-72-precomposed.png" />
+                    <link rel="apple-touch-icon-precomposed" href="img/ico/apple-touch-icon-57-precomposed.png" />
+                                   <link rel="shortcut icon" href="img/ico/favicon.png" />
+  <script>     
      function goToRNlandingPage()
 	 {
 
@@ -37,8 +38,7 @@
 		
 		window.open(url+urlAndQs);
 	 }
-</script>	
-
+</script>
 </head>
 <body>
 
@@ -46,89 +46,74 @@
 <!-- Part 1: Wrap all page content here -->
 <div id="wrap">
 
-      <!-- Fixed navbar -->
+       <!-- Fixed navbar -->
       <div class="navbar navbar-fixed-top">
         <div class="navbar-inner">
           <div class="container">
-          <div class="row-fluid">  
+          <div class="row">  
           	<div class="span4 smallTop"><img src="img/RespectNetwork_Logo_H_RGB.png" />
           	</div>
           	<div class="span4 midHdr"><span th:text="${cloudName}"/>
           	</div>
           	<div class="span4 bigTop">
-             <p class="secondary">PRESS | FAQs</p>
+             <p class="leftHdr">PRESS | FAQs</p>
          		</div>
           </div>
 
           </div>
         </div>
       </div>
-
       <!-- Begin page content -->
 	<div class="bodyContainer">
 	  <div class="row-fluid">
 		<div class="span2"></div>
 			<div class="span8"> 
-				<div class="middle">
-				
-				<!-- Congratulations  <span th:text="${cloudName}"/>  you are now a registered member of Respect Network. -->
-				<p><span th:text="${statusText}"/></p>
-					<p class="primary">
+				<div class="middle"><p><span th:text="${statusText}"/></p>	
+				<p class="primary">
 					<div th:if="${#strings.length(queryStr) == 0}">
-          				<form  action="#" role="form" name="txnCompletionForm" th:action="${postURL}" th:method="${submitMethod}"> 
-          				
-          				<input type="hidden" id="cloudname" name="cloudname" th:value="${cloudName}" />         	  
-  			 			<input type="hidden" id="statusText" name="statusText" th:value="${statusText}" />
+          				<form  action="#" role="form" name="txnCompletionForm" th:action="${postURL}" method="${submitMethod}">
+          			
+          					<input type="hidden" id="cloudname" name="cloudname" th:value="${cloudName}" />         	  
+  			 				<input type="hidden" id="statusText" name="statusText" th:value="${statusText}" />
+  			  				<input type="hidden" id="postURL" name="postURL" th:value="${postURL}" />
   			  			
-  			  			<input type="hidden" id="postURL" name="postURL" th:value="${postURL}" />
-  			  			
-						<button type="submit" name="submit" id="submit" class="button big">Continue</button>
-						</form> 
+							<button type="submit" name="submit" id="submit" class="button big">Continue</button>
+						</form>
 					</div>
-					<div th:if="${#strings.length(queryStr) > 0}">
+				
+				
+				<div th:if="${#strings.length(queryStr)}">
+				
 						<input type="hidden" id="cloudname" name="cloudname" th:value="${cloudName}" />         	  
   			 			<input type="hidden" id="statusText" name="statusText" th:value="${statusText}" />
   			  			
   			  			<input type="hidden" id="postURL" name="postURL" th:value="${postURL}" />
   			  			<input type="hidden" id="queryStr" name="queryStr" th:value="${queryStr}" />
-						 <button type="button" id="goToRN" class="button big" onclick="goToRNlandingPage();">Continue</button>
-					</div>
-					</p>
-				</div>
+						<button type="button" id="goToRN" class="button big" onclick="goToRNlandingPage();">Continue</button>
 				
-			</div>
-			
+				</div>
+			    </p>
+			    </div>
+			  </div>
 		<div class="span2"></div>
+		
 		</div>
 	</div>
+	</div>
+
      <div id="footer">
       	<div class="row-fluid">
       		<div class="span1"></div>
     			<div class="span10 cspMain">YOUR CLOUD SERVICE PROVIDER | <img src="img/csp_logo.png" /> &nbsp;
-					</div>
 				</div>
-<div class="">
-  				<div id="feedback">
-  					<a href="/feedback_url/">Help</a>
-					</div>
+		 </div>
+	<div class="help">
+  				<div id="help">
+  					<a href="/help_url/">Help</a>
 				</div>
+	 </div>
 
-  </div>
- <!-- 
-      	<div class="row-fluid">
-      		<div class="span1"></div>
-					<div class=span10">
-          	<div class="helpButton">
-              <ul class="nav">
-                <li><a href="#about">Help</a></li>
-              </ul>
-        	 </div>
-        </div>
+  	</div>
 
-		    </div>
-
-	
--->
-</div>
 </body>
 </html>

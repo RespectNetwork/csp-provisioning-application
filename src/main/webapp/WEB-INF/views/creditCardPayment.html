@@ -21,6 +21,8 @@
 
 <!-- Fav and touch icons -->
 <link rel="shortcut icon" href="img/ico/favicon.png" />
+
+<script src="js/libs/misc.js"> </script>
 </head>
 
 <body>
@@ -31,7 +33,7 @@
     <div class="navbar-inner">
       <div class="container">
       	<div class="row-fluid">  
-        	<div class="span4 smallTop"><img src="img/RespectNetwork_Logo_H_RGB.png" />
+        	<div class="span4 smallTop"><img src="img/csp_logo.png" />
         	</div>
         	<div class="span4 midHdr"><span th:text="${cloudName}"/>
         	</div>
@@ -48,10 +50,11 @@
     <div class="row-fluid"> 
     	<div class="span1"></div> 
       <div class="span6">		
-	      <p class="payment3 ">Billing Information</p>                           
+	      <p class="payment3 ">Billing Information</p> 
+	       <div class="middle">                         
           <form id="cc_payment_form" action="#" th:object="${paymentInfo}" th:action="${postURL}" method="post">
 
-		<div th:if="${StripeJavaScript}">
+				<div th:if="${StripeJavaScript}">
                        <table id="sTable">
 	                    <tr>
 	                    <td  th:utext="${StripeJavaScript}">
@@ -67,21 +70,21 @@
 	            		</td>
 	                    </tr>
                        </table>
-          </div>      	
-		  <div th:if="${SagePay}">
-						<input type="text" name="BillingFirstNames"  id="BillingFirstNames" class="inputFields tiny smallMarg" placeholder=" first name" required="required" /> 
+          	</div>      	
+		  	<div th:if="${SagePay}">
+						<input type="text" name="BillingFirstNames"  id="BillingFirstNames" class="inputFields tiny smallMarg" placeholder=" first name" onFocus="clearText(this)" onBlur="clearText(this.className = 'onblurtext med smallMarg')"  required="required" /> 
 
-	      		&nbsp; 	<input type="text" name="BillingSurname"  id="BillingSurname" class="inputFields med smallMarg" placeholder=" surname" required="required" /> 
+	      		&nbsp; 	<input type="text" name="BillingSurname"  id="BillingSurname" class="inputFields med smallMarg" placeholder=" surname" onFocus="clearText(this)" onBlur="clearText(this.className = 'onblurtext med smallMarg')"  required="required" /> 
  
- 						<input type="text" name="BillingAddress1"  id="BillingAddress1" placeholder="address1" class="inputFields smallMarg" required="required" /> 
+ 						<input type="text" name="BillingAddress1"  id="BillingAddress1" placeholder="address1" class="inputFields smallMarg" onFocus="clearText(this)" onBlur="clearText(this.className = 'onblurtext med smallMarg')"  required="required" /> 
 	        	
- 						<input type="text" name="BillingAddress2"  id="BillingAddress2" placeholder="address2" class="inputFields smallMarg"  /> 
+ 						<input type="text" name="BillingAddress2"  id="BillingAddress2" placeholder="address2" class="inputFields smallMarg" onFocus="clearText(this)" onBlur="clearText(this.className = 'onblurtext med smallMarg')"  /> 
 	        	<br />
 	        	<p></p>
-	 					<input type="text" name="BillingCity" id="BillingCity" placeholder=" city" class="inputFields short smallMarg" required="required" /> 
-	        	&nbsp; <input type="text" name="BillingState"  id="BillingState" placeholder="st*" class="inputFields mini"  />
- 	        	&nbsp; <input type="text" name="BillingPostCode"  id="BillingPostCode" placeholder="postal code" class="inputFields tiny smallMarg"  required="required" /> 
- 				&nbsp; <input type="text" name="BillingCountry"  id="BillingCountry" placeholder=" CC" class="inputFields tiny smallMarg"  required="required" />
+	 					<input type="text" name="BillingCity" id="BillingCity" placeholder=" city" class="inputFields short smallMarg" onFocus="clearText(this)" onBlur="clearText(this.className = 'onblurtext med smallMarg')"  required="required" /> 
+	        	&nbsp; <input type="text" name="BillingState"  id="BillingState" placeholder="st*" class="inputFields mini" onFocus="clearText(this)" onBlur="clearText(this.className = 'onblurtext med smallMarg')"  />
+ 	        	&nbsp; <input type="text" name="BillingPostCode"  id="BillingPostCode" placeholder="postal code" class="inputFields tiny smallMarg"  onFocus="clearText(this)" onBlur="clearText(this.className = 'onblurtext med smallMarg')"  required="required" /> 
+ 				&nbsp; <input type="text" name="BillingCountry"  id="BillingCountry" placeholder=" CC" class="inputFields tiny smallMarg"  onFocus="clearText(this)" onBlur="clearText(this.className = 'onblurtext med smallMarg')"  required="required" />
 						
 						<p class="smallTop"><button type="submit" name="submit" id="submit" class="button big">Continue</button>
 						</p>
@@ -118,6 +121,7 @@
 			<input type="hidden" name="txnType" value="" id="txnType"  th:value="*{txnType}" />	
 			<input type="hidden" name="amount" value="" id="amount"  th:value="${amount}" />				
         </form>
+		</div>        
     </div>
     <div class="span5"><p class="payment3"></p>
     	<div class="equation">Respect Network 
@@ -130,19 +134,17 @@
 		</div>
       
 	</div>
-     <div id="footer">
-      	<div class="row-fluid">
-    			<div class="span11 cspMain">YOUR CLOUD SERVICE PROVIDER | <img src="img/csp_logo.png" /> &nbsp;
-					</div>
-				</div>
-  			<div class="border">
-  				<div id="feedback">
-  					<a href="/feedback_url/">Help</a>
-					</div>
-				</div>
-    </div>
-</div>
+  </div>
 
-</div>   
+</div>	
+     <div id="footer">
+      	
+  			<div class="help">
+  				<div id="help">
+  					<a href="/help_url/">Help</a>
+				</div>
+	 		</div>
+    </div>
+   
 </body>
 </html>

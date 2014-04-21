@@ -9,58 +9,62 @@
 
     <!-- CSS -->
     <link href="css/bootstrap.css" rel="stylesheet" />
+    <link href="css/bootstrap-responsive.css" rel="stylesheet" />
     <link href="css/style.css" rel="stylesheet" />
-		<link href="css/bootstrap-responsive.css" rel="stylesheet" />
 
-<!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
-<!--[if lt IE 9]>
-<script src="js/html5shiv.js"></script>
-<![endif]-->
+<script src="js/libs/misc.js"> </script>
 
-<!-- Fav and touch icons -->
-<link rel="apple-touch-icon-precomposed" sizes="144x144" href="img/ico/apple-touch-icon-144-precomposed.png" />
-<link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/ico/apple-touch-icon-114-precomposed.png" />
-<link rel="apple-touch-icon-precomposed" sizes="72x72" href="imgico/apple-touch-icon-72-precomposed.png" />
-<link rel="apple-touch-icon-precomposed" href="img/ico/apple-touch-icon-57-precomposed.png" />
-<link rel="shortcut icon" href="img/ico/favicon.png" />
+<style>
 
+</style>
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="img/ico/apple-touch-icon-144-precomposed.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/ico/apple-touch-icon-114-precomposed.png" />
+      <link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/ico/apple-touch-icon-72-precomposed.png" />
+                    <link rel="apple-touch-icon-precomposed" href="img/ico/apple-touch-icon-57-precomposed.png" />
+                                   <link rel="shortcut icon" href="img/ico/favicon.png" />
 </head>
 
 <body>
 <!-- Part 1: Wrap all page content here -->
 <div id="wrap">
 
-      <!-- Fixed navbar -->
+       <!-- Fixed navbar -->
       <div class="navbar navbar-fixed-top">
         <div class="navbar-inner">
           <div class="container">
-          <div class="row-fluid">  
+          <div class="row">  
           	<div class="span4 smallTop"><img src="img/RespectNetwork_Logo_H_RGB.png" />
           	</div>
           	<div class="span4 midHdr"><span th:text="${cloudName}"/>
           	</div>
           	<div class="span4 bigTop">
-             <p class="secondary">PRESS | FAQs</p>
+             <p class="leftHdr">PRESS | FAQs</p>
          		</div>
           </div>
 
           </div>
         </div>
       </div>
-
       <!-- Begin page content -->
       <div class="bodyContainer">
 				<div class="middle2"> Verification codes have been sent to your email and phone. <br />Enter those codes in the fields below. 
 					<form action="#" th:object="${validateInfo}" th:action="@{/validatecodes}" method="post" class="margin-top">
 
- 						<input type="text" class="inputFields" name="emailCode"  id="emailCode" placeholder="email code" required="required" th:value="*{emailCode}" />
-						<p class="secondary"><span th:text="|Sent to ${verifyingEmail}|"></span></p>
+ 						<input type="text" name="emailCode" class="inputFields smallTop" id="emailCode" placeholder="email code" onFocus="clearText(this)" onBlur="clearText(this.className = 'onblurtext smallTop')" required="required" th:value="*{emailCode}" />
+						<p class="secondary"><span th:text="|Sent to ${verifyingEmail}|"> Sent to</span></p>
 						
-						<input type="text" class="inputFields" name="smsCode" id="smsCode" placeholder="text code" required="required"
+						<input type="text" name="smsCode"  class="inputFields smallTop" id="smsCode" placeholder="text code" onFocus="clearText(this)" onBlur="clearText(this.className = 'onblurtext smallTop')" required="required"
                                 th:value="*{smsCode}" />
-             			<p class="secondary"> <span th:text="|Sent to ${verifyingPhone}|"></span></p>
+             			<p class="secondary"> <span th:text="|Sent to ${verifyingPhone}|">Sent to</span></p>
      					
-     				<p class="secondary"> <input type="checkbox" class="inputFields" name="terms"  required="required" /> &nbsp;
+     				<p class="secondary"> <input type="checkbox" name="terms"  required="required" /> &nbsp;
      				I agree to the <a href="#">Respect Trust Framework</a> and the one-person one-account rule.</p>
 						<input type="submit" name="submit" id="submit" class="button" value="Verify" />
 						
@@ -68,21 +72,22 @@
 									
 			</div>
 	</div>	  
-
+</div>
      <div id="footer">
       	<div class="row-fluid">
-    			<div class="span11 cspMain">YOUR CLOUD SERVICE PROVIDER | <img src="img/csp_logo.png" /> &nbsp;
+      		<div class="span1"></div>
+    			<div class="span10 cspMain">YOUR CLOUD SERVICE PROVIDER | <img src="img/csp_logo.png" /> &nbsp;
 					</div>
 				</div>
-  			<div class="border">
-  				<div id="feedback">
-  					<a href="/feedback_url/">Help</a>
+  			<div class="help">
+  				<div id="help">
+  					<a href="/help_url/">Help</a>
 					</div>
 				</div>
     </div>
 
 
 
-</div>
+
 </body>
 </html>

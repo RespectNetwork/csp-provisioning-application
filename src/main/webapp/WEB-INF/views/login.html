@@ -35,7 +35,7 @@
         <div class="navbar-inner">
           <div class="container">
           <div class="row-fluid">  
-          	<div class="span4 smallTop"><img src="img/RespectNetwork_Logo_H_RGB.png" />
+          	<div class="span4 smallTop"><img src="img/csp_logo.png" />
           	</div>
           	
           	<div class="span4 bigTop">
@@ -53,11 +53,11 @@
 					<form  th:action="${postURL}" method="post">
     					<p class="secondary"> Cloudname 
     					<br />   					
-    					<input type="text"  class="inputFields" id="cloudname" name="cloudname"  placeholder="=you" required="required" ></input>
+    					<input type="text"  class="inputFields smallTop" id="cloudname" name="cloudname"  placeholder="=you" required="required" ></input>
     					</p>
   					<p class="secondary"> Password 
     					<br />
-    				<input type="password" class="pwdInputForm" id="secrettoken" name="secrettoken" placeholder="Your secret token" required="required" />
+    				<input type="password" class="inputFields smallMarg" id="secrettoken" name="secrettoken" placeholder="Your secret token" required="required" />
 					</p>
   					<p>
   					<button type="submit" name="login" class="button">Login</button>
@@ -67,21 +67,18 @@
 									
 			</div>
 	</div>	  
-
+</div>
      <div id="footer">
-      	<div class="row-fluid">
-    			<div class="span11 cspMain">YOUR CLOUD SERVICE PROVIDER | <img src="img/csp_logo.png" /> &nbsp;
-					</div>
+      	
+  			<div class="help">
+  				<div id="help">
+  					<a href="/help_url/">Help</a>
 				</div>
-  			<div class="border">
-  				<div id="feedback">
-  					<a href="/feedback_url/">Help</a>
-					</div>
-				</div>
+	 		</div>
     </div>
 
 
-</div>
+
  
 </body>
 </html>
