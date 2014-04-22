@@ -84,7 +84,7 @@ public class StripePaymentProcessor
 		return rtn;
 	}
 
-	public static PaymentModel makePayment( CSPModel csp, BigDecimal amount, String dsc, String token )
+	public static PaymentModel makePayment( CSPModel csp, BigDecimal amount, String currency, String dsc, String token )
 	{
 		PaymentModel rtn = null;
 		String desc = "";
@@ -98,7 +98,7 @@ public class StripePaymentProcessor
 
 		Map<String, Object> chargeParams = new HashMap<String, Object>();
 		chargeParams.put("amount"     , "" + getAmount(amount));
-		chargeParams.put("currency"   , csp.getCurrency());
+		chargeParams.put("currency"   , currency);
 		chargeParams.put("card"       , token);
 		chargeParams.put("description", desc);
 
@@ -115,7 +115,7 @@ public class StripePaymentProcessor
 			payment.setPaymentReferenceId(token);
 			payment.setPaymentResponseCode(rsp.getId());
 			payment.setAmount(amount);
-			payment.setCurrency(csp.getCurrency());
+			payment.setCurrency(currency);
 
 			rtn = payment;
 

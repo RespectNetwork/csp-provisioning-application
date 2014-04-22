@@ -388,7 +388,8 @@ public class PersonalCloudController
       
       if (!errors)
       {
-         
+
+         String currency = regSession.getCurrency();
          BigDecimal amount = null;
          if (cspModel.getPaymentGatewayName().equals("STRIPE") || cspModel.getPaymentGatewayName().equals("BRAINTREE"))
          {
@@ -414,10 +415,10 @@ public class PersonalCloudController
             }
             String token = StripePaymentProcessor.getToken(request); 
             payment = StripePaymentProcessor.makePayment(cspModel,
-                  amount, desc, token);
+                  amount, currency, desc, token);
          } else if (cspModel.getPaymentGatewayName().equals("BRAINTREE"))
          {
-            payment = BrainTreePaymentProcessor.makePayment(cspModel, amount, regSession.getCurrency(),
+            payment = BrainTreePaymentProcessor.makePayment(cspModel, amount, currency,
                     regSession.getMerchantAccountId(), request);
          } else if (cspModel.getPaymentGatewayName().equals("SAGEPAY"))
          {
@@ -950,7 +951,7 @@ public class PersonalCloudController
          }
 
          BigDecimal amount = regSession.getCostPerCloudName().multiply(
-               new BigDecimal(paymentForm.getNumberOfClouds()));
+                 new BigDecimal(paymentForm.getNumberOfClouds()));
 
          String desc = "Personal cloud  " + regSession.getCloudName();
          
