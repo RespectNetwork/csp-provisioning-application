@@ -392,7 +392,8 @@ public class PersonalCloudController
          BigDecimal amount = null;
          if (cspModel.getPaymentGatewayName().equals("STRIPE") || cspModel.getPaymentGatewayName().equals("BRAINTREE"))
          {
-            amount = cspModel.getCostPerCloudName().multiply(
+            // TODO - check numberofClouds > 0
+            amount = regSession.getCostPerCloudName().multiply(
                new BigDecimal(paymentForm.getNumberOfClouds()));
             logger.debug("Charging CC for " + amount.toPlainString());
             logger.debug("Number of clouds being purchased "
@@ -416,7 +417,8 @@ public class PersonalCloudController
                   amount, desc, token);
          } else if (cspModel.getPaymentGatewayName().equals("BRAINTREE"))
          {
-            payment = BrainTreePaymentProcessor.makePayment(cspModel, amount, request);
+            payment = BrainTreePaymentProcessor.makePayment(cspModel, amount, regSession.getCurrency(),
+                    regSession.getMerchantAccountId(), request);
          } else if (cspModel.getPaymentGatewayName().equals("SAGEPAY"))
          {
             payment = SagePayPaymentProcessor.processSagePayCallback(request, response, cspModel);
@@ -947,7 +949,7 @@ public class PersonalCloudController
             e.printStackTrace();
          }
 
-         BigDecimal amount = cspModel.getCostPerCloudName().multiply(
+         BigDecimal amount = regSession.getCostPerCloudName().multiply(
                new BigDecimal(paymentForm.getNumberOfClouds()));
 
          String desc = "Personal cloud  " + regSession.getCloudName();
@@ -979,6 +981,7 @@ public class PersonalCloudController
          mv.addObject("cspModel", cspModel);
          mv.addObject("paymentInfo", paymentForm);
          mv.addObject("amount",amount.toPlainString());
+         mv.addObject("totalAmountText", RegistrationController.formatCurrencyAmount(regSession.getCurrency(), amount));
          return mv;
       } 
       
