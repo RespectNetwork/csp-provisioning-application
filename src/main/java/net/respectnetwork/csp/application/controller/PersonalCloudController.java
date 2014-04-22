@@ -536,15 +536,25 @@ public class PersonalCloudController
          String cloudName)
    {
       
-      logger.debug("Request servlet path " + request.getServletPath());
-      logger.debug("Paths " + request.getPathInfo()  + "-" + request.getRequestURI() + "-" + request.getPathTranslated() );
+      //logger.debug("Request servlet path " + request.getServletPath());
+      //logger.debug("Paths " + request.getPathInfo()  + "-" + request.getRequestURI() + "-" + request.getPathTranslated() );
       ModelAndView mv = new ModelAndView("cloudPage");
       
       String cspHomeURL =   request.getContextPath();
-      logger.debug("getCloudPage :: cspHomeURL " + cspHomeURL);
+      //logger.debug("getCloudPage :: cspHomeURL " + cspHomeURL);
       mv.addObject("logoutURL", cspHomeURL + "/logout");     
       mv.addObject("cloudName", cloudName);
-      
+      String queryStr = "";
+      try
+      {
+         queryStr = "name=" +  URLEncoder.encode(cloudName,"UTF-8")+"&csp=" +  URLEncoder.encode(request.getContextPath().replace("/", "+"),"UTF-8") ;
+      } catch (UnsupportedEncodingException e1)
+      {
+         // TODO Auto-generated catch block
+         e1.printStackTrace();
+      }
+      mv.addObject("queryStr", queryStr);
+      mv.addObject("postURL",RegistrationManager.getCspInviteURL());
       return mv;
    }
 

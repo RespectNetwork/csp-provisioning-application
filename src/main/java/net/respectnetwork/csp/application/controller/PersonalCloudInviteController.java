@@ -335,7 +335,15 @@ public class PersonalCloudInviteController
 			builder.append(getMessageFromResource("invite.mail.gift.2", inviter, RES_DEFAILT_INVITE_MAIL_GIFT_2, locale));
 		}
 		
-		String baseURL = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/";
+		String baseURL = "";
+		if(request.getServerName().equalsIgnoreCase("localhost"))
+		{
+		   baseURL = "http://" + request.getServerName() +  ":" + request.getServerPort() +request.getContextPath() + "/";
+		}
+		else 
+		{
+		   baseURL = "https://" + request.getServerName() + request.getContextPath() + "/";
+		}
 		if( baseURL.endsWith("/") == false )
 		{
 		   baseURL = baseURL + "/";
