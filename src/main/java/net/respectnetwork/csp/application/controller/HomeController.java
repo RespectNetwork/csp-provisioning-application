@@ -5,6 +5,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import net.respectnetwork.csp.application.dao.DAOException;
 import net.respectnetwork.csp.application.dao.DAOFactory;
 import net.respectnetwork.csp.application.form.SignUpForm;
 import net.respectnetwork.csp.application.invite.InvitationManager;
@@ -89,7 +90,7 @@ public class HomeController {
 	 */
 	@RequestMapping(value = "/signup", method = RequestMethod.GET)
 	public ModelAndView homeForm(HttpServletRequest request, Model model,
-	        @Valid @ModelAttribute("signUpInfo") SignUpForm SignUpForm) {
+	        @Valid @ModelAttribute("signUpInfo") SignUpForm signUpForm) {
 	    
 	    
 	    
@@ -104,77 +105,46 @@ public class HomeController {
         ModelAndView mv = null; 
         mv = new ModelAndView("signup");
         boolean errors = false;
-        
-        try {
-           
         	inviteCode = (String)request.getParameter(URL_PARAM_NAME_INVITE_CODE);
         	giftCode = (String)request.getParameter(URL_PARAM_NAME_GIFT_CODE);
-        	selfInviteCode = (String)request.getParameter(URL_PARAM_NAME_INVITER);
-        	
-        	logger.debug("Invite Code = " + inviteCode);
-            logger.debug("Gift Code = " + giftCode);
-            logger.debug("Cloud Name : " + cloudName);
-            
-        	//if both invite code and gift code is present. This is the case when Alice is invited by Roger
-            
-            if (inviteCode !=null){
-            	inviterCloudName = invitationManager.getInviterName(inviteCode);
-            	
-                if (inviterCloudName == null) {
-                	mv = new ModelAndView("generalErrorPage");
-                    mv.addObject("error", "Invalid Invite Code: " + inviteCode);  
-                    logger.debug("Inviter cloud name is null. So, cannot proceed.");
-                } else {
-                	logger.debug("Valid invite code found.");
-                	SignUpForm.setInviteCode(inviteCode);
-                	if(giftCode != null) {
-                		if ( DAOFactory.getInstance().getGiftCodeRedemptionDAO().get(giftCode) != null )
-                		{
-                			logger.debug("Invalid gift code. This gift code has already been redeemed. Id=" + giftCode);
-                			mv = new ModelAndView("generalErrorPage");
-                			mv.addObject("error", "This gift code has already been redeemed. So, a new personal cloud cannot be registered using this gift code. Id=" + giftCode); 
-                		} else {
-                			boolean codeMatch = false;
-                			List<GiftCodeModel> giftCodes = DAOFactory.getInstance().getGiftCodeDAO().list(inviteCode);
-                			for(GiftCodeModel gift : giftCodes){
-                				if(gift.getGiftCodeId().equals(giftCode)){
-                					codeMatch = true;
-                					break;
-                				}
-                			}
-                			if(codeMatch) {
-                				SignUpForm.setGiftCode(giftCode);
-                			} else {
-                				logger.debug("Invalid gift code. Please check the URL. Id=" + giftCode);
-                    			mv = new ModelAndView("generalErrorPage");
-                    			mv.addObject("error", "Invalid gift code. Please check the URL. Id=" + giftCode);                				
-                			}
-                		}
-                	}
-                	
-                }    
-            } // the else case happens when Roger was not invited by anyone. He created an invite from RespectNetwork website
-            // this flow will happen in "public launch"
-            else if(selfInviteCode != null){
-            	cloudName = invitationManager.getCloudNameFromInviterCode(selfInviteCode, cspName);
-                
-                if (cloudName == null) {
-                	mv = new ModelAndView("generalErrorPage");
-                    mv.addObject("error", "Invalid Inviter Code: " + selfInviteCode);  
-                } else {
-                    SignUpForm.setCloudName(cloudName);
-                } 
-            }
-            
-        } catch (Exception e) {
-            logger.warn("Problem Processing", e.getMessage());
-        }
-        
-        mv.addObject("signUpInfo", SignUpForm);
-        
-        
+        	cloudName = (String)request.getParameter("name");
 
-		return mv;
+        	logger.debug("Invite Code = " + inviteCode);
+         logger.debug("Gift Code = " + giftCode);
+         logger.debug("Cloud Name : " + cloudName);
+         
+         if(signUpForm == null)
+         {
+            signUpForm = new SignUpForm();
+         }
+         if(giftCode != null && !giftCode.isEmpty())
+         {
+            try
+            {
+               if(DAOFactory.getInstance().getGiftCodeRedemptionDAO().get(giftCode) != null)
+               {
+                  logger.debug("Invalid gift code. This gift code has already been redeemed. Id=" + giftCode);
+                  mv = new ModelAndView("generalErrorPage");
+                  mv.addObject("error", "This gift code has already been redeemed. So, a new personal cloud cannot be registered using this gift code. Id=" + giftCode);
+                  return mv;
+               }
+            } catch (DAOException e)
+            {
+               // TODO Auto-generated catch block
+               e.printStackTrace();
+               logger.debug("System error");
+               mv = new ModelAndView("generalErrorPage");              
+               return mv;
+            }
+            signUpForm.setGiftCode(giftCode);
+         }
+         if(cloudName != null && !cloudName.isEmpty())
+         {
+            signUpForm.setCloudName(cloudName);
+         }
+         
+        mv.addObject("signUpInfo", signUpForm);
+        return mv;
 	}
 	
 

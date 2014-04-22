@@ -1182,7 +1182,7 @@ public class PersonalCloudController
         */ 
          List<GiftCodeModel> giftCardList = new ArrayList<GiftCodeModel>();
 
-         InviteModel invite = PersonalCloudInviteController.saveInvite(inviteForm, payment, giftCardList, request.getLocale(),cspModel.getCspCloudName(),cloudName);
+         InviteModel invite = PersonalCloudInviteController.saveInvite(inviteForm, payment, giftCardList, request.getLocale(),cspModel.getCspCloudName(),cloudName,request);
          mv = new ModelAndView("inviteDone");
          mv.addObject("cspModel"    , cspModel);
          mv.addObject("inviteModel" , invite);

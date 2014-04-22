@@ -264,7 +264,7 @@ public class PersonalCloudInviteController
 	}
 
 
-	public static InviteModel saveInvite( InviteForm inviteForm, PaymentModel payment, List<GiftCodeModel> giftCodeList, Locale locale , String cspCloudName , String cloudName) throws DAOException
+	public static InviteModel saveInvite( InviteForm inviteForm, PaymentModel payment, List<GiftCodeModel> giftCodeList, Locale locale , String cspCloudName , String cloudName, HttpServletRequest request) throws DAOException
 	{
 		DAOFactory dao = DAOFactory.getInstance();
 
@@ -305,12 +305,12 @@ public class PersonalCloudInviteController
 			}
 		}
 
-		sendInviteEmail(rtn, giftCodeList, locale);
+		sendInviteEmail(rtn, giftCodeList, locale,request);
 
 		return rtn;
 	}
 
-	public static void sendInviteEmail( InviteModel invite, List<GiftCodeModel> giftCodeList, Locale locale )
+	public static void sendInviteEmail( InviteModel invite, List<GiftCodeModel> giftCodeList, Locale locale , HttpServletRequest request )
 	{
 		logger.info("sendInviteEmail - " + invite + " : " + giftCodeList);
 
@@ -334,12 +334,13 @@ public class PersonalCloudInviteController
 		{
 			builder.append(getMessageFromResource("invite.mail.gift.2", inviter, RES_DEFAILT_INVITE_MAIL_GIFT_2, locale));
 		}
-		String url = "" ; //getCspInviteURL();
+		
+		String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/";
 		if( url.endsWith("/") == false )
 		{
 			url = url + "/";
 		}
-		url = url + "signup?" + HomeController.URL_PARAM_NAME_INVITE_CODE + "=" + invite.getInviteId();
+		
 
 		if( (giftCodeList == null) || (giftCodeList.size() == 0) )
 		{
@@ -351,6 +352,9 @@ public class PersonalCloudInviteController
 			{
 			   StringBuilder builder2 = new StringBuilder(builder);
 				Object[] obj = new Object[] { "Gift Code = " + gift.getGiftCodeId() };
+				url = url + "signup?" + HomeController.URL_PARAM_NAME_GIFT_CODE + "=" + gift.getGiftCodeId();
+				builder2.append(url);
+				builder2.append("<br></br>");
 				builder2.append(getMessageFromResource("invite.mail.url", obj, RES_DEFAILT_INVITE_MAIL_URL, locale));
 				builder2.append(getMessageFromResource("invite.mail.footer", inviter, RES_DEFAILT_INVITE_MAIL_FOOTER, locale));
 				

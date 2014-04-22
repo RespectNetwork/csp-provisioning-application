@@ -58,8 +58,14 @@
         
         	<div th:case="'signup'">
          	<p class="payment2">
-        	<input type="radio" id="paymentType" name="paymentType" value="giftCard" />
-	      	&nbsp;  <input type="text" name="giftCodes"  id="giftCodes" class="inputFields med skinny" placeholder=" gift code"/> 
+			<div th:if="${#strings.length(paymentInfo.giftCodes)}">	         		
+        		<input type="radio" id="paymentType" name="paymentType" value="giftCard" checked="true" />
+        	</div>	
+			<div th:if="${#strings.length(paymentInfo.giftCodes) == 0}">	         		
+        		<input type="radio" id="paymentType" name="paymentType" value="giftCard" />
+        	</div>        	
+		      	&nbsp;  
+        	<input type="text" name="giftCodes"  id="giftCodes" class="inputFields med skinny" placeholder=" gift code" th:value="*{giftCodes}"/> 
 
 	      	</p>
 	        <p class="payment2">
@@ -93,7 +99,8 @@
 					</p>
           <button type="submit" name="submit" id="submit" class="button">Continue</button>
 	        <input type="hidden" name="numberOfClouds" value="" id="numberOfClouds" th:value="*{numberOfClouds}" />                
-					<input type="hidden" name="txnType" value="" id="txnType" th:value="*{txnType}" />					
+			<input type="hidden" name="txnType" value="" id="txnType" th:value="*{txnType}" />	
+						
         </form>
     </div>
     <div class="span5">

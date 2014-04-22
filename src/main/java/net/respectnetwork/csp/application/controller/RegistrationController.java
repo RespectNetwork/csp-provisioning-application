@@ -196,7 +196,7 @@ public class RegistrationController
             regSession.setSessionId(sessionId);
             regSession.setCloudName(signUpForm.getCloudName());
             //regSession.setInviteCode(inviteCode);
-            //regSession.setGiftCode(giftCode);
+            regSession.setGiftCode(giftCode);
             //regSession.setVerifiedEmail(invite.getInvitedEmailAddress());
 
          } else
@@ -367,6 +367,11 @@ public class RegistrationController
             regSession.setTransactionType(PaymentForm.TXN_TYPE_SIGNUP);
          }
          paymentForm.setNumberOfClouds(1);
+         if(regSession.getGiftCode() != null && !regSession.getGiftCode().isEmpty())
+         {
+            logger.debug("Setting giftcode from session " + regSession.getGiftCode());
+            paymentForm.setGiftCodes(regSession.getGiftCode());
+         }
          
          mv.addObject("paymentInfo", paymentForm);
 
