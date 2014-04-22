@@ -422,7 +422,7 @@ public class PersonalCloudController
                     regSession.getMerchantAccountId(), request);
          } else if (cspModel.getPaymentGatewayName().equals("SAGEPAY"))
          {
-            payment = SagePayPaymentProcessor.processSagePayCallback(request, response, cspModel);
+            payment = SagePayPaymentProcessor.processSagePayCallback(request, response, cspModel, currency);
          }
             
             if (payment != null)
@@ -1228,7 +1228,7 @@ public class PersonalCloudController
             cspModel.getPaymentUrlTemplate());
       mv.addObject("SagePay","SAGEPAY");
       mv.addObject("vendor",cspModel.getUsername());
-      mv.addObject("crypt",SagePayPaymentProcessor.getSagePayCrypt(request, new BigDecimal(request.getParameter("amount")),cspModel.getCurrency(),cspModel.getPassword()));
+      mv.addObject("crypt",SagePayPaymentProcessor.getSagePayCrypt(request, new BigDecimal(request.getParameter("amount")),regSession.getCurrency(),cspModel.getPassword()));
       return mv;
    }
    
