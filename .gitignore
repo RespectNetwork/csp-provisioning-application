@@ -8,3 +8,10 @@
 # Property files
 *.properties
 src/main/webapp/img/csp_logo.png
+
+# IntelliJ project files
+.idea
+*.iml
+
+# Mac OSX
+.DS_Store
