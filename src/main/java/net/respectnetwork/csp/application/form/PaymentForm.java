@@ -42,7 +42,7 @@ public class PaymentForm {
     
     public PaymentForm()
     {
-       this.giftCodes = null;
+       this.giftCodes = "";
        this.cspTandC = false;
        this.txnType = null;
        this.customerEmail = null;
