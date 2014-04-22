@@ -45,13 +45,13 @@ public class PersonalCloudInviteController
 
 	private static final String RES_DEFAULT_INVITE_TEXT_PAYDESC = "CloudName Gift Cards for {0}";
 
-	private static final String RES_DEFAILT_INVITE_MAIL_SUBJECT = "Invitation from {0} to join Respect Network";
-	private static final String RES_DEFAILT_INVITE_MAIL_HEADER  = "{0} has invited you to join Respect Network at http://respectnetwork.com/\n\n";
-	private static final String RES_DEFAILT_INVITE_MAIL_GIFT_0  = "Please click the following URL to sign up:\n\n";
-	private static final String RES_DEFAILT_INVITE_MAIL_GIFT_1  = "Please click the following URL to sign up and redeem the gift card given by {0}:\n\n";
-	private static final String RES_DEFAILT_INVITE_MAIL_GIFT_2  = "Please click the following URLs to sign up and redeem the gift cards given by {0}:\n\n";
-	private static final String RES_DEFAILT_INVITE_MAIL_URL     = "   {0}\n\n";
-	private static final String RES_DEFAILT_INVITE_MAIL_FOOTER  = "\n\nSincerely,\n\nRespect Network\n\nhttp://respectnetwork.com/\n\nThe Personal Cloud Network";
+	private static final String RES_DEFAILT_INVITE_MAIL_SUBJECT = "Gift Code from {0} to join Respect Network";
+	private static final String RES_DEFAILT_INVITE_MAIL_HEADER  = "{0} has given you a gift code to join Respect Network <br/><br/>";
+	private static final String RES_DEFAILT_INVITE_MAIL_GIFT_0  = "Please click the following URL to sign up:<br/><br/>";
+	private static final String RES_DEFAILT_INVITE_MAIL_GIFT_1  = "Please click the following URL to sign up and redeem the gift card given by {0}:<br/><br/>";
+	private static final String RES_DEFAILT_INVITE_MAIL_GIFT_2  = "Please click the following URLs to sign up and redeem the gift cards given by {0}:<br/><br/>";
+	private static final String RES_DEFAILT_INVITE_MAIL_URL     = "   {0}<br/><br/>";
+	private static final String RES_DEFAILT_INVITE_MAIL_FOOTER  = "<br/><br/>Sincerely,<br/><br/>Respect Network<br/><br/>http://respectnetwork.com/<br/><br/>The Personal Cloud Network";
 
 	private String              cspCloudName;
 	private String		    cspInviteURL;
@@ -335,16 +335,16 @@ public class PersonalCloudInviteController
 			builder.append(getMessageFromResource("invite.mail.gift.2", inviter, RES_DEFAILT_INVITE_MAIL_GIFT_2, locale));
 		}
 		
-		String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/";
-		if( url.endsWith("/") == false )
+		String baseURL = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/";
+		if( baseURL.endsWith("/") == false )
 		{
-			url = url + "/";
+		   baseURL = baseURL + "/";
 		}
-		
+		String url = "";
 
 		if( (giftCodeList == null) || (giftCodeList.size() == 0) )
 		{
-			builder.append(getMessageFromResource("invite.mail.url", new Object[] { url }, RES_DEFAILT_INVITE_MAIL_URL, locale));
+			builder.append(getMessageFromResource("invite.mail.url", new Object[] { baseURL }, RES_DEFAILT_INVITE_MAIL_URL, locale));
 		}
 		else
 		{
@@ -352,7 +352,7 @@ public class PersonalCloudInviteController
 			{
 			   StringBuilder builder2 = new StringBuilder(builder);
 				Object[] obj = new Object[] { "Gift Code = " + gift.getGiftCodeId() };
-				url = url + "signup?" + HomeController.URL_PARAM_NAME_GIFT_CODE + "=" + gift.getGiftCodeId();
+				url = baseURL + "signup?" + HomeController.URL_PARAM_NAME_GIFT_CODE + "=" + gift.getGiftCodeId();
 				builder2.append(url);
 				builder2.append("<br></br>");
 				builder2.append(getMessageFromResource("invite.mail.url", obj, RES_DEFAILT_INVITE_MAIL_URL, locale));

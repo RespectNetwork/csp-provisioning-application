@@ -59,13 +59,14 @@
         	<div th:case="'signup'">
          	<p class="payment2">
 			<div th:if="${#strings.length(paymentInfo.giftCodes)}">	         		
-        		<input type="radio" id="paymentType" name="paymentType" value="giftCard" checked="true" />
+        		<input type="radio" id="paymentType" name="paymentType" value="giftCard" checked="true" />&nbsp;<input type="text" name="giftCodes"  id="giftCodes" class="inputFields med skinny" placeholder=" gift code" th:value="*{giftCodes}"/>				        			
         	</div>	
+			        	
 			<div th:if="${#strings.length(paymentInfo.giftCodes) == 0}">	         		
-        		<input type="radio" id="paymentType" name="paymentType" value="giftCard" />
+        		<input type="radio" id="paymentType" name="paymentType" value="giftCard" />&nbsp; <input type="text" name="giftCodes"  id="giftCodes" class="inputFields med skinny" placeholder=" gift code" th:value="*{giftCodes}"/>				        			
         	</div>        	
-		      	&nbsp;  
-        	<input type="text" name="giftCodes"  id="giftCodes" class="inputFields med skinny" placeholder=" gift code" th:value="*{giftCodes}"/> 
+		       
+        	 
 
 	      	</p>
 	        <p class="payment2">
