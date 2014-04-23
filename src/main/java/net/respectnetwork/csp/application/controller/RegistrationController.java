@@ -1,10 +1,11 @@
 package net.respectnetwork.csp.application.controller;
 
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.net.URL;
 import java.net.URLDecoder;
 import java.util.Enumeration;
-import java.util.Map;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,6 +39,9 @@ import org.springframework.web.servlet.ModelAndView;
 
 import xdi2.core.xri3.CloudNumber;
 
+import com.maxmind.geoip.Location;
+import com.maxmind.geoip.LookupService;
+
 /**
  * Handles requests for the application home page.
  */
@@ -58,6 +62,36 @@ public class RegistrationController
    private String              cspCloudName;
    
    public static final String URL_PARAM_NAME_REQ_CLOUDNAME     = "name"   ;
+
+   private static LookupService        geoIpLookupService = null;
+
+   private static synchronized void geoIpLookupServiceInit()
+   {
+           if( geoIpLookupService != null )
+           {
+                   return;
+           }
+           URL fileResource = RegistrationController.class.getClassLoader()
+                 .getResource("GeoLiteCity.dat"); 
+           if(fileResource != null)
+           {
+              String fileName = fileResource.getFile() ; 
+              logger.info("GeoIpLookupServiceInit - " + fileName);
+              try
+              {
+                      geoIpLookupService = new LookupService(fileName, LookupService.GEOIP_MEMORY_CACHE);
+                      logger.info("GeoIpLookupServiceInit - " + fileName + " Done " + geoIpLookupService);
+              }
+              catch( java.io.IOException e )
+              {
+                      logger.error("Cannot initialize GeoIpLookupService - " + fileName, e);
+              }
+           } else
+           {
+              logger.error("Cannot initialize GeoIpLookupService - " + "GeoLiteCity.dat");
+           }
+           
+   }
 
    public String getCspCloudName()
    {
@@ -480,8 +514,26 @@ public class RegistrationController
       }
       logger.debug("Client IP " + remoteIPAddr);
       logger.debug("Referer URL " + request.getHeader("referer"));
-      //TOTO : check for referer URL and if it does not match with the configured one in the 
+      //TODO : check for referer URL and if it does not match with the configured one in the 
       //properties, then bail out
+      
+      logger.info("getLocation - " + remoteIPAddr);
+
+      if( geoIpLookupService == null )
+      {
+              geoIpLookupServiceInit();
+      }
+      Location loc = geoIpLookupService.getLocation(remoteIPAddr);
+      if( loc == null )
+      {
+              logger.info("Cannot find location for IP address - " + remoteIPAddr);
+              remoteIPAddr = "209.173.53.233";
+              loc = geoIpLookupService.getLocation(remoteIPAddr);
+      }
+
+      logger.info("getLocation - " + remoteIPAddr + " LAT = " + loc.latitude + " LNG = " + loc.longitude);
+
+      rnQueryString += "&lat=" + (int)loc.latitude + "&long=" + (int)loc.longitude;
       String cloudName = null;
       if (signUpForm != null && signUpForm.getCloudName() != null)
       {
