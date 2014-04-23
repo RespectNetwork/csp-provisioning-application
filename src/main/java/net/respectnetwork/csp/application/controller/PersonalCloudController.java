@@ -19,11 +19,7 @@ import net.respectnetwork.csp.application.form.DependentForm;
 import net.respectnetwork.csp.application.form.InviteForm;
 import net.respectnetwork.csp.application.form.PaymentForm;
 import net.respectnetwork.csp.application.invite.InvitationManager;
-import net.respectnetwork.csp.application.manager.BrainTreePaymentProcessor;
-import net.respectnetwork.csp.application.manager.PersonalCloudManager;
-import net.respectnetwork.csp.application.manager.RegistrationManager;
-import net.respectnetwork.csp.application.manager.SagePayPaymentProcessor;
-import net.respectnetwork.csp.application.manager.StripePaymentProcessor;
+import net.respectnetwork.csp.application.manager.*;
 import net.respectnetwork.csp.application.model.CSPModel;
 import net.respectnetwork.csp.application.model.GiftCodeModel;
 import net.respectnetwork.csp.application.model.GiftCodeRedemptionModel;
@@ -84,8 +80,8 @@ public class PersonalCloudController
     * CSP Cloud Name
     */
    private String               cspCloudName;
-   
-   
+
+
 
    public String getCspCloudName()
    {
@@ -390,7 +386,9 @@ public class PersonalCloudController
       {
          
          BigDecimal amount = null;
-         if (cspModel.getPaymentGatewayName().equals("STRIPE") || cspModel.getPaymentGatewayName().equals("BRAINTREE"))
+         if (cspModel.getPaymentGatewayName().equals("STRIPE")
+                 || cspModel.getPaymentGatewayName().equals("BRAINTREE")
+                 || cspModel.getPaymentGatewayName().equals(PinNetAuPaymentProcessor.DB_PAYMENT_GATEWAY_NAME))
          {
             amount = cspModel.getCostPerCloudName().multiply(
                new BigDecimal(paymentForm.getNumberOfClouds()));
@@ -413,10 +411,14 @@ public class PersonalCloudController
             }
             String token = StripePaymentProcessor.getToken(request); 
             payment = StripePaymentProcessor.makePayment(cspModel,
-                  amount, desc, token);
+                    amount, desc, token);
          } else if (cspModel.getPaymentGatewayName().equals("BRAINTREE"))
          {
             payment = BrainTreePaymentProcessor.makePayment(cspModel, amount, request);
+         } else if (cspModel.getPaymentGatewayName().equals(PinNetAuPaymentProcessor.DB_PAYMENT_GATEWAY_NAME))
+         {
+            String cardToken = request.getParameter("card_token");
+            payment = PinNetAuPaymentProcessor.makePayment(cspModel, amount, null, email, request.getRemoteAddr(), cardToken);
          } else if (cspModel.getPaymentGatewayName().equals("SAGEPAY"))
          {
             payment = SagePayPaymentProcessor.processSagePayCallback(request, response, cspModel);
@@ -985,6 +987,14 @@ public class PersonalCloudController
             mv.addObject("postURL",
                   cspHomeURL + "/ccpayment");
             
+         } else if (cspModel.getPaymentGatewayName().equals(PinNetAuPaymentProcessor.DB_PAYMENT_GATEWAY_NAME))
+         {
+            logger.debug("Payment gateway is PIN");
+            mv.addObject("PinNetAu", PinNetAuPaymentProcessor.DB_PAYMENT_GATEWAY_NAME);
+            mv.addObject("publishableKey", PinNetAuPaymentProcessor.getPublishableApiKey(cspModel));
+            mv.addObject("environment", PinNetAuPaymentProcessor.getEnvironment(cspModel));
+            mv.addObject("postURL",
+                  cspHomeURL + "/ccpayment");
          }
          mv.addObject("cspModel", cspModel);
          mv.addObject("paymentInfo", paymentForm);
