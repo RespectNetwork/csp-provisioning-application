@@ -823,7 +823,7 @@ public class PersonalCloudController
          return mv;
       }
 
-      boolean ccpayments = false;
+      
       
       if (!errors && giftCodes != null && giftCodes.length > 0)
       {
@@ -900,10 +900,7 @@ public class PersonalCloudController
                         e.printStackTrace();
                      }
                      statusText = "Congratulations " + cloudName + "! You have successfully purchased dependent clouds.";
-                  } else //all dependents have not been paid for. So, go to creditCardPayment.
-                  {
-                     ccpayments = true;
-                  }
+                  } 
                } else
                {
                   forwardingPage += "/cloudPage";
@@ -965,6 +962,11 @@ public class PersonalCloudController
 
          String desc = "Personal cloud  " + regSession.getCloudName();
          
+         mv.addObject("cspModel", cspModel);
+         mv.addObject("paymentInfo", paymentForm);
+         mv.addObject("amount",amount.toPlainString());
+         mv.addObject("totalAmountText", RegistrationController.formatCurrencyAmount(regSession.getCurrency(), amount));
+         
          if (cspModel.getPaymentGatewayName().equals("STRIPE"))
          {           
             logger.debug("Payment gateway is STRIPE");
@@ -972,15 +974,14 @@ public class PersonalCloudController
                   StripePaymentProcessor.getJavaScript(cspModel, amount, desc));
             mv.addObject("postURL",
                   cspHomeURL + "/ccpayment");
-            mv.addObject("amount",amount.toPlainString());
+            
          } else if (cspModel.getPaymentGatewayName().equals("SAGEPAY"))
          {
-            
+            logger.debug("Payment gateway is SAGEPAY");
             mv.addObject("postURL",
                   cspHomeURL +"/submitCustomerDetail");
             mv.addObject("SagePay","SAGEPAY");
-            mv.addObject("amount",amount.toPlainString());
-            return mv;
+            
          } else if (cspModel.getPaymentGatewayName().equals("BRAINTREE"))
          {
             logger.debug("Payment gateway is BRAINTREE");
@@ -989,10 +990,7 @@ public class PersonalCloudController
                   cspHomeURL + "/ccpayment");
             
          }
-         mv.addObject("cspModel", cspModel);
-         mv.addObject("paymentInfo", paymentForm);
-         mv.addObject("amount",amount.toPlainString());
-         mv.addObject("totalAmountText", RegistrationController.formatCurrencyAmount(regSession.getCurrency(), amount));
+         
          return mv;
       } 
       
@@ -1151,7 +1149,7 @@ public class PersonalCloudController
       try
       {
          registrationManager.registerUser(CloudName.create(cloudName), phone,
-               email, password);
+               email, password,null);
 
          logger.debug("Sucessfully Registered {}", cloudName);
          return true;
