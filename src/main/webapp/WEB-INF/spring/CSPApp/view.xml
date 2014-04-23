@@ -11,6 +11,8 @@
 
  
 
+	<!-- <mvc:resources mapping="/static/**" location="/static/" /> -->
+	        	
     <beans:bean id="templateResolver"
         class="org.thymeleaf.templateresolver.ServletContextTemplateResolver">
         <beans:property name="prefix" value="/WEB-INF/views/" />
@@ -32,9 +34,12 @@
         <beans:property name="prefix">
             <beans:value>/WEB-INF/pages/</beans:value>
         </beans:property>
+        
         <beans:property name="suffix">
-            <beans:value>.jsp</beans:value>
+            <beans:value>""</beans:value>
         </beans:property>
+        
     </beans:bean>
+	    
    
 </beans:beans>

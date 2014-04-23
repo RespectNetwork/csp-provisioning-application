@@ -24,11 +24,11 @@
                     <link rel="apple-touch-icon-precomposed" href="img/ico/apple-touch-icon-57-precomposed.png" />
                                    <link rel="shortcut icon" href="img/ico/favicon.png" />
 	
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 	
 	<!--include the javascript that checks availability-->
 	<script src="js/libs/nameavailability.js"></script>
-                                   
+    <script src="js/libs/misc.js"> </script>                               
   </head>
 
 <body>
@@ -74,7 +74,7 @@
       	
 		<div class="help">
   			<div id="help">
-  				<a href="/help_url/">Help</a>
+  				<a target="_blank" onclick="return windowpop(this.href, 545, 433); " th:href="@{/help}">Help</a>
 			</div>
 	 	</div>
 
