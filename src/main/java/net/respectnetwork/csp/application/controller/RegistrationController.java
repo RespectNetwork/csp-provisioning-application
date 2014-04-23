@@ -1,6 +1,7 @@
 package net.respectnetwork.csp.application.controller;
 
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 import java.net.URLDecoder;
 import java.util.Enumeration;
 import java.util.Map;
@@ -18,6 +19,7 @@ import net.respectnetwork.csp.application.form.SignUpForm;
 import net.respectnetwork.csp.application.form.UserDetailsForm;
 import net.respectnetwork.csp.application.form.ValidateForm;
 import net.respectnetwork.csp.application.manager.RegistrationManager;
+import net.respectnetwork.csp.application.model.CSPCostOverrideModel;
 import net.respectnetwork.csp.application.model.CSPModel;
 import net.respectnetwork.csp.application.session.RegistrationSession;
 import net.respectnetwork.sdk.csp.validation.CSPValidationException;
@@ -344,10 +346,10 @@ public class RegistrationController
          errors = true;
       }
 
+      CSPModel cspModel = null;
+
       if (!errors)
       {
-
-         CSPModel cspModel = null;
 
          try
          {
@@ -357,7 +359,12 @@ public class RegistrationController
          {
             // TODO Auto-generated catch block
             e.printStackTrace();
+            errors = true;
          }
+
+      }
+
+      if (!errors) {
          
          mv = new ModelAndView("payment");
          PaymentForm paymentForm = new PaymentForm();
@@ -375,10 +382,57 @@ public class RegistrationController
          
          mv.addObject("paymentInfo", paymentForm);
 
+         // Check for cost override based on phone number
+         String currency = cspModel.getCurrency();
+         BigDecimal costPerCloud = cspModel.getCostPerCloudName();
+         CSPCostOverrideModel cspCostOverrideModel = null;
+         try
+         {
+            cspCostOverrideModel = DAOFactory.getInstance().getcSPCostOverrideDAO()
+                    .get(getCspCloudName(), regSession.getVerifiedMobilePhone());
+            if (cspCostOverrideModel != null)
+            {
+               logger.debug("Cost override found: " + cspCostOverrideModel.toString());
+               currency = cspCostOverrideModel.getCurrency();
+               costPerCloud = cspCostOverrideModel.getCostPerCloudName();
+            } else
+            {
+               logger.debug("No cost override found (using default cost)");
+            }
+         } catch (DAOException e)
+         {
+            logger.error(e.toString());
+            e.printStackTrace();
+         }
+
+         regSession.setCostPerCloudName(costPerCloud);
+         regSession.setCurrency(currency);
+
+         // Format total cost
+         BigDecimal totalAmount = costPerCloud.multiply(new BigDecimal(paymentForm.getNumberOfClouds()));
+         String totalAmountText = formatCurrencyAmount(currency, totalAmount);
+
+
+         mv.addObject("totalAmountText", totalAmountText);
+         mv.addObject("paymentInfo", paymentForm);
       }
 
       return mv;
 
+   }
+
+   /**
+    * Format a currency and amount for human display.
+    */
+   static String formatCurrencyAmount(String currency, BigDecimal amount)
+   {
+      // Hack - JDK doesn't seem to have an easy locale-independent way to get this symbol
+      String currencySymbol = "";
+      if (currency.equals("USD") || currency.equals("AUD"))
+      {
+         currencySymbol = "$";
+      }
+      return String.format("%s%04.2f %s", currencySymbol, amount, currency);
    }
 
    /**

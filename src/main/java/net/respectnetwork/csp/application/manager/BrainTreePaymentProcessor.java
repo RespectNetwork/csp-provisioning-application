@@ -6,44 +6,37 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 
 
-
+import com.braintreegateway.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.respectnetwork.csp.application.controller.PersonalCloudController;
 import net.respectnetwork.csp.application.model.CSPModel;
 import net.respectnetwork.csp.application.model.PaymentModel;
 
-import com.braintreegateway.BraintreeGateway;
-import com.braintreegateway.Environment;
-import com.braintreegateway.Result;
-import com.braintreegateway.Transaction;
-import com.braintreegateway.TransactionRequest;
-
 public class BrainTreePaymentProcessor
 {
-   
+
    private  static BraintreeGateway gateway = null;
    /** CLass Logger */
    private static final Logger  logger = LoggerFactory
                                              .getLogger(BrainTreePaymentProcessor.class);
-   
+
    private static BraintreeGateway getGateway(CSPModel cspModel)
    {
-      
+
          Environment env = null;
          if(cspModel.getEnv().equals("SANDBOX"))
          {
-            env = Environment.SANDBOX;  
+            env = Environment.SANDBOX;
          } else if(cspModel.getEnv().equals("DEVELOPMENT"))
          {
-            env = Environment.DEVELOPMENT;  
+            env = Environment.DEVELOPMENT;
          }else if(cspModel.getEnv().equals("PRODUCTION"))
          {
-            env = Environment.PRODUCTION;  
+            env = Environment.PRODUCTION;
          }
          logger.debug("BT ENV" + env.toString());
-         if (gateway == null) { 
+         if (gateway == null) {
             gateway = new BraintreeGateway(
                 env,
                 cspModel.getUsername(),
@@ -60,9 +53,9 @@ public class BrainTreePaymentProcessor
 //         "gtgqhw37rwm24qjx",
 //         "676293fe617a7cb9991c17bdc963ddfd"
 //     );
-   
+
    /**
-    * 
+    *
     * @param csp
     * @param amount
     * @param desc
@@ -77,51 +70,77 @@ public class BrainTreePaymentProcessor
     */
    public static String getJavaScript( CSPModel csp )
    {
-      
+
       StringBuilder builder = new StringBuilder();
 
       builder.append(csp.getEnc_key())
-             
+
              ;
 
       //logger.debug("BT enc " + builder.toString());
       return builder.toString();
    }
-   public static PaymentModel makePayment(CSPModel csp ,BigDecimal amount , HttpServletRequest request)
+
+   public static PaymentModel makePayment(CSPModel csp,
+                                          BigDecimal amount,
+                                          String currency,
+                                          String merchantAccountId,
+                                          HttpServletRequest request)
    {
       PaymentModel payment = new PaymentModel();
       payment.setPaymentId(UUID.randomUUID().toString());
       payment.setCspCloudName(csp.getCspCloudName());
-      
-      payment.setAmount(amount);
-      payment.setCurrency(csp.getCurrency());
-       
-      TransactionRequest transactionRequest = new TransactionRequest()
-      .amount(amount)
-      .creditCard()
-          .number(request.getParameter("number"))
-          .cvv(request.getParameter("cvv"))
-          .expirationMonth(request.getParameter("month"))
-          .expirationYear(request.getParameter("year"))
-          .done()
-          .options()
-          .submitForSettlement(true)
-          .done();
 
-      
+      payment.setAmount(amount);
+      payment.setCurrency(currency);
+
+      TransactionRequest transactionRequest = new TransactionRequest()
+              .amount(amount)
+              .creditCard()
+              .number(request.getParameter("number"))
+              .cvv(request.getParameter("cvv"))
+              .expirationMonth(request.getParameter("month"))
+              .expirationYear(request.getParameter("year"))
+              .done()
+              .options()
+              .submitForSettlement(true)
+              .done();
+
+      // Optional merchant account id (primarily for alternate currency)
+      if (merchantAccountId != null && merchantAccountId.length() > 0)
+      {
+         transactionRequest.merchantAccountId(merchantAccountId);
+      }
+
+      logger.debug(" BT TransactionRequest " + transactionRequest.toString());
+
+
       Result<Transaction> result = getGateway(csp).transaction().sale(transactionRequest);
-      //logger.debug(" BT Result " + result.getErrors());
-      if (result != null && result.isSuccess()) {
+      logger.debug(" BT Result error " + result.getErrors());
+      if (result != null && result.isSuccess())
+      {
          payment.setPaymentReferenceId(result.getTarget().getId());
          payment.setPaymentResponseCode("OK");
          return payment;
-         
-       } else {
-          logger.debug("BT transaction didn't go through");
-          return null;
-         
-       }
+
+      } else if (result.getTransaction() != null)
+      {
+         System.out.println("Message: " + result.getMessage());
+         Transaction transaction = result.getTransaction();
+         System.out.println("Error processing transaction:");
+         System.out.println("  Status: " + transaction.getStatus());
+         System.out.println("  Code: " + transaction.getProcessorResponseCode());
+         System.out.println("  Text: " + transaction.getProcessorResponseText());
+      } else
+      {
+         System.out.println("Message: " + result.getMessage());
+         for (ValidationError error : result.getErrors().getAllDeepValidationErrors())
+         {
+            System.out.println("Attribute: " + error.getAttribute());
+            System.out.println("  Code: " + error.getCode());
+            System.out.println("  Message: " + error.getMessage());
+         }
+      }
+      return null;
    }
-   
-   
 }

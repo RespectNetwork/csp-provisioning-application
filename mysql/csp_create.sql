@@ -24,6 +24,17 @@ create table  payment
 create index ix_payment_csp_cloudname on payment(csp_cloudname);
 alter  table payment add (constraint fk_payment_csp_cloudname foreign key (csp_cloudname) references csp(csp_cloudname));
 
+create table  csp_cost_override
+(	csp_cloudname		varchar(255)	not null
+,	phone_prefix	varchar(64)	not null
+,	cost_per_cloudname	numeric(9,2)	not null
+,	currency		char(3)		not null
+,   merchant_account_id varchar(255) not null
+,   PRIMARY KEY (csp_cloudname, phone_prefix)
+);
+create index ix_csp_cost_override on csp_cost_override(csp_cloudname);
+alter  table csp_cost_override add (constraint fk_csp_cost_override_csp_cloudname foreign key (csp_cloudname) references csp(csp_cloudname));
+
 create table  invite
 (	invite_id		char(36)	primary key
 ,	csp_cloudname		varchar(255)	not null
