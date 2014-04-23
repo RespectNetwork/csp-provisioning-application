@@ -36,9 +36,15 @@ public class SagePayPaymentProcessor
    
       String cspHomeURL = request.getContextPath();
       
-      
-      msg.setSuccessUrl(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + cspHomeURL + "/ccpayment/"); 
-      msg.setFailureUrl(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + cspHomeURL + "/ccpayment/"); 
+      if(request.getServerName().equalsIgnoreCase("localhost"))
+      {
+         msg.setSuccessUrl("http://" + request.getServerName() + ":" + request.getServerPort() + cspHomeURL + "/ccpayment/"); 
+         msg.setFailureUrl("http://" + request.getServerName() + ":" + request.getServerPort() + cspHomeURL + "/ccpayment/"); 
+      } else 
+      {
+         msg.setSuccessUrl("https://" + request.getServerName() +  cspHomeURL + "/ccpayment/"); 
+         msg.setFailureUrl("https://" + request.getServerName() +  cspHomeURL + "/ccpayment/");
+      }
       msg.setVendorTxCode(UUID.randomUUID().toString());
       msg.setDescription("Purchase Personal Cloud(s)");
       msg.setCustomerName(request.getParameter("BillingFirstNames") + " " + request.getParameter("BillingSurname"));

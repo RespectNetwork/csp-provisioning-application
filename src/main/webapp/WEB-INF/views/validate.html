@@ -13,6 +13,7 @@
     <link href="css/style.css" rel="stylesheet" />
 
 <script src="js/libs/misc.js"> </script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 
 <style>
 
@@ -26,9 +27,12 @@
     <!-- Fav and touch icons -->
     <link rel="apple-touch-icon-precomposed" sizes="144x144" href="img/ico/apple-touch-icon-144-precomposed.png" />
     <link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/ico/apple-touch-icon-114-precomposed.png" />
-      <link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/ico/apple-touch-icon-72-precomposed.png" />
-                    <link rel="apple-touch-icon-precomposed" href="img/ico/apple-touch-icon-57-precomposed.png" />
-                                   <link rel="shortcut icon" href="img/ico/favicon.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/ico/apple-touch-icon-72-precomposed.png" />
+    <link rel="apple-touch-icon-precomposed" href="img/ico/apple-touch-icon-57-precomposed.png" />
+    <link rel="shortcut icon" href="img/ico/favicon.png" />
+    <script>
+	
+	</script>
 </head>
 
 <body>
@@ -65,7 +69,7 @@
              			<p class="secondary"> <span th:text="|Sent to ${verifyingPhone}|">Sent to</span></p>
      					
      				<p class="secondary"> <input type="checkbox" name="terms"  required="required" /> &nbsp;
-     				I agree to the <a href="#">Respect Trust Framework</a> and the one-person one-account rule.</p>
+     				I agree to the <a target="_blank" onclick="return windowpop(this.href, 545, 433); " th:href="@{/respectTrustFramework}" >Respect Trust Framework</a> and the one-person one-account rule.</p>
 						<input type="submit" name="submit" id="submit" class="button" value="Verify" />
 						
 				</form>
@@ -81,7 +85,7 @@
 				</div>
   			<div class="help">
   				<div id="help">
-  					<a href="/help_url/">Help</a>
+  					<a target="_blank" onclick="return windowpop(this.href, 545, 433); " th:href="@{/help}">Help</a>
 					</div>
 				</div>
     </div>

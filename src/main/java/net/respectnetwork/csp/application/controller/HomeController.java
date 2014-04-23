@@ -146,6 +146,21 @@ public class HomeController {
         mv.addObject("signUpInfo", signUpForm);
         return mv;
 	}
-	
+	@RequestMapping("/respectTrustFramework")
+	public String respectTrustFramework() {
+	    return "RespectTrustFramework";
+	}
+	@RequestMapping("/help")
+   public String help() {
+       return "help";
+   }
+	@RequestMapping("/faq")
+   public String faq() {
+       return "faq";
+   }
+	@RequestMapping("/")
+   public String index() {
+       return "index";
+   }
 
 }

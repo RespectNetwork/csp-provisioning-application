@@ -137,6 +137,18 @@
       <link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/ico/apple-touch-icon-72-precomposed.png" />
                     <link rel="apple-touch-icon-precomposed" href="img/ico/apple-touch-icon-57-precomposed.png" />
                                    <link rel="shortcut icon" href="img/ico/favicon.png" />
+<script>     
+     function goToRNlandingPage()
+	 {
+
+		query = document.getElementById('queryStr').value;
+		url = document.getElementById('postURL').value ;	
+		urlAndQs = "?" + query;
+		
+		window.open(url+urlAndQs);
+	 }
+</script>
+ <script src="js/libs/misc.js"> </script>                                  
 </head>
 <body>
 
@@ -164,7 +176,13 @@
       <!-- Begin page content -->
       <div class="bodyContainer">
 		<div class="middle2"> 
-          	
+			<div>
+					<input type="hidden" id="queryStr" name="cloudname" th:value="${queryStr}" />         	  
+  			  		<input type="hidden" id="postURL" name="postURL" th:value="${postURL}" />
+					<button type="button" id="goToRN" class="button big" onclick="goToRNlandingPage();">Invite people to join Respect Network</button>
+          </div>
+          <br></br>
+          <br></br>	
           <form method="get" action="#" th:action="@{/invite}">
               <button id="full" type="submit" class="button big">Buy Personal Cloud Gift Cards</button>
           </form>
@@ -180,7 +198,7 @@
       	
   			<div class="help">
   				<div id="help">
-  					<a href="/help_url/">Help</a>
+  					<a target="_blank" onclick="return windowpop(this.href, 545, 433); " th:href="@{/help}">Help</a>
 				</div>
 	 		</div>
     </div>
