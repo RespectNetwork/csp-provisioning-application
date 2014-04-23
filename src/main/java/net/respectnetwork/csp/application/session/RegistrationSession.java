@@ -48,7 +48,7 @@ public class RegistrationSession implements Serializable {
     private Map<String,String[]> RNParamMap = null;
     
     /** Query String from RN to be relayed back */
-    private String rnQueryString = "n=v";
+    private String rnQueryString = "";
     
     /** RN post registration URL */
     private String RNPostRegistrationURL = null;

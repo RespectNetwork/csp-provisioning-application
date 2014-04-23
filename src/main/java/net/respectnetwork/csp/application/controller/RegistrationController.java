@@ -533,7 +533,11 @@ public class RegistrationController
 
       logger.info("getLocation - " + remoteIPAddr + " LAT = " + loc.latitude + " LNG = " + loc.longitude);
 
-      rnQueryString += "&lat=" + (int)loc.latitude + "&long=" + (int)loc.longitude;
+      if(rnQueryString != null && !rnQueryString.isEmpty())
+      {
+         rnQueryString += "&";
+      }
+      rnQueryString += "lat=" + (int)loc.latitude + "&long=" + (int)loc.longitude;
       String cloudName = null;
       if (signUpForm != null && signUpForm.getCloudName() != null)
       {
