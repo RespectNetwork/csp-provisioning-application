@@ -88,14 +88,12 @@ public class PinNetAuPaymentProcessor
    /**
     * Complete a payment given a card_token created from JavaScript client library.
     */
-	public static PaymentModel makePayment(CSPModel csp, BigDecimal amount, String description, String email, String clientIpAddress, String cardToken)
+	public static PaymentModel makePayment(CSPModel csp, BigDecimal amount, String currency, String description, String email, String clientIpAddress, String cardToken)
 	{
       if(description == null || description.isEmpty())
       {
          description = "Purchase personal clouds in Respect Network";
       }
-
-      String currency = csp.getCurrency();
 
       URI apiBaseUri = ENVIRONMENT_URIS.get(csp.getEnv());
       if (apiBaseUri == null)

@@ -421,7 +421,7 @@ public class PersonalCloudController
          } else if (cspModel.getPaymentGatewayName().equals(PinNetAuPaymentProcessor.DB_PAYMENT_GATEWAY_NAME))
          {
             String cardToken = request.getParameter("card_token");
-            payment = PinNetAuPaymentProcessor.makePayment(cspModel, amount, null, email, request.getRemoteAddr(), cardToken);
+            payment = PinNetAuPaymentProcessor.makePayment(cspModel, amount, currency, null, email, request.getRemoteAddr(), cardToken);
          } else if (cspModel.getPaymentGatewayName().equals("SAGEPAY"))
          {
             payment = SagePayPaymentProcessor.processSagePayCallback(request, response, cspModel, currency);
