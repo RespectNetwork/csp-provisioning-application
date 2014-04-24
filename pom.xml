@@ -499,7 +499,12 @@
       <version>2.28.0</version>
     </dependency>
     
-  
+  	<!-- GeoIP -->
+  	<dependency>
+        <groupId>com.maxmind.geoip</groupId>
+        <artifactId>geoip-api</artifactId>
+        <version>1.2.12</version>
+    </dependency>
   
 
     </dependencies>

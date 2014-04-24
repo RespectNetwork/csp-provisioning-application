@@ -24,6 +24,17 @@ create table  payment
 create index ix_payment_csp_cloudname on payment(csp_cloudname);
 alter  table payment add (constraint fk_payment_csp_cloudname foreign key (csp_cloudname) references csp(csp_cloudname));
 
+create table  csp_cost_override
+(	csp_cloudname		varchar(255)	not null
+,	phone_prefix	varchar(64)	not null
+,	cost_per_cloudname	numeric(9,2)	not null
+,	currency		char(3)		not null
+,   merchant_account_id varchar(255) not null
+,   PRIMARY KEY (csp_cloudname, phone_prefix)
+);
+create index ix_csp_cost_override on csp_cost_override(csp_cloudname);
+alter  table csp_cost_override add (constraint fk_csp_cost_override_csp_cloudname foreign key (csp_cloudname) references csp(csp_cloudname));
+
 create table  invite
 (	invite_id		char(36)	primary key
 ,	csp_cloudname		varchar(255)	not null
@@ -54,14 +65,14 @@ alter  table invite_response add (constraint fk_invite_response_payment_id forei
 
 create table  giftcode
 (	giftcode_id		char(36)	primary key
-,	invite_id		char(36)	not null
+,	invite_id		char(36)	
 ,	payment_id		char(36)	not null
 ,	time_created		datetime	not null
 );
 
 create index ix_giftcode_invite_id  on giftcode(invite_id);
 create index ix_giftcode_payment_id on giftcode(payment_id);
-alter  table giftcode add (constraint fk_giftcode_invite_id  foreign key (invite_id)  references invite(invite_id));
+
 alter  table giftcode add (constraint fk_giftcode_payment_id foreign key (payment_id) references payment(payment_id));
 
 create table  giftcode_redemption
@@ -91,18 +102,21 @@ create table  signup_info
 );
 
 create table promo_code
-( 	promo_id 		varchar(64),
+( 	promo_id 		varchar(64) not null,
 	start_date 		datetime,
 	end_date		datetime,
-	promo_limit 	int(11)
+	promo_limit 	int(11),
+	primary key (promo_id)
 );
 
 create table promo_cloud
 (	promo_id 		varchar(64),
 	cloudname		varchar(255),
 	creation_date	datetime,
-	csp_cloudname	varchar(255)
+	csp_cloudname	varchar(255),
+	primary key (promo_id, cloudname)
 );
-
+alter  table promo_cloud add (constraint fk_promo_cloud_csp_cloudname foreign key (csp_cloudname) references csp(csp_cloudname));
+alter  table promo_cloud add (constraint fk_promo_cloud_promo_id foreign key (promo_id) references promo_code(promo_id));
 
 

@@ -73,7 +73,7 @@ public class SagePayPaymentProcessor
       return crypt;
    }
    
-   public static PaymentModel processSagePayCallback(HttpServletRequest request , HttpServletResponse response , CSPModel cspModel)
+   public static PaymentModel processSagePayCallback(HttpServletRequest request , HttpServletResponse response , CSPModel cspModel, String currency)
    {
       final RequestState rs = new RequestState(request, response, request.getSession().getServletContext());
       String crypt= rs.params.getMandatoryString("crypt");
@@ -95,7 +95,7 @@ public class SagePayPaymentProcessor
          payment.setPaymentReferenceId(fps.getVpsTxId());
          payment.setPaymentResponseCode(fps.getStatus().toString());
          payment.setAmount(fps.getAmount());
-         payment.setCurrency(cspModel.getCurrency());
+         payment.setCurrency(currency);
          return payment;
       } else
       {

@@ -1,9 +1,11 @@
 package net.respectnetwork.csp.application.controller;
 
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
+import java.net.URL;
 import java.net.URLDecoder;
 import java.util.Enumeration;
-import java.util.Map;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,6 +20,7 @@ import net.respectnetwork.csp.application.form.SignUpForm;
 import net.respectnetwork.csp.application.form.UserDetailsForm;
 import net.respectnetwork.csp.application.form.ValidateForm;
 import net.respectnetwork.csp.application.manager.RegistrationManager;
+import net.respectnetwork.csp.application.model.CSPCostOverrideModel;
 import net.respectnetwork.csp.application.model.CSPModel;
 import net.respectnetwork.csp.application.session.RegistrationSession;
 import net.respectnetwork.sdk.csp.validation.CSPValidationException;
@@ -35,6 +38,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import xdi2.core.xri3.CloudNumber;
+
+import com.maxmind.geoip.Location;
+import com.maxmind.geoip.LookupService;
 
 /**
  * Handles requests for the application home page.
@@ -56,6 +62,36 @@ public class RegistrationController
    private String              cspCloudName;
    
    public static final String URL_PARAM_NAME_REQ_CLOUDNAME     = "name"   ;
+
+   private static LookupService        geoIpLookupService = null;
+
+   private static synchronized void geoIpLookupServiceInit()
+   {
+           if( geoIpLookupService != null )
+           {
+                   return;
+           }
+           URL fileResource = RegistrationController.class.getClassLoader()
+                 .getResource("GeoLiteCity.dat"); 
+           if(fileResource != null)
+           {
+              String fileName = fileResource.getFile() ; 
+              logger.info("GeoIpLookupServiceInit - " + fileName);
+              try
+              {
+                      geoIpLookupService = new LookupService(fileName, LookupService.GEOIP_MEMORY_CACHE);
+                      logger.info("GeoIpLookupServiceInit - " + fileName + " Done " + geoIpLookupService);
+              }
+              catch( java.io.IOException e )
+              {
+                      logger.error("Cannot initialize GeoIpLookupService - " + fileName, e);
+              }
+           } else
+           {
+              logger.error("Cannot initialize GeoIpLookupService - " + "GeoLiteCity.dat");
+           }
+           
+   }
 
    public String getCspCloudName()
    {
@@ -344,10 +380,10 @@ public class RegistrationController
          errors = true;
       }
 
+      CSPModel cspModel = null;
+
       if (!errors)
       {
-
-         CSPModel cspModel = null;
 
          try
          {
@@ -357,7 +393,12 @@ public class RegistrationController
          {
             // TODO Auto-generated catch block
             e.printStackTrace();
+            errors = true;
          }
+
+      }
+
+      if (!errors) {
          
          mv = new ModelAndView("payment");
          PaymentForm paymentForm = new PaymentForm();
@@ -375,10 +416,57 @@ public class RegistrationController
          
          mv.addObject("paymentInfo", paymentForm);
 
+         // Check for cost override based on phone number
+         String currency = cspModel.getCurrency();
+         BigDecimal costPerCloud = cspModel.getCostPerCloudName();
+         CSPCostOverrideModel cspCostOverrideModel = null;
+         try
+         {
+            cspCostOverrideModel = DAOFactory.getInstance().getcSPCostOverrideDAO()
+                    .get(getCspCloudName(), regSession.getVerifiedMobilePhone());
+            if (cspCostOverrideModel != null)
+            {
+               logger.debug("Cost override found: " + cspCostOverrideModel.toString());
+               currency = cspCostOverrideModel.getCurrency();
+               costPerCloud = cspCostOverrideModel.getCostPerCloudName();
+            } else
+            {
+               logger.debug("No cost override found (using default cost)");
+            }
+         } catch (DAOException e)
+         {
+            logger.error(e.toString());
+            e.printStackTrace();
+         }
+
+         regSession.setCostPerCloudName(costPerCloud);
+         regSession.setCurrency(currency);
+
+         // Format total cost
+         BigDecimal totalAmount = costPerCloud.multiply(new BigDecimal(paymentForm.getNumberOfClouds()));
+         String totalAmountText = formatCurrencyAmount(currency, totalAmount);
+
+
+         mv.addObject("totalAmountText", totalAmountText);
+         mv.addObject("paymentInfo", paymentForm);
       }
 
       return mv;
 
+   }
+
+   /**
+    * Format a currency and amount for human display.
+    */
+   static String formatCurrencyAmount(String currency, BigDecimal amount)
+   {
+      // Hack - JDK doesn't seem to have an easy locale-independent way to get this symbol
+      String currencySymbol = "";
+      if (currency.equals("USD") || currency.equals("AUD"))
+      {
+         currencySymbol = "$";
+      }
+      return String.format("%s%04.2f %s", currencySymbol, amount, currency);
    }
 
    /**
@@ -426,8 +514,30 @@ public class RegistrationController
       }
       logger.debug("Client IP " + remoteIPAddr);
       logger.debug("Referer URL " + request.getHeader("referer"));
-      //TOTO : check for referer URL and if it does not match with the configured one in the 
+      //TODO : check for referer URL and if it does not match with the configured one in the 
       //properties, then bail out
+      
+      logger.info("getLocation - " + remoteIPAddr);
+
+      if( geoIpLookupService == null )
+      {
+              geoIpLookupServiceInit();
+      }
+      Location loc = geoIpLookupService.getLocation(remoteIPAddr);
+      if( loc == null )
+      {
+              logger.info("Cannot find location for IP address - " + remoteIPAddr);
+              remoteIPAddr = "209.173.53.233";
+              loc = geoIpLookupService.getLocation(remoteIPAddr);
+      }
+
+      logger.info("getLocation - " + remoteIPAddr + " LAT = " + loc.latitude + " LNG = " + loc.longitude);
+
+      if(rnQueryString != null && !rnQueryString.isEmpty())
+      {
+         rnQueryString += "&";
+      }
+      rnQueryString += "lat=" + (int)loc.latitude + "&long=" + (int)loc.longitude;
       String cloudName = null;
       if (signUpForm != null && signUpForm.getCloudName() != null)
       {
