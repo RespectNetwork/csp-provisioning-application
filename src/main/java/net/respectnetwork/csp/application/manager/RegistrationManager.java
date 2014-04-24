@@ -12,6 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.Currency;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import net.respectnetwork.csp.application.dao.DAOException;
@@ -77,7 +78,12 @@ public class RegistrationManager {
     /**
      * Registration Discount Code
      */
-    private CloudNameDiscountCode cloudNameDiscountCode = CloudNameDiscountCode.OnePersonOneName;;
+    private CloudNameDiscountCode cloudNameDiscountCode = CloudNameDiscountCode.RespectFirst;
+    
+    /**
+     * Dependent Cloud Discount Code
+     */
+    private CloudNameDiscountCode depCloudNameDiscountCode = CloudNameDiscountCode.OnePersonOneName;
     
     /** RN Discount Code */
     private  RespectNetworkMembershipDiscountCode respectNetworkMembershipDiscountCode = RespectNetworkMembershipDiscountCode.IIW17;
@@ -111,7 +117,13 @@ public class RegistrationManager {
     
     private static String cspInviteURL;
     
+    private String cspRespectConnectBaseURL;
     
+    public static final String GeoLocationPostURIKey = "<$https><#network.globe><$set><$uri>";
+    public static final String RNpostRegistrationLandingPageURIKey = "<$https><#post><#registration><$uri>";
+    public static final String CSPCloudRegistrationURIKey = "<$https><#registration><$uri>";
+    public static final String CSPDependentCloudRegistrationURIKey = "<$https><#dependent><#registration><$uri>";
+    public static final String CSPGiftCardPurchaseURIKey = "<$https><#giftcard><#registration><$uri>";
     
     /**
      * Get CSP Registrar
@@ -267,6 +279,10 @@ public class RegistrationManager {
             logger.debug("CSP Private Key Found: Setting setRnCspSecretToken = null");
             theCSPInfo.setRnCspSecretToken(null);
         } 
+        //set the registration endpoints
+        //setEndpointURI(CSPCloudRegistrationURIKey, this.cspHomeURL + "/register");
+        //setEndpointURI(CSPDependentCloudRegistrationURIKey, this.cspHomeURL + "/dependent");
+        //setEndpointURI(CSPGiftCardPurchaseURIKey, this.cspHomeURL + "/invite");
     }
 
     /**
@@ -392,7 +408,7 @@ public class RegistrationManager {
         
     }
     
-    public CloudNumber registerUser(CloudName cloudName, String verifiedPhone, String verifiedEmail, String userPassword) throws CSPRegistrationException, Xdi2ClientException {
+    public CloudNumber registerUser(CloudName cloudName, String verifiedPhone, String verifiedEmail, String userPassword , CloudNameDiscountCode cdc) throws CSPRegistrationException, Xdi2ClientException {
         
         
         CloudNumber cloudNumber = CloudNumber.createRandom(cloudName.getCs());
@@ -408,7 +424,7 @@ public class RegistrationManager {
         Map<XDI3Segment, String> services = new HashMap<XDI3Segment, String> ();
         
         try {
-            services.put(XDI3Segment.create("<$https><$connect><$xdi>"), personalCloudEndPoint +
+            services.put(XDI3Segment.create("<$https><$connect><$xdi>"), this.getCspRespectConnectBaseURL() +
                 URLEncoder.encode(cloudNumber.toString(), "UTF-8") + "/connect/request");
         } catch (UnsupportedEncodingException e) {
             throw new CSPRegistrationException(e);
@@ -425,8 +441,13 @@ public class RegistrationManager {
         }
       
         // step 5: Register Cloud Name
-
-        cspRegistrar.registerCloudNameInRN(cloudName, cloudNumber, verifiedPhone, verifiedEmail, cloudNameDiscountCode);
+        if(cdc != null)
+        {
+           cspRegistrar.registerCloudNameInRN(cloudName, cloudNumber, verifiedPhone, verifiedEmail, cdc);
+        } else
+        {
+           cspRegistrar.registerCloudNameInRN(cloudName, cloudNumber, verifiedPhone, verifiedEmail, cloudNameDiscountCode);
+        }
         cspRegistrar.registerCloudNameInCSP(cloudName, cloudNumber);
         cspRegistrar.registerCloudNameInCloud(cloudName, cloudNumber, cspSecretToken);
 
@@ -475,7 +496,7 @@ public class RegistrationManager {
 	public CloudNumber registerDependent(CloudName guardianCloudName , String guardianToken , CloudName dependentCloudName,  String dependentToken , String s_dependentBirthDate){
 		
 				try {
-					CloudNumber depCloudNumber = this.registerUser(dependentCloudName, " ", " ", dependentToken);
+					CloudNumber depCloudNumber = this.registerUser(dependentCloudName, " ", " ", dependentToken,depCloudNameDiscountCode);
 					if(depCloudNumber == null) {
 						logger.debug("Dependent Cloud did not get registered successfully");
 						return null;
@@ -647,6 +668,60 @@ public class RegistrationManager {
    {
       cspInviteURL = url;
    }
-    
+   public  String getEndpointURI(String key , String cloudName)
+   {
+      BasicCSPInformation cspInformation = (BasicCSPInformation)cspRegistrar.getCspInformation();
+      XDIDiscoveryClient discovery = cspInformation.getXdiDiscoveryClient();
+      try
+      {
+         XDIDiscoveryResult discResult = discovery.discoverFromRegistry(
+               XDI3Segment.create(cloudName.toString()), null);
+         Map<XDI3Segment,String> endpointURIs = discResult.getEndpointUris();
+         for (Map.Entry<XDI3Segment, String> epURI : endpointURIs.entrySet())
+         {
+            if(epURI.getKey().toString().equals(key))
+            {
+               return epURI.getValue();
+            }
+         }
+         
+      } catch (Xdi2ClientException e)
+      {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+      }
+      
+      return "";
+      
+   }
+   
+   public  boolean setEndpointURI(String key , String endpointURI ) 
+   {
+      BasicCSPInformation cspInformation = (BasicCSPInformation)cspRegistrar.getCspInformation();
+      Map<XDI3Segment,String> endpointURIMap = new HashMap<XDI3Segment,String>();
+      endpointURIMap.put(XDI3Segment.create(key), endpointURI);
+      try
+      {
+         cspRegistrar.setCloudServicesForCSPInCSP(cspInformation.getCspCloudNumber(), cspInformation.getCspSecretToken(), cspInformation.getCspRegistryXdiEndpoint(), endpointURIMap);
+      } catch (Xdi2ClientException e)
+      {        
+         e.printStackTrace();
+         return false;
+      }
+      
+      
+      return true;
+      
+   }
+
+   public String getCspRespectConnectBaseURL()
+   {
+      return cspRespectConnectBaseURL;
+   }
+
+   public void setCspRespectConnectBaseURL(String cspRespectConnectBaseURL)
+   {
+      this.cspRespectConnectBaseURL = cspRespectConnectBaseURL;
+   }
 
 }

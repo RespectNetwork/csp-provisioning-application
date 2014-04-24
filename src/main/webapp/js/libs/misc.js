@@ -18,3 +18,23 @@ function clearText(field){
 		//Open the window.
 		window.open(url, "Window2", "status=no,height=" + height + ",width=" + width + ",resizable=yes,left=" + leftPosition + ",top=" + topPosition + ",screenX=" + leftPosition + ",screenY=" + topPosition + ",toolbar=no,menubar=no,scrollbars=no,location=no,directories=no");
 	}
+	
+	function validateEmail(x)
+	{
+		
+		var atpos=x.indexOf("@");
+		var dotpos=x.lastIndexOf(".");
+		if (atpos<1 || dotpos<atpos+2 || dotpos+2>=x.length)
+		{
+		  return false;
+		}
+		return true;
+	}
+	function validatePhone(x)
+	{
+		return true;
+	}
+	function validatePassword(x)
+	{
+		return true;
+	}

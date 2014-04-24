@@ -162,5 +162,9 @@ public class HomeController {
    public String index() {
        return "index";
    }
+	@RequestMapping("/csptc")
+   public String csptc() {
+       return "CSPTC";
+   }
 
 }

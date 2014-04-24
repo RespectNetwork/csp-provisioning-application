@@ -9,8 +9,8 @@
 
     <!-- CSS -->
     <link href="css/bootstrap.css" rel="stylesheet" />
-    <link href="css/style.css" rel="stylesheet" />
     <link href="css/bootstrap-responsive.css" rel="stylesheet" />
+    <link href="css/style.css" rel="stylesheet" />
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
@@ -35,24 +35,36 @@
 <!-- Part 1: Wrap all page content here -->
 <div id="wrap">
 
-      <!-- Fixed navbar -->
-      <div class="navbar navbar-fixed-top">
-        <div class="navbar-inner">
-          <div class="container">
-          <div class="row-fluid">  
-          	<div class="span4 smallTop"><img src="img/csp_logo.png" />
-          	</div>
-          	<div class="span4 midHdr">
-          	</div>
-          	<div class="span4 bigTop">
-             <p class="secondary">PRESS | FAQs</p>
-         		</div>
+<!-- Fixed navbar -->
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+      	<div class="row-fluid">  
+          <div class="span4 smallTop"><p class="test"></p>
           </div>
-
+          <div class="span4 midHdr">
           </div>
-        </div>
-      </div>
-
+          <div class="span4">
+         		<div class="navbar-inner">
+          <!-- Button for triggering responsive navbar -->
+            <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <!-- Responsive Navbar Part 2: Place all navbar contents you want collapsed withing .navbar-collapse.collapse. -->
+            <div class="nav-collapse collapse">
+            	<ul class="nav">
+                <li><a href="FAQ_placeholder.html"> FAQ</a> </li>
+                <li><a href="press_placeholder.html"> PRESS </a></li>
+             </ul>
+            </div><!--/.nav-collapse -->
+         	</div>  <!--/.navbar-inner -->         		
+     			</div>
+      	</div>
+	  	</div>
+		</div>  
+	</div>
       <!-- Begin page content -->
       <div class="bodyContainer">
 				<div class="middle"> Choose your cloud name 
@@ -70,16 +82,26 @@
 				</div>
 			</div>
 </div>
-     <div id="footer">
-      	
-		<div class="help">
-  			<div id="help">
-  				<a target="_blank" onclick="return windowpop(this.href, 545, 433); " th:href="@{/help}">Help</a>
-			</div>
-	 	</div>
 
-  	</div>
+ <div id="footer">
+  <div class="row-fluid">
+    <div class="span1"></div>
+    <div class="span10 cspMain">YOUR CLOUD SERVICE PROVIDER | <img src="img/paoga_logo.png" /> &nbsp;
+		</div>
+	</div>
+<!--  <div class="row-fluid">
+  	<div class="span1"></div>
+  	<div class="span3">
+  		<div id="help"><a target="_blank" onclick="return windowpop(this.href, 545, 433); " th:href="@{/help}">Help</a></div>
+		</div>
+		<div class="span6"></div>
+	</div>
+-->
+</div>
 
+    <!-- Javascript
+    ================================================== -->
+    <script src="js/bootstrap-collapse.js"></script>
   
 <!--The following script hooks the HTML Elements to the javascript functionality-->
 	<!-- see the comments inside the javascript for details-->
@@ -132,7 +154,7 @@
 	        stripSymbol:true, 
 	        
 	        // indicates the location of the availability service
-	        availibilityAPI: "http://cloudnameavailability.elasticbeanstalk.com/api/availability/equals/"
+	        availibilityAPI: "https://registration-stage.respectnetwork.net/rn-checkavailability-service/api/availability/equals/"
 	    }); 
 	});
  

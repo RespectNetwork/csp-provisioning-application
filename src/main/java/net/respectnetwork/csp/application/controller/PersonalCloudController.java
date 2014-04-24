@@ -384,13 +384,15 @@ public class PersonalCloudController
       
       if (!errors)
       {
-         
+
+         String currency = regSession.getCurrency();
          BigDecimal amount = null;
          if (cspModel.getPaymentGatewayName().equals("STRIPE")
                  || cspModel.getPaymentGatewayName().equals("BRAINTREE")
                  || cspModel.getPaymentGatewayName().equals(PinNetAuPaymentProcessor.DB_PAYMENT_GATEWAY_NAME))
          {
-            amount = cspModel.getCostPerCloudName().multiply(
+            // TODO - check numberofClouds > 0
+            amount = regSession.getCostPerCloudName().multiply(
                new BigDecimal(paymentForm.getNumberOfClouds()));
             logger.debug("Charging CC for " + amount.toPlainString());
             logger.debug("Number of clouds being purchased "
@@ -411,17 +413,18 @@ public class PersonalCloudController
             }
             String token = StripePaymentProcessor.getToken(request); 
             payment = StripePaymentProcessor.makePayment(cspModel,
-                    amount, desc, token);
+                  amount, currency, desc, token);
          } else if (cspModel.getPaymentGatewayName().equals("BRAINTREE"))
          {
-            payment = BrainTreePaymentProcessor.makePayment(cspModel, amount, request);
+            payment = BrainTreePaymentProcessor.makePayment(cspModel, amount, currency,
+                    regSession.getMerchantAccountId(), request);
          } else if (cspModel.getPaymentGatewayName().equals(PinNetAuPaymentProcessor.DB_PAYMENT_GATEWAY_NAME))
          {
             String cardToken = request.getParameter("card_token");
             payment = PinNetAuPaymentProcessor.makePayment(cspModel, amount, null, email, request.getRemoteAddr(), cardToken);
          } else if (cspModel.getPaymentGatewayName().equals("SAGEPAY"))
          {
-            payment = SagePayPaymentProcessor.processSagePayCallback(request, response, cspModel);
+            payment = SagePayPaymentProcessor.processSagePayCallback(request, response, cspModel, currency);
          }
             
             if (payment != null)
@@ -959,10 +962,15 @@ public class PersonalCloudController
             e.printStackTrace();
          }
 
-         BigDecimal amount = cspModel.getCostPerCloudName().multiply(
-               new BigDecimal(paymentForm.getNumberOfClouds()));
+         BigDecimal amount = regSession.getCostPerCloudName().multiply(
+                 new BigDecimal(paymentForm.getNumberOfClouds()));
 
          String desc = "Personal cloud  " + regSession.getCloudName();
+         
+         mv.addObject("cspModel", cspModel);
+         mv.addObject("paymentInfo", paymentForm);
+         mv.addObject("amount",amount.toPlainString());
+         mv.addObject("totalAmountText", RegistrationController.formatCurrencyAmount(regSession.getCurrency(), amount));
          
          if (cspModel.getPaymentGatewayName().equals("STRIPE"))
          {           
@@ -971,15 +979,14 @@ public class PersonalCloudController
                   StripePaymentProcessor.getJavaScript(cspModel, amount, desc));
             mv.addObject("postURL",
                   cspHomeURL + "/ccpayment");
-            mv.addObject("amount",amount.toPlainString());
+            
          } else if (cspModel.getPaymentGatewayName().equals("SAGEPAY"))
          {
-            
+            logger.debug("Payment gateway is SAGEPAY");
             mv.addObject("postURL",
                   cspHomeURL +"/submitCustomerDetail");
             mv.addObject("SagePay","SAGEPAY");
-            mv.addObject("amount",amount.toPlainString());
-            return mv;
+            
          } else if (cspModel.getPaymentGatewayName().equals("BRAINTREE"))
          {
             logger.debug("Payment gateway is BRAINTREE");
@@ -996,9 +1003,7 @@ public class PersonalCloudController
             mv.addObject("postURL",
                   cspHomeURL + "/ccpayment");
          }
-         mv.addObject("cspModel", cspModel);
-         mv.addObject("paymentInfo", paymentForm);
-         mv.addObject("amount",amount.toPlainString());
+         
          return mv;
       } 
       

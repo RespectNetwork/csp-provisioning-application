@@ -11,6 +11,7 @@ public class DAOFactory
 	private static DAOFactory singleton = null;
 
 	private CSPDAO	              cSPDAO;
+	private CSPCostOverrideDAO	   cSPCostOverrideDAO;
 	private PaymentDAO            paymentDAO;
 	private InviteDAO             inviteDAO;
 	private InviteResponseDAO     inviteResponseDAO;
@@ -73,7 +74,17 @@ public class DAOFactory
 		this.cSPDAO = cSPDAO;
 	}
 
-	public PaymentDAO getPaymentDAO()
+   public CSPCostOverrideDAO getcSPCostOverrideDAO()
+   {
+      return cSPCostOverrideDAO;
+   }
+
+   public void setcSPCostOverrideDAO(CSPCostOverrideDAO cSPCostOverrideDAO)
+   {
+      this.cSPCostOverrideDAO = cSPCostOverrideDAO;
+   }
+
+   public PaymentDAO getPaymentDAO()
 	{
 		return this.paymentDAO;
 	}

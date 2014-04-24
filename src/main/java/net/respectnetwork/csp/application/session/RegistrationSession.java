@@ -1,6 +1,7 @@
 package net.respectnetwork.csp.application.session;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Map;
 
 import net.respectnetwork.csp.application.form.DependentForm;
@@ -47,14 +48,23 @@ public class RegistrationSession implements Serializable {
     private Map<String,String[]> RNParamMap = null;
     
     /** Query String from RN to be relayed back */
-    private String rnQueryString = null;
+    private String rnQueryString = "";
     
     /** RN post registration URL */
     private String RNPostRegistrationURL = null;
     
     /** Transaction Type */
     private String transactionType = null;
-    
+
+    /** Cost per cloud (taking into account any override) */
+    private BigDecimal costPerCloudName = null;
+
+    /** Currency code (taking into account any override) */
+    private String currency = null;
+
+    /** Merchant Account ID (used for BrainTree) */
+    private String merchantAccountId = null;
+
     /**
      * @return the SessionId
      */
@@ -148,6 +158,9 @@ public class RegistrationSession implements Serializable {
                 .append(", verifiedMobilePhone=").append(verifiedMobilePhone)
                 .append(", password=").append(password)                
                 .append(", inviteForm=").append(inviteForm)                
+                .append(", costPerCloudName=").append(costPerCloudName)
+                .append(", currency=").append(currency)
+                .append(", merchantAccountId=").append(merchantAccountId)
                 .append("]");
         return builder.toString();
     }
@@ -163,6 +176,9 @@ public class RegistrationSession implements Serializable {
                 .append(verifiedMobilePhone)
                 .append(password)                
                 .append(inviteForm)                
+                .append(costPerCloudName)
+                .append(currency)
+                .append(merchantAccountId)
                 .toHashCode();
     }
 
@@ -179,6 +195,9 @@ public class RegistrationSession implements Serializable {
                     .append(verifiedMobilePhone, other.verifiedMobilePhone)
                     .append(password, other.password)
                     .append(inviteForm, other.inviteForm)
+                    .append(costPerCloudName, other.costPerCloudName)
+                    .append(currency, other.currency)
+                    .append(merchantAccountId, other.merchantAccountId)
                     .isEquals();
         } else {
             return false;
@@ -249,4 +268,33 @@ public class RegistrationSession implements Serializable {
       this.rnQueryString = rnQueryString;
    }
 
+   public BigDecimal getCostPerCloudName()
+   {
+      return costPerCloudName;
+   }
+
+   public void setCostPerCloudName(BigDecimal costPerCloudName)
+   {
+      this.costPerCloudName = costPerCloudName;
+   }
+
+   public String getCurrency()
+   {
+      return currency;
+   }
+
+   public void setCurrency(String currency)
+   {
+      this.currency = currency;
+   }
+
+   public String getMerchantAccountId()
+   {
+      return merchantAccountId;
+   }
+
+   public void setMerchantAccountId(String merchantAccountId)
+   {
+      this.merchantAccountId = merchantAccountId;
+   }
 }

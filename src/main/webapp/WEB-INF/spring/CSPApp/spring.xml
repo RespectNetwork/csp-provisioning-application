@@ -72,7 +72,8 @@
         <beans:property name="validateCodes" value="${csp.validateCodes}"/>  <!-- Never run as false in Production --> 
 		<beans:property name="requireInviteCode" value="${csp.requireInviteCode}"/>  <!-- Never run as false in Production -->
 		<beans:property name="cspHomeURL" value="${csp.cspHomeURL}"/>  
-		<beans:property name="cspInviteURL" value="${csp.cspInviteURL}"/>      	
+		<beans:property name="cspInviteURL" value="${csp.cspInviteURL}"/>   
+		<beans:property name="cspRespectConnectBaseURL" value="${csp.cspRespectConnectBaseURL}"/> 	   	
     </beans:bean>
     
     
@@ -171,6 +172,10 @@
         <beans:property name="dataSource" ref="dataSource"/>
     </beans:bean>
 
+    <beans:bean id="cspCostOverrideDAOImpl" class="net.respectnetwork.csp.application.dao.mysql.CSPCostOverrideDAOImpl" scope="singleton">
+        <beans:property name="dataSource" ref="dataSource"/>
+    </beans:bean>
+
     <beans:bean id="paymentDAOImpl" class="net.respectnetwork.csp.application.dao.mysql.PaymentDAOImpl" scope="singleton">
         <beans:property name="dataSource" ref="dataSource"/>
     </beans:bean>
@@ -209,6 +214,7 @@
     
     <beans:bean id="daoFactory" class="net.respectnetwork.csp.application.dao.DAOFactory" scope="singleton">
         <beans:property name="cSPDAO"                ref="cspDAOImpl"/>
+        <beans:property name="cSPCostOverrideDAO"    ref="cspCostOverrideDAOImpl"/>
         <beans:property name="paymentDAO"            ref="paymentDAOImpl"/>
         <beans:property name="inviteDAO"             ref="inviteDAOImpl"/>
         <beans:property name="inviteResponseDAO"     ref="inviteResponseDAOImpl"/>
