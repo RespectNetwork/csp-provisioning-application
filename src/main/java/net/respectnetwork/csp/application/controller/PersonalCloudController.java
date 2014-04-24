@@ -1162,7 +1162,7 @@ public class PersonalCloudController
       try
       {
          registrationManager.registerUser(CloudName.create(cloudName), phone,
-               email, password);
+               email, password, null);
 
          logger.debug("Sucessfully Registered {}", cloudName);
          return true;
