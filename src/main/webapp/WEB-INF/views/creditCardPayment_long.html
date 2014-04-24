@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Respect Network</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+
+    <!-- CSS -->
+    <link href="css/bootstrap.css" rel="stylesheet" />
+		<link href="css/bootstrap-responsive.css" rel="stylesheet" />
+    <link href="css/style.css" rel="stylesheet" />
+
+<!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+<!--[if lt IE 9]>
+<script src="js/html5shiv.js"></script>
+<![endif]-->
+
+<!-- Fav and touch icons -->
+<link rel="shortcut icon" href="img/ico/favicon.png" />
+
+	<!--include jquery-->
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+	<script src="js/libs/misc.js"> </script>
+</head>
+
+<body>
+<!-- Part 1: Wrap all page content here -->
+<div id="wrap">
+<!-- Fixed navbar -->
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+      	<div class="row-fluid">  
+          <div class="span4 smallTop"><p class="test"></p>
+          </div>
+          <div class="span4 midHdr">
+          </div>
+          <div class="span4">
+         		<div class="navbar-inner">
+          <!-- Button for triggering responsive navbar -->
+            <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <!-- Responsive Navbar Part 2: Place all navbar contents you want collapsed withing .navbar-collapse.collapse. -->
+            <div class="nav-collapse collapse">
+            	<ul class="nav">
+                <li><a href="#"> FAQ</a> </li>
+                <li><a href="#about"> PRESS </a></li>
+             </ul>
+            </div><!--/.nav-collapse -->
+         	</div>  <!--/.navbar-inner -->         		
+     			</div>
+      	</div>
+	  	</div>
+		</div>  
+	</div>
+
+<!-- Begin page content -->
+	<div class="container minusPad">
+    <div class="row-fluid"> 
+    	<div class="span1"></div> 
+      <div class="span6">		
+	      <p class="payment3 ">Billing Information</p> 
+	       <div class="middle smallMarg left">                         
+          <form id="cc_payment_form" action="#" th:object="${paymentInfo}" th:action="${postURL}" method="post">
+<!--						<div th:if="${StripeJavaScript}">
+              <table id="sTable">
+	              <tr><td  th:utext="${StripeJavaScript}">
+	              	<script src="https://checkout.stripe.com/checkout.js"
+	                             class="stripe-button"
+	                             data-key=""
+	                             data-amount="2500"
+	                             data-name="One Personal Cloud"
+	                             data-description="$25 USD"
+	                             data-image="img/cloud.png">
+	              	</script>
+	            	</td></tr>
+              </table>
+          	</div>
+-->          	      	
+		  	<div th:if="${SagePay}">
+						<input type="text" name="BillingFirstNames"  id="BillingFirstNames" class="inputFields tiny smallMarg" placeholder=" first name" onFocus="clearText(this)" onBlur="clearText(this.className = 'onblurtext med smallMarg')"  required="required" /> 
+
+	      		&nbsp;<input type="text" name="BillingSurname"  id="BillingSurname" class="inputFields med smallMarg" placeholder=" surname" onFocus="clearText(this)" onBlur="clearText(this.className = 'onblurtext med smallMarg')"  required="required" /> 
+ 
+ 						<input type="text" name="BillingAddress1"  id="BillingAddress1" placeholder="address1" class="inputFields smallMarg" onFocus="clearText(this)" onBlur="clearText(this.className = 'onblurtext med smallMarg')"  required="required" /> 
+	        	
+ 						<input type="text" name="BillingAddress2"  id="BillingAddress2" placeholder="address2" class="inputFields smallMarg" onFocus="clearText(this)" onBlur="clearText(this.className = 'onblurtext med smallMarg')"  /> 
+	        	<br />
+	        	<p></p>
+	 					<input type="text" name="BillingCity" id="BillingCity" placeholder=" city" class="inputFields short smallMarg" onFocus="clearText(this)" onBlur="clearText(this.className = 'onblurtext med smallMarg')"  required="required" /> 
+	        	&nbsp;<input type="text" name="BillingState"  id="BillingState" placeholder="st*" class="inputFields mini" onFocus="clearText(this)" onBlur="clearText(this.className = 'onblurtext med smallMarg')"  />
+ 	        	&nbsp;<input type="text" name="BillingPostCode"  id="BillingPostCode" placeholder="postal code" class="inputFields tiny smallMarg"  onFocus="clearText(this)" onBlur="clearText(this.className = 'onblurtext med smallMarg')"  required="required" /> 
+ 				&nbsp; <input type="text" name="BillingCountry"  id="BillingCountry" placeholder="country" class="inputFields smallMarg"  onFocus="clearText(this)" onBlur="clearText(this.className = 'onblurtext med smallMarg')"  required="required" />
+						
+						<p class=""><button type="submit" name="submit" id="submit" class="button big">Continue</button>
+						</p>
+	        	
+	        </div>
+	        <div th:if="${BrainTree}">
+          	<input type="text" size="20" autocomplete="off" data-encrypted-name="number" placeholder="credit card number" class="inputFields smallMarg" required="required"/>
+          	<br /><input type="text" size="4" autocomplete="off" data-encrypted-name="cvv" placeholder="cvv" class="inputFields dinky" required="required"/>
+          	&nbsp;<input type="text" size="2" name="month" placeholder="mm" class="inputFields date"/>
+          	<input type="text" size="4" name="year" placeholder="yyyy" class="inputFields date" required="required"/>
+        		<button type="submit" id="submit"  class="button big">Process Payment</button>		
+    			</div>
+    					<script  src="https://js.braintreegateway.com/v1/braintree.js"></script>
+    					<script th:inline="javascript">
+    					/*<![CDATA[*/
+      						var braintree = Braintree.create([[${BrainTree}]]);
+      						braintree.onSubmitEncryptForm('cc_payment_form');
+      					/*]]>*/
+    					</script>
+
+ 
+	        
+            <input type="hidden" name="numberOfClouds" value="" id="numberOfClouds"  th:value="*{numberOfClouds}" />                
+			<input type="hidden" name="txnType" value="" id="txnType"  th:value="*{txnType}" />	
+			<input type="hidden" name="amount" value="" id="amount"  th:value="${amount}" />				
+        </form>
+		</div>        
+    </div>
+    <div class="span5"><p class="payment3"></p>
+    	<div class="equation">Respect Network 
+    		<br />LIFETIME membership
+        <br />+<br />LIFETIME Connection 
+        <br />Cloud hosting 
+     	</div>
+        <div class="equals" th:text="${totalAmountText}"> $xx USD
+			</div>
+		</div>
+      
+	</div>
+  </div>
+
+</div>	
+     <div id="footer">
+      	
+  			<div class="help">
+  				<div id="help">
+  					<a target="_blank" onclick="return windowpop(this.href, 545, 433); " th:href="@{/help}">Help</a>
+				</div>
+	 		</div>
+    </div>
+   
+</body>
+</html>

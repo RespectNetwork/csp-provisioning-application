@@ -1,5 +1,93 @@
+      html,
+      body {
+        height: 100%;
+        /* The html and body elements cannot have any padding or margin. */
+      }
+
+      /* Wrapper for page content to push down footer */
+      #wrap {
+        min-height: 100%;
+        height: auto !important;
+        height: 100%;
+        /* Negative indent footer by it's height */
+        margin: 0 auto -100px;
+      }
+ 
+      /* Set the fixed height of the footer here */ 
+      #push,
+      #footer {
+        height: 100px;
+      }
+   
+		 .border {
+        border-top: solid 1px #d9d9d9;
+      }
+      
 
 
+      /* Custom page CSS
+      -------------------------------------------------- */
+      /* Not required for template or sticky footer method. */
+
+      #wrap > .container {
+        padding-top: 150px;
+      }
+      
+      .bodyContainer {
+      	padding-top: 125px;
+      }
+      
+      .paymentBody{
+      	padding-top: 125px;
+      }
+      
+      .container .credit {
+        margin: 20px 0;
+        text-align:center;
+      }
+
+      code {
+        font-size: 80%;
+      }
+      
+/* floating Help button
+------------------------------------------------------*/
+#help { 
+  height: 104px; 
+  width: 104px; 
+  position: fixed; 
+  top: 93%;
+  z-index: 9999;
+}
+#help a { 
+  display: block; 
+  background: #b6b6b6; 
+  height: 15px; 
+  width: 70px; 
+  padding: 8px 16px;
+  color: #fdfdfd; 
+  font-size: 17px; 
+  text-decoration: none; 
+  text-align:center;
+  	-webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+}
+
+#help a:hover { 
+  background: #b6b6b6; 
+}
+
+.test {
+	background-image:url("../img/RespectNetwork_Logo_H_RGB.png"); 
+	background-repeat: no-repeat;
+	height: 57px;
+	margin-left: 150px;
+}
+
+.row {
+	margin-left: 0px; 
+}
 
 .page-header {
 	width: 960px;
@@ -45,10 +133,6 @@
 	float: right;
 }
 
-.left {
-	text-align: left;
-}
-
 .center {
 	text-align: center;
 }
@@ -83,8 +167,14 @@
 
 .middle {
 	font-size: 38px;
-	padding: 50px 0 75px;
+	padding: 0px 0 25px;
 	height: 370px;
+}
+
+.middle1 {
+	font-size: 38px;
+	padding: 0px 0 0px;
+	height: 80%;
 }
 
 .middle2 {
@@ -93,11 +183,14 @@
 	height: 400px;
 }
 
+
+
 .primary, .cloud, .inputForm, .middle, .middle2 {
 	text-align: center;
 }
-
-
+.left {
+	text-align: left;
+}
 .helpButton {
 	margin-left: 80px;
 	width: 100px;
@@ -242,7 +335,8 @@
 }
 
 .date {
-	width: 116px;
+	width: 114px;
+	margin-top:10px;
 }
 .uberdinky {
 	width: 100px;
@@ -255,15 +349,15 @@
 }
 
 .tiny {
-	width: 135px;
+	width: 130px;
 }
 
 .short {
-	width: 185px;
+	width: 175px;
 }
 
 .med {
-	width: 250px;
+	width: 245px;
 }
 
 .skinny {
@@ -286,23 +380,84 @@
   border: 0px;
   font: 20px "AvenirNext", helvetica, arial, sans-serif;
 	height: 40px;
-	margin-top:0px;
+	margin-top:20px;
 }
 
 .big {
 	width:425px;
 }
 
+   /* CUSTOMIZE THE NAVBAR
+    -------------------------------------------------- */
+
+    /* Special class on .container surrounding .navbar, used for positioning it into place. */
+    .navbar-wrapper {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 10;
+      margin-top: 20px;
+      margin-bottom: -90px; /* Negative margin to pull up carousel. 90px is roughly margins and height of navbar. */
+    }
+    .span4  .navbar-inner {
+			margin-right:30%;
+			background-color: transparent;
+    }
+
+    /* Remove border and change up box shadow for more contrast */
+    .navbar .navbar-inner {
+      border: 0;
+    }
+
+		.navbar .nav > li {
+		float: right;
+		margin-top: 40px;
+		}
+
+    /* Downsize the brand/project name a bit */
+    .navbar .brand {
+      padding: 14px 20px 16px; /* Increase vertical padding to match navbar links */
+      font-size: 16px;
+      font-weight: bold;
+      text-shadow: 0 -1px 0 rgba(0,0,0,.5);
+    }
+
+    /* Navbar links: increase padding for taller navbar */
+    .navbar .nav > li > a {
+      padding: 15px 10px;
+    }
+    
+    .navbar .nav {
+			margin: 0 60px 0 0; 
+		}
+		
+    /* Offset the responsive button for proper vertical alignment */
+    .navbar .btn-navbar {
+      margin-top: 10px;
+    }
 
 /* Bigger Tablets */
 @media (min-width: 768px) and (max-width: 979px) {
-/*  #footer {
-    margin-left: -20px;
-    margin-right: -20px;
-    padding-left: 20px;
-    padding-right: 20px;
-  }
-*/  
+	.nav-collapse .nav > li {
+		text-align: right;
+	}
+
+	.navbar .btn-navbar {
+		margin-top: 45px;
+	}
+
+	.test {
+		background-image:url("../img/icon_57.png"); 
+		background-repeat: no-repeat;
+		height: 57px;
+		margin-left: 150px;
+	}
+		
+	.leftPad {
+		padding-left: 50px; 
+	}
+		
   #wrap > .container {
     padding-top: 50px !important;
   }
@@ -311,6 +466,10 @@
 		padding-top: 5px !important;
 	}
 
+	.paymentBody {
+		padding-top: 5px;
+	}
+	
 	.inputFields {
 		width:300px;
 		height:35px;
@@ -336,8 +495,13 @@
 	
 	.middle {
 		font-size: 30px;
-		padding: 52px 0 35px;
+/*		padding: 52px 0 35px;   */
 		height: 300px;
+	}
+
+	.middle1 {
+		font-size: 30px;
+		height: 80%px;
 	}
 	
 	.middle2 {
@@ -373,26 +537,37 @@
 	.midHdr {
   	font-size: 24px;
 	}
+	.skinny {
+		height: 30px;
+		width: 180px;
+	}
+	.payment1 {
+		margin: 0px 0 25px;
+	}
 }
 
 /* Small Tablets and Big Ass Phones */
 
 @media (min-width: 451px) and (max-width: 767px) {
-/*  #footer {
-    margin-left: -20px;
-    margin-right: -20px;
-    padding-left: 20px;
-    padding-right: 20px;
-  }
-*/
+	.test {
+		background-image:url("../img/icon_57.png"); 
+		background-repeat: no-repeat;
+		height: 57px;
+		margin-left: 100px;
+	}
+
   #wrap > .container {
-    padding-top: 50px !important;
+    padding-top: 5px !important;
   }
 
   .bodyContainer {
 		padding-top: 50px !important;
 	}
 
+	.paymentBody {
+		padding-top: 5px;
+	}
+	
 	.midHdr {
 		font-family: AvenirNext-Demibold;
 		padding-top: 25px;
@@ -401,13 +576,13 @@
 	}
 
 	.inputCloudName {
-		width: 250px;
+		width: 225px;
 		height: 35px;
 	}
 	
 	.inputFields {
 		margin-top: 10px;
-		width: 250px;
+		width: 225px;
 		height: 25px;
 		font-size: 14px;
 	}
@@ -415,7 +590,7 @@
 	.pwdInputForm {
 		margin-top: 10px;
 		height: 25px;
-		width: 250px;
+		width: 225px;
 		font-size: 14px;
 	}
 
@@ -441,7 +616,7 @@
 	}
 	
 	.button {
-		height:25px;
+		height:32px;
 	}
 	
 	.big {
@@ -451,11 +626,34 @@
 
 }
 
+@media (max-width: 1200px) and (min-width: 978px){
+	.test {
+		background-image: url("../img/RespectNetwork_Logo_H_RGB.png");
+		background-repeat: no-repeat;
+		height: 57px;
+		margin-left: 50px;
+	}
+}
+
 /* Small Phones */
 @media (max-width: 450px) {
-	#feedback { 
-  	top: 80%;
-  	z-index: 9999;
+	.test {
+		background-image:url("../img/icon_57.png"); 
+		background-repeat: no-repeat;
+		height: 57px;
+		margin-left: 50px;
+	}
+	.row-fluid .span4 {
+ 	 width: 31%;
+	}
+
+	.span4 {
+		width:103px;
+		float:left;
+	}
+
+	.leftHdr {
+		margin-left: 0px;
 	}
 
   #wrap > .container {
@@ -465,19 +663,24 @@
 	.inputCloudName {
 		width: 250px;
 		height: 35px;
+		margin-top: 10px;
+	}
+	
+	.navbar-inner {
+		height: 60px;
 	}
 
 	.bodyContainer {
-		padding-top: 10px !important;
+		padding-top: 15px !important;
 	}	
 	.middle2 {
-	 	font-size: 12px;
+	 	font-size: 20px;
 		padding: 5px 0 5px;
-		height: 390px;
+		height: 450px;
 	}
 	.inputFields {
 		margin-top: 10px;
-		width: 250px;
+		width: 180px;
 		height: 25px;
 		font-size: 14px;
 	}
@@ -485,119 +688,62 @@
 	.pwdInputForm {
 		margin-top: 10px;
 		height: 25px;
-		width: 250px;
+		width: 180px;
 		font-size: 14px;
 	}
 	
 	.middle {
 		font-size: 20px;
-		padding: 10px 0 15px;
+		padding: 0px 0 15px;
+		height: 300px;
 	}
 
 	.big {
 		width:250px;
 	}
 	
-		.midHdr {
-  	font-size: 14px;
+	.midHdr {
+  	font-size: 20px;
+  	padding-top:25px;
+	}
+	
+	.smallTop {
+		margin-top: 0px;
+		width: 250px;
+		height: 30px;
+	}
+	
+	.bigTop{
+		margin-top: 30px;
+	}
+	
+	select, textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"], .uneditable-input {
+		font-size: 18px;
+	}
+	
+	.navbar-fixed-top {
+ 		margin-bottom: 0px;
+	}
+	
+	.button {
+		padding: 0px; 
+		font: 18px "AvenirNext", helvetica, arial, sans-serif;
+		height: 30px;
+	}
+	
+	.payment1 {
+		margin: 0px 0 0px;
+	}
+	
+	.payment2 {
+		margin: 0px 0 15px;
 	}
 
 }
 
-/* Sticky footer styles
--------------------------------------------------- */
 
-      html,
-      body {
-        height: 100%;
-        /* The html and body elements cannot have any padding or margin. */
-      }
-
-      /* Wrapper for page content to push down footer */
-      #wrap {
-        min-height: 100%;
-        height: auto !important;
-        height: 100%;
-        /* Negative indent footer by it's height */
-        margin: 0 auto -100px;
-      }
- 
-      /* Set the fixed height of the footer here */ 
-      #push,
-      #footer {
-        height: 100px;
-      }
-   
-		 .border {
-        border-top: solid 1px #d9d9d9;
-      }
-      
-
-
-      /* Custom page CSS
-      -------------------------------------------------- */
-      /* Not required for template or sticky footer method. */
-
-      #wrap > .container {
-        padding-top: 150px;
-      }
-      
-      .bodyContainer {
-      	padding-top: 125px;
-      }
-      
-      .container .credit {
-        margin: 20px 0;
-        text-align:center;
-      }
-
-      code {
-        font-size: 80%;
-      }
-      
-/* floating Help button
-------------------------------------------------------*/
-#help { 
-  height: 104px; 
-  width: 104px; 
-  position: fixed; 
-  top: 95%;
-  left: 150px;
-  z-index: 9999;
-}
-#help a { 
-  display: block; 
-  background: #b6b6b6; 
-  height: 15px; 
-  width: 70px; 
-  padding: 8px 16px;
-  color: #fdfdfd; 
-  font-size: 17px; 
-  text-decoration: none; 
-  text-align:center;
-  	-webkit-border-radius: 4px;
-  -moz-border-radius: 4px;
-  border-radius: 4px;
-}
-
-#help a:hover { 
-  background: #b6b6b6; 
-}
-
-.test {
-	background-image:url("../img/RespectNetwork_Logo_H_RGB.png"); 
-	background-repeat: no-repeat;
-	height: 57px;
-	margin-left: 150px;
-}
 
 @media (min-width: 451px) and (max-width: 979px) {
-	.test {
-		background-image:url("../img/RespectNetwork_Logo_H_RGB.png"); 
-		background-repeat: no-repeat;
-		height: 57px;
-		margin-left: 75px;
-	}
 
 	.span4 {
 		width:300px;
@@ -614,30 +760,114 @@
 	}
 }
 
-@media (max-width: 450px) {
-	.test {
-		background-image:url("../img/icon_57.png"); 
-		background-repeat: no-repeat;
-		height: 57px;
-		margin-left: 50px;
-	}
 
-	.span4 {
-		width:103px;
-		float:left;
-	}
-
-	.leftHdr {
-		margin-left: 0px;
-	}
-}
 
 @media (min-width: 1200px) {
 	.row {
 		margin-left: 0px; 
 	}
 }
+ 
+@media (max-width: 979px) and (min-width: 768px){
+	.navbar .nav > li {
+		float: none;
+		margin-top: 0px;
+	}
+	.navbar .nav {
+		margin: 0px;
+	}
+	
+	.nav-collapse .nav > li > a, .nav-collapse .dropdown-menu a {
+		color: #d9d9d9;
+		background-color: white;	
+	}
+	.navbar .nav > li > a:focus,
+	.navbar .nav > li > a:hover {
+  	color: #02e4ff;
+  	text-decoration: none;
+  	background-color: white;
+	}
 
-.row {
-	margin-left: 0px; 
 }
+
+@media (max-width: 767px) and (min-width: 451px) {
+	[class*="span"], .uneditable-input[class*="span"], .row-fluid [class*="span"] {
+		float: left; 
+		margin-top: 25px;
+		background-color:transparent;
+	}
+		.navbar .nav > li {
+		float: none;
+		margin-top: 0px;
+	}
+	.navbar .nav {
+		margin: 0px;
+	}
+	
+	.nav-collapse .nav > li > a, .nav-collapse .dropdown-menu a {
+		color: #d9d9d9;
+		background-color: white;	
+	}
+	.navbar .nav > li > a:focus,
+	.navbar .nav > li > a:hover {
+  	color: #02e4ff;
+  	text-decoration: none;
+  	background-color: white;
+	}
+}
+
+
+@media (max-width: 450px) {
+/*	[class*="span"], .uneditable-input[class*="span"], .row-fluid [class*="span"]	{
+		margin-top: 2px; 
+		float: left; 
+		width: 33%; 
+		background-color:transparent;
+	}
+*/	
+	[class*="span"], .uneditable-input[class*="span"], .row-fluid [class*="span"]	{
+	}
+
+	.span4 {
+		margin-top: 2px; 
+		float: left; 
+		width: 33%; 
+		background-color:transparent;
+}
+		
+	.navbar .navbar-btn {
+		background-color: transparent;
+	}
+		.navbar .nav > li {
+		float: none;
+		margin-top: 0px;
+	}
+	.navbar .nav {
+		margin: 0px;
+	}
+		.nav-collapse .nav > li > a, .nav-collapse .dropdown-menu a {
+		color: #d9d9d9;
+		background-color: white;	
+	}
+	.navbar .nav > li > a:focus,
+	.navbar .nav > li > a:hover {
+  	color: #02e4ff;
+  	text-decoration: none;
+  	background-color: white;
+	}
+	
+	.nav-collapse .nav > li > a, .nav-collapse .dropdown-menu a {
+		color: #d9d9d9;
+		background-color: white;	
+	}
+	.navbar .nav > li > a:focus,
+	.navbar .nav > li > a:hover {
+  	color: #02e4ff;
+  	text-decoration: none;
+  	background-color: white;
+	}
+	.span10 {
+		width: 360px;
+	}
+}
+

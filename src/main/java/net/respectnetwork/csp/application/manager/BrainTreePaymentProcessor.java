@@ -116,30 +116,30 @@ public class BrainTreePaymentProcessor
 
 
       Result<Transaction> result = getGateway(csp).transaction().sale(transactionRequest);
-      logger.debug(" BT Result error " + result.getErrors());
-      if (result != null && result.isSuccess())
+      if (result != null)
       {
-         payment.setPaymentReferenceId(result.getTarget().getId());
-         payment.setPaymentResponseCode("OK");
-         return payment;
-
-      } else if (result.getTransaction() != null)
-      {
-         System.out.println("Message: " + result.getMessage());
-         Transaction transaction = result.getTransaction();
-         System.out.println("Error processing transaction:");
-         System.out.println("  Status: " + transaction.getStatus());
-         System.out.println("  Code: " + transaction.getProcessorResponseCode());
-         System.out.println("  Text: " + transaction.getProcessorResponseText());
+         if (result.isSuccess())
+         {
+            logger.debug(" BT Result success!");
+            payment.setPaymentReferenceId(result.getTarget().getId());
+            payment.setPaymentResponseCode("OK");
+            return payment;
+         } else if (result.getTransaction() != null)
+         {
+            logger.error(" BT error processing transaction:");
+            logger.error("Message: " + result.getMessage());
+            Transaction transaction = result.getTransaction();
+            logger.debug("  Status: " + transaction.getStatus());
+            logger.debug("  Code: " + transaction.getProcessorResponseCode());
+            logger.debug("  Text: " + transaction.getProcessorResponseText());
+         } else
+         {
+            logger.error(" BT other error ");
+            logger.error("Message: " + result.getMessage());
+         }
       } else
       {
-         System.out.println("Message: " + result.getMessage());
-         for (ValidationError error : result.getErrors().getAllDeepValidationErrors())
-         {
-            System.out.println("Attribute: " + error.getAttribute());
-            System.out.println("  Code: " + error.getCode());
-            System.out.println("  Message: " + error.getMessage());
-         }
+         logger.error(" BT null result returned!");
       }
       return null;
    }

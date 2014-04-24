@@ -19,11 +19,7 @@ import net.respectnetwork.csp.application.form.DependentForm;
 import net.respectnetwork.csp.application.form.InviteForm;
 import net.respectnetwork.csp.application.form.PaymentForm;
 import net.respectnetwork.csp.application.invite.InvitationManager;
-import net.respectnetwork.csp.application.manager.BrainTreePaymentProcessor;
-import net.respectnetwork.csp.application.manager.PersonalCloudManager;
-import net.respectnetwork.csp.application.manager.RegistrationManager;
-import net.respectnetwork.csp.application.manager.SagePayPaymentProcessor;
-import net.respectnetwork.csp.application.manager.StripePaymentProcessor;
+import net.respectnetwork.csp.application.manager.*;
 import net.respectnetwork.csp.application.model.CSPModel;
 import net.respectnetwork.csp.application.model.GiftCodeModel;
 import net.respectnetwork.csp.application.model.GiftCodeRedemptionModel;
@@ -84,8 +80,8 @@ public class PersonalCloudController
     * CSP Cloud Name
     */
    private String               cspCloudName;
-   
-   
+
+
 
    public String getCspCloudName()
    {
@@ -391,7 +387,9 @@ public class PersonalCloudController
 
          String currency = regSession.getCurrency();
          BigDecimal amount = null;
-         if (cspModel.getPaymentGatewayName().equals("STRIPE") || cspModel.getPaymentGatewayName().equals("BRAINTREE"))
+         if (cspModel.getPaymentGatewayName().equals("STRIPE")
+                 || cspModel.getPaymentGatewayName().equals("BRAINTREE")
+                 || cspModel.getPaymentGatewayName().equals(PinNetAuPaymentProcessor.DB_PAYMENT_GATEWAY_NAME))
          {
             // TODO - check numberofClouds > 0
             amount = regSession.getCostPerCloudName().multiply(
@@ -420,6 +418,10 @@ public class PersonalCloudController
          {
             payment = BrainTreePaymentProcessor.makePayment(cspModel, amount, currency,
                     regSession.getMerchantAccountId(), request);
+         } else if (cspModel.getPaymentGatewayName().equals(PinNetAuPaymentProcessor.DB_PAYMENT_GATEWAY_NAME))
+         {
+            String cardToken = request.getParameter("card_token");
+            payment = PinNetAuPaymentProcessor.makePayment(cspModel, amount, currency, null, email, request.getRemoteAddr(), cardToken);
          } else if (cspModel.getPaymentGatewayName().equals("SAGEPAY"))
          {
             payment = SagePayPaymentProcessor.processSagePayCallback(request, response, cspModel, currency);
@@ -823,7 +825,7 @@ public class PersonalCloudController
          return mv;
       }
 
-      
+      boolean ccpayments = false;
       
       if (!errors && giftCodes != null && giftCodes.length > 0)
       {
@@ -900,7 +902,10 @@ public class PersonalCloudController
                         e.printStackTrace();
                      }
                      statusText = "Congratulations " + cloudName + "! You have successfully purchased dependent clouds.";
-                  } 
+                  } else //all dependents have not been paid for. So, go to creditCardPayment.
+                  {
+                     ccpayments = true;
+                  }
                } else
                {
                   forwardingPage += "/cloudPage";
@@ -989,6 +994,14 @@ public class PersonalCloudController
             mv.addObject("postURL",
                   cspHomeURL + "/ccpayment");
             
+         } else if (cspModel.getPaymentGatewayName().equals(PinNetAuPaymentProcessor.DB_PAYMENT_GATEWAY_NAME))
+         {
+            logger.debug("Payment gateway is PIN");
+            mv.addObject("PinNetAu", PinNetAuPaymentProcessor.DB_PAYMENT_GATEWAY_NAME);
+            mv.addObject("publishableKey", PinNetAuPaymentProcessor.getPublishableApiKey(cspModel));
+            mv.addObject("environment", PinNetAuPaymentProcessor.getEnvironment(cspModel));
+            mv.addObject("postURL",
+                  cspHomeURL + "/ccpayment");
          }
          
          return mv;
@@ -1149,7 +1162,7 @@ public class PersonalCloudController
       try
       {
          registrationManager.registerUser(CloudName.create(cloudName), phone,
-               email, password,null);
+               email, password, null);
 
          logger.debug("Sucessfully Registered {}", cloudName);
          return true;
@@ -1236,7 +1249,7 @@ public class PersonalCloudController
             cspModel.getPaymentUrlTemplate());
       mv.addObject("SagePay","SAGEPAY");
       mv.addObject("vendor",cspModel.getUsername());
-      mv.addObject("crypt",SagePayPaymentProcessor.getSagePayCrypt(request, new BigDecimal(request.getParameter("amount")),regSession.getCurrency(),cspModel.getPassword()));
+      mv.addObject("crypt",SagePayPaymentProcessor.getSagePayCrypt(request, new BigDecimal(request.getParameter("amount")),cspModel.getCurrency(),cspModel.getPassword()));
       return mv;
    }
    
