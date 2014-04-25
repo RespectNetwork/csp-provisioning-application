@@ -120,19 +120,19 @@
 
     <div class="middle1 smallMarg left">
     <div th:if="${StripeJavaScript}">
-        <!--           <table id="sTable">
-                       <tr><td  th:utext="${StripeJavaScript}">
-                           <script src="https://checkout.stripe.com/checkout.js"
-                                      class="stripe-button"
-                                      data-key=""
-                                      data-amount="2500"
-                                      data-name="One Personal Cloud"
-                                      data-description="$25 USD"
-                                      data-image="img/cloud.png">
-                           </script>
-                         </td></tr>
-                   </table>
-     -->            </div>
+      <table id="sTable">
+        <tr><td  th:utext="${StripeJavaScript}">
+          <script src="https://checkout.stripe.com/checkout.js"
+              class="stripe-button"
+            	data-key=""
+              data-amount="2500"
+              data-name="One Personal Cloud"
+              data-description="$25 USD"
+              data-image="img/cloud.png">
+          </script>
+        </td></tr>
+    	</table>
+    </div>
     <div th:if="${SagePay}">
         <input type="text" name="BillingFirstNames" id="BillingFirstNames" class="inputFields tiny smallMarg"
                placeholder=" first name" onFocus="clearText(this)"
@@ -199,6 +199,8 @@
         </div>
 
         <div>
+                <br/>
+          <p class="payment3 ">Credit Card Details </p>
             <input type="text" size="20" autocomplete="off" id='cc-number'
                    placeholder="credit card number" class="inputFields smallMarg" required="required"/>
             <br/>

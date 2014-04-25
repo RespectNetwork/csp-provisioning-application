@@ -222,7 +222,7 @@
     display: block;
     float: left;
     width: 100%;
-    min-height: 30px;
+/*    min-height: 50px;      */
     margin-left: 2.564102564102564%;
     *margin-left: 2.5109110747408616%;
     -webkit-box-sizing: border-box;
@@ -572,7 +572,7 @@
     display: block;
     float: left;
     width: 100%;
-    min-height: 30px;
+ /*   min-height: 50px;   */
     margin-left: 2.7624309392265194%;
     *margin-left: 2.709239449864817%;
     -webkit-box-sizing: border-box;
@@ -836,7 +836,7 @@
     float: none;
     margin-left: 0;
   }
-  [class*="span"],
+/*  [class*="span"],
   .uneditable-input[class*="span"],
   .row-fluid [class*="span"] {
     display: block;
@@ -847,6 +847,7 @@
        -moz-box-sizing: border-box;
             box-sizing: border-box;
   }
+  */
   .span12,
   .row-fluid .span12 {
     width: 100%;
@@ -965,7 +966,7 @@
   }
   .navbar-fixed-top .navbar-inner,
   .navbar-fixed-bottom .navbar-inner {
-    padding: 5px;
+  /*  padding: 5px;   */
   }
   .navbar .container {
     width: auto;
@@ -984,7 +985,7 @@
     margin: 0 0 10px;
   }
   .nav-collapse .nav > li {
-    float: none;
+		background-color: #efefef;
   }
   .nav-collapse .nav > li > a {
     margin-bottom: 2px;
