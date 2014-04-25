@@ -533,11 +533,11 @@ public class RegistrationController
 
       logger.info("getLocation - " + remoteIPAddr + " LAT = " + loc.latitude + " LNG = " + loc.longitude);
 
-      if(rnQueryString != null && !rnQueryString.isEmpty())
-      {
-         rnQueryString += "&";
-      }
-      rnQueryString += "lat=" + (int)loc.latitude + "&long=" + (int)loc.longitude;
+//      if(rnQueryString != null && !rnQueryString.isEmpty())
+//      {
+//         rnQueryString += "&";
+//      }
+      //rnQueryString += "lat=" + (long)loc.latitude + "&long=" + (long)loc.longitude;
       String cloudName = null;
       if (signUpForm != null && signUpForm.getCloudName() != null)
       {
@@ -574,6 +574,8 @@ public class RegistrationController
                regSession.setSessionId(sessionId);
                regSession.setCloudName(cloudName);
                regSession.setRnQueryString(rnQueryString);
+               regSession.setLongitude((long)loc.longitude);
+               regSession.setLatitude((long)loc.latitude);
             }
          } catch (UserRegistrationException e)
          {

@@ -668,17 +668,24 @@ public class RegistrationManager {
    {
       cspInviteURL = url;
    }
-   public  String getEndpointURI(String key , String cloudName)
+   public  String getEndpointURI(String key , CloudNumber cloudNumber)
    {
+      
+      logger.debug("getEndpointURI key=" + key + " , cloudNumber = " + cloudNumber.toString());
       BasicCSPInformation cspInformation = (BasicCSPInformation)cspRegistrar.getCspInformation();
+      
+      
       XDIDiscoveryClient discovery = cspInformation.getXdiDiscoveryClient();
       try
       {
-         XDIDiscoveryResult discResult = discovery.discoverFromRegistry(
-               XDI3Segment.create(cloudName.toString()), null);
+         XDI3Segment[] uriType = new XDI3Segment[1];
+         uriType[0] = XDI3Segment.create(key);
+         XDIDiscoveryResult discResult = discovery.discover(
+               XDI3Segment.create(cloudNumber.toString()), uriType);
          Map<XDI3Segment,String> endpointURIs = discResult.getEndpointUris();
          for (Map.Entry<XDI3Segment, String> epURI : endpointURIs.entrySet())
          {
+            logger.debug("Endpoint key=" + epURI.getKey().toString() + " ,value=" + epURI.getValue());
             if(epURI.getKey().toString().equals(key))
             {
                return epURI.getValue();

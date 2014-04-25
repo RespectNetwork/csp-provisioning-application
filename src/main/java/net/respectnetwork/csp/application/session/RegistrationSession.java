@@ -64,6 +64,10 @@ public class RegistrationSession implements Serializable {
 
     /** Merchant Account ID (used for BrainTree) */
     private String merchantAccountId = null;
+    
+    private long latitude = 0;
+    
+    private long longitude = 0;
 
     /**
      * @return the SessionId
@@ -296,5 +300,25 @@ public class RegistrationSession implements Serializable {
    public void setMerchantAccountId(String merchantAccountId)
    {
       this.merchantAccountId = merchantAccountId;
+   }
+
+   public long getLongitude()
+   {
+      return longitude;
+   }
+
+   public void setLongitude(long longitude)
+   {
+      this.longitude = longitude;
+   }
+
+   public long getLatitude()
+   {
+      return latitude;
+   }
+
+   public void setLatitude(long latitude)
+   {
+      this.latitude = latitude;
    }
 }
