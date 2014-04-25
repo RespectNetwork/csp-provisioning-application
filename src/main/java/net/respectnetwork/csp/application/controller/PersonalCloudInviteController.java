@@ -3,6 +3,7 @@ package net.respectnetwork.csp.application.controller;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
@@ -115,7 +116,24 @@ public class PersonalCloudInviteController
 	@RequestMapping(value = "/invite", method = RequestMethod.GET)
 	public ModelAndView showInviteForm(HttpServletRequest request, Model model) throws DAOException
 	{
-		String       cloudName  = this.getCloudName();
+	   Enumeration<String> paramNames = request.getParameterNames(); 
+      while(paramNames.hasMoreElements())
+      {
+         String paramName = paramNames.nextElement();
+         logger.debug("p name " + paramName);
+         String[] paramValues = request.getParameterValues(paramName);
+         for(int i = 0 ; i < paramValues.length ; i++)
+         {
+            logger.debug("p value " + paramValues[i]);
+         }
+      }
+      String rnQueryString = "" ;
+      if (request.getQueryString() != null && !request.getQueryString().isEmpty())
+      {
+         rnQueryString = rnQueryString.substring(rnQueryString.indexOf("&")+1);
+         logger.debug("Query String " + rnQueryString);
+      }
+      String cloudName = request.getParameter(RegistrationController.URL_PARAM_NAME_REQ_CLOUDNAME); // this.getCloudName();
 
 		logger.info("showing invite page - " + cloudName );
 
@@ -124,7 +142,7 @@ public class PersonalCloudInviteController
 		InviteForm   inviteForm = null;
 		CSPModel     cspModel   = null;
 
-		if( cloudName == null )
+		if( cloudName == null || cloudName.isEmpty() || regSession== null || !cloudName.equalsIgnoreCase(regSession.getCloudName()))
 		{
 			mv = new ModelAndView("login");
 			mv.addObject("postURL", cspHomeURL + "/cloudPage");
@@ -142,6 +160,8 @@ public class PersonalCloudInviteController
 		if(regSession != null)
 		{
 		   regSession.setTransactionType(PaymentForm.TXN_TYPE_BUY_GC);
+		   regSession.setCloudName(cloudName);
+         regSession.setRnQueryString(rnQueryString);
 		}
 
 		return mv;
@@ -201,7 +221,7 @@ public class PersonalCloudInviteController
 		ModelAndView mv         = null;
 		CSPModel     cspModel   = null;
 
-		if( cloudName == null )
+		if( cloudName == null || regSession== null || !cloudName.equalsIgnoreCase(regSession.getCloudName()))
 		{
 			mv = new ModelAndView("login");
 			mv.addObject("postURL", cspHomeURL + "/cloudPage");

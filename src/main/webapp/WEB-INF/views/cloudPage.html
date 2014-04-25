@@ -177,18 +177,20 @@
       <div class="bodyContainer">
 		<div class="middle2"> 
 			<div>
-					<input type="hidden" id="queryStr" name="cloudname" th:value="${queryStr}" />         	  
+					<input type="hidden" id="queryStr" name="queryStr" th:value="${queryStr}" />         	  
   			  		<input type="hidden" id="postURL" name="postURL" th:value="${postURL}" />
 					<button type="button" id="goToRN" class="button big" onclick="goToRNlandingPage();">Invite people to join Respect Network</button>
           </div>
           <br></br>
           <br></br>	
           <form method="get" action="#" th:action="@{/invite}">
+          	  <input type="hidden" id="name" name="name" th:value="${cloudName}" />
               <button id="full" type="submit" class="button big">Buy Personal Cloud Gift Cards</button>
           </form>
           <br></br>
           <br></br>
           <form method="get" action="#" th:action="@{/dependent}">
+          	  <input type="hidden" id="name" name="name" th:value="${cloudName}" />
               <button id="full" type="submit" class="button big">Buy Clouds For Dependents</button>
           </form>
 		</div>
