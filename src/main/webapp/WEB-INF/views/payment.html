@@ -90,7 +90,7 @@
       	<div class="row-fluid">
           <div class="span4 smallTop"><p class="test"></p>
           </div>
-          <div class="span4 midHdr">=alice12345
+          <div class="span4 midHdr"><span th:text="${cloudName}"/>
           </div>
           <div class="span4">
          		<div class="navbar-inner">
@@ -131,6 +131,9 @@
                             &nbsp; <input type="text" name="giftCodes" id="giftCodes" class="inputFields med skinny"
                                           placeholder=" gift code" th:value="*{giftCodes}"/>
                         </div>
+                        <div th:if="${#strings.length(paymentInfo.giftCodes) == 0}">	         		
+        					<input type="radio" id="paymentType" name="paymentType" value="giftCard" />&nbsp; <input type="text" name="giftCodes"  id="giftCodes" class="inputFields med skinny" placeholder=" gift code" />				        			
+        				</div> 
                         </p>
                         <p class="payment2">
                             <input type="radio" id="paymentType" name="paymentType" value="creditCard"> &nbsp; <img
@@ -143,7 +146,19 @@
                                 src="img/credit-card-front.png"/> &nbsp;Credit cards </input>
                         </p>
                     </div>
-                </div>
+                    <div th:case="'buyDependentCloud'">
+		  			<p class="payment2">
+        				<input type="checkbox"  id="paymentType" name="paymentType" value="giftCard" />
+	      		&nbsp;  <input type="text" name="giftCodes"  id="giftCodes" class="inputFields med skinny" placeholder=" gift code"/> 
+	      			<p class="notes">separate multiple codes by spaces</p>
+	      			</p>
+	        		<p class="payment2">
+	        		<input type="checkbox"  id="paymentType" name="paymentType" value="creditCard"> &nbsp;  <img src="img/credit-card-front.png" /> &nbsp;Credit cards </input>
+					</p>
+		  		</div>
+		   			
+		  </div>
+		  <div>
                 <p class="secondary">
                     <input type="checkbox" name="cspTandC" value="false" required="required"/> &nbsp;I agree to the
                     [CSP] &nbsp;
@@ -152,6 +167,8 @@
                 </p>
 
             </div>
+          </div>
+          
             <div class="span5 leftPad">
                 <div class="equation">Respect Network
                     <br/>LIFETIME membership
