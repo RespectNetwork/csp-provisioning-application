@@ -73,7 +73,7 @@
 		<beans:property name="requireInviteCode" value="${csp.requireInviteCode}"/>  <!-- Never run as false in Production -->
 		<beans:property name="cspHomeURL" value="${csp.cspHomeURL}"/>  
 		<beans:property name="cspInviteURL" value="${csp.cspInviteURL}"/>   
-		<beans:property name="cspRespectConnectBaseURL" value="${csp.cspRespectConnectBaseURL}"/> 	   	
+		<beans:property name="cspRespectConnectBaseURL" value="${csp.cspRespectConnectBaseURL}"/>		 				  	
     </beans:bean>
     
     

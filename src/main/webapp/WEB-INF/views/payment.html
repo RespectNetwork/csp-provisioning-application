@@ -14,7 +14,7 @@
 		<link href="css/bootstrap-responsive.css" rel="stylesheet" />
     <link href="css/style.css" rel="stylesheet" />
 	<!--include jquery-->
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 	<script src="js/libs/misc.js"> </script>
 
 	<style>
@@ -120,7 +120,7 @@
         <div class="row-fluid">
             <div class="span2"></div>
             <div class="span4">
-                <p class="payment1">Select Payment Method</p>
+                <p class="payment1"><span style="color:red" th:text="${error}"/><br/>Select Payment Method</p>
 
                 <div th:switch="*{txnType}">
                     <div th:case="'signup'">

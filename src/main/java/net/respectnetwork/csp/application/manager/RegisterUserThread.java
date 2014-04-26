@@ -107,9 +107,11 @@ public class RegisterUserThread implements Runnable
          // step 7: Set RN/RF membership
 
          cspRegistrar.setRespectNetworkMembershipInRN(cloudNumber, new Date(),
-               RegistrationManager.respectNetworkMembershipDiscountCode);
-         cspRegistrar.setRespectFirstMembershipInRN(cloudNumber);
-
+               null);
+         if(cdc != null && cdc.equals(CloudNameDiscountCode.RespectFirst))
+         {
+            cspRegistrar.setRespectFirstMembershipInRN(cloudNumber);
+         }
          // Step 8: Change Secret Token
 
          cspRegistrar.setCloudSecretTokenInCSP(cloudNumber, userPassword);

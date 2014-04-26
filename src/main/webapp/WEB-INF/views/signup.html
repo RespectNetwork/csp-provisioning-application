@@ -134,14 +134,17 @@
 	        		$(messageSpan).html(" &radic; Your cloud name is available");
 	        		$(messageSpan).css('color', 'green');
 	        		 		      		
-	        	}else{
-	        	
-	        		// Make whatever changes to the UI to indicate that the name is
-	        		// unavailable
-	        		$(messageSpan).html("This cloud name is NOT available");	        		
-	        		$(messageSpan).css('color', 'red');	
-	        		      		
-	        	}
+                }else if(success==0){
+                    // Make whatever changes to the UI to indicate that the name is
+                    // unavailable
+                    $(messageSpan).html("This cloud name is NOT available");
+                    $(messageSpan).css('color', 'red');
+                }else{
+                    // Make whatever changes to the UI to indicate that the name is
+                    // unavailable
+                    $(messageSpan).html("This cloud name is INVALID");
+                    $(messageSpan).css('color', 'red');
+                }
 	        	
 	            
 	        },

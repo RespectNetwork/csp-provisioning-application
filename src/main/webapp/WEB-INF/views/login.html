@@ -51,7 +51,7 @@
 
       <!-- Begin page content -->
       <div class="bodyContainer">
-				<div class="middle2"> Please provide your cloudname and authentication secret below.
+				<div class="middle2"> <span style="color:red" th:text="${error}"/><br/> Please provide your cloudname and authentication secret below.
 					<form  th:action="${postURL}" method="post">
     					<p class="secondary"> Cloudname 
     					<br />   					

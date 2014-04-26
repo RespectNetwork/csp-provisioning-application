@@ -37,6 +37,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Required;
 
 import xdi2.client.exceptions.Xdi2ClientException;
+import xdi2.client.http.XDIHttpClient;
 import xdi2.client.util.XDIClientUtil;
 import xdi2.core.xri3.CloudName;
 import xdi2.core.xri3.CloudNumber;
@@ -119,11 +120,11 @@ public class RegistrationManager {
     
     private String cspRespectConnectBaseURL;
     
-    public static final String GeoLocationPostURIKey = "<$https><#network.globe><$set><$uri>";
-    public static final String RNpostRegistrationLandingPageURIKey = "<$https><#post><#registration><$uri>";
-    public static final String CSPCloudRegistrationURIKey = "<$https><#registration><$uri>";
-    public static final String CSPDependentCloudRegistrationURIKey = "<$https><#dependent><#registration><$uri>";
-    public static final String CSPGiftCardPurchaseURIKey = "<$https><#giftcard><#registration><$uri>";
+    public static final String GeoLocationPostURIKey = "<$https><#network.globe><$set>";
+    public static final String RNpostRegistrationLandingPageURIKey = "<$https><#post><#registration>";
+    public static final String CSPCloudRegistrationURIKey = "<$https><#registration>";
+    public static final String CSPDependentCloudRegistrationURIKey = "<$https><#dependent><#registration>";
+    public static final String CSPGiftCardPurchaseURIKey = "<$https><#giftcard><#registration>";
     
     /**
      * Get CSP Registrar
@@ -658,36 +659,37 @@ public class RegistrationManager {
    {
       cspInviteURL = url;
    }
-   public  String getEndpointURI(String key , CloudNumber cloudNumber)
+   public  synchronized String getEndpointURI(String key , CloudNumber cloudNumber)
    {
       
       logger.debug("getEndpointURI key=" + key + " , cloudNumber = " + cloudNumber.toString());
       BasicCSPInformation cspInformation = (BasicCSPInformation)cspRegistrar.getCspInformation();
-      
-      
       XDIDiscoveryClient discovery = cspInformation.getXdiDiscoveryClient();
+
       try
       {
          XDI3Segment[] uriType = new XDI3Segment[1];
          uriType[0] = XDI3Segment.create(key);
          XDIDiscoveryResult discResult = discovery.discover(
                XDI3Segment.create(cloudNumber.toString()), uriType);
+         //XDIDiscoveryResult discResult = discovery.discoverFromAuthority("https://mycloud-ote.neustar.biz/registry", cloudNumber, uriType);
          Map<XDI3Segment,String> endpointURIs = discResult.getEndpointUris();
          for (Map.Entry<XDI3Segment, String> epURI : endpointURIs.entrySet())
          {
-            logger.debug("Endpoint key=" + epURI.getKey().toString() + " ,value=" + epURI.getValue());
+            logger.debug("Looping ... Endpoint key = " + epURI.getKey().toString() + " ,value=" + epURI.getValue());
             if(epURI.getKey().toString().equals(key))
             {
+               logger.debug("Found match for Endpoint key = " + key);
                return epURI.getValue();
             }
          }
          
       } catch (Xdi2ClientException e)
       {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
+         
+         logger.debug("Error in getEndpointURI " + e.getMessage());
       }
-      
+      logger.debug("Did not find match for Endpoint key = " + key);
       return "";
       
    }
@@ -720,5 +722,7 @@ public class RegistrationManager {
    {
       this.cspRespectConnectBaseURL = cspRespectConnectBaseURL;
    }
+
+
 
 }
