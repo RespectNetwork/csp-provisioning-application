@@ -78,15 +78,15 @@ public class RegistrationManager {
     /**
      * Registration Discount Code
      */
-    private CloudNameDiscountCode cloudNameDiscountCode = CloudNameDiscountCode.RespectFirst;
+    public static  CloudNameDiscountCode cloudNameDiscountCode = CloudNameDiscountCode.RespectFirst;
     
     /**
      * Dependent Cloud Discount Code
      */
-    private CloudNameDiscountCode depCloudNameDiscountCode = CloudNameDiscountCode.OnePersonOneName;
+    public static CloudNameDiscountCode depCloudNameDiscountCode = CloudNameDiscountCode.OnePersonOneName;
     
     /** RN Discount Code */
-    private  RespectNetworkMembershipDiscountCode respectNetworkMembershipDiscountCode = RespectNetworkMembershipDiscountCode.IIW17;
+    public static RespectNetworkMembershipDiscountCode respectNetworkMembershipDiscountCode = RespectNetworkMembershipDiscountCode.IIW17;
     
     /** Personal Cloud EndPoint */
     private String personalCloudEndPoint; 
@@ -412,7 +412,21 @@ public class RegistrationManager {
         
         
         CloudNumber cloudNumber = CloudNumber.createRandom(cloudName.getCs());
-       
+        if(cloudNumber != null)
+        {
+           RegisterUserThread rut = new RegisterUserThread();
+           rut.setCloudName(cloudName);
+           rut.setCloudNumber(cloudNumber);
+           rut.setCspRegistrar(cspRegistrar);
+           rut.setRcBaseURL(this.getCspRespectConnectBaseURL());
+           rut.setUserPassword(userPassword);
+           rut.setVerifiedEmail(verifiedEmail);
+           rut.setVerifiedPhone(verifiedPhone);
+           rut.setCdc(cdc);
+           Thread t = new Thread(rut);
+           t.start();
+           
+           /*
         // Step 1: Register Cloud with Cloud Number and Shared Secret
         
         String cspSecretToken = cspRegistrar.getCspInformation().getCspSecretToken();
@@ -480,7 +494,8 @@ public class RegistrationManager {
          // TODO Auto-generated catch block
          e.printStackTrace();
       }
-        
+      */
+        }
         return cloudNumber;
 
     }
@@ -494,22 +509,21 @@ public class RegistrationManager {
 	}
 	
 	public CloudNumber registerDependent(CloudName guardianCloudName , String guardianToken , CloudName dependentCloudName,  String dependentToken , String s_dependentBirthDate){
-		
-				try {
-					CloudNumber depCloudNumber = this.registerUser(dependentCloudName, " ", " ", dependentToken,depCloudNameDiscountCode);
-					if(depCloudNumber == null) {
-						logger.debug("Dependent Cloud did not get registered successfully");
-						return null;
-					}
-				} catch (Xdi2ClientException e1) {
+				  CloudNumber depCloudNumber = CloudNumber.createRandom(dependentCloudName.getCs());
+				  
+				  RegisterDependentCloudThread rdct = new RegisterDependentCloudThread();
+				  rdct.setCspRegistrar(cspRegistrar);
+				  rdct.setDepCloudNumber(depCloudNumber);
+				  rdct.setDependentCloudName(dependentCloudName);
+				  rdct.setDependentToken(dependentToken);
+				  rdct.setGuardianCloudName(guardianCloudName);
+				  rdct.setGuardianToken(guardianToken);
+				  rdct.setRcBaseURL(this.getCspRespectConnectBaseURL());
+				  rdct.setS_dependentBirthDate(s_dependentBirthDate);
+				  Thread t = new Thread(rdct);
+				  t.start();
 					
-					e1.printStackTrace();
-					return null;
-				} catch (CSPRegistrationException e1) {
-					
-					e1.printStackTrace();
-					return null;
-				}
+				/*
 				// Common Data
 
 				CloudNumber guardianCloudNumber = null;
@@ -592,38 +606,14 @@ public class RegistrationManager {
 			    	    
 			    	    // Set MemberGraph Data
 			        	cspRegistrar.setGuardianshipInRN(cspInformation, guardianCloudNumber, dependentCloudNumber, dependentBirthDate, withConsent, guardianPrivateKey);
-			        	
-			        	/*
-			    	     	    
-			    	    //Check the Results
-			    	    CloudNumber[] theDependents = cspRegistrar.getMyDependentsInCSP(cspInformation, guardianCloudNumber);
-			    	    
-			    	    if (theDependents == null) {
-			    	    	logger.debug("No Dependents found for " + guardianCloudName.toString()); 	        
-			    	    } else {	    
-			        	    for(int i=0; i < theDependents.length; i++){
-			        	    	logger.debug("Dependent: " + i + " = " + theDependents[i]);
-			        	    }
-			    	    }
-			    	    
-			    	    
-			            CloudNumber[] theGuardians = cspRegistrar.getMyGuardiansInCSP(cspInformation, dependentCloudNumber);
-			            
-			            if (theGuardians == null) {
-			            	logger.debug("No Guardians found for " + dependentCloudName.toString() );         
-			            } else {        
-			                for(int i=0; i < theGuardians.length; i++){
-			                	logger.debug("Guardian: " + i + " = " + theGuardians[i]);
-			                }
-			            }
-			            */
 			    	    
 			        } catch (Xdi2ClientException e) {
 			        	logger.debug("Xdi2ClientException: " + e.getMessage());
 			            e.printStackTrace();
 			        }
 				}
-		return dependentCloudNumber;
+				*/
+		return depCloudNumber;
 	}
 	
 	/**

@@ -16,6 +16,7 @@ import net.respectnetwork.csp.application.dao.DAOException;
 import net.respectnetwork.csp.application.dao.DAOFactory;
 import net.respectnetwork.csp.application.form.InviteForm;
 import net.respectnetwork.csp.application.form.PaymentForm;
+import net.respectnetwork.csp.application.invite.GiftEmailSenderThread;
 import net.respectnetwork.csp.application.manager.BrainTreePaymentProcessor;
 import net.respectnetwork.csp.application.manager.StripePaymentProcessor;
 import net.respectnetwork.csp.application.model.CSPCostOverrideModel;
@@ -363,76 +364,91 @@ public class PersonalCloudInviteController
 		logger.info("sendInviteEmail - " + invite + " : " + giftCodeList);
 
 		Object[]      inviter = new Object[] { invite.getInviterCloudName() };
+		Object[]      csp = new Object[] {invite.getCspCloudName() };
 		String        subject = getMessageFromResource("invite.mail.subject", inviter, RES_DEFAILT_INVITE_MAIL_SUBJECT, locale);
 		StringBuilder builder = new StringBuilder();
 
-		builder.append(getMessageFromResource("invite.mail.header" , inviter, RES_DEFAILT_INVITE_MAIL_HEADER , locale));
-		builder.append(invite.getEmailMessage().trim());
-		builder.append('\n');
-		builder.append('\n');
-		if( (giftCodeList == null) || (giftCodeList.size() == 0) )
-		{
-			builder.append(getMessageFromResource("invite.mail.gift.0", inviter, RES_DEFAILT_INVITE_MAIL_GIFT_0, locale));
-		}
-		else if( giftCodeList.size() == 1 )
-		{
-			builder.append(getMessageFromResource("invite.mail.gift.1", inviter, RES_DEFAILT_INVITE_MAIL_GIFT_1, locale));
-		}
-		else
-		{
-			builder.append(getMessageFromResource("invite.mail.gift.2", inviter, RES_DEFAILT_INVITE_MAIL_GIFT_2, locale));
-		}
-		
-		String baseURL = "";
-		if(request.getServerName().equalsIgnoreCase("localhost"))
-		{
-		   baseURL = "http://" + request.getServerName() +  ":" + request.getServerPort() +request.getContextPath() + "/";
-		}
-		else 
-		{
-		   baseURL = "https://" + request.getServerName() + request.getContextPath() + "/";
-		}
-		if( baseURL.endsWith("/") == false )
-		{
-		   baseURL = baseURL + "/";
-		}
-		String url = "";
+      builder.append(getMessageFromResource("invite.mail.header" , inviter, RES_DEFAILT_INVITE_MAIL_HEADER , locale));
+      builder.append(invite.getEmailMessage().trim());
+      builder.append("<br/>");
+      builder.append("<br/>");
+      // wmartin 4/24 get msutton's wording in. bloat.
+      
+      builder.append(getMessageFromResource("invite.mail.giftText.0", csp, null, locale));
+      builder.append("<br/><br/>");
+      builder.append(getMessageFromResource("invite.mail.giftText.1", csp, null, locale));
+      builder.append("<br/><br>");
+      if( (giftCodeList == null) || (giftCodeList.size() == 0) )
+      {
+         builder.append(getMessageFromResource("invite.mail.gift.0", inviter, RES_DEFAILT_INVITE_MAIL_GIFT_0, locale));
+      }
+      else if( giftCodeList.size() == 1 )
+      {
+         builder.append(getMessageFromResource("invite.mail.gift.1", inviter, RES_DEFAILT_INVITE_MAIL_GIFT_1, locale));
+      }
+      else
+      {
+         builder.append(getMessageFromResource("invite.mail.gift.2", inviter, RES_DEFAILT_INVITE_MAIL_GIFT_2, locale));
+      }
+      
+      String baseURL = "";
+      if(request.getServerName().equalsIgnoreCase("localhost"))
+      {
+         baseURL = "http://" + request.getServerName() +  ":" + request.getServerPort() +request.getContextPath() + "/";
+      }
+      else 
+      {
+         baseURL = "https://" + request.getServerName() + request.getContextPath() + "/";
+      }
+      if( baseURL.endsWith("/") == false )
+      {
+         baseURL = baseURL + "/";
+      }
+      String url = "";
 
-		if( (giftCodeList == null) || (giftCodeList.size() == 0) )
-		{
-			builder.append(getMessageFromResource("invite.mail.url", new Object[] { baseURL }, RES_DEFAILT_INVITE_MAIL_URL, locale));
-		}
-		else
-		{
-			for( GiftCodeModel gift : giftCodeList )
-			{
-			   StringBuilder builder2 = new StringBuilder(builder);
-				Object[] obj = new Object[] { "Gift Code = " + gift.getGiftCodeId() };
-				url = baseURL + "signup?" + HomeController.URL_PARAM_NAME_GIFT_CODE + "=" + gift.getGiftCodeId();
-				builder2.append(url);
-				builder2.append("<br></br>");
-				builder2.append(getMessageFromResource("invite.mail.url", obj, RES_DEFAILT_INVITE_MAIL_URL, locale));
-				builder2.append(getMessageFromResource("invite.mail.footer", inviter, RES_DEFAILT_INVITE_MAIL_FOOTER, locale));
-				
-				try
-		      {
-		         BasicNotificationService svc = (BasicNotificationService) DAOContextProvider.getApplicationContext().getBean("basicNotifier");
-		         logger.info("basicNotifier = " + svc + " " + svc.getEmailSubject());
-		         svc.setEmailSubject(subject);
-		         svc.sendEmailNotification(invite.getInvitedEmailAddress(), builder2.toString());
-		         logger.info("invite email has been sent to " + invite.getInvitedEmailAddress());
-		         logger.debug("Subject: " + subject + "\n\n" + builder2.toString());
-		         //Thread.sleep(5000);
-		      }
-		      catch( Exception e )
-		      {
-		         logger.error("Failed to send invite email to " + invite.getInvitedEmailAddress(), e);
-		      }
-				
-			}
-		}
+      if( (giftCodeList == null) || (giftCodeList.size() == 0) )
+      {
+         builder.append(getMessageFromResource("invite.mail.url", new Object[] { baseURL }, RES_DEFAILT_INVITE_MAIL_URL, locale));
+      }
+      else
+      {
+         for( GiftCodeModel gift : giftCodeList )
+         {
+            StringBuilder builder2 = new StringBuilder(builder);
+            Object[] obj = new Object[] { "Gift Code = " + gift.getGiftCodeId() };
+            url = baseURL + "signup?" + HomeController.URL_PARAM_NAME_GIFT_CODE + "=" + gift.getGiftCodeId();
+            builder2.append(url);
+            builder2.append("<br></br>");
+            builder2.append(getMessageFromResource("invite.mail.url", obj, RES_DEFAILT_INVITE_MAIL_URL, locale));
+            builder2.append(getMessageFromResource("invite.mail.footer", inviter, RES_DEFAILT_INVITE_MAIL_FOOTER, locale));
+            
+            try
+            {
+               /*
+               BasicNotificationService svc = (BasicNotificationService) DAOContextProvider.getApplicationContext().getBean("basicNotifier");
+               logger.info("basicNotifier = " + svc + " " + svc.getEmailSubject());
+               svc.setEmailSubject(subject);
+               svc.sendEmailNotification(invite.getInvitedEmailAddress(), builder2.toString());
+               */
+               //logger.info("invite email has been sent to " + invite.getInvitedEmailAddress());
+               //logger.debug("Subject: " + subject + "\n\n" + builder2.toString());
+               GiftEmailSenderThread get = new GiftEmailSenderThread();
+               get.setContent(builder2.toString());
+               get.setSubject(subject);
+               get.setToAddress(invite.getInvitedEmailAddress());
+               Thread t = new Thread(get);
+               t.start();
+               
+            }
+            catch( Exception e )
+            {
+               logger.error("Failed to send invite email to " + invite.getInvitedEmailAddress(), e);
+            }
+            
+         }
+      }
 
-		builder.append(getMessageFromResource("invite.mail.footer", inviter, RES_DEFAILT_INVITE_MAIL_FOOTER, locale));
+      builder.append(getMessageFromResource("invite.mail.footer", inviter, RES_DEFAILT_INVITE_MAIL_FOOTER, locale));
 
 		
 	}
