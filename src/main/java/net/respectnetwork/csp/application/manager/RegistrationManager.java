@@ -675,6 +675,7 @@ public class RegistrationManager {
       BasicCSPInformation cspInformation = (BasicCSPInformation)cspRegistrar.getCspInformation();
       XDIDiscoveryClient discovery = cspInformation.getXdiDiscoveryClient();
 
+      discovery.setAuthorityCache(null);
       try
       {
          XDI3Segment[] uriType = new XDI3Segment[1];
