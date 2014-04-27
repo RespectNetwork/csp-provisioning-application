@@ -152,12 +152,20 @@
 	margin-top: 10px;
 }
 
+.smallerTop {
+	margin-top: 20px;
+}
+
 .smallTop {
 	margin-top: 30px;
 }
 
 .bigTop {
 	margin-top: 50px;
+}
+
+.biggerTop {
+	margin-top: 65px;
 }
 
 .margin-bottom {
@@ -185,7 +193,6 @@
 	padding: 25px 0 75px;
 	height: 400px;
 }
-
 
 
 .primary, .cloud, .inputForm, .middle, .middle2 {
@@ -292,7 +299,6 @@
 	-webkit-border-radius: 5px; /* Safari, Chrome */
 	-khtml-border-radius: 5px; /* KHTML */
 	border-radius: 5px; /* CSS3 */
-	behavior:url("border-radius.htc");
 	height: 50px;
 	width: 410px;
 	font-family: Avenir Next;
@@ -307,9 +313,20 @@
 	-webkit-border-radius: 5px; /* Safari, Chrome */
 	-khtml-border-radius: 5px; /* KHTML */
 	border-radius: 5px; /* CSS3 */
-	behavior:url("border-radius.htc");
 	height: 50px;
 	width: 410px;
+	font-size: 24px;
+	color: #b6b6b6;
+	text-align: center;
+}
+
+.phoneField {
+	-moz-border-radius:5px; /* Firefox */
+	-webkit-border-radius: 5px; /* Safari, Chrome */
+	-khtml-border-radius: 5px; /* KHTML */
+	border-radius: 5px; /* CSS3 */
+	height: 55px;
+	width: 425px;
 	font-size: 24px;
 	color: #b6b6b6;
 	text-align: center;
@@ -480,6 +497,13 @@
 		margin-top: 20px;
 
 	}
+	
+	.phoneField {
+		height: 35px;
+		width: 315px;
+		font-size: 20px;
+}
+
 	.inputCloudName {
 		width: 300px;
 		height: 45px;
@@ -547,6 +571,10 @@
 	.payment1 {
 		margin: 0px 0 25px;
 	}
+	
+	select, textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"], .uneditable-input {
+		font-size: 18px;
+	}
 }
 
 /* Small Tablets and Big Ass Phones */
@@ -596,6 +624,13 @@
 		width: 225px;
 		font-size: 14px;
 	}
+	
+	.phoneField {
+		height: 35px;
+		width: 240px;
+		font-size: 14px;
+}
+
 
 	.middle {
 		font-size: 24px;
@@ -626,7 +661,9 @@
 	width:250px;
 	}
 
-
+	select, textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"], .uneditable-input {
+		font-size: 18px;
+	}
 }
 
 @media (max-width: 1200px) and (min-width: 978px){
@@ -669,18 +706,11 @@
 		margin-top: 10px;
 	}
 	
-	.navbar-inner {
-		height: 60px;
-	}
+	.phoneField {
+		height: 40px;
+		width: 210px;
+}
 
-	.bodyContainer {
-		padding-top: 15px !important;
-	}	
-	.middle2 {
-	 	font-size: 20px;
-		padding: 5px 0 5px;
-		height: 450px;
-	}
 	.inputFields {
 		margin-top: 10px;
 		width: 180px;
@@ -693,6 +723,20 @@
 		height: 25px;
 		width: 180px;
 		font-size: 14px;
+	}
+
+	
+	.navbar-inner {
+		height: 60px;
+	}
+
+	.bodyContainer {
+		padding-top: 15px !important;
+	}	
+	.middle2 {
+	 	font-size: 20px;
+		padding: 5px 0 5px;
+		height: 450px;
 	}
 	
 	.middle {
