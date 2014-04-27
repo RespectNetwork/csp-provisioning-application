@@ -24,8 +24,10 @@
 
 <!-- Responsive Stylesheets -->
     <link href="css/bootstrap.css" rel="stylesheet" />
-    <link href="css/style.css" rel="stylesheet" />
 		<link href="css/bootstrap-responsive.css" rel="stylesheet" />
+		<link href="https://s3.amazonaws.com/rnfonts/demo.css" rel="stylesheet" type="text/css">
+    <link href="css/style.css" rel="stylesheet" />
+		<link href="css/csp_styles.css" rel="stylesheet" />
 
 <!-- Scripts-->	
 <script src="../../js/libs/modernizr-2.0.6.min.js" th:src="@{/js/libs/modernizr-2.0.6.min.js}"></script>
@@ -57,38 +59,46 @@ $(document).ready(function(){
     <div class="navbar-inner">
       <div class="container">
       <div class="row-fluid">  
-        <div class="span4 smallTop">
+        <div class="span4 smallerTop">
         	<p class="cspHeader right"><img src="img/csp_logo.png" /></p>
         </div>
-        <div class="span4"></div>
-        <div class="span4 smallTop">
-          <p class="cspHeader center"> &nbsp; Welcome <span th:text="${cloudName}"/></p>
+        <div class="span4 smallTop">          
+        	<p class="cspHeader center"></p>
+				</div>
+        <div class="span4 equation">
+             <ul class="nav">
+                 <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span th:text="${cloudName}"/> &nbsp;<b class="caret"></b> &nbsp;</a>
+                <ul class="dropdown-menu">
+                  <li><a href="#">Logout</a></li>
+              </ul>
+              </li>
+            </ul> 
         </div>
       </div>
 			</div>
   	</div>
 	</div>
+
 <!-- Begin page content -->
-	<div class="bodyContainer">
+	<div class="bodyContainer mung">
     <div class="row-fluid"> 
-    	<div class="span1"></div> 
+    	<div class="span2"></div> 
       <div class="span5">		
 	      <p class="primaryLeftJustified">Add clouds for my dependents </p>
 	     
 	      	<p class="payment3">Dependent's cloud name:</p>                           
           <form action="#" th:object="${dependentForm}" th:action="@{/dependentSubmit}" method="post">
       		<div id="allDependents">
-      			
-				<div>      			
+      			<div>      			
 	          	<input type="text" name="dependentCloudName" value="" class="inputFields smallMarg" id="dependentCloudName" placeholder="=dependent name" required="required" autofocus="autofocus"  />
-				<br></br>
-				<span class="error"  name="isAvailable" id="isAvailable"></span>	          	
- 				<input type="password" name="dependentCloudPassword" value="" class="inputFields smallMarg" 
+							<br />
+							<span class="error"  name="isAvailable" id="isAvailable"></span>	          	
+ 							<input type="password" name="dependentCloudPassword" value="" class="inputFields smallMarg" 
                                 id="dependentCloudPassword" placeholder="password" required="required"
                                 th:value="*{dependentCloudPassword}" />
  				
- 			    	<p class="secondary"></p>
-<!-- 			    	
+ <!--			    	<p class="secondary"></p>
+ 			    	
            		<p class="payment3">Dependent's birthdate:
            		<br />
            		<input type="text" autocomplete="off" name="dependentBirthDay" placeholder=" day" class="inputFields dinky" required="required" />
@@ -97,7 +107,7 @@ $(document).ready(function(){
 	          	</p>
   -->   
   				<p class="payment3">Dependent's birthdate: </p>
-				<input type="text" name="dependentBirthDate" value="" class="inputFields smallMarg" id="dependentBirthDate" placeholder="MM/DD/YYYY" required="required" onchange="validateDate(this.value)"/>	
+				<input type="text" name="dependentBirthDate" value="" class="inputFields noMarg" id="dependentBirthDate" placeholder="MM/DD/YYYY" required="required" onchange="validateDate(this.value)"/>	
                 <br></br><span class="error"  name="isValidDate" id="isValidDate"></span>
      			<p class="secondary">                             
 		     	<input type="checkbox" name="consent" value="false" required="required" th:value="*{consentFlag}" />
@@ -105,32 +115,32 @@ $(document).ready(function(){
      			</p>            
      			</div>
      	</div>
-    	
-    			<button id="addAnotherDependent" class="button big" type="button">+ Add another dependent</button>
-    
-    			<br></br>
-    			
-				<br></br>          		
-				<button type="submit" name="submit" id="submit" class="button">Continue</button> &nbsp; &nbsp;
+    			<p class="plusButton">
+    			<button id="addAnotherDependent" class="button small" type="button"> + </button> Add another dependent
+    </p>
+    		       		
+				<button type="submit" name="submit" id="submit" class="button big">Continue</button> &nbsp; &nbsp;
           		<!-- <a href="/cloudPage">Cancel</a> -->
      	</form>
  
 	</div>
     		
-    <div class="span5">	   
+    <div class="span4">	   
     </div>  	
     </div>    
                                 
   </div>  <!-- end maincontent -->
  </div> <!-- end wrapper -->      
  <div id="footer">
-      	
-  			<div class="help">
-  				<div id="help">
-  					<a target="_blank" onclick="return windowpop(this.href, 545, 433); " th:href="@{/help}">Help</a>
-				</div>
-	 		</div>
-    </div>
+</div>
+     
+<!-- javascript ================================================== -->
+<script src="js/libs/jquery.js"></script>
+<script src="js/libs/misc.js"> </script>                                   
+<script src="js/libs/bootstrap-dropdown.js"></script>
+<script src="js/libs/bootstrap-scrollspy.js"></script>
+
+
 <!--The following script hooks the HTML Elements to the javascript functionality-->
 	<!-- see the comments inside the javascript for details-->
  <script>

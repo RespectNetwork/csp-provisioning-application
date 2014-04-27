@@ -147,6 +147,9 @@
 .tinyTop{
 	margin-top: 15px;
 }
+.noMarg {
+	margin: 0px;
+}
 
 .smallMarg {
 	margin-top: 10px;
@@ -407,6 +410,35 @@
 	width:425px;
 }
 
+.small {
+	width: 30px;
+	height: 30px;
+	background-color:#fff;
+	color: #02e4ff;
+	-webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  padding: 0px;
+  border: 2px solid #02e4ff;
+}
+
+.plusButton {
+	font-size:20px;
+	margin: 0px;
+	vertical-align: bottom;
+	
+}
+
+button,
+input,
+select,
+textarea {
+  margin: 0;
+  padding: 0;
+  font-size: 100%;
+  vertical-align: baseline;
+}
+
    /* CUSTOMIZE THE NAVBAR
     -------------------------------------------------- */
 
@@ -592,7 +624,7 @@
   }
 
   .bodyContainer {
-		padding-top: 50px !important;
+		padding-top: 50px;
 	}
 
 	.paymentBody {
@@ -600,7 +632,6 @@
 	}
 	
 	.midHdr {
-		font-family: AvenirNext-Demibold;
 		padding-top: 25px;
   	font-size: 20px;
   	color: #02e4ff;
@@ -631,6 +662,26 @@
 		font-size: 14px;
 }
 
+.primaryLeftJustified {
+	font-size:20px;
+	margin: 0px;
+	text-align: left;
+}
+
+.mung {
+	padding-top: 0px;
+}
+
+.payment3 {
+	font-size:18px;
+	margin: 0px;
+}
+
+.plusButton {
+font-size: 16px;
+margin: 0px;
+vertical-align: middle;
+}
 
 	.middle {
 		font-size: 24px;
@@ -691,6 +742,14 @@
 		width:103px;
 		float:left;
 	}
+	
+	.row-fluid .span5 {
+		width: 375px;
+	}
+	
+	.span2 {
+		width: 10px;
+	}
 
 	.leftHdr {
 		margin-left: 0px;
@@ -725,7 +784,27 @@
 		font-size: 14px;
 	}
 
-	
+	.primaryLeftJustified {
+	font-size:14px;
+	margin: 0px;
+	text-align: left;
+}
+
+.mung {
+	padding-top: 0px;
+}
+
+.payment3 {
+	font-size:12px;
+	margin: 0px;
+}
+
+.plusButton {
+font-size: 10px;
+margin: 0px;
+vertical-align: middle;
+}
+
 	.navbar-inner {
 		height: 60px;
 	}
