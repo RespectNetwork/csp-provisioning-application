@@ -18,6 +18,8 @@ import net.respectnetwork.csp.application.form.InviteForm;
 import net.respectnetwork.csp.application.form.PaymentForm;
 import net.respectnetwork.csp.application.invite.GiftEmailSenderThread;
 import net.respectnetwork.csp.application.manager.BrainTreePaymentProcessor;
+import net.respectnetwork.csp.application.manager.PinNetAuPaymentProcessor;
+import net.respectnetwork.csp.application.manager.RegistrationManager;
 import net.respectnetwork.csp.application.manager.StripePaymentProcessor;
 import net.respectnetwork.csp.application.model.CSPCostOverrideModel;
 import net.respectnetwork.csp.application.model.CSPModel;
@@ -59,6 +61,7 @@ public class PersonalCloudInviteController
 	private String              cspCloudName;
 	private String		    cspInviteURL;
 	private RegistrationSession regSession;
+	private RegistrationManager registrationManager ;
     
 	public String getCspCloudName()
 	{
@@ -199,7 +202,7 @@ public class PersonalCloudInviteController
 
 		cspModel = DAOFactory.getInstance().getCSPDAO().get(this.getCspCloudName());
 		mv.addObject("cspModel"    , cspModel);
-
+		mv.addObject("cspTCURL", registrationManager.getCspTCURL());
 		model.addAttribute("inviteForm", inviteForm);
 		return mv;
 	}
@@ -304,6 +307,17 @@ public class PersonalCloudInviteController
          mv.addObject("postURL",
                cspHomeURL + "/ccpayment");
          
+      } else if (cspModel.getPaymentGatewayName().equals(
+            PinNetAuPaymentProcessor.DB_PAYMENT_GATEWAY_NAME))
+      {
+         logger.debug("Payment gateway is PIN");
+         mv.addObject("PinNetAu",
+               PinNetAuPaymentProcessor.DB_PAYMENT_GATEWAY_NAME);
+         mv.addObject("publishableKey",
+               PinNetAuPaymentProcessor.getPublishableApiKey(cspModel));
+         mv.addObject("environment",
+               PinNetAuPaymentProcessor.getEnvironment(cspModel));
+         mv.addObject("postURL", cspHomeURL + "/ccpayment");
       }
 		mv.addObject("amount",amount.toPlainString());
 		mv.addObject("totalAmountText", RegistrationController.formatCurrencyAmount(regSession.getCurrency(), amount));
@@ -466,4 +480,9 @@ public class PersonalCloudInviteController
 		String   rtn = getMessageFromResource("invite.text.paydesc", obj, RES_DEFAULT_INVITE_TEXT_PAYDESC, locale);
 		return rtn;
 	}
+	@Autowired
+   public void setRegistrationManager(RegistrationManager registrationManager)
+   {
+      this.registrationManager = registrationManager;
+   }
 }

@@ -180,7 +180,12 @@ public class PersonalCloudController
       boolean errors = false;
       logger.info("Cloudname from request parameter "
             + request.getParameter("cloudname"));
-			String cName = request.getParameter("cloudname").trim();
+      if (request.getParameter("cloudname") == null)
+      {
+         return processLogout(request, model);
+      }
+      
+		String cName = request.getParameter("cloudname").trim();
 
 	  if(!cName.startsWith("=") || cName.contains(" ") || cName.endsWith(".") || cName.contains("*") ) {
           errors = true;
@@ -565,6 +570,7 @@ public class PersonalCloudController
             mv = new ModelAndView("payment");
             mv.addObject("error", "Payment Processing error!\n"
                   + registrationManager.getCSPContactInfo());
+            mv.addObject("cspTCURL", this.getRegistrationManager().getCspTCURL());
             return mv;
          }
       }
@@ -676,6 +682,7 @@ public class PersonalCloudController
                "error",
                "Please select payment method.");
          logger.debug("No payment method selected.");
+         mv.addObject("cspTCURL", this.getRegistrationManager().getCspTCURL());
          return mv;
      }
 
@@ -690,6 +697,7 @@ public class PersonalCloudController
                "error",
                "Payment with gift card is checked. However, no gift card has been provided. Please provide one.");
          logger.debug("Invalid choice for gift card ...");
+         mv.addObject("cspTCURL", this.getRegistrationManager().getCspTCURL());
          return mv;
 
       } else {
@@ -909,6 +917,7 @@ public class PersonalCloudController
       {
          mv = new ModelAndView("payment");
          mv.addObject("error", errorText);
+         mv.addObject("cspTCURL", this.getRegistrationManager().getCspTCURL());
          return mv;
       }
 

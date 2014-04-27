@@ -268,6 +268,7 @@ public class PersonalCloudDependentController
       mv.addObject("paymentInfo", paymentForm);
       mv.addObject("amount",amount.toPlainString());
       mv.addObject("totalAmountText", RegistrationController.formatCurrencyAmount(regSession.getCurrency(), amount));
+      mv.addObject("cspTCURL", this.getTheManager().getCspTCURL());
       
       this.setDependentForm(dependentForm);
       return mv;

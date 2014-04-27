@@ -325,6 +325,11 @@
             <version>1.8.3</version>
         </dependency>
         
+        <dependency>
+ 			<groupId>commons-validator</groupId>
+ 			<artifactId>commons-validator</artifactId>
+ 			<version>1.4.0</version>
+ 		</dependency>
         <!-- others -->
         <dependency>
             <groupId>antlr</groupId>

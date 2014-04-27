@@ -277,6 +277,18 @@ public class RegistrationController
       {
          try
          {
+         // validate email address entered by user
+         if (!org.apache.commons.validator.routines.EmailValidator
+                  .getInstance().isValid(userDetailsForm.getEmail())) 
+         {
+              String errorStr = "Invalid Email Address.";
+              logger.debug("Invalid Email address entered..."
+                      + userDetailsForm.getEmail());
+              mv.addObject("error", errorStr);
+              errors = true;
+              return mv;
+          }
+            
             CloudNumber[] existingUsers = theManager
                   .checkEmailAndMobilePhoneUniqueness(
                         userDetailsForm.getMobilePhone(),
@@ -401,6 +413,7 @@ public class RegistrationController
       if (!errors) {
          
          mv = new ModelAndView("payment");
+         mv.addObject("cspTCURL", this.getTheManager().getCspTCURL());
          PaymentForm paymentForm = new PaymentForm();
          paymentForm.setTxnType(PaymentForm.TXN_TYPE_SIGNUP);
          if(regSession != null)

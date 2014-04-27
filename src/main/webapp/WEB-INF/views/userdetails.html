@@ -10,11 +10,11 @@
     <!-- CSS -->
     <link href="css/bootstrap.css" rel="stylesheet" />
 		<link href="css/bootstrap-responsive.css" rel="stylesheet" />
-		<link href="css/intlTelInput.css" rel="stylesheet">
+		<link href="css/intlTelInput.css" rel="stylesheet" />
     <link href="css/style.css" rel="stylesheet" />
 
 	<!--include jquery-->
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 	<script src="js/libs/misc.js"> </script>
 
 <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
@@ -25,7 +25,7 @@
 <!-- Fav and touch icons -->
 <link rel="apple-touch-icon-precomposed" sizes="144x144" href="img/ico/apple-touch-icon-144-precomposed.png" />
 <link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/ico/apple-touch-icon-114-precomposed.png" />
-<link rel="apple-touch-icon-precomposed" sizes="72x72" href="imgico/apple-touch-icon-72-precomposed.png" />
+<link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/ico/apple-touch-icon-72-precomposed.png" />
 <link rel="apple-touch-icon-precomposed" href="img/ico/apple-touch-icon-57-precomposed.png" />
 <link rel="shortcut icon" href="img/ico/favicon.png" />
 </head>
@@ -50,7 +50,9 @@
 	</div>
       <!-- Begin page content -->
       <div class="bodyContainer">
+      			
 				<div class="middle2"> Email and phone verification is required to secure <br/>your cloud name in the Respect Network.
+					<br/><span style="color:red" th:text="${error}"/><br/>
  			<form action="#" th:object="${userInfo}" th:action="@{/processuserdetails}" method="post">
 				<input type="text" class="inputFields smallTop" name="email"  id="email" placeholder="email address" required="required" onFocus="clearText(this)" onBlur="clearText(this.className = 'onblurtext smallTop')" th:value="*{email}" />
 				<p><input type="text" class="phoneField smallTop" name="mobilePhone" id="mobilePhone" placeholder="phone number" required="required"
@@ -86,13 +88,13 @@
 
     <!-- Javascript
     ================================================== -->
-		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-		<script src="js/intlTelInput.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+		<script src="js/libs/intlTelInput.min.js"></script>
 
 <script>
   $("#mobilePhone").intlTelInput();
 </script>
-</body>
+
 
 </body>
 </html>

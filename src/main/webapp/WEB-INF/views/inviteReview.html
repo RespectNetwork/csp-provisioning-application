@@ -40,9 +40,11 @@
           	</div>
           	<div class="span4 midHdr">
           	</div>
+          	<!--
           	<div class="span4 bigTop">
              <p class="secondary">PRESS | FAQs</p>
          		</div>
+          	-->
           </div>
 
           </div>
@@ -67,7 +69,7 @@
         </p>
         <p class="secondary">
           	<input  type="checkbox" name="cspTandC" value="false" required="required"/>  &nbsp;I agree to the CSP &nbsp;
-          	<br /> &nbsp; &nbsp; &nbsp;<a target="_blank" onclick="return windowpop(this.href, 545, 433); " th:href="@{/csptc}">Terms of Service</a>          	
+          	<br /> &nbsp; &nbsp; &nbsp;<a target="_blank" onclick="return windowpop(this.href, 545, 433); " th:href="${cspTCURL}">Terms of Service</a>          	
 		</p>
         <br></br>
         <button type="submit" name="submit" id="submit" class="button big">Continue</button>
@@ -76,13 +78,13 @@
       </div>
 	</div>
 	<div id="footer">
-      	
+      <!--	
 		<div class="help">
   			<div id="help">
   				<a target="_blank" onclick="return windowpop(this.href, 545, 433); " th:href="@{/help}">Help</a>
 			</div>
 	 	</div>
-
+		-->
   	</div>
     
  </div> <!-- end wrap -->

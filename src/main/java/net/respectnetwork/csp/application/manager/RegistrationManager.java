@@ -124,6 +124,8 @@ public class RegistrationManager {
     
     private static String postRegistrationURL ;
     
+    private String cspTCURL;
+    
     public static final String GeoLocationPostURIKey = "<$https><#network.globe><$set>";
     public static final String RNpostRegistrationLandingPageURIKey = "<$https><#post><#registration>";
     public static final String CSPCloudRegistrationURIKey = "<$https><#registration>";
@@ -748,6 +750,16 @@ public class RegistrationManager {
    public static void setPostRegistrationURL(String postRegistrationURL)
    {
       RegistrationManager.postRegistrationURL = postRegistrationURL;
+   }
+
+   public String getCspTCURL()
+   {
+      return cspTCURL;
+   }
+
+   public void setCspTCURL(String cspTCURL)
+   {
+      this.cspTCURL = cspTCURL;
    }
 
    
