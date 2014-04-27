@@ -532,6 +532,7 @@ public class RegistrationController
       }
 
       logger.info("getLocation - " + remoteIPAddr + " LAT = " + loc.latitude + " LNG = " + loc.longitude);
+      theManager.getEndpointURI(RegistrationManager.GeoLocationPostURIKey, theManager.getCspRegistrar().getCspInformation().getRnCloudNumber());     
 
 //      if(rnQueryString != null && !rnQueryString.isEmpty())
 //      {

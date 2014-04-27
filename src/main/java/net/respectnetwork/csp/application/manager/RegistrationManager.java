@@ -120,6 +120,10 @@ public class RegistrationManager {
     
     private String cspRespectConnectBaseURL;
     
+    private static String latLongPostURL ;
+    
+    private static String postRegistrationURL ;
+    
     public static final String GeoLocationPostURIKey = "<$https><#network.globe><$set>";
     public static final String RNpostRegistrationLandingPageURIKey = "<$https><#post><#registration>";
     public static final String CSPCloudRegistrationURIKey = "<$https><#registration>";
@@ -284,6 +288,9 @@ public class RegistrationManager {
         //setEndpointURI(CSPCloudRegistrationURIKey, this.cspHomeURL + "/register");
         //setEndpointURI(CSPDependentCloudRegistrationURIKey, this.cspHomeURL + "/dependent");
         //setEndpointURI(CSPGiftCardPurchaseURIKey, this.cspHomeURL + "/invite");
+        postRegistrationURL = getEndpointURI(RegistrationManager.RNpostRegistrationLandingPageURIKey, theCSPInfo.getRnCloudNumber());
+        latLongPostURL = getEndpointURI(RegistrationManager.GeoLocationPostURIKey, theCSPInfo.getRnCloudNumber());
+        
     }
 
     /**
@@ -659,7 +666,7 @@ public class RegistrationManager {
    {
       cspInviteURL = url;
    }
-   public  synchronized String getEndpointURI(String key , CloudNumber cloudNumber)
+   public  String getEndpointURI(String key , CloudNumber cloudNumber)
    {
       
       logger.debug("getEndpointURI key=" + key + " , cloudNumber = " + cloudNumber.toString());
@@ -722,6 +729,28 @@ public class RegistrationManager {
    {
       this.cspRespectConnectBaseURL = cspRespectConnectBaseURL;
    }
+
+   public static String getLatLongPostURL()
+   {
+      return latLongPostURL;
+   }
+
+   public static void setLatLongPostURL(String latLongPostURL)
+   {
+      RegistrationManager.latLongPostURL = latLongPostURL;
+   }
+
+   public static String getPostRegistrationURL()
+   {
+      return postRegistrationURL;
+   }
+
+   public static void setPostRegistrationURL(String postRegistrationURL)
+   {
+      RegistrationManager.postRegistrationURL = postRegistrationURL;
+   }
+
+   
 
 
 

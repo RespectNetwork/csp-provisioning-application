@@ -1395,7 +1395,7 @@ public class PersonalCloudController
 
    public boolean postLatitudeLongitudeInfo() throws Exception
    {
-      String latLongPostURL = registrationManager.getEndpointURI(RegistrationManager.GeoLocationPostURIKey, registrationManager.getCspRegistrar().getCspInformation().getRnCloudNumber());
+      String latLongPostURL = RegistrationManager.getLatLongPostURL();
       logger.debug("Going to post latitude-longitude to RN " + latLongPostURL);
       CloseableHttpClient httpclient = HttpClients.createDefault();
       try
@@ -1430,7 +1430,7 @@ public class PersonalCloudController
    }
    public  String getRNpostRegistrationLandingPage()
    {
-      return registrationManager.getEndpointURI(RegistrationManager.RNpostRegistrationLandingPageURIKey, registrationManager.getCspRegistrar().getCspInformation().getRnCloudNumber());
+      return RegistrationManager.getPostRegistrationURL();
       
    }
 
