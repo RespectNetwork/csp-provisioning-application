@@ -91,11 +91,12 @@
       	<div class="row-fluid">
           <div class="span4 smallTop"><p class="test"></p>
           </div>
-          <div class="span4 midHdr"><span th:text="${cloudName}"/>
-          </div>
+          
           <div class="span4">
          		
-     			</div>
+     	</div>
+     	 <div class="span4 midHdr"><span th:text="${cloudName}"/>
+          </div>		
       	</div>
 	  	</div>
 		</div>
@@ -107,7 +108,7 @@
         <div class="row-fluid">
             <div class="span2"></div>
             <div class="span4">
-                <p class="payment1"><span style="color:red" th:text="${error}"/><br/>Select Payment Method</p>
+                <p class="payment1"><span style="color:red" th:text="${error}"> </span><br/>Select Payment Method</p>
 
                 <div th:switch="*{txnType}">
                     <div th:case="'signup'">
