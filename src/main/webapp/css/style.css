@@ -346,7 +346,7 @@
 	font-size: 24px;
 	text-align: center;
 }	
-	
+
 .mini {
 	width: 37px;
 	margin-top: 10px;
@@ -426,7 +426,6 @@
 	font-size:20px;
 	margin: 0px;
 	vertical-align: bottom;
-	
 }
 
 button,
@@ -483,7 +482,7 @@ textarea {
     .navbar .nav {
 			margin: 0 60px 0 0; 
 		}
-		
+
     /* Offset the responsive button for proper vertical alignment */
     .navbar .btn-navbar {
       margin-top: 10px;
@@ -505,11 +504,11 @@ textarea {
 		height: 57px;
 		margin-left: 150px;
 	}
-		
+
 	.leftPad {
 		padding-left: 50px; 
 	}
-		
+
   #wrap > .container {
     padding-top: 50px !important;
   }
@@ -521,7 +520,7 @@ textarea {
 	.paymentBody {
 		padding-top: 5px;
 	}
-	
+
 	.inputFields {
 		width:300px;
 		height:35px;
@@ -529,7 +528,7 @@ textarea {
 		margin-top: 20px;
 
 	}
-	
+
 	.phoneField {
 		height: 35px;
 		width: 315px;
@@ -540,7 +539,7 @@ textarea {
 		width: 300px;
 		height: 45px;
 	}
-	
+
 	.pwdInputForm {
 		margin-top: 15px;
 		height: 35px;
@@ -551,7 +550,7 @@ textarea {
 	.primary {
 		margin: 30 0 30px;
 	}
-	
+
 	.middle {
 		font-size: 30px;
 /*		padding: 52px 0 35px;   */
@@ -562,25 +561,25 @@ textarea {
 		font-size: 30px;
 		height: 80%px;
 	}
-	
+
 	.middle2 {
 		font-size: 20px;
 		padding: 20px 0 0px;
 		height: 350px;
 	}
-	
+
 	.middle3 {
 		font-size: 24px;
 		padding: 20px 0 0px;
 		height: 250px;
 	}
-	
+
 	.csp {
  		padding-top: 80px;
  		font-size: 14px;
  		float:right;
 	}
-	
+
 	.cspMain {
  		padding-top: 0px;
  		font-size: 14px;
@@ -589,7 +588,7 @@ textarea {
 	.bigTop {
 		margin-top: 45px;
 	}
-	
+
 	.big {
 		width:300px;
 	}
@@ -603,7 +602,7 @@ textarea {
 	.payment1 {
 		margin: 0px 0 25px;
 	}
-	
+
 	select, textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"], .uneditable-input {
 		font-size: 18px;
 	}
@@ -630,7 +629,7 @@ textarea {
 	.paymentBody {
 		padding-top: 5px;
 	}
-	
+
 	.midHdr {
 		padding-top: 25px;
   	font-size: 20px;
@@ -641,7 +640,7 @@ textarea {
 		width: 225px;
 		height: 35px;
 	}
-	
+
 	.inputFields {
 		margin-top: 10px;
 		width: 225px;
@@ -655,7 +654,7 @@ textarea {
 		width: 225px;
 		font-size: 14px;
 	}
-	
+
 	.phoneField {
 		height: 35px;
 		width: 240px;
@@ -688,13 +687,13 @@ vertical-align: middle;
 		padding: 25px 0 35px;
 		height: 270px;
 	}
-	
+
 	.middle2 {
 	 	font-size: 16px;
 		padding: 5px 0 5px;
 		height: 390px;
 	}
-	
+
 	.csp {
  		padding-top: 30px;
  		font-size: 12px;
@@ -703,11 +702,11 @@ vertical-align: middle;
 	.bigTop {
 		margin-top: 0px;
 	}
-	
+
 	.button {
 		height:32px;
 	}
-	
+
 	.big {
 	width:250px;
 	}
@@ -751,6 +750,14 @@ vertical-align: middle;
 		width: 10px;
 	}
 
+	.row-fluid .span5 {
+		width: 375px;
+	}
+
+	.span2 {
+		width: 10px;
+	}
+
 	.leftHdr {
 		margin-left: 0px;
 	}
@@ -764,7 +771,7 @@ vertical-align: middle;
 		height: 35px;
 		margin-top: 10px;
 	}
-	
+
 	.phoneField {
 		height: 40px;
 		width: 210px;
@@ -817,7 +824,7 @@ vertical-align: middle;
 		padding: 5px 0 5px;
 		height: 450px;
 	}
-	
+
 	.middle {
 		font-size: 20px;
 		padding: 0px 0 15px;
@@ -827,40 +834,40 @@ vertical-align: middle;
 	.big {
 		width:250px;
 	}
-	
+
 	.midHdr {
   	font-size: 20px;
   	padding-top:25px;
 	}
-	
+
 	.smallTop {
 		margin-top: 0px;
 		width: 250px;
 		height: 30px;
 	}
-	
+
 	.bigTop{
 		margin-top: 30px;
 	}
-	
+
 	select, textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"], .uneditable-input {
 		font-size: 18px;
 	}
-	
+
 	.navbar-fixed-top {
  		margin-bottom: 0px;
 	}
-	
+
 	.button {
 		padding: 0px; 
 		font: 18px "AvenirNext", helvetica, arial, sans-serif;
 		height: 30px;
 	}
-	
+
 	.payment1 {
 		margin: 0px 0 0px;
 	}
-	
+
 	.payment2 {
 		margin: 0px 0 15px;
 	}
@@ -902,7 +909,7 @@ vertical-align: middle;
 	.navbar .nav {
 		margin: 0px;
 	}
-	
+
 	.nav-collapse .nav > li > a, .nav-collapse .dropdown-menu a {
 		color: #d9d9d9;
 		background-color: white;	
@@ -929,7 +936,7 @@ vertical-align: middle;
 	.navbar .nav {
 		margin: 0px;
 	}
-	
+
 	.nav-collapse .nav > li > a, .nav-collapse .dropdown-menu a {
 		color: #d9d9d9;
 		background-color: white;	
@@ -960,7 +967,7 @@ vertical-align: middle;
 		width: 33%; 
 		background-color:transparent;
 }
-		
+
 	.navbar .navbar-btn {
 		background-color: transparent;
 	}
@@ -981,7 +988,7 @@ vertical-align: middle;
   	text-decoration: none;
   	background-color: white;
 	}
-	
+
 	.nav-collapse .nav > li > a, .nav-collapse .dropdown-menu a {
 		color: #d9d9d9;
 		background-color: white;	
@@ -996,4 +1003,3 @@ vertical-align: middle;
 		width: 360px;
 	}
 }
-
