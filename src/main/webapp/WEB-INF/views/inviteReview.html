@@ -71,7 +71,9 @@
         <input type="hidden" id="giftCardFlag" name="giftCardFlag" value="" th:value="${inviteForm.giftCardFlag}"/>
         <input type="hidden" id="giftCardQuantity" name="giftCardQuantity" value="1" th:value="${inviteForm.giftCardQuantity}"/>
         <p class="primaryLeftJustified">Gift Card purchase summary</p>
-        <br></br>
+        <br>
+        <p class="payment3"> Email(s) with Gift Code(s) will be sent to <span th:text="${inviteForm.emailAddress}"></span></p>	
+        </br>
         <p class="payment3"> Number of gift cards = <span th:text="${inviteForm.giftCardQuantity}">0</span></p>
         <br></br>
         <p class="payment3"> Total cost = 

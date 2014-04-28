@@ -189,21 +189,49 @@ public class PersonalCloudInviteController
 			return mv;
 		}
 
+	
+      
 		if( result.hasErrors() )
 		{
 			logger.error("result - " + result);
 			mv = new ModelAndView("invite");
-			mv.addObject("quantityList", quantityList);
+			String errorStr = "Invalid values for email and/or gift card quantity";
+			cspModel = DAOFactory.getInstance().getCSPDAO().get(this.getCspCloudName());
+         mv = new ModelAndView("invite");
+         mv.addObject("cspModel"    , cspModel);
+         mv.addObject("quantityList", quantityList);
+         mv.addObject("cloudName", regSession.getCloudName());
+         model.addAttribute("inviteForm", inviteForm);
+         mv.addObject("error", errorStr);
+         
+         return mv;
 		}
 		else
 		{
-			mv = new ModelAndView("inviteReview");
+		   // validate email address entered by user
+	      if (!org.apache.commons.validator.routines.EmailValidator
+	               .getInstance().isValid(inviteForm.getEmailAddress())) 
+	      {
+	           String errorStr = "Invalid Email Address.";
+	           logger.debug("Invalid Email address entered..."
+	                   + inviteForm.getEmailAddress());
+	           cspModel = DAOFactory.getInstance().getCSPDAO().get(this.getCspCloudName());
+	           mv = new ModelAndView("invite");
+	           mv.addObject("cspModel"    , cspModel);
+	           mv.addObject("quantityList", quantityList);
+	           mv.addObject("cloudName", regSession.getCloudName());
+	           model.addAttribute("inviteForm", inviteForm);
+	           mv.addObject("error", errorStr);
+	           
+	           return mv;
+	      }
 		}
-
+		mv = new ModelAndView("inviteReview");
 		cspModel = DAOFactory.getInstance().getCSPDAO().get(this.getCspCloudName());
 		mv.addObject("cspModel"    , cspModel);
 		mv.addObject("cspTCURL", registrationManager.getCspTCURL());
 		model.addAttribute("inviteForm", inviteForm);
+		mv.addObject("cloudName", regSession.getCloudName());
 		return mv;
 	}
 

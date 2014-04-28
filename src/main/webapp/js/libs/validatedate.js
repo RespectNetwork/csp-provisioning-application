@@ -1,6 +1,10 @@
-function validateDate(date) {
+function validateDate(date, dependentCounter) {
     var retVal = null;
-    var isValidDate = "#isValidDate";
+    if(dependentCounter == undefined) {
+        var isValidDate = "#isValidDate";
+    } else {
+        var isValidDate = "#isValidDate"+dependentCounter;
+    }
     // Basic check for format validity
     var validformat = /^\d{2}\/\d{2}\/\d{4}$/ 
     var returnval = false
@@ -22,7 +26,28 @@ function validateDate(date) {
     }
     $(isValidDate).html(retVal);
     $(isValidDate).css('color', 'red');
-    if(retVal == null) {
-        document.getElementById('submit').disabled = false;
+
+    if(window.mycounter == undefined) {
+        if(retVal == null) {
+            document.getElementById('submit').disabled = false;
+        }
+    } else { 
+        var i=0;
+        var validDate = true;
+        while(i<=window.mycounter && validDate) {
+            if(i == 0) {
+                if($('span#isValidDate').text() != "") {
+                    validDate = false;
+                }
+            } else {
+                if($('span#isValidDate+window.mycounter').text() != "") {
+                    validDate = false;
+                }
+            }
+            i++;
+        }
+        if(validDate) {
+            document.getElementById('submit').disabled = false;
+        }
     }
 }
