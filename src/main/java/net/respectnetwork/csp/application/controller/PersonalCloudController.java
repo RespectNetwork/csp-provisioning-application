@@ -565,13 +565,8 @@ public class PersonalCloudController
 
          } else
          {
-            // forwardingPage += "/login";
-            // statusText = "Sorry ! Payment Processing Error";
-            mv = new ModelAndView("payment");
-            mv.addObject("error", "Payment Processing error!\n"
-                  + registrationManager.getCSPContactInfo());
-            mv.addObject("cspTCURL", this.getRegistrationManager().getCspTCURL());
-            return mv;
+            forwardingPage += "/signup";
+            statusText = "Sorry ! Payment Processing Error";
          }
       }
 

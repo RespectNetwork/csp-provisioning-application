@@ -27,6 +27,13 @@
     <link href="css/style.css" rel="stylesheet" />
 		<link href="css/bootstrap-responsive.css" rel="stylesheet" />
 
+<link href="css/csp_styles.css" rel="stylesheet" />
+
+<link href="https://s3.amazonaws.com/rnfonts/demo.css" rel="stylesheet" type="text/css" />
+
+	
+					
+
 <!-- Scripts-->	
 <script src="../../js/libs/modernizr-2.0.6.min.js" th:src="@{/js/libs/modernizr-2.0.6.min.js}"></script>
 
@@ -34,7 +41,8 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 <script src="js/libs/misc.js"> </script>
-<script>
+	                                  
+<script src="js/libs/bootstrap-dropdown.js"></script><script>
 $(document).ready(function(){
   $("#addAnotherDependent").click(function(){
     
@@ -42,7 +50,7 @@ $(document).ready(function(){
     });
 });
 </script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+	
 	
 	<!--include the javascript that checks availability-->
 	<script src="js/libs/nameavailability.js"></script>
@@ -61,8 +69,14 @@ $(document).ready(function(){
         	<p class="cspHeader right"><img src="img/csp_logo.png" /></p>
         </div>
         <div class="span4"></div>
-        <div class="span4 smallTop">
-          <p class="cspHeader center"> &nbsp; Welcome <span th:text="${cloudName}"/></p>
+        <div class="span4 equation">
+             <ul class="nav">
+                 <a  href="#" class="dropdown-toggle" data-toggle="dropdown"><span th:text="${cloudName}"/> &nbsp;<b class="caret"></b> &nbsp;</a>
+                <ul class="dropdown-menu">
+                  <li><a th:href="@{/logout}">Logout</a></li>
+              </ul>
+
+            </ul> 
         </div>
       </div>
 			</div>
@@ -125,11 +139,7 @@ $(document).ready(function(){
  </div> <!-- end wrapper -->      
  <div id="footer">
       	
-  			<div class="help">
-  				<div id="help">
-  					<a target="_blank" onclick="return windowpop(this.href, 545, 433); " th:href="@{/help}">Help</a>
-				</div>
-	 		</div>
+  			
     </div>
 <!--The following script hooks the HTML Elements to the javascript functionality-->
 	<!-- see the comments inside the javascript for details-->
