@@ -68,12 +68,11 @@
 		  	<p class="payment3">Forward that email to the recipient and they can redeem it with <span th:text="${cspModel.cspCloudName}" ></span>  on this website.
 		   	</p> 
 		   </div> 
-		   <form:errors path="emailAddress" cssClass="error" /> <br/>
 		    <p class="payment3">Email address to send giftcards:
       			<input type="text" th:field="*{emailAddress}" placeholder="email address" required="required"  class="inputFields smallMarg"/>
 			</p>
 			<p th:if="${#fields.hasErrors('emailAddress')}" th:errors="*{emailAddress}" style="color:red;font-size:15px;"/>
-           	<div class="payment3">Number of  giftcards :
+		   	<div class="payment3">Number of  giftcards :
            		<input type="number" th:field="*{giftCardQuantity}" placeholder="nn" required="required"  class="inputFields mini" autocomplete="off" min="1" max="10"/>
 				<p th:if="${#fields.hasErrors('giftCardQuantity')}" th:errors="*{giftCardQuantity}" style="color:red;font-size:15px;"/>
            	</div>
