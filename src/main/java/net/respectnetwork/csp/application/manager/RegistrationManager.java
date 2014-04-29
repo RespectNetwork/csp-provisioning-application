@@ -1,24 +1,13 @@
 package net.respectnetwork.csp.application.manager;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
-import java.net.URLEncoder;
-import java.security.GeneralSecurityException;
-import java.security.PrivateKey;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Currency;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import net.respectnetwork.csp.application.dao.DAOException;
-import net.respectnetwork.csp.application.dao.DAOFactory;
 import net.respectnetwork.csp.application.exception.UserRegistrationException;
-import net.respectnetwork.csp.application.model.SignupInfoModel;
 import net.respectnetwork.sdk.csp.BasicCSPInformation;
 import net.respectnetwork.sdk.csp.CSP;
 import net.respectnetwork.sdk.csp.UserValidator;
@@ -37,8 +26,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Required;
 
 import xdi2.client.exceptions.Xdi2ClientException;
-import xdi2.client.http.XDIHttpClient;
-import xdi2.client.util.XDIClientUtil;
 import xdi2.core.xri3.CloudName;
 import xdi2.core.xri3.CloudNumber;
 import xdi2.core.xri3.XDI3Segment;
@@ -131,6 +118,8 @@ public class RegistrationManager {
     public static final String CSPCloudRegistrationURIKey = "<$https><#registration>";
     public static final String CSPDependentCloudRegistrationURIKey = "<$https><#dependent><#registration>";
     public static final String CSPGiftCardPurchaseURIKey = "<$https><#giftcard><#registration>";
+    
+    public static final String CloudNameRegEx = "^=[a-z\\d]+((.|-)[a-z\\d]+)*$";
     
     /**
      * Get CSP Registrar
@@ -763,7 +752,38 @@ public class RegistrationManager {
       this.cspTCURL = cspTCURL;
    }
 
-   
+   public static boolean validateCloudName(String cloudName) {
+      if(cloudName == null || cloudName.isEmpty())
+      {
+         return false;
+      }
+      Pattern pattern = Pattern.compile(CloudNameRegEx);
+      Matcher matcher = pattern.matcher(cloudName);
+      if (matcher.find()) {
+          return true;
+      } else {
+          return false;
+      }
+  }
+   public static boolean validatePhoneNumber(String phone)
+   {
+      if(phone == null || phone.isEmpty())
+      {
+         return false;
+      }
+      for(int i = 0 ; i < phone.length() ; i++)
+      {
+         if(phone.charAt(i) != '+' || phone.charAt(i) != '.')
+         {
+            continue;
+         }
+         if(phone.charAt(i) < '0' || phone.charAt(i) > '9' )
+         {
+            return false;
+         }
+      }
+      return true;
+   }
 
 
 

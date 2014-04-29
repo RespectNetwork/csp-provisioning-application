@@ -182,7 +182,7 @@ public class PersonalCloudInviteController
 		ModelAndView mv         = null;
 		CSPModel     cspModel   = null;
 
-		if( cloudName == null )
+		if( cloudName == null || !RegistrationManager.validateCloudName(cloudName))
 		{
 			mv = new ModelAndView("login");
 			mv.addObject("postURL", cspHomeURL + "/cloudPage");

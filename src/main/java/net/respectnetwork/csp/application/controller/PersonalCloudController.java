@@ -185,9 +185,9 @@ public class PersonalCloudController
          return processLogout(request, model);
       }
       
-		String cName = request.getParameter("cloudname").trim();
+		String cName = request.getParameter("cloudname");
 
-	  if(!cName.startsWith("=") || cName.contains(" ") || cName.endsWith(".") || cName.contains("*") ) {
+	  if(!RegistrationManager.validateCloudName(cName) ) {
           errors = true;
           errorText = "Cloudname should begin with '=' , it should not have any spaces or '*' and it should not end with a '.'";
       }

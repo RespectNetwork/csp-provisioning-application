@@ -288,7 +288,15 @@ public class RegistrationController
               errors = true;
               return mv;
           }
-            
+           if(!RegistrationManager.validatePhoneNumber(userDetailsForm.getMobilePhone()))
+           {
+              String errorStr = "Invalid Phone Number. Please provide the phone number with all digits only.";
+              logger.debug("Invalid Phone Number entered..."
+                      + userDetailsForm.getMobilePhone());
+              mv.addObject("error", errorStr);
+              errors = true;
+              return mv;  
+           }
             CloudNumber[] existingUsers = theManager
                   .checkEmailAndMobilePhoneUniqueness(
                         userDetailsForm.getMobilePhone(),
@@ -498,7 +506,7 @@ public class RegistrationController
          @Valid @ModelAttribute("signUpInfo") SignUpForm signUpForm,
          BindingResult result)
    {
-      
+      ModelAndView mv = new ModelAndView("signup");
       Enumeration<String> paramNames = request.getParameterNames(); 
       while(paramNames.hasMoreElements())
       {
@@ -511,11 +519,14 @@ public class RegistrationController
          }
       }
       String rnQueryString = request.getQueryString();
-      rnQueryString = rnQueryString.substring(rnQueryString.indexOf("&")+1);
-      logger.debug("Query String " + rnQueryString);
-      
-      
-      
+      if(rnQueryString != null && !rnQueryString.isEmpty())
+      {
+         rnQueryString = rnQueryString.substring(rnQueryString.indexOf("&")+1);
+         logger.debug("Query String " + rnQueryString);
+      } else
+      {
+         return mv;
+      }
       String remoteIPAddr = request.getHeader("X-FORWARDED-FOR");
       
       logger.debug("User agent " + request.getHeader("User-Agent"));
@@ -571,9 +582,13 @@ public class RegistrationController
       
       
       logger.info("registerCloudName : registration request for cloudname " + cloudName);
-      ModelAndView mv = new ModelAndView("signup");
+      
       if (cloudName != null)
       {
+         if(!RegistrationManager.validateCloudName(cloudName))
+         {
+            return mv;
+         }
          try
          {
             if (theManager.isCloudNameAvailable(cloudName))
