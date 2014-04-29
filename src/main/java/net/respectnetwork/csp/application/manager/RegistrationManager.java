@@ -771,9 +771,14 @@ public class RegistrationManager {
       {
          return false;
       }
+      if(!phone.startsWith("+"))
+      {
+         return false;
+      }
+      
       for(int i = 0 ; i < phone.length() ; i++)
       {
-         if(phone.charAt(i) != '+' || phone.charAt(i) != '.')
+         if(phone.charAt(i) == '.')
          {
             continue;
          }
