@@ -767,6 +767,7 @@ public class RegistrationManager {
   }
    public static boolean validatePhoneNumber(String phone)
    {
+      /*
       if(phone == null || phone.isEmpty())
       {
          return false;
@@ -787,6 +788,8 @@ public class RegistrationManager {
             return false;
          }
       }
+      return true;
+      */
       return true;
    }
 
