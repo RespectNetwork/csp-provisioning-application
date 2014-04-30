@@ -194,9 +194,12 @@ public class PersonalCloudDependentController
 
       String[] arrDependentCloudName = dependentForm.getDependentCloudName()
             .split(",");
+      String[] arrPasswd = dependentForm.getDependentCloudPassword()
+            .split(",");
 
       String errorStr = "";
 
+      int i = 0 ;
       for (String dependentCloudName : arrDependentCloudName)
       {
          try
@@ -205,8 +208,15 @@ public class PersonalCloudDependentController
                   + dependentCloudName);
             if (!theManager.isCloudNameAvailable(dependentCloudName))
             {
-               errorStr = "CloudName not Available " + dependentCloudName;
+               errorStr += "\nCloudName not Available " + dependentCloudName;
                errors = true;
+               break;
+            }
+            if(!RegistrationManager.validatePassword(arrPasswd[i]))
+            {
+               errorStr += "\nInvalid password. Please provide a password that is at least 8 characters, have at least 2 letters, 2 numbers and at least one special character, e.g. @, #, $ etc.";;
+               errors = true;
+               break;
             }
          } catch (UserRegistrationException e)
          {
@@ -214,13 +224,16 @@ public class PersonalCloudDependentController
             logger.warn(errorStr + " : {}", e.getMessage());
             errors = true;
          }
+         i++;
       }
       if (errors)
       {
          mv = new ModelAndView("dependent");
          mv.addObject("cspModel", cspModel);
-         dependentForm = new DependentForm();
+         //dependentForm = new DependentForm();
          model.addAttribute("dependentForm", dependentForm);
+         model.addAttribute("cloudName", cloudName);
+         mv.addObject("cspModel", cspModel);
          mv.addObject("error", errorStr);
          errors = true;
          return mv;

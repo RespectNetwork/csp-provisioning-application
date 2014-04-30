@@ -78,6 +78,7 @@
     <div class="row-fluid"> 
     	<div class="span1"></div> 
       <div class="span5">		
+			<br/><span style="color:red" th:text="${error}"></span><br/>      	
 	      <p class="primaryLeftJustified">Add clouds for my dependents </p>
 	      	<p class="payment3">Dependent's cloud name:</p>                           
           <form action="#" th:object="${dependentForm}" th:action="@{/dependentSubmit}" method="post">
