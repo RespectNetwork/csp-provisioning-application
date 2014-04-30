@@ -516,6 +516,7 @@ public class RegistrationController
          BindingResult result)
    {
       ModelAndView mv = new ModelAndView("signup");
+      String rnQueryString = "";
       Enumeration<String> paramNames = request.getParameterNames(); 
       while(paramNames.hasMoreElements())
       {
@@ -525,17 +526,14 @@ public class RegistrationController
          for(int i = 0 ; i < paramValues.length ; i++)
          {
             logger.debug("p value " + paramValues[i]);
+          //ignore the "name" parameter. Capture rest of it
+            if(!paramName.equalsIgnoreCase(URL_PARAM_NAME_REQ_CLOUDNAME))
+            {
+               rnQueryString = rnQueryString + "&" + paramValues[i];
+            }
          }
       }
-      String rnQueryString = request.getQueryString();
-      if(rnQueryString != null && !rnQueryString.isEmpty())
-      {
-         rnQueryString = rnQueryString.substring(rnQueryString.indexOf("&")+1);
-         logger.debug("Query String " + rnQueryString);
-      } else
-      {
-         return mv;
-      }
+      
       String remoteIPAddr = request.getHeader("X-FORWARDED-FOR");
       
       logger.debug("User agent " + request.getHeader("User-Agent"));
