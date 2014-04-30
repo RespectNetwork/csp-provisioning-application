@@ -175,7 +175,7 @@ public class PersonalCloudDependentController
       ModelAndView mv = null;
       CSPModel cspModel = null;
 
-      if (cloudName == null)
+      if (cloudName == null || !RegistrationManager.validateCloudName(cloudName))
       {
          mv = new ModelAndView("login");
          mv.addObject("postURL", cspHomeURL + "/cloudPage");
@@ -268,6 +268,7 @@ public class PersonalCloudDependentController
       mv.addObject("paymentInfo", paymentForm);
       mv.addObject("amount",amount.toPlainString());
       mv.addObject("totalAmountText", RegistrationController.formatCurrencyAmount(regSession.getCurrency(), amount));
+      mv.addObject("cspTCURL", this.getTheManager().getCspTCURL());
       
       this.setDependentForm(dependentForm);
       return mv;

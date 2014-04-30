@@ -174,15 +174,28 @@ public class PersonalCloudController
    public ModelAndView showCloudPage(HttpServletRequest request, Model model)
    {
       logger.info("showing cloudPage form");
-
+      String errorText = "";
       ModelAndView mv = null;
       CloudName cloudName = null;
       boolean errors = false;
       logger.info("Cloudname from request parameter "
             + request.getParameter("cloudname"));
+      if (request.getParameter("cloudname") == null)
+      {
+         return processLogout(request, model);
+      }
+      
+		String cName = request.getParameter("cloudname");
+
+	  if(!RegistrationManager.validateCloudName(cName) ) {
+          errors = true;
+          errorText = "Cloudname should begin with '=' , it should not have any spaces or '*' and it should not end with a '.'";
+      }
+
+      if(errors == false) {
       if (request.getParameter("cloudname") != null)
       {
-         cloudName = CloudName.create(request.getParameter("cloudname"));
+         cloudName = CloudName.create(cName);
       } else if (regSession.getCloudName() != null)
       {
          cloudName = CloudName.create(regSession.getCloudName());
@@ -248,13 +261,17 @@ public class PersonalCloudController
 
             } else
             {
+			   errorText += "Invalid User/Password.";
                errors = true;
+			   logger.info("Authenticating to personal cloud failed for "
+                       + request.getParameter("cloudname"));
             }
          } catch (Xdi2ClientException e)
          {
             // TODO Auto-generated catch block
             e.printStackTrace();
             errors = true;
+			errorText += "Invalid User/Password.";
             logger.debug("Authenticating to personal cloud failed for "
                   + request.getParameter("cloudname"));
          }
@@ -264,11 +281,13 @@ public class PersonalCloudController
          logger.info("CSP Object is null. ");
          errors = true;
       }
+	  }
       if (errors)
       {
          String cspHomeURL = request.getContextPath();
          String formPostURL = cspHomeURL + "/cloudPage";
          mv = new ModelAndView("login");
+		 mv.addObject("error", errorText);
          mv.addObject("postURL", formPostURL);
 
       }
@@ -455,7 +474,7 @@ public class PersonalCloudController
                   // forwardingPage += "/cloudPage";
                   try
                   {
-                     forwardingPage = RegistrationManager.getCspInviteURL();
+                     forwardingPage = getRNpostRegistrationLandingPage() ; //RegistrationManager.getCspInviteURL();
                      queryStr = "name="
                            + URLEncoder.encode(cloudName, "UTF-8")
                            + "&csp="
@@ -484,7 +503,7 @@ public class PersonalCloudController
                      request)) != null)
                {
                   // forwardingPage += "/cloudPage";
-                  forwardingPage = RegistrationManager.getCspInviteURL();
+                  forwardingPage = getRNpostRegistrationLandingPage() ; //RegistrationManager.getCspInviteURL();
                   try
                   {
                      queryStr = "name="
@@ -515,7 +534,7 @@ public class PersonalCloudController
                      cspModel)) != null)
                {
                   // forwardingPage += "/cloudPage";
-                  forwardingPage = RegistrationManager.getCspInviteURL();
+                  forwardingPage = getRNpostRegistrationLandingPage() ; //RegistrationManager.getCspInviteURL();
                   try
                   {
                      queryStr = "name="
@@ -546,12 +565,8 @@ public class PersonalCloudController
 
          } else
          {
-            // forwardingPage += "/login";
-            // statusText = "Sorry ! Payment Processing Error";
-            mv = new ModelAndView("payment");
-            mv.addObject("error", "Payment Processing error!\n"
-                  + registrationManager.getCSPContactInfo());
-            return mv;
+            forwardingPage += "/signup";
+            statusText = "Sorry ! Payment Processing Error";
          }
       }
 
@@ -596,7 +611,7 @@ public class PersonalCloudController
          e1.printStackTrace();
       }
       mv.addObject("queryStr", queryStr);
-      mv.addObject("postURL", RegistrationManager.getCspInviteURL());
+      mv.addObject("postURL", "https://welcome.respectnetwork.com/registered/index.html");
       return mv;
    }
 
@@ -611,6 +626,7 @@ public class PersonalCloudController
 
       boolean errors = false;
       String errorText = "";
+      String paymentType = "";
 
       ModelAndView mv = null;
       PaymentForm paymentForm = new PaymentForm(paymentFormIn);
@@ -634,29 +650,41 @@ public class PersonalCloudController
       }
 
       Enumeration<String> paramNames = request.getParameterNames();
-      while (paramNames.hasMoreElements())
+      while(paramNames.hasMoreElements())
       {
          String paramName = paramNames.nextElement();
          logger.debug("p name " + paramName);
          String[] paramValues = request.getParameterValues(paramName);
-         for (int i = 0; i < paramValues.length; i++)
+         for(int i = 0 ; i < paramValues.length ; i++)
          {
             logger.debug("p value " + paramValues[i]);
          }
       }
 
-      String paymentType = "";
+      String forwardingPage = getRNpostRegistrationLandingPage() ; //RegistrationManager.getCspInviteURL()  ;
+      String statusText = "";
+      
       String[] paramValues = request.getParameterValues("paymentType");
-      for (int i = 0; i < paramValues.length; i++)
-      {
-
-         paymentType += paramValues[i] + ",";
-      }
+      if(paramValues != null) {
+         for(int i = 0 ; i < paramValues.length ; i++)
+         {
+            paymentType += paramValues[i] + ",";
+         }
+     } else {
+         mv = new ModelAndView("payment");
+         errors = true;
+         mv.addObject(
+               "error",
+               "Please select payment method.");
+         logger.debug("No payment method selected.");
+         mv.addObject("cspTCURL", this.getRegistrationManager().getCspTCURL());
+         return mv;
+     }
 
       logger.debug("Payment type(s) " + paymentType);
 
       if (paymentType != null && paymentType.contains("giftCard")
-            && request.getParameter("giftCodes") == null)
+            && (request.getParameter("giftCodes").trim() == null || request.getParameter("giftCodes").trim().isEmpty()))
       {
          mv = new ModelAndView("payment");
          errors = true;
@@ -664,8 +692,12 @@ public class PersonalCloudController
                "error",
                "Payment with gift card is checked. However, no gift card has been provided. Please provide one.");
          logger.debug("Invalid choice for gift card ...");
+         mv.addObject("cspTCURL", this.getRegistrationManager().getCspTCURL());
          return mv;
 
+      } else {
+          logger.info("paymentType " + paymentType);
+          logger.info("giftCodes " + request.getParameter("giftCodes"));
       }
 
       String txnType = paymentForm.getTxnType();
@@ -678,10 +710,8 @@ public class PersonalCloudController
       logger.debug("Giftcodes " + giftCodesVal);
 
       // String forwardingPage = request.getContextPath();
-      String statusText = "";
       String method = "post";
       String queryStr = "";
-      String forwardingPage = RegistrationManager.getCspInviteURL();
       try
       {
          queryStr = "name="
@@ -715,7 +745,7 @@ public class PersonalCloudController
                if (this.registerCloudName(cloudName, phone, email, password))
                {
                   // forwardingPage += "/cloudPage";
-                  forwardingPage = RegistrationManager.getCspInviteURL();
+                  forwardingPage = getRNpostRegistrationLandingPage() ; // RegistrationManager.getCspInviteURL();
                   try
                   {
                      queryStr = "name="
@@ -768,7 +798,7 @@ public class PersonalCloudController
                                                              // for
                {
                   // forwardingPage += "/cloudPage";
-                  forwardingPage = RegistrationManager.getCspInviteURL();
+                  forwardingPage = getRNpostRegistrationLandingPage() ; //RegistrationManager.getCspInviteURL();
                   try
                   {
                      queryStr = "name="
@@ -882,6 +912,7 @@ public class PersonalCloudController
       {
          mv = new ModelAndView("payment");
          mv.addObject("error", errorText);
+         mv.addObject("cspTCURL", this.getRegistrationManager().getCspTCURL());
          return mv;
       }
 
@@ -910,7 +941,7 @@ public class PersonalCloudController
                    * mv.addObject("accountInfo", accountForm);
                    */
                   // forwardingPage += "/cloudPage";
-                  forwardingPage = RegistrationManager.getCspInviteURL();
+                  forwardingPage = getRNpostRegistrationLandingPage() ; //RegistrationManager.getCspInviteURL();
                   try
                   {
                      queryStr = "name="
@@ -963,7 +994,7 @@ public class PersonalCloudController
                                                                 // paid for
                   {
                      // forwardingPage += "/cloudPage";
-                     forwardingPage = RegistrationManager.getCspInviteURL();
+                     forwardingPage = getRNpostRegistrationLandingPage() ; //RegistrationManager.getCspInviteURL();
                      try
                      {
                         queryStr = "name="
@@ -1368,7 +1399,7 @@ public class PersonalCloudController
 
    public boolean postLatitudeLongitudeInfo() throws Exception
    {
-      String latLongPostURL = registrationManager.getEndpointURI(RegistrationManager.GeoLocationPostURIKey, registrationManager.getCspRegistrar().getCspInformation().getRnCloudNumber());
+      String latLongPostURL = RegistrationManager.getLatLongPostURL();
       logger.debug("Going to post latitude-longitude to RN " + latLongPostURL);
       CloseableHttpClient httpclient = HttpClients.createDefault();
       try
@@ -1400,6 +1431,11 @@ public class PersonalCloudController
          httpclient.close();
       }
       return true;
+   }
+   public  String getRNpostRegistrationLandingPage()
+   {
+      return RegistrationManager.getPostRegistrationURL();
+      
    }
 
 }

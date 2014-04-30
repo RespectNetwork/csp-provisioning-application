@@ -256,6 +256,7 @@ public class RegistrationController {
                     errors = true;
                     return mv;
                 }
+
                 CloudNumber[] existingUsers = theManager
                         .checkEmailAndMobilePhoneUniqueness(
                                 userDetailsForm.getMobilePhone(),
@@ -370,6 +371,7 @@ public class RegistrationController {
         if (!errors) {
 
             mv = new ModelAndView("payment");
+            mv.addObject("cspTCURL", this.getTheManager().getCspTCURL());
             PaymentForm paymentForm = new PaymentForm();
             paymentForm.setTxnType(PaymentForm.TXN_TYPE_SIGNUP);
             if (regSession != null) {
@@ -495,6 +497,9 @@ public class RegistrationController {
 
         logger.info("getLocation - " + remoteIPAddr + " LAT = " + loc.latitude
                 + " LNG = " + loc.longitude);
+        theManager.getEndpointURI(RegistrationManager.GeoLocationPostURIKey,
+                theManager.getCspRegistrar().getCspInformation()
+                        .getRnCloudNumber());
 
         // if(rnQueryString != null && !rnQueryString.isEmpty())
         // {

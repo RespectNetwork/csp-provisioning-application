@@ -58,7 +58,7 @@ public class RegisterDependentCloudThread implements Runnable
           // TODO Auto-generated catch block
           e2.printStackTrace();
        }
-         
+      logger.debug("Dependent cloudname registered...");  
        
     
     // Common Data
@@ -85,8 +85,11 @@ public class RegisterDependentCloudThread implements Runnable
            logger.debug("Invalid Dependent BirthDate.");
            
       }
+      
+      discovery.setAuthorityCache(null);
+      discovery.setRegistryCache(null);
 
-    for (int tries = 0 ; tries < 5 ; tries++) {
+    for (int tries = 0 ; tries < 10 ; tries++) {
 
        try {
           logger.debug("Waiting for five seconds to allow for the newly registered dependent name in discovery");
@@ -102,6 +105,11 @@ public class RegisterDependentCloudThread implements Runnable
              
              XDIDiscoveryResult dependentRegistry = discovery.discoverFromRegistry(
                      XDI3Segment.create(dependentCloudName.toString()), null);
+             if(dependentRegistry == null || dependentRegistry.getCloudNumber() == null)
+             {
+                logger.debug("Dependent name is not in discovery yet. So going back to check again ...");
+                continue;
+             }
              
              guardianCloudNumber = guardianRegistry.getCloudNumber();
              dependentCloudNumber = dependentRegistry.getCloudNumber();

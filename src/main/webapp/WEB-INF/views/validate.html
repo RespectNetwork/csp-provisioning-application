@@ -11,7 +11,7 @@
     <link href="css/bootstrap.css" rel="stylesheet" />
     <link href="css/bootstrap-responsive.css" rel="stylesheet" />
     <link href="css/style.css" rel="stylesheet" />
-
+<link href="https://s3.amazonaws.com/rnfonts/demo.css" rel="stylesheet" type="text/css" />
 		<script src="js/libs/misc.js"> </script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 
@@ -43,23 +43,9 @@
           </div>
           <div class="span4 midHdr">
           </div>
-          <div class="span4">
-         		<div class="navbar-inner">
-          <!-- Button for triggering responsive navbar -->
-            <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-            </button>
-            <!-- Responsive Navbar Part 2: Place all navbar contents you want collapsed withing .navbar-collapse.collapse. -->
-            <div class="nav-collapse collapse">
-            	<ul class="nav">
-								<li><a href="FAQ_placeholder.html"> FAQ</a> </li>
-                <li><a href="press_placeholder.html"> PRESS </a></li>            
-              </ul>
-            </div><!--/.nav-collapse -->
-         	</div>  <!--/.navbar-inner -->         		
-     			</div>
+          
+     	  <div class="span4 midHdr"><span th:text="${cloudName}"/>
+          </div>
       	</div>
 	  	</div>
 		</div>  
@@ -107,7 +93,7 @@
 
     <!-- Javascript
     ================================================== -->
-    <script src="js/bootstrap-collapse.js"></script>
+    <!-- <script src="js/libs/bootstrap-collapse.js"></script> -->
 
 
 

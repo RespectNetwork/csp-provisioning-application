@@ -6,7 +6,7 @@
     <groupId>net.respectnetwork.csp.application</groupId>
     <artifactId>csp-provisioning-application</artifactId>
     <packaging>war</packaging>
-    <version>0.1-SNAPSHOT</version>
+    <version>0.1</version>
     <name>CSP Provisioning Application</name>
     <description>CSP Provisioning Application</description>
 
@@ -16,8 +16,8 @@
         <github.global.server>github</github.global.server>
         <java.version>1.6</java.version>
         <org.slf4j-version>1.7.5</org.slf4j-version>
-        <xdi2-version>0.3-SNAPSHOT</xdi2-version>
-        <cspsdk-version>0.3-SNAPSHOT</cspsdk-version>
+        <xdi2-version>0.3</xdi2-version>
+        <cspsdk-version>0.2.3</cspsdk-version>
         <thymeleaf-version>2.1.1.RELEASE</thymeleaf-version>
         <jetty-version>6.1.10</jetty-version>
     </properties>
@@ -325,10 +325,10 @@
             <version>1.8.3</version>
         </dependency>
         <dependency>
-			<groupId>commons-validator</groupId>
-			<artifactId>commons-validator</artifactId>
-			<version>1.4.0</version>
-		</dependency>
+ 			<groupId>commons-validator</groupId>
+ 			<artifactId>commons-validator</artifactId>
+ 			<version>1.4.0</version>
+ 		</dependency>
         <!-- others -->
         <dependency>
             <groupId>antlr</groupId>

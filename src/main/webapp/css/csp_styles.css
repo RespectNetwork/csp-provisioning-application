@@ -1,0 +1,49 @@
+/*  extra styles for CSP only pages  */
+
+.dropdown-menu {
+margin: 2px 0 0 40px;
+}
+
+.dropdown-menu > li > a {
+display: block;
+padding: 3px 20px;
+clear: both;
+font-weight: normal;
+line-height: 16px;
+color: #02e4ff;
+white-space: nowrap;
+}
+
+a:hover, a:focus {
+	text-decoration:none;
+}
+
+/* Large screens */
+@media (min-width: 1200px) {
+	.dropdown-menu {
+		margin: 2px 0 0 90px;
+	}
+}
+
+/* Bigger Tablets */
+@media (min-width: 768px) and (max-width: 979px) {
+	.dropdown-menu {
+		margin: 2px 0 0 50px;
+	}
+}
+
+/* Smaller Tablets */
+@media (min-width: 451px) and (max-width: 767px) {
+	.dropdown-menu {
+		margin: 2px 0 0 30px;
+	}
+}
+
+
+
+/* mobile phones */
+@media (max-width: 450) {
+	.dropdown-menu {
+		margin: 2px 0 0 10px;
+	}
+}

@@ -18,6 +18,8 @@ import net.respectnetwork.csp.application.form.InviteForm;
 import net.respectnetwork.csp.application.form.PaymentForm;
 import net.respectnetwork.csp.application.invite.GiftEmailSenderThread;
 import net.respectnetwork.csp.application.manager.BrainTreePaymentProcessor;
+import net.respectnetwork.csp.application.manager.PinNetAuPaymentProcessor;
+import net.respectnetwork.csp.application.manager.RegistrationManager;
 import net.respectnetwork.csp.application.manager.StripePaymentProcessor;
 import net.respectnetwork.csp.application.model.CSPCostOverrideModel;
 import net.respectnetwork.csp.application.model.CSPModel;
@@ -59,6 +61,7 @@ public class PersonalCloudInviteController
 	private String              cspCloudName;
 	private String		    cspInviteURL;
 	private RegistrationSession regSession;
+	private RegistrationManager registrationManager ;
     
 	public String getCspCloudName()
 	{
@@ -179,28 +182,56 @@ public class PersonalCloudInviteController
 		ModelAndView mv         = null;
 		CSPModel     cspModel   = null;
 
-		if( cloudName == null )
+		if( cloudName == null || !RegistrationManager.validateCloudName(cloudName))
 		{
 			mv = new ModelAndView("login");
 			mv.addObject("postURL", cspHomeURL + "/cloudPage");
 			return mv;
 		}
 
+	
+      
 		if( result.hasErrors() )
 		{
 			logger.error("result - " + result);
 			mv = new ModelAndView("invite");
-			mv.addObject("quantityList", quantityList);
+			String errorStr = "Invalid values for email and/or gift card quantity";
+			cspModel = DAOFactory.getInstance().getCSPDAO().get(this.getCspCloudName());
+         mv = new ModelAndView("invite");
+         mv.addObject("cspModel"    , cspModel);
+         mv.addObject("quantityList", quantityList);
+         mv.addObject("cloudName", regSession.getCloudName());
+         model.addAttribute("inviteForm", inviteForm);
+         mv.addObject("error", errorStr);
+         
+         return mv;
 		}
 		else
 		{
-			mv = new ModelAndView("inviteReview");
+		   // validate email address entered by user
+	      if (!org.apache.commons.validator.routines.EmailValidator
+	               .getInstance().isValid(inviteForm.getEmailAddress())) 
+	      {
+	           String errorStr = "Invalid Email Address.";
+	           logger.debug("Invalid Email address entered..."
+	                   + inviteForm.getEmailAddress());
+	           cspModel = DAOFactory.getInstance().getCSPDAO().get(this.getCspCloudName());
+	           mv = new ModelAndView("invite");
+	           mv.addObject("cspModel"    , cspModel);
+	           mv.addObject("quantityList", quantityList);
+	           mv.addObject("cloudName", regSession.getCloudName());
+	           model.addAttribute("inviteForm", inviteForm);
+	           mv.addObject("error", errorStr);
+	           
+	           return mv;
+	      }
 		}
-
+		mv = new ModelAndView("inviteReview");
 		cspModel = DAOFactory.getInstance().getCSPDAO().get(this.getCspCloudName());
 		mv.addObject("cspModel"    , cspModel);
-
+		mv.addObject("cspTCURL", registrationManager.getCspTCURL());
 		model.addAttribute("inviteForm", inviteForm);
+		mv.addObject("cloudName", regSession.getCloudName());
 		return mv;
 	}
 
@@ -304,6 +335,17 @@ public class PersonalCloudInviteController
          mv.addObject("postURL",
                cspHomeURL + "/ccpayment");
          
+      } else if (cspModel.getPaymentGatewayName().equals(
+            PinNetAuPaymentProcessor.DB_PAYMENT_GATEWAY_NAME))
+      {
+         logger.debug("Payment gateway is PIN");
+         mv.addObject("PinNetAu",
+               PinNetAuPaymentProcessor.DB_PAYMENT_GATEWAY_NAME);
+         mv.addObject("publishableKey",
+               PinNetAuPaymentProcessor.getPublishableApiKey(cspModel));
+         mv.addObject("environment",
+               PinNetAuPaymentProcessor.getEnvironment(cspModel));
+         mv.addObject("postURL", cspHomeURL + "/ccpayment");
       }
 		mv.addObject("amount",amount.toPlainString());
 		mv.addObject("totalAmountText", RegistrationController.formatCurrencyAmount(regSession.getCurrency(), amount));
@@ -466,4 +508,9 @@ public class PersonalCloudInviteController
 		String   rtn = getMessageFromResource("invite.text.paydesc", obj, RES_DEFAULT_INVITE_TEXT_PAYDESC, locale);
 		return rtn;
 	}
+	@Autowired
+   public void setRegistrationManager(RegistrationManager registrationManager)
+   {
+      this.registrationManager = registrationManager;
+   }
 }

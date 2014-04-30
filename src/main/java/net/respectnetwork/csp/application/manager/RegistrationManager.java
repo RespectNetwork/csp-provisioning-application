@@ -1,24 +1,13 @@
 package net.respectnetwork.csp.application.manager;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
-import java.net.URLEncoder;
-import java.security.GeneralSecurityException;
-import java.security.PrivateKey;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Currency;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import net.respectnetwork.csp.application.dao.DAOException;
-import net.respectnetwork.csp.application.dao.DAOFactory;
 import net.respectnetwork.csp.application.exception.UserRegistrationException;
-import net.respectnetwork.csp.application.model.SignupInfoModel;
 import net.respectnetwork.sdk.csp.BasicCSPInformation;
 import net.respectnetwork.sdk.csp.CSP;
 import net.respectnetwork.sdk.csp.UserValidator;
@@ -37,7 +26,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Required;
 
 import xdi2.client.exceptions.Xdi2ClientException;
-import xdi2.client.util.XDIClientUtil;
 import xdi2.core.xri3.CloudName;
 import xdi2.core.xri3.CloudNumber;
 import xdi2.core.xri3.XDI3Segment;
@@ -119,11 +107,20 @@ public class RegistrationManager {
     
     private String cspRespectConnectBaseURL;
     
-    public static final String GeoLocationPostURIKey = "<$https><#network.globe><$set><$uri>";
-    public static final String RNpostRegistrationLandingPageURIKey = "<$https><#post><#registration><$uri>";
-    public static final String CSPCloudRegistrationURIKey = "<$https><#registration><$uri>";
-    public static final String CSPDependentCloudRegistrationURIKey = "<$https><#dependent><#registration><$uri>";
-    public static final String CSPGiftCardPurchaseURIKey = "<$https><#giftcard><#registration><$uri>";
+    private static String latLongPostURL ;
+    
+    private static String postRegistrationURL ;
+    
+    private String cspTCURL;
+    
+    public static final String GeoLocationPostURIKey = "<$https><#network.globe><$set>";
+    public static final String RNpostRegistrationLandingPageURIKey = "<$https><#post><#registration>";
+    public static final String CSPCloudRegistrationURIKey = "<$https><#registration>";
+    public static final String CSPDependentCloudRegistrationURIKey = "<$https><#dependent><#registration>";
+    public static final String CSPGiftCardPurchaseURIKey = "<$https><#giftcard><#registration>";
+    
+    public static final String CloudNameRegEx = "^=[a-z\\d]+((.|-)[a-z\\d]+)*$";
+    public static final String phoneNumberRegEx = "^\\+[0-9]{1,3}\\.[0-9]{4,14}(?:x.+)?$";
     
     /**
      * Get CSP Registrar
@@ -283,6 +280,9 @@ public class RegistrationManager {
         //setEndpointURI(CSPCloudRegistrationURIKey, this.cspHomeURL + "/register");
         //setEndpointURI(CSPDependentCloudRegistrationURIKey, this.cspHomeURL + "/dependent");
         //setEndpointURI(CSPGiftCardPurchaseURIKey, this.cspHomeURL + "/invite");
+        postRegistrationURL = getEndpointURI(RegistrationManager.RNpostRegistrationLandingPageURIKey, theCSPInfo.getRnCloudNumber());
+        latLongPostURL = getEndpointURI(RegistrationManager.GeoLocationPostURIKey, theCSPInfo.getRnCloudNumber());
+        
     }
 
     /**
@@ -663,31 +663,33 @@ public class RegistrationManager {
       
       logger.debug("getEndpointURI key=" + key + " , cloudNumber = " + cloudNumber.toString());
       BasicCSPInformation cspInformation = (BasicCSPInformation)cspRegistrar.getCspInformation();
-      
-      
       XDIDiscoveryClient discovery = cspInformation.getXdiDiscoveryClient();
+
+      discovery.setAuthorityCache(null);
       try
       {
          XDI3Segment[] uriType = new XDI3Segment[1];
          uriType[0] = XDI3Segment.create(key);
          XDIDiscoveryResult discResult = discovery.discover(
                XDI3Segment.create(cloudNumber.toString()), uriType);
+         //XDIDiscoveryResult discResult = discovery.discoverFromAuthority("https://mycloud-ote.neustar.biz/registry", cloudNumber, uriType);
          Map<XDI3Segment,String> endpointURIs = discResult.getEndpointUris();
          for (Map.Entry<XDI3Segment, String> epURI : endpointURIs.entrySet())
          {
-            logger.debug("Endpoint key=" + epURI.getKey().toString() + " ,value=" + epURI.getValue());
+            logger.debug("Looping ... Endpoint key = " + epURI.getKey().toString() + " ,value=" + epURI.getValue());
             if(epURI.getKey().toString().equals(key))
             {
+               logger.debug("Found match for Endpoint key = " + key);
                return epURI.getValue();
             }
          }
          
       } catch (Xdi2ClientException e)
       {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
+         
+         logger.debug("Error in getEndpointURI " + e.getMessage());
       }
-      
+      logger.debug("Did not find match for Endpoint key = " + key);
       return "";
       
    }
@@ -720,5 +722,134 @@ public class RegistrationManager {
    {
       this.cspRespectConnectBaseURL = cspRespectConnectBaseURL;
    }
+
+   public static String getLatLongPostURL()
+   {
+      return latLongPostURL;
+   }
+
+   public static void setLatLongPostURL(String latLongPostURL)
+   {
+      RegistrationManager.latLongPostURL = latLongPostURL;
+   }
+
+   public static String getPostRegistrationURL()
+   {
+      return postRegistrationURL;
+   }
+
+   public static void setPostRegistrationURL(String postRegistrationURL)
+   {
+      RegistrationManager.postRegistrationURL = postRegistrationURL;
+   }
+
+   public String getCspTCURL()
+   {
+      return cspTCURL;
+   }
+
+   public void setCspTCURL(String cspTCURL)
+   {
+      this.cspTCURL = cspTCURL;
+   }
+
+   public static boolean validateCloudName(String cloudName) {
+      if(cloudName == null || cloudName.isEmpty())
+      {
+         return false;
+      }
+      Pattern pattern = Pattern.compile(CloudNameRegEx);
+      Matcher matcher = pattern.matcher(cloudName);
+      if (matcher.find()) {
+          return true;
+      } else {
+          return false;
+      }
+  }
+   public static boolean validatePhoneNumber(String phone)
+   {
+      if(phone == null || phone.isEmpty())
+      {
+         return false;
+      }
+      Pattern pattern = Pattern.compile(phoneNumberRegEx);
+      Matcher matcher = pattern.matcher(phone);
+      if (matcher.find()) {
+          return true;
+      } else {
+          return false;
+      }
+   }
+   /*
+    * Check for Medium Password: Must be at least 8 characters, have at least 2 letters, 2 numbers and at least one special character, e.g. @, #, $ etc.
+    */
+   public static boolean validatePassword(String password)
+   {
+      if(password == null || password.isEmpty())
+      {
+         return false;
+      }
+      if(password.length() < 8)
+      {
+         return false;
+      }
+      int letterCount = 0;
+      int digitCount = 0;
+      int specialCharCount = 0;
+      for(int i = 0 ; i < password.length() ; i++)
+      {
+         if(password.charAt(i) >= '0' && password.charAt(i) <= '9')
+         {
+            digitCount++;
+         }
+         if((password.charAt(i) >= 'A' && password.charAt(i) <= 'Z') || ((password.charAt(i) >= 'a' && password.charAt(i) <= 'z')))
+         {
+            letterCount++;
+         }
+         //!@#$%^&*()_+|~-=\‘{}[]:";’<>?,./
+         
+         if((password.charAt(i) ==  '!') ||
+               (password.charAt(i) ==  '@') ||
+               (password.charAt(i) ==  '#') ||
+               (password.charAt(i) ==  '$') ||
+               (password.charAt(i) ==  '%') ||
+               (password.charAt(i) ==  '^') ||
+               (password.charAt(i) ==  '*') ||
+               (password.charAt(i) ==  '(') ||
+               (password.charAt(i) ==  ')') ||
+               (password.charAt(i) ==  '_') ||
+               (password.charAt(i) ==  '~') ||
+               (password.charAt(i) ==  '-') ||
+               (password.charAt(i) ==  '=') ||
+               (password.charAt(i) ==  '\\') ||
+               (password.charAt(i) ==  '`') ||
+               (password.charAt(i) ==  '{') ||
+               (password.charAt(i) ==  '}') ||
+               (password.charAt(i) ==  '[') ||
+               (password.charAt(i) ==  ']') ||
+               (password.charAt(i) ==  ':') ||
+               (password.charAt(i) ==  '"') ||
+               (password.charAt(i) ==  ';') ||
+               (password.charAt(i) ==  '\'') ||               
+               (password.charAt(i) ==  '<') ||
+               (password.charAt(i) ==  '>') ||
+               (password.charAt(i) ==  '?') ||
+               (password.charAt(i) ==  ',') ||
+               (password.charAt(i) ==  '.') ||
+               (password.charAt(i) ==  '/') 
+               )
+         {
+            specialCharCount++;
+         }
+         
+      }
+      if(letterCount >= 2 && digitCount >= 2 && specialCharCount >= 1)
+      {
+         return true;
+      }
+      return false;
+   }
+
+
 
 }

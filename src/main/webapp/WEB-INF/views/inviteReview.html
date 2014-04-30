@@ -13,7 +13,7 @@
     <link href="css/bootstrap.css" rel="stylesheet" />
     <link href="css/style.css" rel="stylesheet" />
     <link href="css/bootstrap-responsive.css" rel="stylesheet" />
-
+<link href="https://s3.amazonaws.com/rnfonts/demo.css" rel="stylesheet" type="text/css" />
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
       <script src="../../js/html5shiv.js"></script>
@@ -26,7 +26,9 @@
                     <link rel="apple-touch-icon-precomposed" href="img/ico/apple-touch-icon-57-precomposed.png" />
                                    <link rel="shortcut icon" href="img/ico/favicon.png" />
 
-<script src="js/libs/misc.js"> </script>                                   	  
+<script src="js/libs/misc.js"> </script> 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>	                                  
+<script src="js/libs/bootstrap-dropdown.js"></script>                                  	  
 </head>
 <body>
 <div id="wrap">
@@ -38,11 +40,22 @@
           <div class="row-fluid">  
           	<div class="span4 smallTop"><img src="img/csp_logo.png" />
           	</div>
+          	<div class="span4 equation">
+             <ul class="nav">
+                 <a  href="#" class="dropdown-toggle" data-toggle="dropdown"><span th:text="${cloudName}"/> &nbsp;<b class="caret"></b> &nbsp;</a>
+                <ul class="dropdown-menu">
+                  <li><a th:href="@{/logout}">Logout</a></li>
+              </ul>
+
+            </ul> 
+        	</div>
           	<div class="span4 midHdr">
           	</div>
+          	<!--
           	<div class="span4 bigTop">
              <p class="secondary">PRESS | FAQs</p>
          		</div>
+          	-->
           </div>
 
           </div>
@@ -58,7 +71,9 @@
         <input type="hidden" id="giftCardFlag" name="giftCardFlag" value="" th:value="${inviteForm.giftCardFlag}"/>
         <input type="hidden" id="giftCardQuantity" name="giftCardQuantity" value="1" th:value="${inviteForm.giftCardQuantity}"/>
         <p class="primaryLeftJustified">Gift Card purchase summary</p>
-        <br></br>
+        <br>
+        <p class="payment3"> Email(s) with Gift Code(s) will be sent to <span th:text="${inviteForm.emailAddress}"></span></p>	
+        </br>
         <p class="payment3"> Number of gift cards = <span th:text="${inviteForm.giftCardQuantity}">0</span></p>
         <br></br>
         <p class="payment3"> Total cost = 
@@ -67,7 +82,7 @@
         </p>
         <p class="secondary">
           	<input  type="checkbox" name="cspTandC" value="false" required="required"/>  &nbsp;I agree to the CSP &nbsp;
-          	<br /> &nbsp; &nbsp; &nbsp;<a target="_blank" onclick="return windowpop(this.href, 545, 433); " th:href="@{/csptc}">Terms of Service</a>          	
+          	<br /> &nbsp; &nbsp; &nbsp;<a target="_blank" onclick="return windowpop(this.href, 545, 433); " th:href="${cspTCURL}">Terms of Service</a>          	
 		</p>
         <br></br>
         <button type="submit" name="submit" id="submit" class="button big">Continue</button>
@@ -76,13 +91,13 @@
       </div>
 	</div>
 	<div id="footer">
-      	
+      <!--	
 		<div class="help">
   			<div id="help">
   				<a target="_blank" onclick="return windowpop(this.href, 545, 433); " th:href="@{/help}">Help</a>
 			</div>
 	 	</div>
-
+		-->
   	</div>
     
  </div> <!-- end wrap -->

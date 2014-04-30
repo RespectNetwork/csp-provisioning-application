@@ -13,6 +13,17 @@ public class DependentForm
 	
 	private String dependentCloudName , dependentCloudPassword , dependentBirthDate ;
 	
+	private String dependentCloudName1  ;
+	private String dependentCloudName2 ;
+	private String dependentCloudName3 ;
+	private String dependentCloudName4 ;
+	private String dependentCloudName5 ;
+	private String dependentCloudName6 ;
+	private String dependentCloudName7 ;
+	private String dependentCloudName8 ;
+	private String dependentCloudName9 ;
+	private String dependentCloudName10 ;
+	
 	
 	public DependentForm()
 	{
@@ -104,7 +115,49 @@ public class DependentForm
 
    public String getDependentCloudName()
    {
-      return dependentCloudName;
+      String allDependentCloudNames = dependentCloudName;
+      if (this.getDependentCloudName1() != null && !this.getDependentCloudName1().isEmpty())
+      {
+         allDependentCloudNames += "," + allDependentCloudNames;
+      }
+      if (this.getDependentCloudName2() != null && !this.getDependentCloudName2().isEmpty())
+      {
+         allDependentCloudNames += "," + allDependentCloudNames;
+      }
+      if (this.getDependentCloudName3() != null && !this.getDependentCloudName3().isEmpty())
+      {
+         allDependentCloudNames += "," + allDependentCloudNames;
+      }
+      if (this.getDependentCloudName4() != null && !this.getDependentCloudName4().isEmpty())
+      {
+         allDependentCloudNames += "," + allDependentCloudNames;
+      }
+      if (this.getDependentCloudName5() != null && !this.getDependentCloudName5().isEmpty())
+      {
+         allDependentCloudNames += "," + allDependentCloudNames;
+      }
+      if (this.getDependentCloudName6() != null && !this.getDependentCloudName6().isEmpty())
+      {
+         allDependentCloudNames += "," + allDependentCloudNames;
+      }
+      if (this.getDependentCloudName7() != null && !this.getDependentCloudName7().isEmpty())
+      {
+         allDependentCloudNames += "," + allDependentCloudNames;
+      }
+      if (this.getDependentCloudName8() != null && !this.getDependentCloudName8().isEmpty())
+      {
+         allDependentCloudNames += "," + allDependentCloudNames;
+      }
+      if (this.getDependentCloudName9() != null && !this.getDependentCloudName9().isEmpty())
+      {
+         allDependentCloudNames += "," + allDependentCloudNames;
+      }
+      if (this.getDependentCloudName10() != null && !this.getDependentCloudName10().isEmpty())
+      {
+         allDependentCloudNames += "," + allDependentCloudNames;
+      }
+      
+      return allDependentCloudNames;
    }
 
 
@@ -135,6 +188,126 @@ public class DependentForm
    public void setDependentBirthDate(String dependentBirthDate)
    {
       this.dependentBirthDate = dependentBirthDate;
+   }
+
+
+   public String getDependentCloudName1()
+   {
+      return dependentCloudName1;
+   }
+
+
+   public void setDependentCloudName1(String dependentCloudName1)
+   {
+      this.dependentCloudName1 = dependentCloudName1;
+   }
+
+
+   public String getDependentCloudName2()
+   {
+      return dependentCloudName2;
+   }
+
+
+   public void setDependentCloudName2(String dependentCloudName2)
+   {
+      this.dependentCloudName2 = dependentCloudName2;
+   }
+
+
+   public String getDependentCloudName3()
+   {
+      return dependentCloudName3;
+   }
+
+
+   public void setDependentCloudName3(String dependentCloudName3)
+   {
+      this.dependentCloudName3 = dependentCloudName3;
+   }
+
+
+   public String getDependentCloudName4()
+   {
+      return dependentCloudName4;
+   }
+
+
+   public void setDependentCloudName4(String dependentCloudName4)
+   {
+      this.dependentCloudName4 = dependentCloudName4;
+   }
+
+
+   public String getDependentCloudName5()
+   {
+      return dependentCloudName5;
+   }
+
+
+   public void setDependentCloudName5(String dependentCloudName5)
+   {
+      this.dependentCloudName5 = dependentCloudName5;
+   }
+
+
+   public String getDependentCloudName6()
+   {
+      return dependentCloudName6;
+   }
+
+
+   public void setDependentCloudName6(String dependentCloudName6)
+   {
+      this.dependentCloudName6 = dependentCloudName6;
+   }
+
+
+   public String getDependentCloudName7()
+   {
+      return dependentCloudName7;
+   }
+
+
+   public void setDependentCloudName7(String dependentCloudName7)
+   {
+      this.dependentCloudName7 = dependentCloudName7;
+   }
+
+
+   public String getDependentCloudName8()
+   {
+      return dependentCloudName8;
+   }
+
+
+   public void setDependentCloudName8(String dependentCloudName8)
+   {
+      this.dependentCloudName8 = dependentCloudName8;
+   }
+
+
+   public String getDependentCloudName9()
+   {
+      return dependentCloudName9;
+   }
+
+
+   public void setDependentCloudName9(String dependentCloudName9)
+   {
+      this.dependentCloudName9 = dependentCloudName9;
+   }
+
+
+   public String getDependentCloudName10()
+   {
+      return dependentCloudName10;
+   }
+
+
+   public void setDependentCloudName10(String dependentCloudName10)
+   {
+      this.dependentCloudName10 = dependentCloudName10;
    }
 
 

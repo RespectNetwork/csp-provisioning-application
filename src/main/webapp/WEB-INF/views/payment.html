@@ -13,8 +13,9 @@
     <link href="css/bootstrap.css" rel="stylesheet" />
 		<link href="css/bootstrap-responsive.css" rel="stylesheet" />
     <link href="css/style.css" rel="stylesheet" />
+    <link href="https://s3.amazonaws.com/rnfonts/demo.css" rel="stylesheet" type="text/css" />
 	<!--include jquery-->
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 	<script src="js/libs/misc.js"> </script>
 
 	<style>
@@ -71,7 +72,7 @@
 <!-- Fav and touch icons -->
 <link rel="apple-touch-icon-precomposed" sizes="144x144" href="img/ico/apple-touch-icon-144-precomposed.png" />
 <link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/ico/apple-touch-icon-114-precomposed.png" />
-<link rel="apple-touch-icon-precomposed" sizes="72x72" href="imgico/apple-touch-icon-72-precomposed.png" />
+<link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/ico/apple-touch-icon-72-precomposed.png" />
 <link rel="apple-touch-icon-precomposed" href="img/ico/apple-touch-icon-57-precomposed.png" />
 <link rel="shortcut icon" href="img/ico/favicon.png" />
 <script src="js/libs/misc.js"> </script>
@@ -90,25 +91,12 @@
       	<div class="row-fluid">
           <div class="span4 smallTop"><p class="test"></p>
           </div>
-          <div class="span4 midHdr"><span th:text="${cloudName}"/>
-          </div>
+          
           <div class="span4">
-         		<div class="navbar-inner">
-          <!-- Button for triggering responsive navbar -->
-            <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-            </button>
-            <!-- Responsive Navbar Part 2: Place all navbar contents you want collapsed withing .navbar-collapse.collapse. -->
-            <div class="nav-collapse collapse">
-            	<ul class="nav">
-								<li><a href="FAQ_placeholder.html"> FAQ</a> </li>
-                <li><a href="press_placeholder.html"> PRESS </a></li>
-              </ul>
-            </div><!--/.nav-collapse -->
-         	</div>  <!--/.navbar-inner -->
-     			</div>
+         		
+     	</div>
+     	 <div class="span4 midHdr"><span th:text="${cloudName}"/>
+          </div>		
       	</div>
 	  	</div>
 		</div>
@@ -120,7 +108,7 @@
         <div class="row-fluid">
             <div class="span2"></div>
             <div class="span4">
-                <p class="payment1">Select Payment Method</p>
+                <p class="payment1"><span style="color:red" th:text="${error}"> </span><br/>Select Payment Method</p>
 
                 <div th:switch="*{txnType}">
                     <div th:case="'signup'">
@@ -161,8 +149,8 @@
 		  <div>
                 <p class="secondary">
                     <input type="checkbox" name="cspTandC" value="false" required="required"/> &nbsp;I agree to the
-                    [CSP] &nbsp;
-                    <a target="_blank" onclick="return windowpop(this.href, 545, 433); " th:href="@{/csptc}">Terms
+                     &nbsp;
+                    <a target="_blank" onclick="return windowpop(this.href, 545, 433); " th:href="${cspTCURL}">Cloud Service Provider Terms
                         of Service</a>
                 </p>
 
@@ -209,7 +197,7 @@
 
     <!-- Javascript
     ================================================== -->
-    <script src="js/bootstrap-collapse.js"></script>
+   <!-- <script src="js/libs/bootstrap-collapse.js"></script> -->
 
     
 </body>
