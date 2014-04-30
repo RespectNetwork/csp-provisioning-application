@@ -290,9 +290,18 @@ public class RegistrationController
           }
            if(!RegistrationManager.validatePhoneNumber(userDetailsForm.getMobilePhone()))
            {
-              String errorStr = "Invalid Phone Number. Please provide the phone number with all digits only.";
+              String errorStr = "Invalid Phone Number. Please provide the phone number like this pattern +CCC.NNNNNNNNNNxEEEE";
               logger.debug("Invalid Phone Number entered..."
                       + userDetailsForm.getMobilePhone());
+              mv.addObject("error", errorStr);
+              errors = true;
+              return mv;  
+           }
+           if(!RegistrationManager.validatePassword(userDetailsForm.getPassword()))
+           {
+              String errorStr = "Invalid password. Please provide a password that is at least 8 characters, have at least 2 letters, 2 numbers and at least one special character, e.g. @, #, $ etc.";
+              logger.debug("Invalid password."
+                      + userDetailsForm.getPassword());
               mv.addObject("error", errorStr);
               errors = true;
               return mv;  

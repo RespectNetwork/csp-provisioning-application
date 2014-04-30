@@ -120,6 +120,7 @@ public class RegistrationManager {
     public static final String CSPGiftCardPurchaseURIKey = "<$https><#giftcard><#registration>";
     
     public static final String CloudNameRegEx = "^=[a-z\\d]+((.|-)[a-z\\d]+)*$";
+    public static final String phoneNumberRegEx = "^\\+[0-9]{1,3}\\.[0-9]{4,14}(?:x.+)?$";
     
     /**
      * Get CSP Registrar
@@ -767,30 +768,86 @@ public class RegistrationManager {
   }
    public static boolean validatePhoneNumber(String phone)
    {
-      /*
       if(phone == null || phone.isEmpty())
       {
          return false;
       }
-      if(!phone.startsWith("+"))
+      Pattern pattern = Pattern.compile(phoneNumberRegEx);
+      Matcher matcher = pattern.matcher(phone);
+      if (matcher.find()) {
+          return true;
+      } else {
+          return false;
+      }
+   }
+   /*
+    * Check for Medium Password: Must be at least 8 characters, have at least 2 letters, 2 numbers and at least one special character, e.g. @, #, $ etc.
+    */
+   public static boolean validatePassword(String password)
+   {
+      if(password == null || password.isEmpty())
       {
          return false;
       }
-      
-      for(int i = 0 ; i < phone.length() ; i++)
+      if(password.length() < 8)
       {
-         if(phone.charAt(i) == '.')
-         {
-            continue;
-         }
-         if(phone.charAt(i) < '0' || phone.charAt(i) > '9' )
-         {
-            return false;
-         }
+         return false;
       }
-      return true;
-      */
-      return true;
+      int letterCount = 0;
+      int digitCount = 0;
+      int specialCharCount = 0;
+      for(int i = 0 ; i < password.length() ; i++)
+      {
+         if(password.charAt(i) >= '0' && password.charAt(i) <= '9')
+         {
+            digitCount++;
+         }
+         if((password.charAt(i) >= 'A' && password.charAt(i) <= 'Z') || ((password.charAt(i) >= 'a' && password.charAt(i) <= 'z')))
+         {
+            letterCount++;
+         }
+         //!@#$%^&*()_+|~-=\‘{}[]:";’<>?,./
+         
+         if((password.charAt(i) ==  '!') ||
+               (password.charAt(i) ==  '@') ||
+               (password.charAt(i) ==  '#') ||
+               (password.charAt(i) ==  '$') ||
+               (password.charAt(i) ==  '%') ||
+               (password.charAt(i) ==  '^') ||
+               (password.charAt(i) ==  '*') ||
+               (password.charAt(i) ==  '(') ||
+               (password.charAt(i) ==  ')') ||
+               (password.charAt(i) ==  '_') ||
+               (password.charAt(i) ==  '~') ||
+               (password.charAt(i) ==  '-') ||
+               (password.charAt(i) ==  '=') ||
+               (password.charAt(i) ==  '\\') ||
+               (password.charAt(i) ==  '`') ||
+               (password.charAt(i) ==  '{') ||
+               (password.charAt(i) ==  '}') ||
+               (password.charAt(i) ==  '[') ||
+               (password.charAt(i) ==  ']') ||
+               (password.charAt(i) ==  ':') ||
+               (password.charAt(i) ==  '"') ||
+               (password.charAt(i) ==  ';') ||
+               (password.charAt(i) ==  '\'') ||               
+               (password.charAt(i) ==  '<') ||
+               (password.charAt(i) ==  '>') ||
+               (password.charAt(i) ==  '?') ||
+               (password.charAt(i) ==  ',') ||
+               (password.charAt(i) ==  '.') ||
+               (password.charAt(i) ==  '/') 
+               )
+         {
+            specialCharCount++;
+         }
+         
+      }
+      if(letterCount >= 2 && digitCount >= 2 && specialCharCount >= 1)
+      {
+         return true;
+      }
+      return false;
    }
 
 
