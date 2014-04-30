@@ -53,17 +53,19 @@
 	</div>
       <!-- Begin page content -->
       <div class="bodyContainer">
-				<div class="middle"> Choose your cloud name 
-					<form action="#" role="form" th:object="${signUpInfo}" th:action="@{/signup}" method="post">
+				<div class="middle">
+                    <div class="error"  name="error" id="error" th:text="${error}"></div>
+                    Choose your cloud name
+                    <form action="#" role="form" th:object="${signUpInfo}" th:action="@{/signup}" method="post">
 
             <input type="text" class="inputCloudName" name="cloudName" value="" id="cloudName" placeholder="=you..." required="required" autofocus="autofocus" />
- 			<br></br>           
+ 			<br></br>
             <span class="error"  name="isAvailable" id="isAvailable"></span>
-            
+
  							<p class="secondary">e.g., =jane, =janedoe, =jane.doe
 							</p>
 						<button type="submit" name="submit" id="submit" class="button">Submit</button>
-						<input type="hidden" name="giftCode" id="giftCode" th:value="*{giftCode}" />						
+                        <input type="hidden" name="giftCode" id="giftCode" th:value="*{giftCode}" th:if="${signUpInfo} != null" />
 					</form>
 				</div>
 			</div>
