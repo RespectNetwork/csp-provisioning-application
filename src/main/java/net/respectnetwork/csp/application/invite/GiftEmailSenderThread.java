@@ -24,6 +24,8 @@ public class GiftEmailSenderThread implements Runnable
       try
       {
          svc.sendEmailNotification(toAddress, content);
+         //this is a hack
+         svc.setEmailSubject("Verifying your email address");
       } catch (NotificationException e)
       {
          logger.error("Could not send mail to " + toAddress + " , with content \n" + content);

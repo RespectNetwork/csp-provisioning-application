@@ -1394,6 +1394,7 @@ public class PersonalCloudController
       mv.addObject("statusText", request.getParameter("statusText"));
       mv.addObject("submitMethod", request.getParameter("submitMethod"));
       mv.addObject("queryStr", request.getParameter("queryStr"));
+      this.clearPaymentInfo();
       return mv;
    }
 
@@ -1436,6 +1437,29 @@ public class PersonalCloudController
    {
       return RegistrationManager.getPostRegistrationURL();
       
+   }
+   public void clearSession()
+   {
+      if(regSession != null)
+      {
+      regSession.setCloudName(null);
+      regSession.setPassword(null);
+      regSession.setVerifiedEmail(null);
+      regSession.setDependentForm(null);
+      regSession.setGiftCode(null);
+      regSession.setInviteCode(null);
+      regSession.setInviteForm(null);
+      regSession.setSessionId(null);
+      regSession.setVerifiedMobilePhone(null);
+      }
+   }
+   public void clearPaymentInfo()
+   {
+      if(regSession != null)
+      {
+      
+         regSession.setGiftCode(null);
+      }
    }
 
 }

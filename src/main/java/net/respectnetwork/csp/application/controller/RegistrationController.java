@@ -547,6 +547,7 @@ public class RegistrationController
       String error = "";
       ModelAndView mv = null;
       String rnQueryString = "";
+      //SignUpForm signUpForm = new SignUpForm();
       Enumeration<String> paramNames = request.getParameterNames(); 
       while(paramNames.hasMoreElements())
       {
@@ -595,11 +596,6 @@ public class RegistrationController
       logger.info("getLocation - " + remoteIPAddr + " LAT = " + loc.latitude + " LNG = " + loc.longitude);
       theManager.getEndpointURI(RegistrationManager.GeoLocationPostURIKey, theManager.getCspRegistrar().getCspInformation().getRnCloudNumber());     
 
-//      if(rnQueryString != null && !rnQueryString.isEmpty())
-//      {
-//         rnQueryString += "&";
-//      }
-      //rnQueryString += "lat=" + (long)loc.latitude + "&long=" + (long)loc.longitude;
       String cloudName = null;
       if (signUpForm != null && signUpForm.getCloudName() != null)
       {
@@ -618,7 +614,6 @@ public class RegistrationController
       {
          cloudName = request.getParameter(URL_PARAM_NAME_REQ_CLOUDNAME);
       }
-      
       
       logger.info("registerCloudName : registration request for cloudname " + cloudName);
       
@@ -645,6 +640,7 @@ public class RegistrationController
                regSession.setRnQueryString(rnQueryString);
                regSession.setLongitude((long)loc.longitude);
                regSession.setLatitude((long)loc.latitude);
+               regSession.setGiftCode(null);;
             } else 
             {
                errors = true;

@@ -55,11 +55,10 @@
 				<div class="middle2"> <span style="color:red" th:text="${error}"></span><br/>Verification codes have been sent to your email and phone. <br />Enter those codes in the fields below. 
 					<form action="#" th:object="${validateInfo}" th:action="@{/validatecodes}" method="post" class="margin-top">
 
- 						<input type="text" name="emailCode" class="inputFields smallTop" id="emailCode" placeholder="email code" onFocus="clearText(this)" onBlur="clearText(this.className = 'onblurtext smallTop')" required="required" th:value="*{emailCode}" />
+ 						<input type="text" name="emailCode" class="inputFields smallTop" id="emailCode" placeholder="email code" onFocus="clearText(this)" onBlur="clearText(this.className = 'onblurtext smallTop')"  />
 						<p class="secondary"><span th:text="|Sent to ${verifyingEmail}|"> Sent to</span></p>
 						
-						<input type="text" name="smsCode"  class="inputFields smallTop" id="smsCode" placeholder="text code" onFocus="clearText(this)" onBlur="clearText(this.className = 'onblurtext smallTop')" required="required"
-                                th:value="*{smsCode}" />
+						<input type="text" name="smsCode"  class="inputFields smallTop" id="smsCode" placeholder="text code" onFocus="clearText(this)" onBlur="clearText(this.className = 'onblurtext smallTop')" />
              			<p class="secondary"> <span th:text="|Sent to ${verifyingPhone}|">Sent to</span></p>
      					
      				<p class="secondary"> <input type="checkbox" name="terms"  required="required" /> &nbsp;
