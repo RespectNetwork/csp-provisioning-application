@@ -52,7 +52,7 @@
 	</div>
       <!-- Begin page content -->
       <div class="bodyContainer">
-				<div class="middle2"> Verification codes have been sent to your email and phone. <br />Enter those codes in the fields below. 
+				<div class="middle2"> <span style="color:red" th:text="${error}"></span><br/>Verification codes have been sent to your email and phone. <br />Enter those codes in the fields below. 
 					<form action="#" th:object="${validateInfo}" th:action="@{/validatecodes}" method="post" class="margin-top">
 
  						<input type="text" name="emailCode" class="inputFields smallTop" id="emailCode" placeholder="email code" onFocus="clearText(this)" onBlur="clearText(this.className = 'onblurtext smallTop')" required="required" th:value="*{emailCode}" />
@@ -67,6 +67,11 @@
      				<!-- <a target="_blank" onclick="return windowpop(this.href, 545, 433); " th:href="@{/respectTrustFramework}" >Respect Trust Framework</a> --> 
      				and the one-person one-account rule.</p>
 						<input type="submit" name="submit" id="submit" class="button" value="Verify" />
+						<input type="submit" name="resendCodes" id="resendCodes" class="button" value="Send new codes" />
+						
+						<input type="hidden" name="verifyingEmail" th:value="${verifyingEmail}" id="verifyingEmail" />
+						<input type="hidden" name="verifyingPhone" th:value="${verifyingPhone}" id="verifyingPhone" />
+						
 						
 				</form>
 									

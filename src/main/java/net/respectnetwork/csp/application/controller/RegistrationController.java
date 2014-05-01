@@ -394,18 +394,46 @@ public class RegistrationController
       logger.debug("Starting Validation Process");
       logger.debug("Processing Validation Data: {}", validateForm.toString());
 
+      boolean errors = false;
+      String errorStr = "";
       ModelAndView mv = new ModelAndView("validate");
       String sessionIdentifier = regSession.getSessionId();
+      String verifyingEmail = request.getParameter("verifyingEmail");
+      String verifyingPhone = request.getParameter("verifyingPhone");
+      mv.addObject("validateInfo", validateForm);
+      mv.addObject("cloudName", regSession.getCloudName());
+      mv.addObject("verifyingEmail", verifyingEmail);
+      mv.addObject("verifyingPhone", verifyingPhone);
+      
+      if(request.getParameter("resendCodes") != null)
+      {
+         try
+         {
+            theManager.sendValidationCodes(sessionIdentifier,
+                  verifyingEmail, verifyingPhone);
+            
+            
+            return mv;
+         } catch (CSPValidationException e)
+         {
+            errorStr = "System Error sending validation messages";
+            logger.warn(errorStr + " : {}", e.getMessage());
+            mv.addObject("error", errorStr);
+            errors = true;
+         }
+      }
 
-      boolean errors = false;
+      
 
       // Validate Codes
       if (!theManager.validateCodes(sessionIdentifier,
-            validateForm.getEmailCode(), validateForm.getSmsCode()))
+            validateForm.getEmailCode().toUpperCase(), validateForm.getSmsCode().toUpperCase()))
       {
-         String errorStr = "Code(s) Validation Failed";
+         errorStr = "Email and/or phone code validation failed. Please enter the codes correctly.";
          logger.debug(errorStr);
-         mv.addObject("codeValidationError", errorStr);
+         mv.addObject("error", errorStr);
+         
+
          errors = true;
       }
 
@@ -515,7 +543,9 @@ public class RegistrationController
          @Valid @ModelAttribute("signUpInfo") SignUpForm signUpForm,
          BindingResult result)
    {
-      ModelAndView mv = new ModelAndView("signup");
+      boolean errors = false;
+      String error = "";
+      ModelAndView mv = null;
       String rnQueryString = "";
       Enumeration<String> paramNames = request.getParameterNames(); 
       while(paramNames.hasMoreElements())
@@ -579,8 +609,10 @@ public class RegistrationController
             cloudName = URLDecoder.decode(cloudName,"UTF-8");
          } catch (UnsupportedEncodingException e)
          {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            logger.debug("Exception for cloudname " + cloudName);
+            logger.debug(e.getMessage());
+            errors = true;
+            error = "Sorry ! The system has encountered an error. Please try again.";
          }
       } else
       {
@@ -594,7 +626,8 @@ public class RegistrationController
       {
          if(!RegistrationManager.validateCloudName(cloudName))
          {
-            return mv;
+            errors = true;
+            error = "CloudName is not valid. Please choose a valid CloudName e.g. =john , =jane etc.";
          }
          try
          {
@@ -612,14 +645,30 @@ public class RegistrationController
                regSession.setRnQueryString(rnQueryString);
                regSession.setLongitude((long)loc.longitude);
                regSession.setLatitude((long)loc.latitude);
+            } else 
+            {
+               errors = true;
+               error = "CloudName is not available. Please choose another valid CloudName";
             }
          } catch (UserRegistrationException e)
          {
 
             logger.info("Exception in registerCloudName " + e.getMessage());
+            errors = true;
+            error = "Sorry ! The system has encountered an error. Please try again.";
             // e.printStackTrace();
          }
 
+      } else
+      {
+         errors = true;
+         error = "Please provide a valid cloudname";
+      }
+      if(errors)
+      {
+         mv = new ModelAndView("signup");
+         mv.addObject("error", error);
+         return mv;
       }
       mv.addObject("signupInfo", signUpForm);
       mv.addObject("cloudName", cloudName);
