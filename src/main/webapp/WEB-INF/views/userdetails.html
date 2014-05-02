@@ -57,7 +57,7 @@
  			<form action="#" th:object="${userInfo}" th:action="@{/processuserdetails}" method="post">
  				
 				<input type="text" class="inputFields smallTop" name="email"  id="email" placeholder="email address" required="required" onFocus="clearText(this)" onBlur="clearText(this.className = 'onblurtext smallTop')" th:value="*{email}" />
-				<p class="secondary">Mobile phone which can accept SMS.  <br/> +(country code).(phonenumber digits without any separator)  ex. +1.2345678901 </p>
+				<p class="secondary">Mobile phone which can accept SMS  <br/> +country code.phonenumber digits without any separator  ex. +1.2345678901 </p>
 				<p><input type="text" class="phoneField smallTop" name="mobilePhone" id="mobilePhone" placeholder="phone: +ccc.nnnnnnnnnn" required="required"
                                 onFocus="clearText(this)" onBlur="clearText(this.className = 'onblurtext smallTop')" th:value="*{mobilePhone}" />
       	</p>

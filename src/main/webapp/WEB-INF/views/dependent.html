@@ -201,7 +201,9 @@
       var depCloudName = 'dependentCloudName' +  window.mycounter;
       var depIsAvailable = 'isAvailable' +  window.mycounter;
       var isValidDate = 'isValidDate' +  window.mycounter;
-      var strA = '<div ><table ><tr><td><p class="payment3">Dependent&apos;s cloud name</p></td></tr>  <tr> <td> <input type="text" class="inputFields smallMarg" name="' ;
+	  var divId = 'dependent'+ window.mycounter;
+	      
+      var strA = '<div id="'+divId+'"><table ><tr><td><p class="payment3">Dependent&apos;s cloud name &nbsp;&nbsp;&nbsp;&nbsp;<a href="#" onclick="removeDiv('+divId+');">Delete Dependent</a></p></td></tr>  <tr> <td> <input type="text" class="inputFields smallMarg" name="' ;
       var strB = strA + depCloudName ;
       var strC = strB + '"  id="' ;
       var strD = strC +  depCloudName ;
@@ -221,7 +223,13 @@
       checkCloudNameAvailability(depCloudName, depIsAvailable);
     });
 });
+function removeDiv(depDiv) {
+
+    console.log('Going to remove ...' + depDiv);   
+	$(depDiv).remove();
+}	
 /*]]>*/
+
 </script>
  
 </body>
