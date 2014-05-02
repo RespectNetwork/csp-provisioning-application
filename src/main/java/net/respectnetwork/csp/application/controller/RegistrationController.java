@@ -276,6 +276,7 @@ public class RegistrationController
 
       if (!errors)
       {
+         
          try
          {
          // validate email address entered by user
@@ -423,7 +424,17 @@ public class RegistrationController
             errors = true;
          }
       }
-
+      logger.debug("RN Terms checkbox ..." + request.getParameter("terms"));
+      if(request.getParameter("terms") == null || !request.getParameter("terms").equalsIgnoreCase("on"))
+      {
+         errorStr = "Please agree to the Respect Trust Framework to continue";
+         logger.debug("Respect Trust Framework not checked ...."
+                 + request.getParameter("terms"));
+         mv.addObject("error", errorStr);
+         errors = true;
+         return mv;
+         
+      }
       
 
       // Validate Codes
