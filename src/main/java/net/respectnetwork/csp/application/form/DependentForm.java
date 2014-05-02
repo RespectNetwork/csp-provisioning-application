@@ -2,8 +2,12 @@ package net.respectnetwork.csp.application.form;
 
 import java.util.Vector;
 
+import net.respectnetwork.csp.application.controller.PersonalCloudDependentController;
+
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DependentForm
 {
@@ -24,7 +28,8 @@ public class DependentForm
 	private String dependentCloudName9 ;
 	private String dependentCloudName10 ;
 	
-	
+	private static final Logger logger = LoggerFactory
+         .getLogger(DependentForm.class);
 	public DependentForm()
 	{
 		this.consentFlag = false;
@@ -116,47 +121,48 @@ public class DependentForm
    public String getDependentCloudName()
    {
       String allDependentCloudNames = dependentCloudName;
+      logger.debug("allDependentCloudNames..." + allDependentCloudNames);
       if (this.getDependentCloudName1() != null && !this.getDependentCloudName1().isEmpty())
       {
-         allDependentCloudNames += "," + allDependentCloudNames;
+         allDependentCloudNames += "," + this.getDependentCloudName1();
       }
       if (this.getDependentCloudName2() != null && !this.getDependentCloudName2().isEmpty())
       {
-         allDependentCloudNames += "," + allDependentCloudNames;
+         allDependentCloudNames += "," + this.getDependentCloudName2();
       }
       if (this.getDependentCloudName3() != null && !this.getDependentCloudName3().isEmpty())
       {
-         allDependentCloudNames += "," + allDependentCloudNames;
+         allDependentCloudNames += "," + this.getDependentCloudName3();
       }
       if (this.getDependentCloudName4() != null && !this.getDependentCloudName4().isEmpty())
       {
-         allDependentCloudNames += "," + allDependentCloudNames;
+         allDependentCloudNames += "," + this.getDependentCloudName4();
       }
       if (this.getDependentCloudName5() != null && !this.getDependentCloudName5().isEmpty())
       {
-         allDependentCloudNames += "," + allDependentCloudNames;
+         allDependentCloudNames += "," + this.getDependentCloudName5();
       }
       if (this.getDependentCloudName6() != null && !this.getDependentCloudName6().isEmpty())
       {
-         allDependentCloudNames += "," + allDependentCloudNames;
+         allDependentCloudNames += "," + this.getDependentCloudName6();
       }
       if (this.getDependentCloudName7() != null && !this.getDependentCloudName7().isEmpty())
       {
-         allDependentCloudNames += "," + allDependentCloudNames;
+         allDependentCloudNames += "," + this.getDependentCloudName7();
       }
       if (this.getDependentCloudName8() != null && !this.getDependentCloudName8().isEmpty())
       {
-         allDependentCloudNames += "," + allDependentCloudNames;
+         allDependentCloudNames += "," + this.getDependentCloudName8();
       }
       if (this.getDependentCloudName9() != null && !this.getDependentCloudName9().isEmpty())
       {
-         allDependentCloudNames += "," + allDependentCloudNames;
+         allDependentCloudNames += "," + this.getDependentCloudName9();
       }
       if (this.getDependentCloudName10() != null && !this.getDependentCloudName10().isEmpty())
       {
-         allDependentCloudNames += "," + allDependentCloudNames;
+         allDependentCloudNames += "," + this.getDependentCloudName10();
       }
-      
+      logger.debug("allDependentCloudNames..." + allDependentCloudNames);
       return allDependentCloudNames;
    }
 

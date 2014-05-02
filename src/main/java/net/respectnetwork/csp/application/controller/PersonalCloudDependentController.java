@@ -198,6 +198,7 @@ public class PersonalCloudDependentController
       cspModel = DAOFactory.getInstance().getCSPDAO()
             .get(this.getCspCloudName());
 
+      logger.debug("All dependents ..." + dependentForm.getDependentCloudName() );
       String[] arrDependentCloudName = dependentForm.getDependentCloudName()
             .split(",");
       String[] arrPasswd = dependentForm.getDependentCloudPassword()

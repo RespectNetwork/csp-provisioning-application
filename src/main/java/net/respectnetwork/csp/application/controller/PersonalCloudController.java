@@ -709,7 +709,22 @@ public class PersonalCloudController
           logger.info("paymentType " + paymentType);
           logger.info("giftCodes " + request.getParameter("giftCodes"));
       }
+      if ( (paymentType != null && !paymentType.contains("giftCard"))
+            && (request.getParameter("giftCodes").trim() != null && !request.getParameter("giftCodes").trim().isEmpty()))
+      {
+         mv = new ModelAndView("payment");
+         errors = true;
+         mv.addObject(
+               "error",
+               "Payment with gift card is not checked. However, a gift code has been provided. Please verify that the gift code is appropriate and a proper payment type is selected.");
+         logger.debug("Gift code given but gift code choice is not given.");
+         mv.addObject("cspTCURL", this.getRegistrationManager().getCspTCURL());
+         return mv;
 
+      } else {
+          logger.info("paymentType " + paymentType);
+          logger.info("giftCodes " + request.getParameter("giftCodes"));
+      }
       String txnType = paymentForm.getTxnType();
 
       logger.debug("Number of clouds being purchased "
@@ -1145,6 +1160,10 @@ public class PersonalCloudController
       DAOFactory dao = DAOFactory.getInstance();
 
       DependentForm dependentForm = regSession.getDependentForm();
+      if(dependentForm == null)
+      {
+         return null;
+      }
       String[] arrDependentCloudName = dependentForm.getDependentCloudName()
             .split(",");
       String[] arrDependentCloudPasswords = dependentForm
