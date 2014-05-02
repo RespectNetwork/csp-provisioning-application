@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Required;
 
+import com.ibm.icu.text.UTF16;
 import xdi2.client.exceptions.Xdi2ClientException;
 import xdi2.core.xri3.CloudName;
 import xdi2.core.xri3.CloudNumber;
@@ -121,6 +122,7 @@ public class RegistrationManager {
     
     public static final String CloudNameRegEx = "^=[a-z\\d]+((.|-)[a-z\\d]+)*$";
     public static final String phoneNumberRegEx = "^\\+[0-9]{1,3}\\.[0-9]{4,14}(?:x.+)?$";
+    public static final String validINameFormat = "Personal cloud names must start with an = sign and business cloud names with a + sign. After that, they may contain up to 64 characters in any supported character set, plus dots or dashes. They may not start or end with a dot or a dash nor contain consecutive dots or dashes. The supported character sets include Latin (which covers many European languages such as German, Swedish and Spanish), Chinese, Japanese, and Korean.";
     
     /**
      * Get CSP Registrar
@@ -753,19 +755,93 @@ public class RegistrationManager {
       this.cspTCURL = cspTCURL;
    }
 
-   public static boolean validateCloudName(String cloudName) {
-      if(cloudName == null || cloudName.isEmpty())
-      {
-         return false;
-      }
-      Pattern pattern = Pattern.compile(CloudNameRegEx);
-      Matcher matcher = pattern.matcher(cloudName);
-      if (matcher.find()) {
-          return true;
-      } else {
-          return false;
-      }
-  }
+   public static boolean validateCloudName(String iname) {
+      
+         boolean retval = false;
+         if (iname == null || iname.length() < 2)
+            return false;
+         if (iname.length() > 254)
+         {
+            
+            return false;
+         }
+         int index=0;
+         int c;
+         if (!iname.startsWith("=") || !iname.startsWith("+"))
+         {
+            index=1;
+            
+            //only do this check if this is not a Global registry meaning that the GRS IName is not ! = or +.
+            if (index > 1)
+            {
+               //length has to be greater than length of GRS I-Name plus "*" thus index+1
+               if (iname.length() <= index+1)
+               {
+                  return false;
+               }
+               
+               c = UTF16.charAt(iname, index);
+               if  (c != '*')
+               {
+                  return false;
+               }
+               //take into account of the '*'
+               index++;
+            }
+         }
+         
+         int next_c;
+         for ( ; index < iname.length(); index += UTF16.getCharCount(c))
+         {
+            c = UTF16.charAt(iname, index);
+            //cannot have "." or "-" be 2nd or last character
+            if (index==1 || (index==iname.length()-1))
+            {
+               if (c == '.' || c == '-')
+               {
+                  return false;
+               }
+            }
+            
+            // Global I-Name or a Delegated I-Name MUST NOT contain two or more consecutive
+            // dots (".", or hyphens ("-").
+            
+            if (c == '.' || c == '-')
+            {
+               next_c = UTF16.charAt(iname, index + 1);
+               if (next_c == '.' || next_c == '-')
+               {
+                  return false;
+               }
+            }
+            
+            if (!isAlphaNumeric(c) && c != '-' && c != '.'
+               && !(c >= 0xA0 && c <= 0xD7FF)
+               && !(c >= 0xF900 && c <= 0xD7FF)
+               && !(c >= 0xFDF0 && c <= 0xFFEF)
+               && !(c >= 0x10000 && c <= 0x1FFFD)
+               && !(c >= 0x20000 && c <= 0x2FFFD)
+               && !(c >= 0x30000 && c <= 0x3FFFD)
+               && !(c >= 0x40000 && c <= 0x4FFFD)
+               && !(c >= 0x50000 && c <= 0x5FFFD)
+               && !(c >= 0x60000 && c <= 0x6FFFD)
+               && !(c >= 0x70000 && c <= 0x7FFFD)
+               && !(c >= 0x80000 && c <= 0x8FFFD)
+               && !(c >= 0x90000 && c <= 0x9FFFD)
+               && !(c >= 0xA0000 && c <= 0xAFFFD)
+               && !(c >= 0xB0000 && c <= 0xBFFFD)
+               && !(c >= 0xC0000 && c <= 0xCFFFD)
+               && !(c >= 0xD0000 && c <= 0xDFFFD)
+               && !(c >= 0xE0000 && c <= 0xEFFFD)
+            )
+            {
+               
+               return false;
+            }
+         }
+               
+         return true;
+   }
    public static boolean validatePhoneNumber(String phone)
    {
       if(phone == null || phone.isEmpty())
@@ -850,6 +926,26 @@ public class RegistrationManager {
       return false;
    }
 
-
+   public static boolean isAlphaNumeric(int c)
+   {
+      boolean retval = false;
+      if (c >= 48 && c <= 57)
+      {
+         //number
+         retval = true;
+      }
+      else if (c >= 65 && c <= 90)
+      {
+         //uppercase letter
+         retval = true;
+      }
+      else if (c >= 97 && c <= 122)
+      {
+         //lowercase letter
+         retval = true;
+      }
+      
+      return retval;
+   }
 
 }

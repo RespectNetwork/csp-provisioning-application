@@ -102,7 +102,7 @@
     <form id="cc_payment_form" action="#" th:object="${paymentInfo}" th:action="${postURL}" method="post">
 
 
-    <div class="row-fluid">
+    <div>
     <div class="span1"></div>
     <div class="span6">
     <p class="payment3 ">Billing Information</p>
@@ -152,13 +152,9 @@
         &nbsp; <input type="text" name="BillingCountry" id="BillingCountry" placeholder="country"
                       class="inputFields smallMarg" onFocus="clearText(this)"
                       onBlur="clearText(this.className = 'onblurtext med smallMarg')" required="required"/>
-		<div class="row-fluid">
-        <div class="span1"></div>
-        <div class="span6">
+		<br/>
             <button type="submit" name="submit" id="submit" class="button big">Continue</button>
-        </div>
-        <div class="span5"></div>
-    	</div>
+        
 
     </div>
     <div th:if="${BrainTree}">

@@ -181,7 +181,7 @@ public class PersonalCloudDependentController
       ModelAndView mv = null;
       CSPModel cspModel = null;
 
-      if (cloudName == null || !RegistrationManager.validateCloudName(cloudName))
+      if (cloudName == null)
       {
          mv = new ModelAndView("login");
          mv.addObject("postURL", cspHomeURL + "/cloudPage");
@@ -247,6 +247,8 @@ public class PersonalCloudDependentController
       }
       cspModel = DAOFactory.getInstance().getCSPDAO().get(this.getCspCloudName());
       BigDecimal quantity = BigDecimal.valueOf((long) arrDependentCloudName.length);
+      
+      
 
       // Cost (overriden if applicable) is stored in regSession
       String currency = regSession.getCurrency();
