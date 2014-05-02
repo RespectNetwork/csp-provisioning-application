@@ -182,7 +182,7 @@ public class PersonalCloudInviteController
 		ModelAndView mv         = null;
 		CSPModel     cspModel   = null;
 
-		if( cloudName == null || !RegistrationManager.validateCloudName(cloudName))
+		if( cloudName == null)
 		{
 			mv = new ModelAndView("login");
 			mv.addObject("postURL", cspHomeURL + "/cloudPage");
@@ -272,7 +272,7 @@ public class PersonalCloudInviteController
 
 		cspModel = DAOFactory.getInstance().getCSPDAO().get(this.getCspCloudName());
 		BigDecimal quantity = BigDecimal.valueOf((long) inviteForm.getGiftCardQuantity().intValue());
-		BigDecimal amount   = cspModel.getCostPerCloudName().multiply(quantity);
+		
 		String     desc     = this.getPaymentDescription(inviteForm, request.getLocale());
 
 		inviteForm.setInviteId(UUID.randomUUID().toString());
@@ -299,7 +299,7 @@ public class PersonalCloudInviteController
          logger.error(e.toString());
          e.printStackTrace();
       }
-      
+      BigDecimal amount   = costPerCloud.multiply(quantity);
       regSession.setCostPerCloudName(costPerCloud);
       regSession.setCurrency(currency);
       

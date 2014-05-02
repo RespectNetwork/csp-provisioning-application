@@ -189,7 +189,7 @@ public class PersonalCloudController
 
 	  if(!RegistrationManager.validateCloudName(cName) ) {
           errors = true;
-          errorText = "Cloudname should begin with '=' , it should not have any spaces or '*' and it should not end with a '.'";
+          errorText = RegistrationManager.validINameFormat;
       }
 
       if(errors == false) {
@@ -489,15 +489,15 @@ public class PersonalCloudController
                      forwardingPage += "/cloudPage";
                   }
                   statusText = "Congratulations " + cloudName
-                        + "! You have successfully purchased a cloudname.";
+                        + "! You have successfully purchased a cloud name.";
                } else
                {
                   forwardingPage += "/signup";
-                  statusText = "Sorry! The system encountered an error while registering your cloudname.\n"
+                  statusText = "Sorry! The system encountered an error while registering your cloud name.\n"
                         + registrationManager.getCSPContactInfo();
 
                }
-            } else if (txnType.equals(PaymentForm.TXN_TYPE_DEP))
+            } else if (txnType.equals(PaymentForm.TXN_TYPE_DEP)) 
             {
                if ((mv = createDependentClouds(cloudName, payment, null,
                      request)) != null)

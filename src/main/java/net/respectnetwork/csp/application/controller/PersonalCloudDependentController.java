@@ -175,7 +175,7 @@ public class PersonalCloudDependentController
       ModelAndView mv = null;
       CSPModel cspModel = null;
 
-      if (cloudName == null || !RegistrationManager.validateCloudName(cloudName))
+      if (cloudName == null)
       {
          mv = new ModelAndView("login");
          mv.addObject("postURL", cspHomeURL + "/cloudPage");
@@ -241,7 +241,7 @@ public class PersonalCloudDependentController
       }
       cspModel = DAOFactory.getInstance().getCSPDAO().get(this.getCspCloudName());
       BigDecimal quantity = BigDecimal.valueOf((long) arrDependentCloudName.length);
-      BigDecimal amount   = cspModel.getCostPerCloudName().multiply(quantity);
+      
       
 
       // Check for cost override based on phone number
@@ -267,6 +267,7 @@ public class PersonalCloudDependentController
          e.printStackTrace();
       }
       
+      BigDecimal amount   = costPerCloud.multiply(quantity);
       regSession.setCostPerCloudName(costPerCloud);
       regSession.setCurrency(currency);
       

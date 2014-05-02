@@ -622,7 +622,7 @@ public class RegistrationController
          if(!RegistrationManager.validateCloudName(cloudName))
          {
             errors = true;
-            error = "CloudName is not valid. Please choose a valid CloudName e.g. =john , =jane etc.";
+            error = RegistrationManager.validINameFormat;
          }
          try
          {
