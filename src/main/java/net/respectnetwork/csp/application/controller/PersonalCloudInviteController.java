@@ -11,6 +11,7 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import net.respectnetwork.csp.application.csp.CurrencyCost;
 import net.respectnetwork.csp.application.dao.DAOContextProvider;
 import net.respectnetwork.csp.application.dao.DAOException;
 import net.respectnetwork.csp.application.dao.DAOFactory;
@@ -120,7 +121,7 @@ public class PersonalCloudInviteController
 	@RequestMapping(value = "/invite", method = RequestMethod.GET)
 	public ModelAndView showInviteForm(HttpServletRequest request, Model model) throws DAOException
 	{
-	   Enumeration<String> paramNames = request.getParameterNames(); 
+	   Enumeration<String> paramNames = request.getParameterNames();
       while(paramNames.hasMoreElements())
       {
          String paramName = paramNames.nextElement();
@@ -155,21 +156,30 @@ public class PersonalCloudInviteController
 
 		cspModel = DAOFactory.getInstance().getCSPDAO().get(this.getCspCloudName());
 		logger.debug("showInviteForm :: CSP Cloud Name " + cspModel.getCspCloudName() );
+
 		mv = new ModelAndView("invite");
 		mv.addObject("cspModel"    , cspModel);
 		mv.addObject("quantityList", quantityList);
 		mv.addObject("cloudName", cloudName);
-		inviteForm = new InviteForm();
-		model.addAttribute("inviteForm", inviteForm);
-		if(regSession != null)
-		{
-		   regSession.setTransactionType(PaymentForm.TXN_TYPE_BUY_GC);
-		   regSession.setCloudName(cloudName);
-         regSession.setRnQueryString(rnQueryString);
-		}
 
-		return mv;
-	}
+      // Format cost per cloud (include override if applicable)
+      CurrencyCost costPerCloudName = RegistrationController.getCostIncludingOverride(cspModel, regSession.getVerifiedMobilePhone(), 1);
+      regSession.setCurrency(costPerCloudName.getCurrencyCode());
+      regSession.setCostPerCloudName(costPerCloudName.getAmount());
+
+      mv.addObject("costPerCloudNameText", RegistrationController.formatCurrencyAmount(costPerCloudName));
+
+      inviteForm = new InviteForm();
+      model.addAttribute("inviteForm", inviteForm);
+      if (regSession != null)
+      {
+         regSession.setTransactionType(PaymentForm.TXN_TYPE_BUY_GC);
+         regSession.setCloudName(cloudName);
+         regSession.setRnQueryString(rnQueryString);
+      }
+
+      return mv;
+   }
 
 	@RequestMapping(value = "/inviteReview", method = RequestMethod.POST)
 	public ModelAndView showInviteReviewForm( @Valid @ModelAttribute("inviteForm") InviteForm inviteForm, BindingResult result, Model model, HttpServletRequest request ) throws DAOException
@@ -228,11 +238,16 @@ public class PersonalCloudInviteController
 		}
 		mv = new ModelAndView("inviteReview");
 		cspModel = DAOFactory.getInstance().getCSPDAO().get(this.getCspCloudName());
-		mv.addObject("cspModel"    , cspModel);
 		mv.addObject("cspTCURL", registrationManager.getCspTCURL());
 		model.addAttribute("inviteForm", inviteForm);
 		mv.addObject("cloudName", regSession.getCloudName());
-		return mv;
+
+      // Format total cost (including override if applicable)
+      String currency = regSession.getCurrency();
+      BigDecimal totalCost = regSession.getCostPerCloudName().multiply(new BigDecimal(inviteForm.getGiftCardQuantity()));
+      mv.addObject("totalAmountText", RegistrationController.formatCurrencyAmount(currency, totalCost));
+
+      return mv;
 	}
 
 	@RequestMapping(value = "/inviteDone", method = RequestMethod.GET)
@@ -272,36 +287,14 @@ public class PersonalCloudInviteController
 
 		cspModel = DAOFactory.getInstance().getCSPDAO().get(this.getCspCloudName());
 		BigDecimal quantity = BigDecimal.valueOf((long) inviteForm.getGiftCardQuantity().intValue());
-		BigDecimal amount   = cspModel.getCostPerCloudName().multiply(quantity);
 		String     desc     = this.getPaymentDescription(inviteForm, request.getLocale());
 
 		inviteForm.setInviteId(UUID.randomUUID().toString());
 
-		// Check for cost override based on phone number
-      String currency = cspModel.getCurrency();
-      BigDecimal costPerCloud = cspModel.getCostPerCloudName();
-      CSPCostOverrideModel cspCostOverrideModel = null;
-      try
-      {
-         cspCostOverrideModel = DAOFactory.getInstance().getcSPCostOverrideDAO()
-                 .get(getCspCloudName(), regSession.getVerifiedMobilePhone());
-         if (cspCostOverrideModel != null)
-         {
-            logger.debug("Cost override found: " + cspCostOverrideModel.toString());
-            currency = cspCostOverrideModel.getCurrency();
-            costPerCloud = cspCostOverrideModel.getCostPerCloudName();
-         } else
-         {
-            logger.debug("No cost override found (using default cost)");
-         }
-      } catch (DAOException e)
-      {
-         logger.error(e.toString());
-         e.printStackTrace();
-      }
-      
-      regSession.setCostPerCloudName(costPerCloud);
-      regSession.setCurrency(currency);
+      // Cost including override is stored in regSession
+      String currency = regSession.getCurrency();
+      BigDecimal totalCost = regSession.getCostPerCloudName().multiply(quantity);
+
       
 		mv = new ModelAndView("creditCardPayment");
 		PaymentForm paymentForm = new PaymentForm();
@@ -316,7 +309,7 @@ public class PersonalCloudInviteController
 		if(cspModel.getPaymentGatewayName().equals("STRIPE")) 
 		{
 		   logger.debug("Payment gateway is STRIPE");
-		   mv.addObject("StripeJavaScript"  , StripePaymentProcessor.getJavaScript(cspModel, amount, desc));
+		   mv.addObject("StripeJavaScript"  , StripePaymentProcessor.getJavaScript(cspModel, totalCost, desc));
 		   
 		   mv.addObject("postURL",
                cspHomeURL + "/ccpayment");
@@ -324,16 +317,14 @@ public class PersonalCloudInviteController
 		else if (cspModel.getPaymentGatewayName().equals("SAGEPAY"))
       {
          
-         mv.addObject("postURL",
-               cspHomeURL +"/submitCustomerDetail");
-         mv.addObject("SagePay","SAGEPAY");
+         mv.addObject("postURL", cspHomeURL +"/submitCustomerDetail");
+         mv.addObject("SagePay", "SAGEPAY");
                  
       } else if (cspModel.getPaymentGatewayName().equals("BRAINTREE"))
       {
          logger.debug("Payment gateway is BRAINTREE");
-         mv.addObject("BrainTree" , BrainTreePaymentProcessor.getJavaScript(cspModel));
-         mv.addObject("postURL",
-               cspHomeURL + "/ccpayment");
+         mv.addObject("BrainTree", BrainTreePaymentProcessor.getJavaScript(cspModel));
+         mv.addObject("postURL", cspHomeURL + "/ccpayment");
          
       } else if (cspModel.getPaymentGatewayName().equals(
             PinNetAuPaymentProcessor.DB_PAYMENT_GATEWAY_NAME))
@@ -347,8 +338,8 @@ public class PersonalCloudInviteController
                PinNetAuPaymentProcessor.getEnvironment(cspModel));
          mv.addObject("postURL", cspHomeURL + "/ccpayment");
       }
-		mv.addObject("amount",amount.toPlainString());
-		mv.addObject("totalAmountText", RegistrationController.formatCurrencyAmount(regSession.getCurrency(), amount));
+		mv.addObject("amount",totalCost.toPlainString());
+		mv.addObject("totalAmountText", RegistrationController.formatCurrencyAmount(regSession.getCurrency(), totalCost));
 		this.setInviteForm(inviteForm);
 
 		return mv;

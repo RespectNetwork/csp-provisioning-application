@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import net.respectnetwork.csp.application.csp.CurrencyCost;
 import net.respectnetwork.csp.application.dao.DAOException;
 import net.respectnetwork.csp.application.dao.DAOFactory;
 import net.respectnetwork.csp.application.exception.UserRegistrationException;
@@ -475,42 +476,48 @@ public class RegistrationController
          mv.addObject("paymentInfo", paymentForm);
 
          // Check for cost override based on phone number
-         String currency = cspModel.getCurrency();
-         BigDecimal costPerCloud = cspModel.getCostPerCloudName();
-         CSPCostOverrideModel cspCostOverrideModel = null;
-         try
-         {
-            cspCostOverrideModel = DAOFactory.getInstance().getcSPCostOverrideDAO()
-                    .get(getCspCloudName(), regSession.getVerifiedMobilePhone());
-            if (cspCostOverrideModel != null)
-            {
-               logger.debug("Cost override found: " + cspCostOverrideModel.toString());
-               currency = cspCostOverrideModel.getCurrency();
-               costPerCloud = cspCostOverrideModel.getCostPerCloudName();
-            } else
-            {
-               logger.debug("No cost override found (using default cost)");
-            }
-         } catch (DAOException e)
-         {
-            logger.error(e.toString());
-            e.printStackTrace();
-         }
+         CurrencyCost totalCost = getCostIncludingOverride(cspModel,
+                 regSession.getVerifiedMobilePhone(),
+                 paymentForm.getNumberOfClouds());
 
-         regSession.setCostPerCloudName(costPerCloud);
-         regSession.setCurrency(currency);
+         regSession.setCurrency(totalCost.getCurrencyCode());
+         regSession.setCostPerCloudName(totalCost.getAmount());
 
-         // Format total cost
-         BigDecimal totalAmount = costPerCloud.multiply(new BigDecimal(paymentForm.getNumberOfClouds()));
-         String totalAmountText = formatCurrencyAmount(currency, totalAmount);
-
-
-         mv.addObject("totalAmountText", totalAmountText);
+         mv.addObject("totalAmountText", formatCurrencyAmount(totalCost));
          mv.addObject("paymentInfo", paymentForm);
       }
 
       return mv;
+   }
 
+   /**
+    * Calculate the cost of buying cloudnames, taking cost overrides into account
+    */
+   static CurrencyCost getCostIncludingOverride(CSPModel cspModel, String phoneNumber, int numberOfClouds) {
+      String currency = cspModel.getCurrency();
+      BigDecimal costPerCloud = cspModel.getCostPerCloudName();
+
+      CSPCostOverrideModel cspCostOverrideModel = null;
+      try
+      {
+         cspCostOverrideModel = DAOFactory.getInstance().getcSPCostOverrideDAO()
+                 .get(cspModel.getCspCloudName(), phoneNumber);
+         if (cspCostOverrideModel != null)
+         {
+            logger.debug("Cost override found: " + cspCostOverrideModel.toString());
+            currency = cspCostOverrideModel.getCurrency();
+            costPerCloud = cspCostOverrideModel.getCostPerCloudName();
+         } else
+         {
+            logger.debug("No cost override found (using default cost)");
+         }
+      } catch (DAOException e)
+      {
+         logger.error(e.toString());
+      }
+
+      CurrencyCost costOneCloud = new CurrencyCost(currency, costPerCloud);
+      return costOneCloud.multiply(numberOfClouds);
    }
 
    /**
@@ -526,6 +533,14 @@ public class RegistrationController
       }
       return String.format("%s%04.2f %s", currencySymbol, amount, currency);
    }
+
+   /**
+    * Format a currency and amount for human display.
+    */
+   static String formatCurrencyAmount(CurrencyCost currencyCost) {
+      return formatCurrencyAmount(currencyCost.getCurrencyCode(), currencyCost.getAmount());
+   }
+
 
    /**
     * This is the endpoint where the user lands in the CSP website from an
