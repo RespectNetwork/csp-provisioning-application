@@ -9,6 +9,7 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import net.respectnetwork.csp.application.csp.CurrencyCost;
 import net.respectnetwork.csp.application.dao.DAOException;
 import net.respectnetwork.csp.application.dao.DAOFactory;
 import net.respectnetwork.csp.application.exception.UserRegistrationException;
@@ -135,6 +136,11 @@ public class PersonalCloudDependentController
       cspModel = DAOFactory.getInstance().getCSPDAO()
             .get(this.getCspCloudName());
 
+      // Get cost override info
+      CurrencyCost costPerCloudName = RegistrationController.getCostIncludingOverride(cspModel, regSession.getVerifiedMobilePhone(), 1);
+      regSession.setCurrency(costPerCloudName.getCurrencyCode());
+      regSession.setCostPerCloudName(costPerCloudName.getAmount());
+
       mv = new ModelAndView("dependent");
       mv.addObject("cspModel", cspModel);
       dependentForm = new DependentForm();
@@ -244,33 +250,10 @@ public class PersonalCloudDependentController
       
       
 
-      // Check for cost override based on phone number
-      String currency = cspModel.getCurrency();
-      BigDecimal costPerCloud = cspModel.getCostPerCloudName();
-      CSPCostOverrideModel cspCostOverrideModel = null;
-      try
-      {
-         cspCostOverrideModel = DAOFactory.getInstance().getcSPCostOverrideDAO()
-                 .get(getCspCloudName(), regSession.getVerifiedMobilePhone());
-         if (cspCostOverrideModel != null)
-         {
-            logger.debug("Cost override found: " + cspCostOverrideModel.toString());
-            currency = cspCostOverrideModel.getCurrency();
-            costPerCloud = cspCostOverrideModel.getCostPerCloudName();
-         } else
-         {
-            logger.debug("No cost override found (using default cost)");
-         }
-      } catch (DAOException e)
-      {
-         logger.error(e.toString());
-         e.printStackTrace();
-      }
-      
-      BigDecimal amount   = costPerCloud.multiply(quantity);
-      regSession.setCostPerCloudName(costPerCloud);
-      regSession.setCurrency(currency);
-      
+      // Cost (overriden if applicable) is stored in regSession
+      String currency = regSession.getCurrency();
+      BigDecimal totalCost = regSession.getCostPerCloudName().multiply(quantity);
+
       mv = new ModelAndView("payment");
       PaymentForm paymentForm = new PaymentForm();
       paymentForm.setTxnType(PaymentForm.TXN_TYPE_DEP);
@@ -280,8 +263,7 @@ public class PersonalCloudDependentController
       }
       paymentForm.setNumberOfClouds(arrDependentCloudName.length);
       mv.addObject("paymentInfo", paymentForm);
-      mv.addObject("amount",amount.toPlainString());
-      mv.addObject("totalAmountText", RegistrationController.formatCurrencyAmount(regSession.getCurrency(), amount));
+      mv.addObject("totalAmountText", RegistrationController.formatCurrencyAmount(regSession.getCurrency(), totalCost));
       mv.addObject("cspTCURL", this.getTheManager().getCspTCURL());
       
       this.setDependentForm(dependentForm);

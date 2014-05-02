@@ -65,7 +65,7 @@
       <div class="span5">		
 	      <p class="primaryLeftJustified"><span style="color:red" th:text="${error}"/><br/>Buy Personal Cloud Gift Cards</p>
        	<form action="#" th:object="${inviteForm}" th:action="@{/inviteReview}" method="post">
-	      <p class="payment3">Gift cards can be purchased for $25 each. An email with the gift code will be sent to you. 
+	      <p class="payment3">Gift cards can be purchased for <span th:text="${costPerCloudNameText}">$25</span> each. An email with the gift code will be sent to you.
 				</p>  
 				<br />
 			  <div th:object="${cspModel}">

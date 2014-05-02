@@ -15,6 +15,7 @@ import javax.validation.Valid;
 
 import net.respectnetwork.csp.application.dao.DAOException;
 import net.respectnetwork.csp.application.dao.DAOFactory;
+import net.respectnetwork.csp.application.dao.SignupInfoDAO;
 import net.respectnetwork.csp.application.form.DependentForm;
 import net.respectnetwork.csp.application.form.InviteForm;
 import net.respectnetwork.csp.application.form.PaymentForm;
@@ -25,13 +26,7 @@ import net.respectnetwork.csp.application.manager.PinNetAuPaymentProcessor;
 import net.respectnetwork.csp.application.manager.RegistrationManager;
 import net.respectnetwork.csp.application.manager.SagePayPaymentProcessor;
 import net.respectnetwork.csp.application.manager.StripePaymentProcessor;
-import net.respectnetwork.csp.application.model.CSPModel;
-import net.respectnetwork.csp.application.model.GiftCodeModel;
-import net.respectnetwork.csp.application.model.GiftCodeRedemptionModel;
-import net.respectnetwork.csp.application.model.InviteModel;
-import net.respectnetwork.csp.application.model.PaymentModel;
-import net.respectnetwork.csp.application.model.PromoCloudModel;
-import net.respectnetwork.csp.application.model.PromoCodeModel;
+import net.respectnetwork.csp.application.model.*;
 import net.respectnetwork.csp.application.session.RegistrationSession;
 import net.respectnetwork.sdk.csp.exception.CSPRegistrationException;
 
@@ -253,6 +248,21 @@ public class PersonalCloudController
                   {
                      regSession
                            .setPassword(request.getParameter("secrettoken"));
+                  }
+
+                  // Retrieve verified phone and email
+                  SignupInfoDAO signupInfoDAO = DAOFactory.getInstance().getSignupInfoDAO();
+                  try
+                  {
+                     SignupInfoModel signupInfo = signupInfoDAO.get(regSession.getCloudName());
+                     if (signupInfo != null)
+                     {
+                        regSession.setVerifiedEmail(signupInfo.getEmail());
+                        regSession.setVerifiedMobilePhone(signupInfo.getPhone());
+                     }
+                  } catch (DAOException e)
+                  {
+                     logger.error("Error getting signupInfo: " + e.getMessage());
                   }
                }
                mv = getCloudPage(request, regSession.getCloudName());
