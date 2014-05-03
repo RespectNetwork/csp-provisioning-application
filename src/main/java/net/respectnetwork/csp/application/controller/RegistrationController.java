@@ -312,21 +312,31 @@ public class RegistrationController
                   .checkEmailAndMobilePhoneUniqueness(
                         userDetailsForm.getMobilePhone(),
                         userDetailsForm.getEmail());
+            /*
             if (existingUsers[0] != null)
             {
                // Communicate back to Form phone is already taken
-               String errorStr = "Phone Number not Unique";
-               mv.addObject("phoneError", errorStr);
+               String errorStr = "Phone number has already been used for a cloud name";
+               mv.addObject("error", errorStr);
                logger.debug("Phone {} already used by {}",
                      userDetailsForm.getMobilePhone(), existingUsers[0]);
                errors = true;
             }
             if (existingUsers[1] != null)
             {
-               String errorStr = "Email not Unique";
-               mv.addObject("emailError", errorStr);
-               logger.debug("Phone {} already used by {}",
+               String errorStr = "Email has already been used for a cloud name";
+               mv.addObject("error", errorStr);
+               logger.debug("Email {} already used by {}",
                      userDetailsForm.getEmail(), existingUsers[1]);
+               errors = true;
+            }
+            */
+            if (existingUsers[0] != null && existingUsers[1] != null)
+            {
+               String errorStr = "The Email and phone combination has already been used for a cloud name";
+               mv.addObject("error", errorStr);
+               logger.debug("Email {} already used by {} , phone {} already used by {} ",
+                     userDetailsForm.getEmail(), existingUsers[1], userDetailsForm.getMobilePhone(),existingUsers[0]);
                errors = true;
             }
          } catch (UserRegistrationException e)
@@ -439,7 +449,7 @@ public class RegistrationController
 
       // Validate Codes
       if (!theManager.validateCodes(sessionIdentifier,
-            validateForm.getEmailCode().toUpperCase(), validateForm.getSmsCode().toUpperCase()))
+            validateForm.getEmailCode().trim().toUpperCase(), validateForm.getSmsCode().trim().toUpperCase()))
       {
          errorStr = "Email and/or phone code validation failed. Please enter the codes correctly.";
          logger.debug(errorStr);
