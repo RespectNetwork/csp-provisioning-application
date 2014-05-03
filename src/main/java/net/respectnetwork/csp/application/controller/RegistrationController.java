@@ -312,7 +312,7 @@ public class RegistrationController
                   .checkEmailAndMobilePhoneUniqueness(
                         userDetailsForm.getMobilePhone(),
                         userDetailsForm.getEmail());
-            /*
+            
             if (existingUsers[0] != null)
             {
                // Communicate back to Form phone is already taken
@@ -330,7 +330,8 @@ public class RegistrationController
                      userDetailsForm.getEmail(), existingUsers[1]);
                errors = true;
             }
-            */
+            
+            /*
             if (existingUsers[0] != null && existingUsers[1] != null)
             {
                String errorStr = "The Email and phone combination has already been used for a cloud name";
@@ -339,6 +340,7 @@ public class RegistrationController
                      userDetailsForm.getEmail(), existingUsers[1], userDetailsForm.getMobilePhone(),existingUsers[0]);
                errors = true;
             }
+            */
          } catch (UserRegistrationException e)
          {
             String errorStr = "System Error checking Email/Phone Number Uniqueness";
