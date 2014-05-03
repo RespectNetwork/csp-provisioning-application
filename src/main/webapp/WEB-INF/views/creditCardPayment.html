@@ -138,19 +138,18 @@
         <input type="text" name="BillingAddress2" id="BillingAddress2" placeholder="address2"
                class="inputFields smallMarg" onFocus="clearText(this)"
                onBlur="clearText(this.className = 'onblurtext med smallMarg')"/>
-        <br/>
-
-        <p></p>
+        
         <input type="text" name="BillingCity" id="BillingCity" placeholder=" city" class="inputFields short smallMarg"
                onFocus="clearText(this)" onBlur="clearText(this.className = 'onblurtext med smallMarg')"
                required="required"/>
         &nbsp;<input type="text" name="BillingState" id="BillingState" placeholder="st*" class="inputFields mini"
                      onFocus="clearText(this)" onBlur="clearText(this.className = 'onblurtext med smallMarg')"/>
         &nbsp;<input type="text" name="BillingPostCode" id="BillingPostCode" placeholder="postal code"
-                     class="inputFields tiny smallMarg" onFocus="clearText(this)"
+                     class="inputFields tiny smallMarg" onFocus="clearText(this)"        
                      onBlur="clearText(this.className = 'onblurtext med smallMarg')" required="required"/>
-        &nbsp; <input type="text" name="BillingCountry" id="BillingCountry" placeholder="country"
-                      class="inputFields smallMarg" onFocus="clearText(this)"
+        <br/>
+        <input type="text" name="BillingCountry" id="BillingCountry" 
+                      class="inputFields mini" placeholder="CC*" onFocus="clearText(this)"
                       onBlur="clearText(this.className = 'onblurtext med smallMarg')" required="required"/>
 		<br/>
             <button type="submit" name="submit" id="submit" class="button big">Continue</button>

@@ -113,6 +113,12 @@
   text-align: center;
 }
 
+.bodyHdr {
+  font-size: 24px;
+  color: #999A9B;
+  text-align: center;
+}
+
 .rightHdr {
 	margin-left: 30px !important;
 }
@@ -365,6 +371,8 @@
 	font-size: 24px;
 	text-align: center;
 }	
+
+
 	
 .mini {
 	width: 37px;
@@ -373,7 +381,7 @@
 
 .error
 {
-	font-size:24px;
+	font-size:20px;
 }
 
 .date {
@@ -398,7 +406,9 @@
 	width: 175px;
 }
 
-
+.narrow {
+	width: 400px;
+}
 
 .skinny {
 	height: 40px;
@@ -515,10 +525,19 @@ textarea {
 	.nav-collapse .nav > li {
 		text-align: right;
 	}
+.secondary {
+	font-size:12px;
+}
 
 	.navbar .btn-navbar {
 		margin-top: 45px;
 	}
+
+.bodyHdr {
+  font-size: 20px;
+  color: #999A9B;
+  text-align: center;
+}
 
 	.test {
 		background-image:url("../img/icon_57.png"); 
@@ -543,7 +562,11 @@ textarea {
 		padding-top: 5px;
 	}
 	
-	.inputFields {
+	.narrow {
+		width: 300px;
+	}
+
+.inputFields {
 		width:300px;
 		height:35px;
 		font-size: 20px;
@@ -553,6 +576,7 @@ textarea {
 		width: 300px;
 		height: 45px;
 	}
+
 	.pwdInputForm {
 		margin-top: 15px;
 		height: 35px;
@@ -616,8 +640,7 @@ textarea {
 	}
 	.bigTop {
 		margin-top: 45px;
-	}
-	
+	}	
 	.big {
 		width:300px;
 	}
@@ -660,8 +683,11 @@ textarea {
   }
 
   .bodyContainer {
-		padding-top: 50px;
+		padding-top: 5px;
 	}
+.secondary {
+	font-size:12px;
+}
 
 	.paymentBody {
 		padding-top: 5px;
@@ -706,6 +732,9 @@ textarea {
 		font-size: 14px;
 	}	
 
+	.narrow {
+		width: 250px;
+	}
 	.primaryLeftJustified {
 		font-size:20px;
 		margin: 0px;
@@ -784,6 +813,15 @@ textarea {
 	.row-fluid .span4 {
  	 width: 31%;
 	}
+	.secondary {
+	font-size:10px;
+}
+
+.bodyHdr {
+  font-size: 18px;
+  color: #999A9B;
+  text-align: center;
+}
 
 	.span4 {
 		width:103px;
@@ -885,9 +923,9 @@ textarea {
 		padding-top: 15px !important;
 	}	
 	.middle2 {
-	 	font-size: 20px;
+	 	font-size: 16px;
 		padding: 5px 0 5px;
-		height: 450px;
+		height: 475px;
 	}
 	
 	.middle {
@@ -927,6 +965,7 @@ textarea {
 		padding: 0px; 
 		font: 18px "AvenirNext", helvetica, arial, sans-serif;
 		height: 30px;
+		margin-top: 0px;
 	}
 	
 	.payment1 {

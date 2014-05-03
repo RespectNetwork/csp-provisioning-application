@@ -690,7 +690,18 @@ public class PersonalCloudController
          mv.addObject("cspTCURL", this.getRegistrationManager().getCspTCURL());
          return mv;
      }
-
+      logger.debug("cspTandC..." + request.getParameter("cspTandC"));
+      if(request.getParameter("cspTandC") == null || !request.getParameter("cspTandC").equalsIgnoreCase("on"))
+      {
+         mv = new ModelAndView("payment");
+         errors = true;
+         mv.addObject(
+               "error",
+               "Please check the CSP T&C option.");
+         logger.debug("CSP T&C Checkbox not selected.");
+         mv.addObject("cspTCURL", this.getRegistrationManager().getCspTCURL());
+         return mv;
+      }
       logger.debug("Payment type(s) " + paymentType);
 
       if (paymentType != null && paymentType.contains("giftCard")
