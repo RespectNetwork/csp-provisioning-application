@@ -360,7 +360,7 @@ public class RegistrationController
                   userDetailsForm.getEmail(), userDetailsForm.getMobilePhone());
          } catch (CSPValidationException e)
          {
-            String errorStr = "System Error sending validation messages";
+            String errorStr = "System Error sending validation messages. Please check email and mobile phone number.";
             logger.warn(errorStr + " : {}", e.getMessage());
             mv.addObject("error", errorStr);
             errors = true;
@@ -430,10 +430,11 @@ public class RegistrationController
             return mv;
          } catch (CSPValidationException e)
          {
-            errorStr = "System Error sending validation messages";
+            errorStr = "System Error sending validation messages. Please check email and phone number.";
             logger.warn(errorStr + " : {}", e.getMessage());
             mv.addObject("error", errorStr);
             errors = true;
+            return mv;
          }
       }
       logger.debug("RN Terms checkbox ..." + request.getParameter("terms"));

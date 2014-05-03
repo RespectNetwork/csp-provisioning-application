@@ -4,20 +4,30 @@ import java.security.GeneralSecurityException;
 import java.security.PrivateKey;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.respectnetwork.sdk.csp.BasicCSPInformation;
 import net.respectnetwork.sdk.csp.CSP;
+import net.respectnetwork.sdk.csp.CSPInformation;
+import xdi2.client.XDIClient;
 import xdi2.client.exceptions.Xdi2ClientException;
+import xdi2.client.http.XDIHttpClient;
 import xdi2.client.util.XDIClientUtil;
 import xdi2.core.xri3.CloudName;
 import xdi2.core.xri3.CloudNumber;
 import xdi2.core.xri3.XDI3Segment;
+import xdi2.core.xri3.XDI3Statement;
 import xdi2.discovery.XDIDiscoveryClient;
 import xdi2.discovery.XDIDiscoveryResult;
+import xdi2.messaging.Message;
+import xdi2.messaging.MessageCollection;
+import xdi2.messaging.MessageEnvelope;
+import xdi2.messaging.error.ErrorMessageResult;
 
 public class RegisterDependentCloudThread implements Runnable
 {
@@ -145,7 +155,7 @@ public class RegisterDependentCloudThread implements Runnable
     if(guardianCloudNumber != null && dependentCloudNumber != null) {
          try {
              // Set User Cloud Data
-          cspRegistrar.setGuardianshipInCloud(cspInformation, guardianCloudNumber, dependentCloudNumber, dependentBirthDate, withConsent, guardianToken, guardianPrivateKey);
+          cspRegistrar.setGuardianshipInCloud(cspInformation, guardianCloudNumber, dependentCloudNumber, dependentBirthDate, withConsent, guardianToken, guardianPrivateKey, dependentToken);
           
           // Set CSP Cloud Data
           cspRegistrar.setGuardianshipInCSP(cspInformation, guardianCloudNumber, dependentCloudNumber, dependentBirthDate, withConsent, guardianPrivateKey);
