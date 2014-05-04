@@ -819,12 +819,7 @@ public class PersonalCloudController
                   statusText = "Sorry! The system encountered an error while registering your cloudname.\n"
                         + registrationManager.getCSPContactInfo();
                }
-            } else
-            {
-               forwardingPage += "/signup";
-               statusText = "Sorry! This promotion has expired or the promo code is not a valid one.\n"
-                     + registrationManager.getCSPContactInfo();
-            }
+            
          } else if (txnType.equals(PaymentForm.TXN_TYPE_DEP))
          {
             if ((mv = createDependentClouds(cloudName, null, null, request)) != null)
@@ -885,7 +880,7 @@ public class PersonalCloudController
          mv.addObject("queryStr", queryStr);
          return mv;
       }
-
+      }
       // process gift card payments first
 
       boolean validGiftCard = false;
