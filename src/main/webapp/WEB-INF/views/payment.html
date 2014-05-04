@@ -116,11 +116,11 @@
 
                         <div th:if="${#strings.length(paymentInfo.giftCodes)}">
                             <input type="radio" id="paymentType" name="paymentType" value="giftCard" checked="true"/>
-                            &nbsp; <input type="text" name="giftCodes" id="giftCodes" class="inputFields skinny"
+                            &nbsp; <input type="text" name="giftCodes" id="giftCodes" class="inputFields med skinny"
                                           placeholder=" gift code" th:value="*{giftCodes}"/>
                         </div>
                         <div th:if="${#strings.length(paymentInfo.giftCodes) == 0}">	         		
-        					<input type="radio" id="paymentType" name="paymentType" value="giftCard" />&nbsp; <input type="text" name="giftCodes"  id="giftCodes" class="inputFields skinny" placeholder=" gift code" />				        			
+        					<input type="radio" id="paymentType" name="paymentType" value="giftCard" />&nbsp; <input type="text" name="giftCodes"  id="giftCodes" class="inputFields med skinny" placeholder=" gift code" />				        			
         				</div> 
                         </p>
                         <div th:if="${paymentInfo.giftCodesOnly == false}">
@@ -144,7 +144,7 @@
                     <div th:case="'buyDependentCloud'">
 		  			<p class="payment2">
         				<input type="checkbox"  id="paymentType" name="paymentType" value="giftCard" />
-	      		&nbsp;  <input type="text" name="giftCodes"  id="giftCodes" class="inputFields skinny" placeholder=" gift code"/> 
+	      		&nbsp;  <input type="text" name="giftCodes"  id="giftCodes" class="inputFields med skinny" placeholder=" gift code"/> 
 	      			<p class="notes">separate multiple codes by spaces</p>
 	      			</p>
 	      			<div th:if="${paymentInfo.giftCodesOnly == false}">
