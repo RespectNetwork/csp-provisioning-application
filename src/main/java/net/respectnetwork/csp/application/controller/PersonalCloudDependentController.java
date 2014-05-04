@@ -263,6 +263,10 @@ public class PersonalCloudDependentController
          regSession.setTransactionType(PaymentForm.TXN_TYPE_DEP);
       }
       paymentForm.setNumberOfClouds(arrDependentCloudName.length);
+      if(cspModel.getPaymentGatewayName().equals("GIFT_CODE_ONLY"))
+      {
+         paymentForm.setGiftCodesOnly(true);
+      }
       mv.addObject("paymentInfo", paymentForm);
       mv.addObject("totalAmountText", RegistrationController.formatCurrencyAmount(regSession.getCurrency(), totalCost));
       mv.addObject("cspTCURL", this.getTheManager().getCspTCURL());

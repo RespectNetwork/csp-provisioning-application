@@ -496,7 +496,10 @@ public class RegistrationController
             logger.debug("Setting giftcode from session " + regSession.getGiftCode());
             paymentForm.setGiftCodes(regSession.getGiftCode());
          }
-         
+         if(cspModel.getPaymentGatewayName().equals("GIFT_CODE_ONLY"))
+         {
+            paymentForm.setGiftCodesOnly(true);
+         }
          mv.addObject("paymentInfo", paymentForm);
 
          // Check for cost override based on phone number

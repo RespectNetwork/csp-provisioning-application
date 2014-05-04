@@ -123,16 +123,23 @@
         					<input type="radio" id="paymentType" name="paymentType" value="giftCard" />&nbsp; <input type="text" name="giftCodes"  id="giftCodes" class="inputFields skinny" placeholder=" gift code" />				        			
         				</div> 
                         </p>
+                        <div th:if="${paymentInfo.giftCodesOnly == false}">
                         <p class="payment2">
                             <input type="radio" id="paymentType" name="paymentType" value="creditCard"> &nbsp; <img
                                 src="img/credit-card-front.png"/> &nbsp;Credit cards </input>
                         </p>
+                        </div>
                     </div>
                     <div th:case="'buyGiftCard'">
+                    	<div th:if="${paymentInfo.giftCodesOnly == false}">
                         <p class="payment2">
                             <input type="radio" id="paymentType" name="paymentType" value="creditCard"> &nbsp; <img
                                 src="img/credit-card-front.png"/> &nbsp;Credit cards </input>
                         </p>
+                        </div>
+                        <div th:if="${paymentInfo.giftCodesOnly == true}">
+                        	<p class="secondary">Coming soon!</p>
+                        </div>
                     </div>
                     <div th:case="'buyDependentCloud'">
 		  			<p class="payment2">
@@ -140,9 +147,11 @@
 	      		&nbsp;  <input type="text" name="giftCodes"  id="giftCodes" class="inputFields skinny" placeholder=" gift code"/> 
 	      			<p class="notes">separate multiple codes by spaces</p>
 	      			</p>
+	      			<div th:if="${paymentInfo.giftCodesOnly == false}">
 	        		<p class="payment2">
 	        		<input type="checkbox"  id="paymentType" name="paymentType" value="creditCard"> &nbsp;  <img src="img/credit-card-front.png" /> &nbsp;Credit cards </input>
 					</p>
+					</div>
 		  		</div>
 		   			
 		  </div>

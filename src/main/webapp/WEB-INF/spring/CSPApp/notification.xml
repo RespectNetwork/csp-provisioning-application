@@ -47,27 +47,14 @@
     </beans:bean>
     
     <!-- Token Manager -->
-    <beans:bean id="basicTokenManager" class="net.respectnetwork.sdk.csp.notification.BasicTokenManager">
-        <beans:property name="tokenCache" ref="ehTokenCache"></beans:property>
+    <beans:bean id="basicTokenManager" class="net.respectnetwork.sdk.csp.notification.AnotherBasicTokenManager">
+        
     </beans:bean>
        
     <!-- Message Manager -->
     <beans:bean id="basicMessageManager" class="net.respectnetwork.sdk.csp.notification.BasicMessageManager">
         <beans:property name="emailTemplate" value="${email.template}"/>
         <beans:property name="smsTemplate" value="${sms.template}"/>
-    </beans:bean>
-    
-    <beans:bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
-        <beans:property name="shared" value="true"/>        
-    </beans:bean>
-    
-    <beans:bean id="ehTokenCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
-        <beans:property name="cacheManager" ref="cacheManager"/>
-        <beans:property name="maxElementsInMemory" value="1000000"/> <!--  -->
-        <beans:property name="memoryStoreEvictionPolicy" value="LRU"/>
-        <beans:property name="timeToLive" value="600"/>   <!-- 10 Mins -->
-        <beans:property name="overflowToDisk" value="false"/>
-        <beans:property name="diskPersistent" value="false"/>        
     </beans:bean>
  
 </beans:beans>

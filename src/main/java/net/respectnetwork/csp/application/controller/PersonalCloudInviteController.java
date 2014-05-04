@@ -298,6 +298,10 @@ public class PersonalCloudInviteController
       
 		mv = new ModelAndView("creditCardPayment");
 		PaymentForm paymentForm = new PaymentForm();
+		if(cspModel.getPaymentGatewayName().equals("GIFT_CODE_ONLY"))
+      {
+         paymentForm.setGiftCodesOnly(true);
+      }
       paymentForm.setTxnType(PaymentForm.TXN_TYPE_BUY_GC);
       if(regSession != null)
       {

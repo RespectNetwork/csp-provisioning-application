@@ -40,6 +40,8 @@ public class PaymentForm {
     /** number of clouds being purchased */
     int numberOfClouds;
     
+    boolean giftCodesOnly;
+    
     public PaymentForm()
     {
        this.giftCodes = "";
@@ -48,6 +50,7 @@ public class PaymentForm {
        this.customerEmail = null;
        this.customerName = null;
        this.numberOfClouds = 0;
+       this.giftCodesOnly = false;
     }
 
    public PaymentForm(PaymentForm paymentFormIn)
@@ -58,6 +61,7 @@ public class PaymentForm {
       this.customerEmail = paymentFormIn.customerEmail;
       this.customerName = paymentFormIn.customerName;
       this.numberOfClouds = paymentFormIn.numberOfClouds;
+      this.giftCodesOnly = paymentFormIn.giftCodesOnly;
    }
 
    /**
@@ -163,6 +167,16 @@ public class PaymentForm {
    public void setNumberOfClouds(int numberOfClouds)
    {
       this.numberOfClouds = numberOfClouds;
+   }
+
+   public boolean isGiftCodesOnly()
+   {
+      return giftCodesOnly;
+   }
+
+   public void setGiftCodesOnly(boolean giftCodesOnly)
+   {
+      this.giftCodesOnly = giftCodesOnly;
    }
 
 	

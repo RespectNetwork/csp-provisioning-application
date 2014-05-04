@@ -122,6 +122,7 @@
         </td></tr>
     	</table>
     </div>
+    <div th:if="${paymentInfo.giftCodesOnly == false}">
     <div th:if="${SagePay}">
         <input type="text" name="BillingFirstNames" id="BillingFirstNames" class="inputFields tiny smallMarg"
                placeholder=" first name" onFocus="clearText(this)"
@@ -333,7 +334,10 @@
     	</div>
 
     </div>
-
+    </div>
+    <div th:if="${paymentInfo.giftCodesOnly == true}">
+    	<p class="secondary">Coming soon!</p>
+    </div>
     </div>
     </div>
     <div class="span5"><p class="payment3"></p>
