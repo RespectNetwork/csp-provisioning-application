@@ -602,7 +602,7 @@ public class RegistrationController
           //ignore the "name" parameter. Capture rest of it
             if(!paramName.equalsIgnoreCase(URL_PARAM_NAME_REQ_CLOUDNAME))
             {
-               rnQueryString = rnQueryString + "&" + paramValues[i];
+               rnQueryString = rnQueryString + "&" + paramName + "=" + paramValues[i];
             }
          }
       }

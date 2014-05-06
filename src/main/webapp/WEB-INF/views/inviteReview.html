@@ -57,7 +57,10 @@
 	</div>
 	<!-- Begin page content -->
       <div class="bodyContainer">
-		<div class="middle">
+      	<div class="row-fluid"> 
+    	<div class="span2"></div> 
+      <div class="span5">	
+		
       <form action="#" th:object="${inviteForm}" th:action="@{/inviteSubmit}" method="post">
       	<div class="span5">
         <input type="hidden" id="emailAddress" name="emailAddress" value="" th:value="${inviteForm.emailAddress}"/>
@@ -78,10 +81,12 @@
           	<br /> &nbsp; &nbsp; &nbsp;<a target="_blank" onclick="return windowpop(this.href, 545, 433); " th:href="${cspTCURL}">Terms of Service</a>          	
 		</p>
         <br></br>
-        <button type="submit" name="submit" id="submit" class="button big">Continue</button>
+        <button type="submit" name="submit" id="submit" class="button">Continue</button>
         </div>
       </form>
       </div>
+      <div class="span4">	   </div>  	
+    </div>
 	</div>
 	<div id="footer">
       <!--	

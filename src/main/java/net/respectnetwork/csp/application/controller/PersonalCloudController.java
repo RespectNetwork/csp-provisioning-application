@@ -762,13 +762,13 @@ public class PersonalCloudController
       }
       // check if its a promo
       // check for valid promo codes in promo_code table
-      if (giftCodesVal != null && giftCodesVal.startsWith("PROMO")) // &&
+      if (giftCodesVal != null && (giftCodesVal.startsWith("PROMO") || (giftCodesVal.startsWith("promo")))) // &&
                                                                     // txnType.equals(PaymentForm.TXN_TYPE_SIGNUP))
       {
          PromoCodeModel promo = null;
          try
          {
-            promo = dao.getPromoCodeDAO().get(giftCodesVal);
+            promo = dao.getPromoCodeDAO().get(giftCodesVal.toUpperCase());
          } catch (DAOException e)
          {
             // TODO Auto-generated catch block
@@ -802,7 +802,7 @@ public class PersonalCloudController
                   // make an entry in promo_cloud table
                   PromoCloudModel promoCloud = new PromoCloudModel();
                   promoCloud.setCloudname(cloudName);
-                  promoCloud.setPromo_id(giftCodesVal);
+                  promoCloud.setPromo_id(giftCodesVal.toUpperCase());
                   promoCloud.setCsp_cloudname(this.getCspCloudName());
                   try
                   {
@@ -848,7 +848,7 @@ public class PersonalCloudController
                   // make an entry in promo_cloud table
                   PromoCloudModel promoCloud = new PromoCloudModel();
                   promoCloud.setCloudname(cloudName);
-                  promoCloud.setPromo_id(giftCodesVal);
+                  promoCloud.setPromo_id(giftCodesVal.toUpperCase());
                   promoCloud.setCsp_cloudname(this.getCspCloudName());
                   try
                   {
