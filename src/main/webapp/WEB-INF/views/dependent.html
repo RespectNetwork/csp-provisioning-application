@@ -107,7 +107,7 @@
 				<input type="text" name="dependentBirthDate" value="" class="inputFields smallMarg" id="dependentBirthDate" placeholder="MM/DD/YYYY" required="required" onchange="validateDate(this.value)"/>
 				<br></br><span class="error"  name="isValidDate" id="isValidDate"></span>
                 <p class="secondary">
-		     	<input type="checkbox" name="consent" value="false" required="required" th:value="*{consentFlag}" />
+		     	<input type="checkbox" name="consent" id="consent"  required="required" th:value="*{consentFlag}" />
             	I consent to my dependent obtaining a personal cloud.        
      			</p>            
      			</div>

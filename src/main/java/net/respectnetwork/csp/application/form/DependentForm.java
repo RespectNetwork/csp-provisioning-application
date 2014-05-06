@@ -32,7 +32,7 @@ public class DependentForm
          .getLogger(DependentForm.class);
 	public DependentForm()
 	{
-		this.consentFlag = false;
+		this.consentFlag = true;
 		this.consentText = "I agree to the Terms and Conditions for Dependent Personal Clouds.";
 
 	}
@@ -88,13 +88,6 @@ public class DependentForm
 		builder.append(super.toString());
 		return builder.toString();
 	}
-
-
-	
-
-
-	
-
 
 	public boolean isConsentFlag() {
 		return consentFlag;

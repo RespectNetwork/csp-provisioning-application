@@ -238,7 +238,7 @@ public class PersonalCloudDependentController
       {
          mv = new ModelAndView("dependent");
          mv.addObject("cspModel", cspModel);
-         //dependentForm = new DependentForm();
+         
          model.addAttribute("dependentForm", dependentForm);
          model.addAttribute("cloudName", cloudName);
          mv.addObject("cspModel", cspModel);
@@ -247,6 +247,24 @@ public class PersonalCloudDependentController
          return mv;
 
       }
+      logger.debug("Dependent consent checkbox ..." + request.getParameter("consent"));
+      if(request.getParameter("consent") == null || !request.getParameter("consent").equalsIgnoreCase("true"))
+      {
+         errorStr = "Please check the consent checkbox to continue";
+         logger.debug("dependent consent not checked ...."
+                 + request.getParameter("consent"));
+         
+         mv = new ModelAndView("dependent");
+         mv.addObject("error", errorStr);
+         mv.addObject("cspModel", cspModel);
+         model.addAttribute("dependentForm", dependentForm);
+         model.addAttribute("cloudName", cloudName);
+         mv.addObject("cspModel", cspModel);
+         errors = true;
+         return mv;
+         
+      }
+      
       cspModel = DAOFactory.getInstance().getCSPDAO().get(this.getCspCloudName());
       BigDecimal quantity = BigDecimal.valueOf((long) arrDependentCloudName.length);
       

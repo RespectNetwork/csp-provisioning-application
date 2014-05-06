@@ -109,7 +109,9 @@
             <div class="span2"></div>
             <div class="span4">
                 <p class="payment1"><span style="color:red" th:text="${error}"> </span><br/>Select Payment Method</p>
-
+				
+	      		<p class="payment2">Separate multiple gift codes by spaces</p>
+	      		
                 <div th:switch="*{txnType}">
                     <div th:case="'signup'">
                         <p class="payment2">
@@ -144,8 +146,7 @@
                     <div th:case="'buyDependentCloud'">
 		  			<p class="payment2">
         				<input type="checkbox"  id="paymentType" name="paymentType" value="giftCard" />
-	      		&nbsp;  <input type="text" name="giftCodes"  id="giftCodes" class="inputFields med skinny" placeholder=" gift code"/> 
-	      			<p class="notes">separate multiple codes by spaces</p>
+	      		&nbsp;  <input type="text" name="giftCodes"  id="giftCodes" class="inputFields med skinny" placeholder=" gift code"/>      		 
 	      			</p>
 	      			<div th:if="${paymentInfo.giftCodesOnly == false}">
 	        		<p class="payment2">
