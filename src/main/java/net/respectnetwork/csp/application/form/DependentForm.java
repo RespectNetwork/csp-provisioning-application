@@ -8,6 +8,8 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 public class DependentForm
 {
@@ -28,11 +30,13 @@ public class DependentForm
 	private String dependentCloudName9 ;
 	private String dependentCloudName10 ;
 	
+	private String nameAvailabilityCheckURL ; //= "https://registration-stage.respectnetwork.net/rn-checkavailability-service/";
+	
 	private static final Logger logger = LoggerFactory
          .getLogger(DependentForm.class);
 	public DependentForm()
 	{
-		this.consentFlag = true;
+		this.consentFlag = false;
 		this.consentText = "I agree to the Terms and Conditions for Dependent Personal Clouds.";
 
 	}
@@ -309,6 +313,15 @@ public class DependentForm
       this.dependentCloudName10 = dependentCloudName10;
    }
 
-
+   
+   public void setNameAvailabilityCheckURL(String url)
+   {
+      this.nameAvailabilityCheckURL = url;
+   }
+   
+   public String getNameAvailabilityCheckURL()
+   {
+      return this.nameAvailabilityCheckURL;
+   }
 	
 }

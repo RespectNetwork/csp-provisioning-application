@@ -614,14 +614,14 @@ public class PersonalCloudController
                + URLEncoder.encode(cloudName, "UTF-8")
                + "&csp="
                + URLEncoder.encode(request.getContextPath().replace("/", "+"),
-                     "UTF-8");
+                     "UTF-8") + "&inviter=" + URLEncoder.encode(cloudName, "UTF-8");
       } catch (UnsupportedEncodingException e1)
       {
          // TODO Auto-generated catch block
          e1.printStackTrace();
       }
       mv.addObject("queryStr", queryStr);
-      mv.addObject("postURL", "https://welcome.respectnetwork.com/registered/index.html");
+      mv.addObject("postURL", RegistrationManager.getPostRegistrationURL());      
       return mv;
    }
 

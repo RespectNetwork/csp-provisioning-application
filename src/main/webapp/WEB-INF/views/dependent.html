@@ -77,11 +77,11 @@
 	<div class="bodyContainer">
     <div class="row-fluid"> 
     	<div class="span1"></div> 
-      <div class="span5">		
+      <div class="span5" >		
 			<br/><span style="color:red" th:text="${error}"></span><br/>      	
 	      <p class="primaryLeftJustified">Add clouds for my dependents </p>
 	      	<p class="payment3">Dependent's cloud name:</p>                           
-          <form action="#" th:object="${dependentForm}" th:action="@{/dependentSubmit}" method="post">
+          <form action="#"  th:object="${dependentForm}" th:action="@{/dependentSubmit}" method="post">
       		<div id="allDependents">
       			
 				<div>      			
@@ -116,25 +116,14 @@
     			<button id="addAnotherDependent" class="button" type="button">+ Add another</button>
 				<button type="submit" name="submit" id="submit" class="button">Continue</button> &nbsp; &nbsp;
           		<!-- <a href="/cloudPage">Cancel</a> -->
-     	</form>
- 
-	</div>
-    		
-    <div class="span5">	   
-    </div>  	
-    </div>    
-                                
-  </div>  <!-- end maincontent -->
- </div> <!-- end wrapper -->      
- <div id="footer">
-      	
-  			
-    </div>
-<!--The following script hooks the HTML Elements to the javascript functionality-->
-	<!-- see the comments inside the javascript for details-->
-<script th:inline="javascript">
-/*<![CDATA[*/
- 
+    			<input type="hidden" name="avAPI" value="" id="avAPI" th:value="*{nameAvailabilityCheckURL} + '/api/availability/equals/'"/>      		
+ 	    	</form>
+     	
+	
+   <script th:inline="javascript">
+	/*<![CDATA[*/
+  
+		
  $(document).ready(function () {
  
 	function checkCloudNameAvailability(cloudName, isAvailable){
@@ -145,8 +134,9 @@
 	 	// the value of this var is the id of the display element 
  		// that will be used to convey information to the user
 		var messageSpan = "#"+isAvailable;
- 
  		
+			
+	
 	    $(cloudnameField).checkCloud({
 	        completed: function(elem, success) {
 	        	
@@ -186,7 +176,9 @@
 	        stripSymbol:true, 
 	        
 	        // indicates the location of the availability service
-	        availibilityAPI: "https://checkavailability-prod.respectnetwork.net/api/availability/equals/"
+			
+	        availibilityAPI :  $(avAPI).val()
+				
 	    }); 
 	}
     checkCloudNameAvailability("dependentCloudName", "isAvailable");
@@ -231,6 +223,21 @@ function removeDiv(depDiv) {
 /*]]>*/
 
 </script>
+     	
+	</div>
+    		
+    <div class="span5">	   
+    </div>  	
+    </div>    
+                                
+  </div>  <!-- end maincontent -->
+ </div> <!-- end wrapper -->      
+ <div id="footer">
+      	
+  			
+    </div>
+<!--The following script hooks the HTML Elements to the javascript functionality-->
+	<!-- see the comments inside the javascript for details-->
  
 </body>
 </html>

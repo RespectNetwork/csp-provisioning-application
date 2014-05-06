@@ -145,6 +145,7 @@ public class PersonalCloudDependentController
       mv = new ModelAndView("dependent");
       mv.addObject("cspModel", cspModel);
       dependentForm = new DependentForm();
+      dependentForm.setNameAvailabilityCheckURL(theManager.getNameAvailabilityCheckURL());
       model.addAttribute("dependentForm", dependentForm);
       model.addAttribute("cloudName", cloudName);
       if(regSession != null)

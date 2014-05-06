@@ -74,7 +74,8 @@
 		<beans:property name="cspHomeURL" value="${csp.cspHomeURL}"/>  
 		<beans:property name="cspInviteURL" value="${csp.cspInviteURL}"/>   
 		<beans:property name="cspRespectConnectBaseURL" value="${csp.cspRespectConnectBaseURL}"/>
-		<beans:property name="cspTCURL" value="${csp.cspTCURL}"/>	 				  	
+		<beans:property name="cspTCURL" value="${csp.cspTCURL}"/>
+		<beans:property name="nameAvailabilityCheckURL" value="${csp.nameAvailabilityCheckURL}"/> 				  	
     </beans:bean>
     
     
@@ -229,5 +230,10 @@
     </beans:bean>
 
     <beans:bean id="daoContextProvider" class="net.respectnetwork.csp.application.dao.DAOContextProvider" />
- 
+    
+     <beans:bean id="nameAvailabilityCheckURL" class="java.lang.String">
+        <beans:constructor-arg value="${csp.nameAvailabilityCheckURL}"/>
+        <beans:qualifier value="nameAvailabilityCheckURL"/>
+    </beans:bean>
+    
 </beans:beans>

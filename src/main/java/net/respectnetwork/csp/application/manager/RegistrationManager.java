@@ -114,6 +114,8 @@ public class RegistrationManager {
     
     private String cspTCURL;
     
+    private String nameAvailabilityCheckURL;
+    
     public static final String GeoLocationPostURIKey = "<$https><#network.globe><$set>";
     public static final String RNpostRegistrationLandingPageURIKey = "<$https><#post><#registration>";
     public static final String CSPCloudRegistrationURIKey = "<$https><#registration>";
@@ -946,6 +948,16 @@ public class RegistrationManager {
       }
       
       return retval;
+   }
+
+   public String getNameAvailabilityCheckURL()
+   {
+      return nameAvailabilityCheckURL;
+   }
+
+   public void setNameAvailabilityCheckURL(String nameAvailabilityCheckURL)
+   {
+      this.nameAvailabilityCheckURL = nameAvailabilityCheckURL;
    }
 
 }
