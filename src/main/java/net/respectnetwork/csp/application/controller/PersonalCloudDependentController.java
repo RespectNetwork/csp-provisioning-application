@@ -98,6 +98,8 @@ public class PersonalCloudDependentController
    public ModelAndView showDependentForm(HttpServletRequest request, Model model)
          throws DAOException
    {
+      String rnQueryString = "";
+      
       Enumeration<String> paramNames = request.getParameterNames(); 
       while(paramNames.hasMoreElements())
       {
@@ -107,13 +109,12 @@ public class PersonalCloudDependentController
          for(int i = 0 ; i < paramValues.length ; i++)
          {
             logger.debug("p value " + paramValues[i]);
+          //ignore the "name" parameter. Capture rest of it
+            if(!paramName.equalsIgnoreCase(RegistrationController.URL_PARAM_NAME_REQ_CLOUDNAME))
+            {
+               rnQueryString = rnQueryString + "&" + paramName + "=" + paramValues[i];
+            }
          }
-      }
-      String rnQueryString = "" ;
-      if (request.getQueryString() != null && !request.getQueryString().isEmpty())
-      {
-         rnQueryString = rnQueryString.substring(rnQueryString.indexOf("&")+1);
-         logger.debug("Query String " + rnQueryString);
       }
       
       

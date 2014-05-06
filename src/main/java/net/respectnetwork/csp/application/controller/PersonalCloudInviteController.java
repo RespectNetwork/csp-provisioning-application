@@ -121,7 +121,9 @@ public class PersonalCloudInviteController
 	@RequestMapping(value = "/invite", method = RequestMethod.GET)
 	public ModelAndView showInviteForm(HttpServletRequest request, Model model) throws DAOException
 	{
-	   Enumeration<String> paramNames = request.getParameterNames();
+	   String rnQueryString = "";
+      
+      Enumeration<String> paramNames = request.getParameterNames(); 
       while(paramNames.hasMoreElements())
       {
          String paramName = paramNames.nextElement();
@@ -130,13 +132,12 @@ public class PersonalCloudInviteController
          for(int i = 0 ; i < paramValues.length ; i++)
          {
             logger.debug("p value " + paramValues[i]);
+          //ignore the "name" parameter. Capture rest of it
+            if(!paramName.equalsIgnoreCase(RegistrationController.URL_PARAM_NAME_REQ_CLOUDNAME))
+            {
+               rnQueryString = rnQueryString + "&" + paramName + "=" + paramValues[i];
+            }
          }
-      }
-      String rnQueryString = "" ;
-      if (request.getQueryString() != null && !request.getQueryString().isEmpty())
-      {
-         rnQueryString = rnQueryString.substring(rnQueryString.indexOf("&")+1);
-         logger.debug("Query String " + rnQueryString);
       }
       String cloudName = request.getParameter(RegistrationController.URL_PARAM_NAME_REQ_CLOUDNAME); // this.getCloudName();
 
