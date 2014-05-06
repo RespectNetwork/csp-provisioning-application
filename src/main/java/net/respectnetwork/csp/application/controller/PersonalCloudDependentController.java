@@ -249,7 +249,7 @@ public class PersonalCloudDependentController
 
       }
       logger.debug("Dependent consent checkbox ..." + request.getParameter("consent"));
-      if(request.getParameter("consent") == null || !request.getParameter("consent").equalsIgnoreCase("true"))
+      if(request.getParameter("consent") == null || !request.getParameter("consent").equalsIgnoreCase("on"))
       {
          errorStr = "Please check the consent checkbox to continue";
          logger.debug("dependent consent not checked ...."

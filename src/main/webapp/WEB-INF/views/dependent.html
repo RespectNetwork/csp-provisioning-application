@@ -107,7 +107,7 @@
 				<input type="text" name="dependentBirthDate" value="" class="inputFields smallMarg" id="dependentBirthDate" placeholder="MM/DD/YYYY" required="required" onchange="validateDate(this.value)"/>
 				<br></br><span class="error"  name="isValidDate" id="isValidDate"></span>
                 <p class="secondary">
-		     	<input type="checkbox" name="consent" id="consent"  required="required" th:value="*{consentFlag}" />
+		     	<input type="checkbox" name="consent" id="consent"  required="required"  />
             	I consent to my dependent obtaining a personal cloud.        
      			</p>            
      			</div>
@@ -209,7 +209,7 @@
       var strL = strK + isValidDate ;
       var strM = strL + '"  id="' ;
       var strN = strM + isValidDate ;
-      var strO = strN + '"></span></td></tr><tr><td><p class="secondary"> <input type="checkbox" name="consent" value="false" required="required" /> I consent to my dependent obtaining a personal cloud.</p></td></tr></table></div>';
+      var strO = strN + '"></span></td></tr><tr><td><p class="secondary"> <input type="checkbox" name="consent"  required="required" /> I consent to my dependent obtaining a personal cloud.</p></td></tr></table></div>';
       $( strO ).appendTo("#allDependents");
 
       checkCloudNameAvailability(depCloudName, depIsAvailable);
