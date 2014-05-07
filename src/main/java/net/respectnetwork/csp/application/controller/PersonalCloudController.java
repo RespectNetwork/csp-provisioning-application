@@ -481,23 +481,8 @@ public class PersonalCloudController
             {
                if (this.registerCloudName(cloudName, phone, email, password))
                {
-                  // forwardingPage += "/cloudPage";
-                  try
-                  {
-                     forwardingPage = getRNpostRegistrationLandingPage() ; //RegistrationManager.getCspInviteURL();
-                     queryStr = "name="
-                           + URLEncoder.encode(cloudName, "UTF-8")
-                           + "&csp="
-                           + URLEncoder.encode(request.getContextPath()
-                                 .replace("/", "+"), "UTF-8") 
-                           + regSession.getRnQueryString();
-
-                  } catch (UnsupportedEncodingException e)
-                  {
-                     // TODO Auto-generated catch block
-                     e.printStackTrace();
-                     forwardingPage += "/cloudPage";
-                  }
+                  forwardingPage = getRNpostRegistrationLandingPage() ; //RegistrationManager.getCspInviteURL();
+                  queryStr = this.formatQueryStr(cloudName, regSession.getRnQueryString(), request);
                   statusText = "Congratulations " + cloudName
                         + "! You have successfully purchased a cloud name.";
                } else
@@ -514,19 +499,7 @@ public class PersonalCloudController
                {
                   // forwardingPage += "/cloudPage";
                   forwardingPage = getRNpostRegistrationLandingPage() ; //RegistrationManager.getCspInviteURL();
-                  try
-                  {
-                     queryStr = "name="
-                           + URLEncoder.encode(cloudName, "UTF-8")
-                           + "&csp="
-                           + URLEncoder.encode(request.getContextPath()
-                                 .replace("/", "+"), "UTF-8") 
-                           + regSession.getRnQueryString();
-                  } catch (UnsupportedEncodingException e)
-                  {
-                     // TODO Auto-generated catch block
-                     e.printStackTrace();
-                  }
+                  queryStr = this.formatQueryStr(cloudName, regSession.getRnQueryString(), request);
                   statusText = "Congratulations " + cloudName
                         + "! You have successfully purchased dependent clouds.";
                } else
@@ -545,19 +518,7 @@ public class PersonalCloudController
                {
                   // forwardingPage += "/cloudPage";
                   forwardingPage = getRNpostRegistrationLandingPage() ; //RegistrationManager.getCspInviteURL();
-                  try
-                  {
-                     queryStr = "name="
-                           + URLEncoder.encode(cloudName, "UTF-8")
-                           + "&csp="
-                           + URLEncoder.encode(request.getContextPath()
-                                 .replace("/", "+"), "UTF-8") 
-                           + regSession.getRnQueryString();
-                  } catch (UnsupportedEncodingException e)
-                  {
-                     // TODO Auto-generated catch block
-                     e.printStackTrace();
-                  }
+                  queryStr = this.formatQueryStr(cloudName, regSession.getRnQueryString(), request);
                   statusText = "Congratulations " + cloudName
                         + "! You have successfully purchased giftcodes.";
                } else
@@ -611,10 +572,13 @@ public class PersonalCloudController
       try
       {
          queryStr = "name="
-               + URLEncoder.encode(cloudName, "UTF-8")
-               + "&csp="
+               + URLEncoder.encode(cloudName, "UTF-8");
+         
+          queryStr += "&csp="
                + URLEncoder.encode(request.getContextPath().replace("/", "+"),
-                     "UTF-8") + "&inviter=" + URLEncoder.encode(cloudName, "UTF-8");
+                     "UTF-8");
+         
+         queryStr += "&inviter=" + URLEncoder.encode(cloudName, "UTF-8");
       } catch (UnsupportedEncodingException e1)
       {
          // TODO Auto-generated catch block
@@ -748,19 +712,7 @@ public class PersonalCloudController
       // String forwardingPage = request.getContextPath();
       String method = "post";
       String queryStr = "";
-      try
-      {
-         queryStr = "name="
-               + URLEncoder.encode(cloudName, "UTF-8")
-               + "&csp="
-               + URLEncoder.encode(request.getContextPath().replace("/", "+"),
-                     "UTF-8") +  regSession.getRnQueryString();
-      } catch (UnsupportedEncodingException e1)
-      {
-         // TODO Auto-generated catch block
-         e1.printStackTrace();
-      }
-      // check if its a promo
+      queryStr = this.formatQueryStr(cloudName, regSession.getRnQueryString(), request);      // check if its a promo
       // check for valid promo codes in promo_code table
       if (giftCodesVal != null && (giftCodesVal.startsWith("PROMO") || (giftCodesVal.startsWith("promo")))) // &&
                                                                     // txnType.equals(PaymentForm.TXN_TYPE_SIGNUP))
@@ -782,20 +734,7 @@ public class PersonalCloudController
                {
                   // forwardingPage += "/cloudPage";
                   forwardingPage = getRNpostRegistrationLandingPage() ; // RegistrationManager.getCspInviteURL();
-                  try
-                  {
-                     queryStr = "name="
-                           + URLEncoder.encode(cloudName, "UTF-8")
-                           + "&csp="
-                           + URLEncoder.encode(request.getContextPath()
-                                 .replace("/", "+"), "UTF-8") 
-                           + regSession.getRnQueryString();
-                  } catch (UnsupportedEncodingException e1)
-                  {
-                     // TODO Auto-generated catch block
-                     e1.printStackTrace();
-                  }
-
+                  queryStr = this.formatQueryStr(cloudName, regSession.getRnQueryString(), request);
                   statusText = "Congratulations " + cloudName
                         + "! You have successfully purchased a cloudname.";
 
@@ -830,19 +769,7 @@ public class PersonalCloudController
                {
                   // forwardingPage += "/cloudPage";
                   forwardingPage = getRNpostRegistrationLandingPage() ; //RegistrationManager.getCspInviteURL();
-                  try
-                  {
-                     queryStr = "name="
-                           + URLEncoder.encode(cloudName, "UTF-8")
-                           + "&csp="
-                           + URLEncoder.encode(request.getContextPath()
-                                 .replace("/", "+"), "UTF-8") 
-                           + regSession.getRnQueryString();
-                  } catch (UnsupportedEncodingException e)
-                  {
-                     // TODO Auto-generated catch block
-                     e.printStackTrace();
-                  }
+                  queryStr = this.formatQueryStr(cloudName, regSession.getRnQueryString(), request);
                   statusText = "Congratulations " + cloudName
                         + "! You have successfully purchased dependent clouds.";
                   // make an entry in promo_cloud table
@@ -973,19 +900,7 @@ public class PersonalCloudController
                    */
                   // forwardingPage += "/cloudPage";
                   forwardingPage = getRNpostRegistrationLandingPage() ; //RegistrationManager.getCspInviteURL();
-                  try
-                  {
-                     queryStr = "name="
-                           + URLEncoder.encode(cloudName, "UTF-8")
-                           + "&csp="
-                           + URLEncoder.encode(request.getContextPath()
-                                 .replace("/", "+"), "UTF-8") 
-                           + regSession.getRnQueryString();
-                  } catch (UnsupportedEncodingException e)
-                  {
-                     // TODO Auto-generated catch block
-                     e.printStackTrace();
-                  }
+                  queryStr = this.formatQueryStr(cloudName, regSession.getRnQueryString(), request);
                   statusText = "Congratulations " + cloudName
                         + "! You have successfully purchased a cloudname.";
 
@@ -1026,19 +941,7 @@ public class PersonalCloudController
                   {
                      // forwardingPage += "/cloudPage";
                      forwardingPage = getRNpostRegistrationLandingPage() ; //RegistrationManager.getCspInviteURL();
-                     try
-                     {
-                        queryStr = "name="
-                              + URLEncoder.encode(cloudName, "UTF-8")
-                              + "&csp="
-                              + URLEncoder.encode(request.getContextPath()
-                                    .replace("/", "+"), "UTF-8") 
-                              + regSession.getRnQueryString();
-                     } catch (UnsupportedEncodingException e)
-                     {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                     }
+                     queryStr = this.formatQueryStr(cloudName, regSession.getRnQueryString(), request);
                      statusText = "Congratulations "
                            + cloudName
                            + "! You have successfully purchased dependent clouds.";
@@ -1495,6 +1398,27 @@ public class PersonalCloudController
       
          regSession.setGiftCode(null);
       }
+   }
+   public String formatQueryStr(String cloudName , String rnQueryString , HttpServletRequest request)
+   {
+      String queryStr = "";;
+      try
+      {
+         queryStr = "name="
+               + URLEncoder.encode(cloudName, "UTF-8");
+         if(regSession.getRnQueryString().indexOf("csp=") < 0)
+         {
+            queryStr += "&csp="
+                        + URLEncoder.encode(request.getContextPath()
+                        .replace("/", "+"), "UTF-8");
+         }
+         queryStr += regSession.getRnQueryString();
+      } catch (UnsupportedEncodingException e)
+      {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+      }
+      return queryStr;
    }
 
 }
