@@ -1,6 +1,8 @@
 package net.respectnetwork.csp.application.controller;
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -135,7 +137,14 @@ public class PersonalCloudInviteController
           //ignore the "name" parameter. Capture rest of it
             if(!paramName.equalsIgnoreCase(RegistrationController.URL_PARAM_NAME_REQ_CLOUDNAME))
             {
-               rnQueryString = rnQueryString + "&" + paramName + "=" + paramValues[i];
+               try
+               {
+                  rnQueryString = rnQueryString + "&" + paramName + "=" + URLEncoder.encode(paramValues[i], "UTF-8");
+               } catch (UnsupportedEncodingException e)
+               {
+                  // TODO Auto-generated catch block
+                  e.printStackTrace();
+               }
             }
          }
       }

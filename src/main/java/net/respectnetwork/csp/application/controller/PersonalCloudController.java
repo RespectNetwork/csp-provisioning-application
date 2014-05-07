@@ -489,7 +489,7 @@ public class PersonalCloudController
                            + URLEncoder.encode(cloudName, "UTF-8")
                            + "&csp="
                            + URLEncoder.encode(request.getContextPath()
-                                 .replace("/", "+"), "UTF-8") + "&"
+                                 .replace("/", "+"), "UTF-8") 
                            + regSession.getRnQueryString();
 
                   } catch (UnsupportedEncodingException e)
@@ -520,7 +520,7 @@ public class PersonalCloudController
                            + URLEncoder.encode(cloudName, "UTF-8")
                            + "&csp="
                            + URLEncoder.encode(request.getContextPath()
-                                 .replace("/", "+"), "UTF-8") + "&"
+                                 .replace("/", "+"), "UTF-8") 
                            + regSession.getRnQueryString();
                   } catch (UnsupportedEncodingException e)
                   {
@@ -551,7 +551,7 @@ public class PersonalCloudController
                            + URLEncoder.encode(cloudName, "UTF-8")
                            + "&csp="
                            + URLEncoder.encode(request.getContextPath()
-                                 .replace("/", "+"), "UTF-8") + "&"
+                                 .replace("/", "+"), "UTF-8") 
                            + regSession.getRnQueryString();
                   } catch (UnsupportedEncodingException e)
                   {
@@ -754,7 +754,7 @@ public class PersonalCloudController
                + URLEncoder.encode(cloudName, "UTF-8")
                + "&csp="
                + URLEncoder.encode(request.getContextPath().replace("/", "+"),
-                     "UTF-8") + "&" + regSession.getRnQueryString();
+                     "UTF-8") +  regSession.getRnQueryString();
       } catch (UnsupportedEncodingException e1)
       {
          // TODO Auto-generated catch block
@@ -788,7 +788,7 @@ public class PersonalCloudController
                            + URLEncoder.encode(cloudName, "UTF-8")
                            + "&csp="
                            + URLEncoder.encode(request.getContextPath()
-                                 .replace("/", "+"), "UTF-8") + "&"
+                                 .replace("/", "+"), "UTF-8") 
                            + regSession.getRnQueryString();
                   } catch (UnsupportedEncodingException e1)
                   {
@@ -836,7 +836,7 @@ public class PersonalCloudController
                            + URLEncoder.encode(cloudName, "UTF-8")
                            + "&csp="
                            + URLEncoder.encode(request.getContextPath()
-                                 .replace("/", "+"), "UTF-8") + "&"
+                                 .replace("/", "+"), "UTF-8") 
                            + regSession.getRnQueryString();
                   } catch (UnsupportedEncodingException e)
                   {
@@ -979,7 +979,7 @@ public class PersonalCloudController
                            + URLEncoder.encode(cloudName, "UTF-8")
                            + "&csp="
                            + URLEncoder.encode(request.getContextPath()
-                                 .replace("/", "+"), "UTF-8") + "&"
+                                 .replace("/", "+"), "UTF-8") 
                            + regSession.getRnQueryString();
                   } catch (UnsupportedEncodingException e)
                   {
@@ -1032,7 +1032,7 @@ public class PersonalCloudController
                               + URLEncoder.encode(cloudName, "UTF-8")
                               + "&csp="
                               + URLEncoder.encode(request.getContextPath()
-                                    .replace("/", "+"), "UTF-8") + "&"
+                                    .replace("/", "+"), "UTF-8") 
                               + regSession.getRnQueryString();
                      } catch (UnsupportedEncodingException e)
                      {

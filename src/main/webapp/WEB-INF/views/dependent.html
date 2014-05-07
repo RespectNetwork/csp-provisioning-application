@@ -80,6 +80,7 @@
       <div class="span5" >		
 			<br/><span style="color:red" th:text="${error}"></span><br/>      	
 	      <p class="primaryLeftJustified">Add clouds for my dependents </p>
+			<br></br><span class="error"  name="duplicateCloudName" id="duplicateCloudName"></span>	      
 	      	<p class="payment3">Dependent's cloud name:</p>                           
           <form action="#"  th:object="${dependentForm}" th:action="@{/dependentSubmit}" method="post">
       		<div id="allDependents">
@@ -164,6 +165,9 @@
                     $(messageSpan).html("This cloud name is INVALID");
                     $(messageSpan).css('color', 'red');
                 }
+				if(window.mycounter != undefined) {
+  					checkIfCloudNamesAreUnique();
+				}
 	        	
 	            
 	        },
@@ -181,6 +185,39 @@
 				
 	    }); 
 	}
+    function getAllCloudNames() {
+         var cNameList = [];
+         cNameList.push($("#dependentCloudName").val());
+ 
+             var i=1;
+             var validDate = true;
+             while(i<=window.mycounter) {
+                 cNameList.push($("#dependentCloudName" + window.mycounter).val());
+                 i++;
+             }
+ 
+         return cNameList;
+     }
+ 
+     function checkIfCloudNamesAreUnique() {
+         var arr = getAllCloudNames();
+         var map = {}, i, size;
+ 
+         var retVal = null;
+         for (i = 0, size = arr.length; i < size; i++){
+             if (map[arr[i]]){
+                 document.getElementById('submit').disabled = true;
+                 retVal = "Cloud names cannot be duplicate.";
+                 break;
+             }
+             map[arr[i]] = true;
+         }
+         $("#duplicateCloudName").html(retVal);
+         $("#duplicateCloudName").css('color', 'red');
+         if(retVal == null) {
+             document.getElementById('submit').disabled = false;
+         }
+     }		
     checkCloudNameAvailability("dependentCloudName", "isAvailable");
 
     $("#addAnotherDependent").click(function(){
