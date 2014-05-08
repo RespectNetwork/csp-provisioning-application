@@ -248,7 +248,7 @@ public class PersonalCloudDependentController
       {
          mv = new ModelAndView("dependent");
          mv.addObject("cspModel", cspModel);
-         
+         dependentForm.setNameAvailabilityCheckURL(theManager.getNameAvailabilityCheckURL());
          model.addAttribute("dependentForm", dependentForm);
          model.addAttribute("cloudName", cloudName);
          mv.addObject("cspModel", cspModel);
@@ -267,6 +267,7 @@ public class PersonalCloudDependentController
          mv = new ModelAndView("dependent");
          mv.addObject("error", errorStr);
          mv.addObject("cspModel", cspModel);
+         dependentForm.setNameAvailabilityCheckURL(theManager.getNameAvailabilityCheckURL());
          model.addAttribute("dependentForm", dependentForm);
          model.addAttribute("cloudName", cloudName);
          mv.addObject("cspModel", cspModel);

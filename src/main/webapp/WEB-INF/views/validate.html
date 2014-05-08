@@ -61,7 +61,7 @@
 						<input type="text" name="smsCode"  class="inputFields smallTop" id="smsCode" placeholder="text code" onFocus="clearText(this)" onBlur="clearText(this.className = 'onblurtext smallTop')" />
              			<p class="secondary"> <span th:text="|Sent to ${verifyingPhone}|">Sent to</span></p>
      					
-     				<p class="secondary"> <input type="checkbox" name="terms"  required="required" /> &nbsp;
+     				<p class="secondary"> <input type="checkbox" name="terms" /> &nbsp;
      				I agree to the <a target="_blank"  onclick="return windowpop(this.href, 545, 433);" href="http://openidentityexchange.org/trust-frameworks/respect-trust-framework" >Respect Trust Framework</a>
      				<!-- <a target="_blank" onclick="return windowpop(this.href, 545, 433); " th:href="@{/respectTrustFramework}" >Respect Trust Framework</a> --> 
      				and the one-person one-account rule.</p>

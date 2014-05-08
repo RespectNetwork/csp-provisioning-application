@@ -912,8 +912,9 @@ public class RegistrationManager {
                (password.charAt(i) ==  '<') ||
                (password.charAt(i) ==  '>') ||
                (password.charAt(i) ==  '?') ||
-               (password.charAt(i) ==  ',') ||
+               //(password.charAt(i) ==  ',') || //treats "," as a delimiter !
                (password.charAt(i) ==  '.') ||
+               (password.charAt(i) ==  '&') ||
                (password.charAt(i) ==  '/') 
                )
          {

@@ -175,30 +175,32 @@ public class PersonalCloudController
       boolean errors = false;
       logger.info("Cloudname from request parameter "
             + request.getParameter("cloudname"));
-      if (request.getParameter("cloudname") == null)
+      String cName = request.getParameter("cloudname");
+      if (cName == null)
+      {
+         cName = regSession.getCloudName();
+         if(cName == null) {
+            return processLogout(request, model);
+         }
+      }
+
+      if (!cName.startsWith("="))
+      {
+         cName = "=" + cName;
+      }
+      
+      if(cName != null && regSession.getCloudName() != null && !cName.equalsIgnoreCase(regSession.getCloudName()))
       {
          return processLogout(request, model);
       }
-      
-		String cName = request.getParameter("cloudname");
-
+		
 	  if(!RegistrationManager.validateCloudName(cName) ) {
           errors = true;
           errorText = RegistrationManager.validINameFormat;
       }
 
       if(errors == false) {
-      if (request.getParameter("cloudname") != null)
-      {
          cloudName = CloudName.create(cName);
-      } else if (regSession.getCloudName() != null)
-      {
-         cloudName = CloudName.create(regSession.getCloudName());
-      }
-      if (cloudName == null)
-      {
-         return processLogout(request, model);
-      }
       logger.info("Logging in for cloudname " + cloudName.toString());
       net.respectnetwork.sdk.csp.CSP myCSP = registrationManager
             .getCspRegistrar();
@@ -240,7 +242,7 @@ public class PersonalCloudController
                   logger.info("Setting cloudname as  " + cloudName);
                   if (request.getParameter("cloudname") != null)
                   {
-                     regSession.setCloudName(request.getParameter("cloudname"));
+                     regSession.setCloudName(cName);
                   }
                   // logger.info("Setting secret token as  " +
                   // request.getParameter("secrettoken"));
@@ -274,7 +276,7 @@ public class PersonalCloudController
 			   errorText += "Invalid User/Password.";
                errors = true;
 			   logger.info("Authenticating to personal cloud failed for "
-                       + request.getParameter("cloudname"));
+                       + cloudName);
             }
          } catch (Xdi2ClientException e)
          {
@@ -283,7 +285,7 @@ public class PersonalCloudController
             errors = true;
 			errorText += "Invalid User/Password.";
             logger.debug("Authenticating to personal cloud failed for "
-                  + request.getParameter("cloudname"));
+                  + cloudName);
          }
 
       } else

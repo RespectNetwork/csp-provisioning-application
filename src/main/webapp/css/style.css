@@ -176,6 +176,10 @@
 	margin-top: 30px;
 }
 
+.ccTop {
+	margin-top: 30px;
+}
+
 .bigTop {
 	margin-top: 50px;
 }
@@ -206,8 +210,8 @@
 
 .middle2 {
 	font-size: 24px;
-	padding: 25px 0 75px;
-	height: 400px;
+	padding: 0px 0 75px;
+	height: 550px;
 }
 
 
@@ -353,8 +357,21 @@
 	-webkit-border-radius: 5px; /* Safari, Chrome */
 	-khtml-border-radius: 5px; /* KHTML */
 	border-radius: 5px; /* CSS3 */
-	height: 55px;
-	width: 425px;
+	height: 50px;
+	width: 280px;
+	font-size: 24px;
+	color: #b6b6b6;
+	text-align: center;
+	margin-top: 10px;
+}
+
+.ccField {
+	-moz-border-radius:5px; /* Firefox */
+	-webkit-border-radius: 5px; /* Safari, Chrome */
+	-khtml-border-radius: 5px; /* KHTML */
+	border-radius: 5px; /* CSS3 */
+	height: 60px;
+	width: 120px;
 	font-size: 24px;
 	color: #b6b6b6;
 	text-align: center;
@@ -366,10 +383,11 @@
 	-webkit-border-radius: 5px; /* Safari, Chrome */
 	-khtml-border-radius: 5px; /* KHTML */
 	border-radius: 5px; /* CSS3 */
-	height: 55px;
-	width: 425px;
+	height: 50px;
+	width: 280px;
 	font-size: 24px;
 	text-align: center;
+	margin-top: 10px;
 }	
 
 
@@ -566,7 +584,7 @@ textarea {
 		width: 300px;
 	}
 
-.inputFields {
+	.inputFields {
 		width:300px;
 		height:35px;
 		font-size: 20px;
@@ -583,23 +601,34 @@ textarea {
 		width: 300px;
 		font-size: 20px;
 	}
-		.phoneField {
-		height: 45px;
-		width: 315px;
-		font-size: 20px;
-	}
+
 	.onblurtext {
 		height: 35px;
 		width: 300px;
 		font-size: 24px;
 	}	
-
+	
+	.phoneField {
+		height: 35px;
+		width: 200px;
+		font-size: 20px;
+	}
 	.onblurtextPhone {
-		height: 45px;
-		width: 315px;
+		height: 35px;
+		width: 200px;
 		font-size: 24px;
 	}	
 
+	.ccField {
+		height: 45px;
+		width: 100px;
+		font-size: 20px;
+	}
+
+	.smallMarg {
+		margin-top: 10px;
+	}
+	
 	.primary {
 		margin: 30 0 30px;
 	}
@@ -716,11 +745,21 @@ textarea {
 		font-size: 14px;
 	}
 	.phoneField {
-		height: 35px;
-		width: 240px;
+		height: 25px;
+		width: 180px;
 		font-size: 14px;
 	}
+	.onblurtextPhone {
+		height: 35px;
+		width: 200px;
+		font-size: 24px;
+	}	
 
+	.ccField {
+		height: 35px;
+		width: 60px;
+		font-size: 14px;
+	}
 	.onblurtext {
 		height: 25px;
 		width: 240px;
@@ -728,7 +767,7 @@ textarea {
 	}	
 	.onblurtextPhone {
 		height: 35px;
-		width: 250px;
+		width: 180px;
 		font-size: 14px;
 	}	
 
@@ -780,8 +819,16 @@ textarea {
 		margin-top: 0px;
 	}
 	
+	.ccTop {
+		margin-top: 0px;
+	}
+	
 	.button {
 		height:32px;
+	}
+	
+	.smallMarg {
+		margin-top: 10px;
 	}
 	
 	.big {
@@ -849,11 +896,6 @@ textarea {
 		height: 35px;
 		margin-top: 10px;
 	}
-	
-	.phoneField {
-		height: 40px;
-		width: 210px;
-	}
 
 	.cspLogo {
 		background-image:url("../img/csp_logo_sm.png"); 
@@ -876,10 +918,15 @@ textarea {
 		width: 180px;
 		font-size: 14px;
 	}
+	.smallTop {
+		margin-top: 0px;
+		width: 250px;
+		height: 30px;
+	}
 
 	.phoneField {
 		height: 35px;
-		width: 200px;
+		width: 175px;
 		font-size: 14px;
 	}
 
@@ -890,7 +937,7 @@ textarea {
 	}	
 	.onblurtextPhone {
 		height: 35px;
-		width: 200px;
+		width: 175px;
 		font-size: 14px;
 	}	
 
@@ -898,6 +945,12 @@ textarea {
 		font-size:14px;
 		margin: 0px;
 		text-align: left;
+	}
+
+	.ccField {
+		height: 45px;
+		width: 75px;
+		font-size: 14px;
 	}
 
 	.mung {
@@ -943,10 +996,9 @@ textarea {
   	padding-top:25px;
 	}
 	
-	.smallTop {
-		margin-top: 0px;
-		width: 250px;
-		height: 30px;
+	
+	.ccTop {
+		margin: 0px;
 	}
 	
 	.bigTop{

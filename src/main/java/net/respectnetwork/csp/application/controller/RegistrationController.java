@@ -162,6 +162,7 @@ public class RegistrationController
       boolean errors = false;
 
       String cloudName = signUpForm.getCloudName();
+      
       String inviteCode = signUpForm.getInviteCode();
       String giftCode = signUpForm.getGiftCode();
 
@@ -174,6 +175,10 @@ public class RegistrationController
       if (cloudName != null)
       {
          // Start Check that the Cloud Number is Available.
+         if(!cloudName.startsWith("="))
+         {
+            cloudName = "=" + cloudName; 
+         }
          try
          {
             if (theManager.isRequireInviteCode()
@@ -291,11 +296,11 @@ public class RegistrationController
               errors = true;
               return mv;
           }
-           if(!RegistrationManager.validatePhoneNumber(userDetailsForm.getMobilePhone()))
+           if(!RegistrationManager.validatePhoneNumber(userDetailsForm.getPhone()))
            {
               String errorStr = "Invalid Phone Number. Please provide the phone number like this pattern +CCC.NNNNNNNNNNxEEEE";
               logger.debug("Invalid Phone Number entered..."
-                      + userDetailsForm.getMobilePhone());
+                      + userDetailsForm.getPhone());
               mv.addObject("error", errorStr);
               errors = true;
               return mv;  
@@ -309,9 +314,18 @@ public class RegistrationController
               errors = true;
               return mv;  
            }
+           if(!userDetailsForm.getPassword().equals(userDetailsForm.getConfirmPassword()))
+           {
+              String errorStr = "Password and confirm password fields do not match.";
+              logger.debug("Password and confirm password fields do not match"
+                      + userDetailsForm.getPassword() + ":" + userDetailsForm.getConfirmPassword());
+              mv.addObject("error", errorStr);
+              errors = true;
+              return mv;
+           }
             CloudNumber[] existingUsers = theManager
                   .checkEmailAndMobilePhoneUniqueness(
-                        userDetailsForm.getMobilePhone(),
+                        userDetailsForm.getPhone(),
                         userDetailsForm.getEmail());
             
             if (existingUsers[0] != null)
@@ -320,7 +334,7 @@ public class RegistrationController
                String errorStr = "Phone number has already been used for a cloud name";
                mv.addObject("error", errorStr);
                logger.debug("Phone {} already used by {}",
-                     userDetailsForm.getMobilePhone(), existingUsers[0]);
+                     userDetailsForm.getPhone(), existingUsers[0]);
                errors = true;
             }
             if (existingUsers[1] != null)
@@ -358,7 +372,7 @@ public class RegistrationController
          try
          {
             theManager.sendValidationCodes(sessionId,
-                  userDetailsForm.getEmail(), userDetailsForm.getMobilePhone());
+                  userDetailsForm.getEmail(), userDetailsForm.getPhone());
          } catch (CSPValidationException e)
          {
             String errorStr = "System Error sending validation messages. Please check email and mobile phone number.";
@@ -375,13 +389,13 @@ public class RegistrationController
          mv.addObject("validateInfo", validateForm);
          mv.addObject("cloudName", regSession.getCloudName());
          mv.addObject("verifyingEmail", userDetailsForm.getEmail());
-         mv.addObject("verifyingPhone", userDetailsForm.getMobilePhone());
+         mv.addObject("verifyingPhone", userDetailsForm.getPhone());
 
          // Add CloudName/ Email / Password and Phone to Session
 
          logger.debug("Setting verified email " + regSession.getVerifiedEmail());
          regSession.setVerifiedEmail(userDetailsForm.getEmail());
-         regSession.setVerifiedMobilePhone(userDetailsForm.getMobilePhone());
+         regSession.setVerifiedMobilePhone(userDetailsForm.getPhone());
          regSession.setPassword(userDetailsForm.getPassword());
       }
 

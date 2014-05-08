@@ -53,18 +53,24 @@
       <div class="bodyContainer">
       			
 				<div class="middle2"> Email and phone verification is required to secure <br/>your cloud name in the Respect Network.
-					<br/><span style="color:red" class="error" th:text="${error}"></span><br/>
+					<br/><span style="color:red" class="error" th:text="${error}"></span>
  			<form action="#" th:object="${userInfo}" th:action="@{/processuserdetails}" method="post">
  				
 				<input type="text" class="inputFields smallTop" name="email"  id="email" placeholder="email address" required="required" onFocus="clearText(this)" onBlur="clearText(this.className = 'onblurtext smallTop')" th:value="*{email}" />
-				<p><input type="text" class="phoneField smallTop" name="mobilePhone" id="mobilePhone" placeholder="mobile: +ccc.nnnnnnnnnn" required="required"
-                                onFocus="clearText(this)" onBlur="clearText(this.className = 'onblurtextPhone smallTop')" th:value="*{mobilePhone}" />
+				
+				<p><input type="text" class="ccField ccTop" name="cc" id="cc" placeholder=" " required="required"  th:value="*{cc}" />
+           <input type="text" class="phoneField" name="mobilePhone" id="mobilePhone" placeholder="mobile: nnnnnnnnnn" required="required"
+                                onFocus="clearText(this)" onBlur="clearText(this.className = 'onblurtextPhone smallTop')" th:value="*{mobilePhone}" />                     
       	</p>
 				<p class="secondary">Create a password for logging into your personal cloud:<br />min 8 char with 2 digits, 2 letters and 1 symbol e.g. @,#,$
 					</p>
-					<p class="secondary"><input type="password"  class="inputFields smallMarg" name="password" value="" id="password" placeholder="password" required="required"
+					<p class="secondary"><input type="password"  class="inputFields smallMarg" name="password" value="" id="password" placeholder="create password" required="required"
+                                onFocus="clearText(this)" onBlur="clearText(this.className = 'onblurtext smallMarg')"  />
+    		<br /><input type="password"  class="inputFields smallMarg" name="confirmPassword" value="" id="confirmPassword" placeholder="confirm password" required="required"
                                 onFocus="clearText(this)" onBlur="clearText(this.className = 'onblurtext smallMarg')"  />
     		</p>
+			<div id="responseDiv" class="error" style="color:red"></div>
+			
 				<p><input type="submit" class="button" value="Submit" />
 				</p>
 						</form>
@@ -78,26 +84,17 @@
     <div class="span10 cspMain">YOUR CLOUD SERVICE PROVIDER | <img src="img/csp_logo.png" /> &nbsp;
 		</div>
 	</div>
-<!--  <div class="row-fluid">
-  	<div class="span1"></div>
-  	<div class="span3">
-  		<div id="help"><a target="_blank" onclick="return windowpop(this.href, 545, 433); " th:href="@{/help}">Help</a>
-				</div>
-		</div>
-		<div class="span6"></div>
-	</div>
--->
+
 </div>
 
     <!-- Javascript
     ================================================== -->
 		
 		<script src="js/libs/intlTelInput.min.js"></script>
+		<script src="js/libs/data.js"></script>		
 
 <script>
-  $("#mobilePhone").intlTelInput();
+  $("#cc").intlTelInput();
 </script>
-
-
 </body>
 </html>

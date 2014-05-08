@@ -20,7 +20,7 @@
   		#maincontent .col { background: #fff; }
       	</style>
     -->
-	
+
 
 <!-- Responsive Stylesheets -->
     <link href="css/bootstrap.css" rel="stylesheet" />
@@ -31,8 +31,8 @@
 
 <link href="https://s3.amazonaws.com/rnfonts/demo.css" rel="stylesheet" type="text/css" />
 
-	
-					
+
+
 
 <!-- Scripts-->	
 <script src="../../js/libs/modernizr-2.0.6.min.js" th:src="@{/js/libs/modernizr-2.0.6.min.js}"></script>
@@ -41,7 +41,7 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 <script src="js/libs/misc.js"> </script>
-	                                  
+
 <script src="js/libs/bootstrap-dropdown.js"></script>
 	<!--include the javascript that checks availability-->
 	<script src="js/libs/nameavailability.js"></script>
@@ -120,11 +120,11 @@
     			<input type="hidden" name="avAPI" value="" id="avAPI" th:value="*{nameAvailabilityCheckURL} + '/api/availability/equals/'"/>      		
  	    	</form>
      	
-	
+
    <script th:inline="javascript">
 	/*<![CDATA[*/
   
-		
+
  $(document).ready(function () {
  
 	function checkCloudNameAvailability(cloudName, isAvailable){
@@ -136,53 +136,60 @@
  		// that will be used to convey information to the user
 		var messageSpan = "#"+isAvailable;
  		
-			
-	
+
+
 	    $(cloudnameField).checkCloud({
 	        completed: function(elem, success) {
-	        	
+
 	        	// success var will contain a 1 if the name is available
 	        	// and 0 if it not available.
-	        	
-	        	console.log('Checking cloud...');
-	            console.log(success);
-	        	
+
+                if(window.console) {
+                    console.log('Checking cloud...');
+                    console.log(success);
+                }
+
 	        	if(success==1)
 	        	{
 	        		// Make whatever changes to the UI to indicate that the name is
 	        		// available
 	        		$(messageSpan).html(" &radic; Your cloud name is available");
 	        		$(messageSpan).css('color', 'green');
-	        		 		      		
+					document.getElementById('submit').disabled = false;		
+					if(window.mycounter != undefined) {
+  						checkIfCloudNamesAreUnique();
+					}
                 }else if(success==0){
                     // Make whatever changes to the UI to indicate that the name is
                     // unavailable
                     $(messageSpan).html("This cloud name is NOT available");
                     $(messageSpan).css('color', 'red');
+					document.getElementById('submit').disabled = true;	
                 }else{
                     // Make whatever changes to the UI to indicate that the name is
                     // unavailable
                     $(messageSpan).html("This cloud name is INVALID");
                     $(messageSpan).css('color', 'red');
+					document.getElementById('submit').disabled = true;		
                 }
-				if(window.mycounter != undefined) {
-  					checkIfCloudNamesAreUnique();
-				}
-	        	
-	            
+				
+
+
 	        },
 	        changed: function(elem) {
 				//Called when user is typing
-	            console.log('Changing cloud...');
+                if(window.console) {
+                    console.log('Changing cloud...');
+                }
 	        },
 	        // indicates if the leading symbol should be removed prior to adding the 
 	        // name to the path
 	        stripSymbol:true, 
-	        
+
 	        // indicates the location of the availability service
-			
-	        availibilityAPI :  $(avAPI).val()
-				
+
+	        availibilityAPI :  document.getElementById("avAPI").value
+
 	    }); 
 	}
     function getAllCloudNames() {
@@ -192,7 +199,10 @@
              var i=1;
              var validDate = true;
              while(i<=window.mycounter) {
-                 cNameList.push($("#dependentCloudName" + window.mycounter).val());
+				 if(document.getElementById('dependent'+ i) != null)
+				 {
+                 	cNameList.push($("#dependentCloudName" + i).val());
+			     }		
                  i++;
              }
  
@@ -215,8 +225,10 @@
          $("#duplicateCloudName").html(retVal);
          $("#duplicateCloudName").css('color', 'red');
          if(retVal == null) {
-             document.getElementById('submit').disabled = false;
+         	$("#duplicateCloudName").text('');
          }
+
+         disableEnableContinue();
      }		
     checkCloudNameAvailability("dependentCloudName", "isAvailable");
 
@@ -231,8 +243,8 @@
       var depIsAvailable = 'isAvailable' +  window.mycounter;
       var isValidDate = 'isValidDate' +  window.mycounter;
 	  var divId = 'dependent'+ window.mycounter;
-	      
-      var strA = '<div id="'+divId+'"><table ><tr><td><p class="payment3">Dependent&apos;s cloud name &nbsp;&nbsp;&nbsp;&nbsp;<a href="#" onclick="removeDiv('+divId+');">Delete Dependent</a></p></td></tr>  <tr> <td> <input type="text" class="inputFields smallMarg" name="' ;
+
+	  var strA = '<div id="'+divId+'"><table ><tr><td><p class="payment3">Dependent&apos;s cloud name &nbsp;&nbsp;&nbsp;&nbsp;<a href="#" onclick="removeDiv('+divId+');">Delete Dependent</a></p></td></tr>  <tr> <td> <input type="text" class="inputFields smallMarg" name="' ;
       var strB = strA + depCloudName ;
       var strC = strB + '"  id="' ;
       var strD = strC +  depCloudName ;
@@ -254,9 +266,44 @@
 });
 function removeDiv(depDiv) {
 
-    console.log('Going to remove ...' + depDiv);   
-	$(depDiv).remove();
+    if(window.console) {
+        console.log('Going to remove ...' + depDiv);
+    }
+    $(depDiv).remove();
 }	
+//Function to disable enable the Continue button.
+//Enable Continue botton, if no error in dependent cloudname and birthdate.
+function disableEnableContinue() {
+    var enableSubmit = true;
+    if($('span#duplicateCloudName').text() != "") {
+        enableSubmit = false;
+    } else {
+        if(window.mycounter == undefined) {
+            if($('span#isValidDate').text() != "") {
+               enableSubmit = false;
+            }
+        } else {
+            var i=0;
+            while(i<=window.mycounter && enableSubmit) {
+                if(i == 0) {
+                    if($('span#isValidDate').text() != "") {
+                        enableSubmit = false;
+                    }
+                } else {
+                    if(($('span#isValidDate'+window.mycounter).text() != "")) {
+                        enableSubmit = false;
+                    }
+                }
+                i++;
+            }
+        }
+    }
+    if(enableSubmit) {
+        document.getElementById('submit').disabled = false;
+    } else {
+        document.getElementById('submit').disabled = true;
+    }
+}
 /*]]>*/
 
 </script>
