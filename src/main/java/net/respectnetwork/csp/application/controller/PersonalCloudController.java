@@ -1347,10 +1347,15 @@ public class PersonalCloudController
       {
          HttpPost httpPost = new HttpPost(latLongPostURL);
          List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+         String payload = "{ newmemberlocations : "
+               + "["
+               + "{ \"latitude\" : " + regSession.getLatitude() + ", \"longitude\" :" +  regSession.getLongitude() +  "}"
+               
+               + "] }";
+
          if(regSession != null)
          {
-            nvps.add(new BasicNameValuePair("lat", regSession.getLatitude()+""));
-            nvps.add(new BasicNameValuePair("long", regSession.getLongitude()+""));
+            nvps.add(new BasicNameValuePair("newmemberlocations", payload));
          }
          httpPost.setEntity(new UrlEncodedFormEntity(nvps));
          CloseableHttpResponse response2 = httpclient.execute(httpPost);
