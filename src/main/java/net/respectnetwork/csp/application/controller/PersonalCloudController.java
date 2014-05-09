@@ -654,12 +654,14 @@ public class PersonalCloudController
                "Please select payment method.");
          logger.debug("No payment method selected.");
          mv.addObject("cspTCURL", this.getRegistrationManager().getCspTCURL());
+         mv.addObject("paymentInfo", paymentForm);
          return mv;
      }
       logger.debug("cspTandC..." + request.getParameter("cspTandC"));
       if(request.getParameter("cspTandC") == null || !request.getParameter("cspTandC").equalsIgnoreCase("on"))
       {
          mv = new ModelAndView("payment");
+         mv.addObject("paymentInfo", paymentForm);
          errors = true;
          mv.addObject(
                "error",
@@ -674,6 +676,7 @@ public class PersonalCloudController
             && (request.getParameter("giftCodes").trim() == null || request.getParameter("giftCodes").trim().isEmpty()))
       {
          mv = new ModelAndView("payment");
+         mv.addObject("paymentInfo", paymentForm);
          errors = true;
          mv.addObject(
                "error",
@@ -696,6 +699,7 @@ public class PersonalCloudController
                "Payment with gift card is not checked. However, a gift code has been provided. Please verify that the gift code is appropriate and a proper payment type is selected.");
          logger.debug("Gift code given but gift code choice is not given.");
          mv.addObject("cspTCURL", this.getRegistrationManager().getCspTCURL());
+         mv.addObject("paymentInfo", paymentForm);
          return mv;
 
       } else {
@@ -710,6 +714,10 @@ public class PersonalCloudController
       DAOFactory dao = DAOFactory.getInstance();
       String giftCodesVal = request.getParameter("giftCodes");
       logger.debug("Giftcodes " + giftCodesVal);
+      if(giftCodesVal == null || giftCodesVal.isEmpty())
+      {
+         regSession.setGiftCode("");
+      }
 
       // String forwardingPage = request.getContextPath();
       String method = "post";
@@ -873,6 +881,7 @@ public class PersonalCloudController
          mv = new ModelAndView("payment");
          mv.addObject("error", errorText);
          mv.addObject("cspTCURL", this.getRegistrationManager().getCspTCURL());
+         mv.addObject("paymentInfo", paymentForm);
          return mv;
       }
 
