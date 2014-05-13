@@ -412,7 +412,7 @@ public class RegistrationManager {
         
     }
     
-    public CloudNumber registerUser(CloudName cloudName, String verifiedPhone, String verifiedEmail, String userPassword , CloudNameDiscountCode cdc) throws CSPRegistrationException, Xdi2ClientException {
+    public CloudNumber registerUser(CloudName cloudName, String verifiedPhone, String verifiedEmail, String userPassword , CloudNameDiscountCode cdc, String paymentType, String paymentRefId) throws CSPRegistrationException, Xdi2ClientException {
         
         
         CloudNumber cloudNumber = CloudNumber.createRandom(cloudName.getCs());
@@ -427,6 +427,8 @@ public class RegistrationManager {
            rut.setVerifiedEmail(verifiedEmail);
            rut.setVerifiedPhone(verifiedPhone);
            rut.setCdc(cdc);
+           rut.setPaymentType(paymentType);
+           rut.setPaymentRefId(paymentRefId);
            Thread t = new Thread(rut);
            t.start();
            
@@ -512,7 +514,7 @@ public class RegistrationManager {
 		this.requireInviteCode = requireInviteCode;
 	}
 	
-	public CloudNumber registerDependent(CloudName guardianCloudName , String guardianToken , CloudName dependentCloudName,  String dependentToken , String s_dependentBirthDate){
+	public CloudNumber registerDependent(CloudName guardianCloudName , String guardianToken , CloudName dependentCloudName,  String dependentToken , String s_dependentBirthDate, String paymentType, String paymentRefId){
 				  CloudNumber depCloudNumber = CloudNumber.createRandom(dependentCloudName.getCs());
 				  
 				  RegisterDependentCloudThread rdct = new RegisterDependentCloudThread();
@@ -524,6 +526,8 @@ public class RegistrationManager {
 				  rdct.setGuardianToken(guardianToken);
 				  rdct.setRcBaseURL(this.getCspRespectConnectBaseURL());
 				  rdct.setS_dependentBirthDate(s_dependentBirthDate);
+				  rdct.setPaymentType(paymentType);
+				  rdct.setPaymentRefId(paymentRefId);
 				  Thread t = new Thread(rdct);
 				  t.start();
 					

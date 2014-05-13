@@ -44,6 +44,8 @@ public class RegisterDependentCloudThread implements Runnable
    private String s_dependentBirthDate = "";
    private CloudName guardianCloudName = null;
    private String guardianToken = "";
+   private String paymentType = "";
+   private String paymentRefId = "";
    
    @Override
    public void run()
@@ -57,6 +59,8 @@ public class RegisterDependentCloudThread implements Runnable
       rut.setUserPassword(dependentToken);
       rut.setVerifiedEmail(" ");
       rut.setVerifiedPhone(" ");
+      rut.setPaymentType(paymentType);
+      rut.setPaymentRefId(paymentRefId);
       rut.setCdc(RegistrationManager.depCloudNameDiscountCode);
       Thread t = new Thread(rut);
       t.start();
@@ -254,4 +258,47 @@ public class RegisterDependentCloudThread implements Runnable
       this.guardianToken = guardianToken;
    }
 
+   /**
+    * Method to get payment type.
+    *
+    * @return paymentType. It could be either giftCode, creditCard or
+    *         promoCode.
+  */
+  public String getPaymentType()
+  {
+      return this.paymentType;
+  }
+
+  /**
+   * Method to set payment type.
+   *
+   * @param paymentType. It could be either of giftCode, creditCard or
+   *         promoCode.
+  */
+  public void setPaymentType( String paymentType )
+  {
+      this.paymentType = paymentType;
+  }
+
+  /**
+   * Method to get payment reference id.
+   *
+   * @return paymemtRefId. It could be either giftcode_id or promo_id or
+   *          payment_id.
+   */
+  public String getPaymentRefId()
+  {
+      return this.paymentRefId;
+  }
+
+  /**
+   * Method to set payment reference id.
+   *
+   * @param paymentRefId. It could be either either giftcode_id or promo_id or
+   *          payment_id.
+  */
+  public void setPaymentRefId( String paymentRefId )
+  {
+      this.paymentRefId = paymentRefId;
+  }
 }

@@ -27,6 +27,7 @@ import net.respectnetwork.csp.application.manager.RegistrationManager;
 import net.respectnetwork.csp.application.manager.SagePayPaymentProcessor;
 import net.respectnetwork.csp.application.manager.StripePaymentProcessor;
 import net.respectnetwork.csp.application.model.*;
+import net.respectnetwork.csp.application.types.PaymentType;
 import net.respectnetwork.csp.application.session.RegistrationSession;
 import net.respectnetwork.sdk.csp.exception.CSPRegistrationException;
 
@@ -481,7 +482,7 @@ public class PersonalCloudController
 
             if (txnType.equals(PaymentForm.TXN_TYPE_SIGNUP))
             {
-               if (this.registerCloudName(cloudName, phone, email, password))
+               if (this.registerCloudName(cloudName, phone, email, password, PaymentType.CreditCard.toString(), payment.getPaymentId()))
                {
                   forwardingPage = getRNpostRegistrationLandingPage() ; //RegistrationManager.getCspInviteURL();
                   queryStr = this.formatQueryStr(cloudName, regSession.getRnQueryString(), request);
@@ -740,7 +741,7 @@ public class PersonalCloudController
          {
             if (txnType.equals(PaymentForm.TXN_TYPE_SIGNUP))
             {
-               if (this.registerCloudName(cloudName, phone, email, password))
+               if (this.registerCloudName(cloudName, phone, email, password, PaymentType.PromoCode.toString() , giftCodesVal))
                {
                   // forwardingPage += "/cloudPage";
                   forwardingPage = getRNpostRegistrationLandingPage() ; // RegistrationManager.getCspInviteURL();
@@ -888,7 +889,7 @@ public class PersonalCloudController
          {
             if (txnType.equals(PaymentForm.TXN_TYPE_SIGNUP))
             {
-               if (this.registerCloudName(cloudName, phone, email, password))
+               if (this.registerCloudName(cloudName, phone, email, password, PaymentType.GiftCode.toString() , giftcode))
                {
                   logger.debug("Going to create the personal cloud now for gift code path...");
                   /*
@@ -1109,13 +1110,27 @@ public class PersonalCloudController
          {
             break;
          }
+         String paymentType = "";
+         String paymentRefId = "";
+         if (payment != null) {
+             paymentType = PaymentType.CreditCard.toString();
+             paymentRefId = payment.getPaymentId();
+         } else if (giftCodes != null && giftCodes.length > 0) {
+             paymentType = PaymentType.GiftCode.toString();
+             paymentRefId = giftCodes[i];
+         } else if(promoCode != null && !promoCode.isEmpty()) {
+             paymentType = PaymentType.PromoCode.toString();
+             paymentRefId = promoCode;
+         }
          logger.debug("Creating dependent cloud for " + dependentCloudName);
          CloudNumber dependentCloudNumber = registrationManager
                .registerDependent(CloudName.create(cloudName),
                      regSession.getPassword(),
                      CloudName.create(dependentCloudName),
                      arrDependentCloudPasswords[i],
-                     arrDependentCloudBirthDates[i]);
+                     arrDependentCloudBirthDates[i],
+                     paymentType,
+                     paymentRefId);
          if (dependentCloudNumber != null)
          {
             logger.info("Dependent Cloud Number "
@@ -1224,12 +1239,12 @@ public class PersonalCloudController
    }
 
    private boolean registerCloudName(String cloudName, String phone,
-         String email, String password)
+         String email, String password, String paymentType, String paymentRefId)
    {
       try
       {
          registrationManager.registerUser(CloudName.create(cloudName), phone,
-               email, password, null);
+               email, password, null, paymentType, paymentRefId);
 
          logger.debug("Sucessfully Registered {}", cloudName);
          return true;

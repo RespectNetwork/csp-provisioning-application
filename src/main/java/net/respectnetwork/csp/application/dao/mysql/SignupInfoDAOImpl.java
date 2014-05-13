@@ -37,6 +37,8 @@ public class SignupInfoDAOImpl extends BaseDAOImpl implements SignupInfoDAO
 	   info.setCloudName(rset.getString    (1));
 	   info.setEmail(rset.getString    (2));
 	   info.setPhone(rset.getString    (3));
+	   info.setPaymentType(rset.getString    (4));
+	   info.setPaymentRefId(rset.getString    (5));
 
 		return info;
 	}
@@ -53,7 +55,7 @@ public class SignupInfoDAOImpl extends BaseDAOImpl implements SignupInfoDAO
 
 		try
 		{
-			sql = "select cloudname , email , phone from signup_info";
+			sql = "select cloudname , email , phone , payment_type, payment_ref_id from signup_info";
 			logger.info(sql);
 			stmt = conn.prepareStatement(sql);
 			rset = stmt.executeQuery();
@@ -105,7 +107,7 @@ public class SignupInfoDAOImpl extends BaseDAOImpl implements SignupInfoDAO
 
 		try
 		{
-			sql = "select cloudname, email , phone  from signup_info where cloudname = ?";
+			sql = "select cloudname, email , phone, payment_type, payment_ref_id from signup_info where cloudname = ?";
 			logger.info(sql + " : " + cloudName);
 			stmt = conn.prepareStatement(sql);
 			stmt.setString(1, cloudName);
@@ -147,13 +149,14 @@ public class SignupInfoDAOImpl extends BaseDAOImpl implements SignupInfoDAO
 
       try
       {
-         sql = "insert into signup_info (cloudname , email , phone) values (?, ?, ?)";
+         sql = "insert into signup_info (cloudname , email , phone, payment_type, payment_ref_id, time_created) values (?, ?, ?, ?, ?, now())";
          logger.info(sql + " : " + signupInfo);
          stmt = conn.prepareStatement(sql);
          stmt.setString(1, signupInfo.getCloudName());
          stmt.setString(2, signupInfo.getEmail());
          stmt.setString(3, signupInfo.getPhone());
-         
+         stmt.setString(4, signupInfo.getPaymentType());
+         stmt.setString(5, signupInfo.getPaymentRefId());
 
          int rows = stmt.executeUpdate();
          if( rows != 1 )
