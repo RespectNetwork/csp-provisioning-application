@@ -3,9 +3,18 @@ Respect Network CSP Reference Implementation
 
 ### Dependencies
 
-XDI2-Client: https://github.com/projectdanube/xdi2/tree/master/client (Version 0.2-SNAPSHOT) 
+XDI2-Client: https://github.com/projectdanube/xdi2/tree/master/client 
 
-SDK-CSP: https://github.com/RespectNetwork/sdk-csp/tree/release-0.1.x (Version 0.1.2) 
+    <xdi2-version>0.3</xdi2-version>
+
+* https://github.com/projectdanube/xdi2/tree/release-0.3
+
+
+SDK-CSP: https://github.com/RespectNetwork/sdk-csp
+
+    <cspsdk-version>0.2.3</cspsdk-version>
+
+https://github.com/RespectNetwork/sdk-csp/tree/v0.2.3
 
 ### How to  Build
 To  build just run
