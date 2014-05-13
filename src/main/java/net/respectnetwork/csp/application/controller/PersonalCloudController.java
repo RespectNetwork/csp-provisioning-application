@@ -748,9 +748,19 @@ public class PersonalCloudController
                   queryStr = this.formatQueryStr(cloudName, regSession.getRnQueryString(), request);
                   statusText = "Congratulations " + cloudName
                         + "! You have successfully purchased a cloudname.";
-
-                  
-
+                  // make an entry in promo_cloud table
+                  PromoCloudModel promoCloud = new PromoCloudModel();
+                  promoCloud.setCloudname(cloudName);
+                  promoCloud.setPromo_id(giftCodesVal.toUpperCase());
+                  promoCloud.setCsp_cloudname(this.getCspCloudName());
+                  try
+                  {
+                     dao.getPromoCloudDAO().insert(promoCloud);
+                  } catch (DAOException e)
+                  {
+                     // TODO Auto-generated catch block
+                     e.printStackTrace();
+                  }
                } else
                {
                   forwardingPage += "/signup";
@@ -771,20 +781,6 @@ public class PersonalCloudController
                   queryStr = this.formatQueryStr(cloudName, regSession.getRnQueryString(), request);
                   statusText = "Congratulations " + cloudName
                         + "! You have successfully purchased dependent clouds.";
-                  // make an entry in promo_cloud table
-                  PromoCloudModel promoCloud = new PromoCloudModel();
-                  promoCloud.setCloudname(cloudName);
-                  promoCloud.setPromo_id(giftCodesVal.toUpperCase());
-                  promoCloud.setCsp_cloudname(this.getCspCloudName());
-                  try
-                  {
-                     dao.getPromoCloudDAO().insert(promoCloud);
-                  } catch (DAOException e)
-                  {
-                     // TODO Auto-generated catch block
-                     e.printStackTrace();
-                  }
-
                }
             } else
             {
