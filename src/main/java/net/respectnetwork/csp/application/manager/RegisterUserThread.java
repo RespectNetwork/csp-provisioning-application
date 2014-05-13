@@ -34,6 +34,8 @@ public class RegisterUserThread implements Runnable
    private String                               verifiedPhone                        = "";
    private String                               verifiedEmail                        = "";
    private String                               userPassword                         = "";
+   private String                               paymentType                          = "";
+   private String                               paymentRefId                         = "";
 
    private CloudNameDiscountCode                cdc                                  = null;
 
@@ -44,6 +46,8 @@ public class RegisterUserThread implements Runnable
       signupInfo.setCloudName(cloudName.toString());
       signupInfo.setEmail(verifiedEmail);
       signupInfo.setPhone(verifiedPhone);
+      signupInfo.setPaymentType(paymentType);
+      signupInfo.setPaymentRefId(paymentRefId);
       
       try
       {
@@ -223,4 +227,47 @@ public class RegisterUserThread implements Runnable
       this.cdc = cdc;
    }
 
+   /**
+    * Method to get payment type.
+    *
+    * @return paymentType. It could be either giftCode, creditCard or
+    *         promoCode.
+  */
+  public String getPaymentType()
+  {
+      return this.paymentType;
+  }
+
+  /**
+   * Method to set payment type.
+   *
+   * @param paymentType. It could be either of giftCode, creditCard or
+   *         promoCode.
+  */
+  public void setPaymentType( String paymentType )
+  {
+      this.paymentType = paymentType;
+  }
+
+  /**
+   * Method to get payment reference id.
+   *
+   * @return paymemtRefId. It could be either giftcode_id or promo_id or
+   *          payment_id.
+   */
+  public String getPaymentRefId()
+  {
+      return this.paymentRefId;
+  }
+
+  /**
+   * Method to set payment reference id.
+   *
+   * @param paymentRefId. It could be either either giftcode_id or promo_id or
+   *          payment_id.
+  */
+  public void setPaymentRefId( String paymentRefId )
+  {
+      this.paymentRefId = paymentRefId;
+  }
 }
