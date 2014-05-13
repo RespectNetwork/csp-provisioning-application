@@ -497,7 +497,7 @@ public class PersonalCloudController
             } else if (txnType.equals(PaymentForm.TXN_TYPE_DEP)) 
             {
                if ((mv = createDependentClouds(cloudName, payment, null,
-                     request)) != null)
+                     "",request)) != null)
                {
                   // forwardingPage += "/cloudPage";
                   forwardingPage = getRNpostRegistrationLandingPage() ; //RegistrationManager.getCspInviteURL();
@@ -748,19 +748,7 @@ public class PersonalCloudController
                   statusText = "Congratulations " + cloudName
                         + "! You have successfully purchased a cloudname.";
 
-                  // make an entry in promo_cloud table
-                  PromoCloudModel promoCloud = new PromoCloudModel();
-                  promoCloud.setCloudname(cloudName);
-                  promoCloud.setPromo_id(giftCodesVal.toUpperCase());
-                  promoCloud.setCsp_cloudname(this.getCspCloudName());
-                  try
-                  {
-                     dao.getPromoCloudDAO().insert(promoCloud);
-                  } catch (DAOException e)
-                  {
-                     // TODO Auto-generated catch block
-                     e.printStackTrace();
-                  }
+                  
 
                } else
                {
@@ -771,7 +759,7 @@ public class PersonalCloudController
             
          } else if (txnType.equals(PaymentForm.TXN_TYPE_DEP))
          {
-            if ((mv = createDependentClouds(cloudName, null, null, request)) != null)
+            if ((mv = createDependentClouds(cloudName, null, null, giftCodesVal.toUpperCase(),request)) != null)
             {
                if (mv.getViewName().equals("dependentDone")) // all dependents
                                                              // have been paid
@@ -943,7 +931,7 @@ public class PersonalCloudController
             } else if (txnType.equals(PaymentForm.TXN_TYPE_DEP))
             {
                if ((mv = createDependentClouds(cloudName, null, giftCodes,
-                     request)) != null)
+                     "",request)) != null)
                {
                   if (mv.getViewName().equals("dependentDone")) // all
                                                                 // dependents
@@ -1073,7 +1061,7 @@ public class PersonalCloudController
    }
 
    private ModelAndView createDependentClouds(String cloudName,
-         PaymentModel payment, String[] giftCodes, HttpServletRequest request)
+         PaymentModel payment, String[] giftCodes, String promoCode , HttpServletRequest request)
    {
       ModelAndView mv = null;
       boolean errors = false;
@@ -1105,14 +1093,17 @@ public class PersonalCloudController
       int i = 0;
       for (String dependentCloudName : arrDependentCloudName)
       {
-         if (giftCodes != null && i == giftCodes.length)
+         if(promoCode == null || promoCode.isEmpty())
          {
-            break;
-         }
-         if (i < cloudsPurchasedWithGiftCodes)
-         {
-            i++;
-            continue;
+            if (giftCodes != null && i == giftCodes.length)
+            {
+               break;
+            }
+            if (i < cloudsPurchasedWithGiftCodes)
+            {
+               i++;
+               continue;
+            }
          }
          if (i >= arrDependentCloudName.length)
          {
@@ -1137,6 +1128,23 @@ public class PersonalCloudController
             {
                PersonalCloudDependentController.saveDependent(
                      dependentCloudName, null, cloudName, giftCodes[i]);
+            } else if(promoCode != null && !promoCode.isEmpty())
+            {
+               PersonalCloudDependentController.saveDependent(
+                     dependentCloudName, null, cloudName, promoCode);
+               // make an entry in promo_cloud table
+               PromoCloudModel promoCloud = new PromoCloudModel();
+               promoCloud.setCloudname(dependentCloudName);
+               promoCloud.setPromo_id(promoCode);
+               promoCloud.setCsp_cloudname(this.getCspCloudName());
+               try
+               {
+                  dao.getPromoCloudDAO().insert(promoCloud);
+               } catch (DAOException e)
+               {
+                  // TODO Auto-generated catch block
+                  e.printStackTrace();
+               }     
             }
          } else
          {
