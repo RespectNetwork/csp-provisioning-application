@@ -98,6 +98,9 @@ create table  signup_info
 (	cloudname	varchar(255)	not null
 ,	email	varchar(128)	
 ,	phone		varchar(36)	
+,   payment_type VARCHAR(16) 
+,   payment_ref_id VARCHAR(64)
+,   time_created  datetime
 ,	primary key (cloudname)
 );
 
