@@ -7,8 +7,7 @@
 *.war
 *.ear
 /target
-
-src/main/webapp/img/csp_logo.png
+/src/main/resources
 
 # IntelliJ project files
 .idea
