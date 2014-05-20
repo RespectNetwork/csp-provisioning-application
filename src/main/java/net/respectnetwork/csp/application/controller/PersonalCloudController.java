@@ -1073,11 +1073,12 @@ public class PersonalCloudController
       {
          return null;
       }
-      ArrayList<String> arrDependentCloudName = dependentForm.getDependentCloudName();
-      ArrayList<String> arrDependentCloudPasswords = dependentForm
-            .getDependentCloudPassword();
-      ArrayList<String> arrDependentCloudBirthDates = dependentForm
-            .getDependentBirthDate();
+      String[] arrDependentCloudName = dependentForm.getDependentCloudName()
+            .split(",");
+      String[] arrDependentCloudPasswords = dependentForm
+            .getDependentCloudPassword().split(",");
+      String[] arrDependentCloudBirthDates = dependentForm
+            .getDependentBirthDate().split(",");
 
       int cloudsPurchasedWithGiftCodes = 0;
       if (payment != null) // payment via CC
@@ -1105,7 +1106,7 @@ public class PersonalCloudController
                continue;
             }
          }
-         if (i >= arrDependentCloudName.size())
+         if (i >= arrDependentCloudName.length)
          {
             break;
          }
@@ -1126,8 +1127,8 @@ public class PersonalCloudController
                .registerDependent(CloudName.create(cloudName),
                      regSession.getPassword(),
                      CloudName.create(dependentCloudName),
-                     arrDependentCloudPasswords.get(i),
-                     arrDependentCloudBirthDates.get(i),
+                     arrDependentCloudPasswords[i],
+                     arrDependentCloudBirthDates[i],
                      paymentType,
                      paymentRefId);
          if (dependentCloudNumber != null)
@@ -1191,7 +1192,7 @@ public class PersonalCloudController
          }
          i++;
       }
-      if (i < arrDependentCloudName.size())
+      if (i < arrDependentCloudName.length)
       {
          mv = new ModelAndView("creditCardPayment");
          /*
