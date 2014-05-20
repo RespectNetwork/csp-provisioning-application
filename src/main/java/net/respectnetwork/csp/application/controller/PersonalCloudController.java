@@ -608,6 +608,21 @@ public class PersonalCloudController
       ModelAndView mv = null;
       PaymentForm paymentForm = new PaymentForm(paymentFormIn);
 
+      CSPModel cspModel = null;
+      try
+      {
+         cspModel = DAOFactory.getInstance().getCSPDAO()
+               .get(this.getCspCloudName());
+         if(cspModel.getPaymentGatewayName().equals("GIFT_CODE_ONLY"))
+         {
+            paymentForm.setGiftCodesOnly(true);
+         }
+      } catch (DAOException e)
+      {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+      }
+
       String cloudName = regSession.getCloudName();
       String sessionIdentifier = regSession.getSessionId();
       String email = regSession.getVerifiedEmail();
@@ -993,17 +1008,6 @@ public class PersonalCloudController
          logger.debug("Going to show the CC payment screen now.");
          mv = new ModelAndView("creditCardPayment");
          String cspHomeURL = request.getContextPath();
-         CSPModel cspModel = null;
-
-         try
-         {
-            cspModel = DAOFactory.getInstance().getCSPDAO()
-                  .get(this.getCspCloudName());
-         } catch (DAOException e)
-         {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-         }
 
          BigDecimal amount = regSession.getCostPerCloudName().multiply(
                new BigDecimal(paymentForm.getNumberOfClouds()));
