@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Required;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -145,6 +146,16 @@ public class RegistrationController
    {
       this.regSession = regSession;
    }
+    /**
+     * Flag to check if referer required or not to register
+     */
+    @Value("${csp.refererRequired}")
+    private String refererRequired;
+    /**
+     * Referer URL
+     */
+    @Value("${csp.refererURL}")
+    private String refererURL;
 
    /**
     * Initial Sign-Up Page
@@ -605,6 +616,15 @@ public class RegistrationController
       ModelAndView mv = null;
       String rnQueryString = "";
       //SignUpForm signUpForm = new SignUpForm();
+      logger.debug("Referer URL " + request.getHeader("referer"));
+      // check for referer URL and if it does not match with the configured
+      // one in the
+      // properties, then re-direct  to referer URL mentioned in the config file.
+      if (Boolean.parseBoolean(refererRequired)
+              && (request.getHeader("referer") == null || !request.getHeader(
+                      "referer").equals(refererURL))) {
+            return new ModelAndView("redirect:"+refererURL);
+      }
       Enumeration<String> paramNames = request.getParameterNames(); 
       while(paramNames.hasMoreElements())
       {
