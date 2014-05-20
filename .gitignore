@@ -1,13 +1,13 @@
 *.class
+# Property files
+*.properties
 
 # Package Files #
 *.jar
 *.war
 *.ear
 /target
-# Property files
-*.properties
-src/main/webapp/img/csp_logo.png
+/src/main/resources
 
 # IntelliJ project files
 .idea
