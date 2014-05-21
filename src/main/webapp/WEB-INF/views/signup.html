@@ -1,91 +1,42 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <title>Respect Network</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="fragments/page">
 
-    <!-- CSS -->
-    <link href="css/bootstrap.css" rel="stylesheet" />
-    <link href="css/bootstrap-responsive.css" rel="stylesheet" />
-    <link href="css/style.css" rel="stylesheet" />
-<link href="https://s3.amazonaws.com/rnfonts/demo.css" rel="stylesheet" type="text/css" />
-    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-      <script src="../../js/html5shiv.js"></script>
-    <![endif]-->
+<body class="signup">
 
-    <!-- Fav and touch icons -->
-    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="img/ico/apple-touch-icon-144-precomposed.png" />
-    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/ico/apple-touch-icon-114-precomposed.png" />
-      <link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/ico/apple-touch-icon-72-precomposed.png" />
-                    <link rel="apple-touch-icon-precomposed" href="img/ico/apple-touch-icon-57-precomposed.png" />
-                                   <link rel="shortcut icon" href="img/ico/favicon.png" />
-	
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-	
-	<!--include the javascript that checks availability-->
-	<script src="js/libs/nameavailability.js"></script>
-    <script src="js/libs/misc.js"> </script>                               
-  </head>
+    <div layout:fragment="nav"></div> <!--/* No nav dropdown for this page */-->
 
-<body>
-<!-- Part 1: Wrap all page content here -->
-<div id="wrap">
+    <!-- Begin page content -->
+    <div class="bodyContainer" layout:fragment="bodyContainer">
+        <div class="middle">
+            <div class="error" name="error" id="error" th:text="${error}"></div>
+            Choose your cloud name
+            <form action="#" role="form" th:object="${signUpInfo}" th:action="@{/signup}" method="post"
+                  autocomplete="off">
 
-<!-- Fixed navbar -->
-  <div class="navbar navbar-fixed-top">
-    <div class="navbar-inner">
-      <div class="container">
-      	<div class="row-fluid">  
-          <div class="span4 smallTop"><p class="test"></p>
-          </div>
-          <div class="span4 midHdr">
-          </div>
-          <div class="span4">
-         		        		
-     		</div>
-      	</div>
-	  	</div>
-		</div>  
-	</div>
-      <!-- Begin page content -->
-      <div class="bodyContainer">
-				<div class="middle">
-                    <div class="error"  name="error" id="error" th:text="${error}"></div>                    
-                    Choose your cloud name
-                    <form action="#" role="form" th:object="${signUpInfo}" th:action="@{/signup}" method="post">
+                <div class="control-group error">
+                    <div class="controls">
+                        <input type="text" class="inputCloudName" name="cloudName" value="" id="cloudName"
+                               placeholder="=you..." required="required"/>
+                        <span class="help-inline" id="cloudNameHelp"></span>
+                    </div>
+                </div>
 
-            <input type="text" class="inputCloudName" name="cloudName" value="" id="cloudName" placeholder="=you..." required="required" autofocus="autofocus" />
- 			<br></br>
-            <span class="error"  name="isAvailable" id="isAvailable"></span>
 
- 							<p class="secondary">e.g., =jane, =janedoe, =jane.doe
-							</p>
-						<button type="submit" name="submit" id="submit" class="button">Submit</button>
-                        <input type="hidden" name="giftCode" id="giftCode" th:value="*{giftCode}" th:if="${signUpInfo} != null" />
-					</form>
-				</div>
-			</div>
-</div>
+                <br></br>
+                <span class="error" name="isAvailable" id="isAvailable"></span>
 
- <div id="footer">
-  <div class="row-fluid">
-    <div class="span1"></div>
-    <div class="span10 cspMain">YOUR CLOUD SERVICE PROVIDER | <img src="img/csp_logo.png" /> &nbsp;
-		</div>
-	</div>
-<!--  <div class="row-fluid">
-  	<div class="span1"></div>
-  	<div class="span3">
-  		<div id="help"><a target="_blank" onclick="return windowpop(this.href, 545, 433); " th:href="@{/help}">Help</a></div>
-		</div>
-		<div class="span6"></div>
-	</div>
--->
-</div>
+                <p class="secondary">e.g., =jane, =janedoe, =jane.doe
+                </p>
+                <button type="submit" name="submit" id="submit" class="button">Submit</button>
+                <input type="hidden" name="giftCode" id="giftCode" th:value="*{giftCode}"
+                       th:if="${signUpInfo} != null"/>
+            </form>
+        </div>
+    </div>
+
 
     <!-- Javascript
     ================================================== -->
@@ -103,7 +54,7 @@
  
 	 	// the value of this var is the id of the display element 
  		// that will be used to convey information to the user
- 		var messageSpan = "#isAvailable";
+ 		var messageSpan = "#cloudNameHelp";
  
  		
 	    $(cloudnameField).checkCloud({
@@ -119,7 +70,7 @@
 	        	{
 	        		// Make whatever changes to the UI to indicate that the name is
 	        		// available
-	        		$(messageSpan).html(" &radic; Your cloud name is available");
+	        		$(messageSpan).html("Your cloud name is available");
 	        		$(messageSpan).css('color', 'green');
 	        		 		      		
                 }else if(success==0){
@@ -130,7 +81,7 @@
                 }else{
                     // Make whatever changes to the UI to indicate that the name is
                     // unavailable
-                    $(messageSpan).html("This cloud name is INVALID");
+                    $(messageSpan).html("Cloud names must start with = and contain letters, numbers and dots");
                     $(messageSpan).css('color', 'red');
                 }
 	        	

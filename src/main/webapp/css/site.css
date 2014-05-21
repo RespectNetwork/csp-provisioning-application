@@ -1,0 +1,31 @@
+body {
+  font-family: "Avenir Next";
+  color: #999a9b;
+  background-color: #efefef;
+}
+
+
+form {
+  margin: 0 0 10px;
+}
+
+label,
+input,
+button,
+select,
+textarea {
+  font-size: 14px;
+  font-weight: normal;
+}
+
+
+
+input::-webkit-input-placeholder,
+textarea::-webkit-input-placeholder {
+  color: #d9d9d9;
+}
+
+
+button[disabled] {
+  background-color:#B6B6B6;
+}
