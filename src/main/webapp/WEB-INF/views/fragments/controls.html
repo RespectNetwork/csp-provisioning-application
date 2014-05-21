@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<head th:fragment="head">
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <title>Respect Network</title>
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link rel="stylesheet" href="../../../css/bootstrap.css" />
+    <link rel="stylesheet" href="../../../css/bootstrap-responsive.css" />
+    <link rel="stylesheet" href="../../../css/style.css" />
+    <link rel="stylesheet" href="https://s3.amazonaws.com/rnfonts/demo.css" type="text/css" />
+
+    <!-- dependent and invite had this -->
+    <link rel="stylesheet" href="../../../css/csp_styles.css" />
+
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="img/ico/apple-touch-icon-144-precomposed.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/ico/apple-touch-icon-114-precomposed.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/ico/apple-touch-icon-72-precomposed.png" />
+    <link rel="apple-touch-icon-precomposed" href="img/ico/apple-touch-icon-57-precomposed.png" />
+    <link rel="shortcut icon" href="img/ico/favicon.png" />
+
+</head>
+<body>
+<div id="wrap">
+
+    <!-- Fixed navbar -->
+    <div class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container">
+                <div class="row-fluid">
+                    <div class="span4 smallTop"><p class="test"></p></div>
+                    <!--/* Nav dropdown can be replaced, primarily to remove it if not logged in */-->
+                    <div class="span4 equation" layout:fragment="nav">
+                        <ul class="nav">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span th:text="${cloudName}"/>
+                                &nbsp;<b class="caret"></b> &nbsp;</a>
+                            <ul class="dropdown-menu">
+                                <li><a th:href="@{/logout}">Logout</a></li>
+                            </ul>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Begin page content -->
+    <div class="bodyContainer" layout:fragment="bodyContainer">
+
+        <div class="middle">
+            <div class="error" name="error" id="error" th:text="${error}">This is an error</div>
+            Choose your cloud name
+            <form action="#" role="form" th:object="${signUpInfo}" th:action="@{/signup}" method="post"
+                  autocomplete="off">
+
+                <div class="control-group error" th:fragment="cloudnameinput">
+                    <div class="controls">
+                        <input type="text" class="inputCloudName" name="cloudName" value="" id="cloudName"
+                               placeholder="=you..." required="required"/>
+                        <span class="help-inline" id="cloudNameHelp"></span>
+                    </div>
+                </div>
+
+
+                <br></br>
+                <span class="error" name="isAvailable" id="isAvailable"></span>
+
+                <p class="secondary">e.g., =jane, =janedoe, =jane.doe
+                </p>
+                <button type="submit" name="submit" id="submit" class="button">Submit</button>
+                <input type="hidden" name="giftCode" id="giftCode" th:value="*{giftCode}"
+                       th:if="${signUpInfo} != null"/>
+            </form>
+        </div>
+
+    </div>
+
+</div> <!-- end wrap -->
+
+
+<!-- Begin footer -->
+<div id="footer">
+    <div class="row-fluid">
+        <div class="span1"></div>
+        <div class="span10 cspMain">YOUR CLOUD SERVICE PROVIDER | <img src="img/csp_logo.png" /> &nbsp; </div>
+    </div>
+</div>
+
+
+
+<script src="../../js/libs/modernizr-2.0.6.min.js" th:src="@{/js/libs/modernizr-2.0.6.min.js}"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="js/libs/misc.js"> </script>
+<script src="js/libs/bootstrap-dropdown.js"></script>
+
+</body>
+</html>
+

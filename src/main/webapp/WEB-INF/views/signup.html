@@ -16,12 +16,7 @@
             <form action="#" role="form" th:object="${signUpInfo}" th:action="@{/signup}" method="post"
                   autocomplete="off">
 
-                <div class="control-group error">
-                    <div class="controls">
-                        <input type="text" class="inputCloudName" name="cloudName" value="" id="cloudName"
-                               placeholder="=you..." required="required"/>
-                        <span class="help-inline" id="cloudNameHelp"></span>
-                    </div>
+                <div th:replace="fragments/controls :: cloudnameinput">
                 </div>
 
 
