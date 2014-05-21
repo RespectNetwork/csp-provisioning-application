@@ -11,8 +11,8 @@ import net.respectnetwork.csp.application.exception.UserRegistrationException;
 import net.respectnetwork.sdk.csp.BasicCSPInformation;
 import net.respectnetwork.sdk.csp.CSP;
 import net.respectnetwork.sdk.csp.UserValidator;
-import net.respectnetwork.sdk.csp.discount.CloudNameDiscountCode;
-import net.respectnetwork.sdk.csp.discount.RespectNetworkMembershipDiscountCode;
+import net.respectnetwork.sdk.csp.discount.NeustarRNDiscountCode;
+import net.respectnetwork.sdk.csp.discount.RespectNetworkRNDiscountCode;
 import net.respectnetwork.sdk.csp.exception.CSPRegistrationException;
 import net.respectnetwork.sdk.csp.payment.PaymentProcessingException;
 import net.respectnetwork.sdk.csp.payment.PaymentProcessor;
@@ -25,13 +25,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Required;
 
-import com.ibm.icu.text.UTF16;
 import xdi2.client.exceptions.Xdi2ClientException;
 import xdi2.core.xri3.CloudName;
 import xdi2.core.xri3.CloudNumber;
 import xdi2.core.xri3.XDI3Segment;
 import xdi2.discovery.XDIDiscoveryClient;
 import xdi2.discovery.XDIDiscoveryResult;
+
+import com.ibm.icu.text.UTF16;
 
 public class RegistrationManager {
     
@@ -67,15 +68,15 @@ public class RegistrationManager {
     /**
      * Registration Discount Code
      */
-    public static  CloudNameDiscountCode cloudNameDiscountCode = CloudNameDiscountCode.RespectFirst;
+    public static  NeustarRNDiscountCode cloudNameDiscountCode = NeustarRNDiscountCode.OnePersonOneName;
     
     /**
      * Dependent Cloud Discount Code
      */
-    public static CloudNameDiscountCode depCloudNameDiscountCode = CloudNameDiscountCode.OnePersonOneName;
+    public static NeustarRNDiscountCode depCloudNameDiscountCode = NeustarRNDiscountCode.OnePersonOneName;
     
     /** RN Discount Code */
-    public static RespectNetworkMembershipDiscountCode respectNetworkMembershipDiscountCode = RespectNetworkMembershipDiscountCode.IIW17;
+    public static RespectNetworkRNDiscountCode respectNetworkMembershipDiscountCode = RespectNetworkRNDiscountCode.IIW17;
     
     /** Personal Cloud EndPoint */
     private String personalCloudEndPoint; 
@@ -412,7 +413,7 @@ public class RegistrationManager {
         
     }
     
-    public CloudNumber registerUser(CloudName cloudName, String verifiedPhone, String verifiedEmail, String userPassword , CloudNameDiscountCode cdc, String paymentType, String paymentRefId) throws CSPRegistrationException, Xdi2ClientException {
+    public CloudNumber registerUser(CloudName cloudName, String verifiedPhone, String verifiedEmail, String userPassword , NeustarRNDiscountCode cdc, String paymentType, String paymentRefId) throws CSPRegistrationException, Xdi2ClientException {
         
         
         CloudNumber cloudNumber = CloudNumber.createRandom(cloudName.getCs());

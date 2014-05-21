@@ -6,16 +6,16 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import net.respectnetwork.csp.application.dao.DAOException;
 import net.respectnetwork.csp.application.dao.DAOFactory;
 import net.respectnetwork.csp.application.model.SignupInfoModel;
 import net.respectnetwork.sdk.csp.CSP;
-import net.respectnetwork.sdk.csp.discount.CloudNameDiscountCode;
-import net.respectnetwork.sdk.csp.discount.RespectNetworkMembershipDiscountCode;
+import net.respectnetwork.sdk.csp.discount.NeustarRNDiscountCode;
 import net.respectnetwork.sdk.csp.exception.CSPRegistrationException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import xdi2.client.exceptions.Xdi2ClientException;
 import xdi2.core.xri3.CloudName;
 import xdi2.core.xri3.CloudNumber;
@@ -37,7 +37,7 @@ public class RegisterUserThread implements Runnable
    private String                               paymentType                          = "";
    private String                               paymentRefId                         = "";
 
-   private CloudNameDiscountCode                cdc                                  = null;
+   private NeustarRNDiscountCode                cdc                                  = null;
 
    @Override
    public void run()
@@ -112,7 +112,7 @@ public class RegisterUserThread implements Runnable
 
          cspRegistrar.setRespectNetworkMembershipInRN(cloudNumber, new Date(),
                null);
-         if(cdc != null && cdc.equals(CloudNameDiscountCode.RespectFirst))
+         if(cdc != null && cdc.equals(NeustarRNDiscountCode.OnePersonOneName))
          {
             cspRegistrar.setRespectFirstMembershipInRN(cloudNumber);
          }
@@ -217,12 +217,12 @@ public class RegisterUserThread implements Runnable
 
    
 
-   public CloudNameDiscountCode getCdc()
+   public NeustarRNDiscountCode getCdc()
    {
       return cdc;
    }
 
-   public void setCdc(CloudNameDiscountCode cdc)
+   public void setCdc(NeustarRNDiscountCode cdc)
    {
       this.cdc = cdc;
    }
