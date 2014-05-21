@@ -98,6 +98,9 @@ public class DependentForm
         while (iterator.hasNext()) {
             String dependentCloudName = iterator.next().getDependentCloudName();
             if(dependentCloudName != null && !dependentCloudName.isEmpty()) {
+                if(!dependentCloudName.startsWith("=")) {
+                    dependentCloudName = "=" + dependentCloudName;
+                }
                 allDependentCloudName.add(dependentCloudName);
             }
         }

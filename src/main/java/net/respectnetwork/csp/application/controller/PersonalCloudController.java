@@ -850,7 +850,7 @@ public class PersonalCloudController
                      if (gcrObj != null)
                      {
                         errors = true;
-                        errorText += "This giftcode , id "
+                        errorText += "This giftcode id "
                               + giftCode
                               + " has already been redeemed. Please remove it from the list. \n";
 
@@ -859,7 +859,7 @@ public class PersonalCloudController
                   } else
                   {
                      errors = true;
-                     errorText += "The giftcode , id " + giftCode
+                     errorText += "The giftcode id " + giftCode
                            + " is not valid. Please check the giftcode id.\n";
                   }
                } catch (DAOException e2)
