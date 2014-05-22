@@ -9,7 +9,7 @@
        // Default options
        var options = $.extend({
            delay: 400,                             // How long to wait after user has stopped typing
-           availibilityAPI: "./api/cloud_names/",       // URL of cloud name restful API
+           availabilityApi: "./api/cloud_names/",       // URL of cloud name restful API
            stripSymbol:false,
            completed: null,                        // Callback after name has been checked takes element and boolean. Must be set.
            changed: null                           // Callback after name has been changed takes element
@@ -24,7 +24,7 @@
        
        // Test cloud name against regex
        function isValidFormat(cloudName) {
-           if (cloudName < 3 ) {
+           if (cloudName.length < 3 ) {
                return false;
            }
            return validCloudFormat.test(cloudName);
@@ -44,8 +44,8 @@
                cloudCheck = setTimeout(function () {
                    typing = false;
                    cloudName = $elem.val().toLowerCase();
-                   if(!cloudName.startsWith("=")) {
-                       cloudName = "="+cloudName;
+                   if (!cloudName.startsWith("=")) {
+                       cloudName = "=" + cloudName;
                    }
                    if ( typeof options.completed === "function" ) {
                        if (isValidFormat(cloudName)) {
@@ -55,7 +55,7 @@
                        			cloudName = cloudName.substr(1,100);
                        		}
                            cloudNameRequest = $.ajax({
-                               url: options.availibilityAPI + cloudName,
+                               url: options.availabilityApi + cloudName,
                                dataType: "jsonp",
                                success: function(data) {
                                    options.completed.call(data,$elem, data.available);
@@ -68,39 +68,37 @@
                }, delay);
            }
        }
-       
-       // When the cloud name has changed abort all calls to the API
-       // and call call the changed callback.
-       function cloudNameChanged() {
+
+       // Check cloud names on key-up
+       $elem.on('change keydown keyup paste input', function(event) {
+           // ignore if unchanged (e.g. from arrow keys or something)
+           var newText = $elem.val().toLowerCase();
+           if(!newText.startsWith('=')) {
+               newText = '=' + newText;
+           }
+           if (newText == '=' + cloudName) {
+               console.log('same');
+               return;
+           }
+
            if (!typing) {
-               if ( cloudNameRequest ) {
+               typing = true;
+
+               if (cloudNameRequest) {
                    cloudNameRequest.abort();
                }
-               
-               typing = true;
-               
-               if ( typeof options.changed === "function" ) {
+
+               if (typeof options.changed === "function") {
                    options.changed.call($elem);
                }
+
+               checkCloudName();
            }
-       }
-       
-       // Check cloud names on keyup
-       $elem.keyup(checkCloudName);
+       });
        
        // Check cloud names without any delay on blur
         $elem.blur( function(event) {
             checkCloudName(event, 0);
         });
-       
-       // Change cloud name on keypress
-       $elem.keypress(cloudNameChanged);
-       
-       // Track delete and enter events
-       $elem.keydown(function (event) {
-          if (event.keyCode === 8 || event.keyCode === 46) {
-              cloudNameChanged();
-          }
-       });
    }
 })(jQuery);

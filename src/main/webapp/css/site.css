@@ -1,31 +1,125 @@
+/* Common/Main Content */
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
 body {
-  font-family: "Avenir Next";
-  color: #999a9b;
-  background-color: #efefef;
+    margin-bottom: 100px; /* Margin bottom by footer height */
+    color: #999a9b;
+    background-color: #efefef;
+    font-family: "Avenir Next", sans-serif;
+}
+
+#footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 100px; /* Set the fixed height of the footer here */
+}
+
+body > .container {
+    padding: 60px 15px 0;
+    text-align: center;
+}
+.container .text-muted {
+    margin: 20px 0;
+}
+
+#footer > .container {
+    padding-right: 15px;
+    padding-left: 15px;
+    text-align: right;
+}
+
+.navbar {
+    height: 90px;
+}
+.navbar-header {
+    margin-top: 30px;
+}
+.navbar-default {
+    background-color: #fdfdfd;
+    background-image: none;
+}
+
+.page-header {
+    margin-top: 100px;
+    margin-bottom: 0px;
+}
+h1 {
+    font-size: 28px;
+    font-weight: normal;
+    line-height: normal;
+    color: #6d6f70;
+    font-family: "AvenirNextLTW01-Regular",sans-serif;
+}
+
+/* Form layout */
+
+.form-primary {
+    max-width: 410px;
+    padding: 15px;
+    margin: 0 auto;
+}
+.form-control {
+    padding: 10px;
+}
+.form-primary .form-control:focus {
+    z-index: 2;
+}
+.form-primary input[type="text"] {
+    height: 50px;
+    font-size: 24px;
+    text-align: center;
+    -moz-border-radius:5px; /* Firefox */
+    -webkit-border-radius: 5px; /* Safari, Chrome */
+    -khtml-border-radius: 5px; /* KHTML */
+    border-radius: 5px; /* CSS3 */
+    vertical-align: middle;
 }
 
 
-form {
-  margin: 0 0 10px;
+/* Form button */
+
+.btn-primary {
+    height: 40px;
+    width: 150px;
+    border: 0px;
+    color: #ffffff;
+    padding: 7px 0;
+    font: 20px "AvenirNext", helvetica, arial, sans-serif;
+    background-image: none;
+    background-color: #02e4ff;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    text-shadow: none;
+}
+.btn-primary:hover,
+.btn-primary:focus {
+    background-color: #02e4ff;
+    background-position: 0 -15px;
+}
+.btn-primary:active,
+.btn-primary.active {
+    background-color: #02e4ff;
+}
+.btn-primary-loading {
+    background-image: url("../img/ajax-loader.gif");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
 }
 
-label,
-input,
-button,
-select,
-textarea {
-  font-size: 14px;
-  font-weight: normal;
+
+/* Sign-up Customisations */
+
+.signup-name {
+    margin-bottom: 10px;
+
 }
 
-
-
-input::-webkit-input-placeholder,
-textarea::-webkit-input-placeholder {
-  color: #d9d9d9;
-}
-
-
-button[disabled] {
-  background-color:#B6B6B6;
+.signup-submit {
+    margin-top: 10px;
 }

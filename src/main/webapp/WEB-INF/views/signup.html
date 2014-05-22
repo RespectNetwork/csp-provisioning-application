@@ -6,98 +6,94 @@
 
 <body class="signup">
 
-    <div layout:fragment="nav"></div> <!--/* No nav dropdown for this page */-->
+<div layout:fragment="nav"></div>
+<!--/* No nav dropdown for this page */-->
 
-    <!-- Begin page content -->
-    <div class="bodyContainer" layout:fragment="bodyContainer">
-        <div class="middle">
-            <div class="error" name="error" id="error" th:text="${error}"></div>
-            Choose your cloud name
-            <form action="#" role="form" th:object="${signUpInfo}" th:action="@{/signup}" method="post"
-                  autocomplete="off">
+<div class="container" layout:fragment="bodyContent">
 
-                <div th:replace="fragments/controls :: cloudnameinput">
-                </div>
-
-
-                <br></br>
-                <span class="error" name="isAvailable" id="isAvailable"></span>
-
-                <p class="secondary">e.g., =jane, =janedoe, =jane.doe
-                </p>
-                <button type="submit" name="submit" id="submit" class="button">Submit</button>
-                <input type="hidden" name="giftCode" id="giftCode" th:value="*{giftCode}"
-                       th:if="${signUpInfo} != null"/>
-            </form>
-        </div>
+    <div class="page-header">
+        <h1>Choose your cloud name:</h1>
     </div>
 
+    <form action="#" class="form-primary" role="form" th:object="${signUpInfo}" th:action="@{/signup}" method="post"
+          autocomplete="off" accept-charset="UTF-8">
 
-    <!-- Javascript
-    ================================================== -->
-    <!-- <script src="js/libs/bootstrap-collapse.js"></script> -->
-  
-<!--The following script hooks the HTML Elements to the javascript functionality-->
-	<!-- see the comments inside the javascript for details-->
- <script>
- 
- $(document).ready(function () {
- 
- 		// the value of this var is the id of the input element 
- 		// that the user is typing into
- 		var cloudnameField = "#cloudName";
- 
-	 	// the value of this var is the id of the display element 
- 		// that will be used to convey information to the user
- 		var messageSpan = "#cloudNameHelp";
- 
- 		
-	    $(cloudnameField).checkCloud({
-	        completed: function(elem, success) {
-	        	
-	        	// success var will contain a 1 if the name is available
-	        	// and 0 if it not available.
-	        	
-	        	console.log('Checking cloud...');
-	            console.log(success);
-	        	
-	        	if(success==1)
-	        	{
-	        		// Make whatever changes to the UI to indicate that the name is
-	        		// available
-	        		$(messageSpan).html("Your cloud name is available");
-	        		$(messageSpan).css('color', 'green');
-	        		 		      		
-                }else if(success==0){
-                    // Make whatever changes to the UI to indicate that the name is
-                    // unavailable
-                    $(messageSpan).html("This cloud name is NOT available");
-                    $(messageSpan).css('color', 'red');
-                }else{
-                    // Make whatever changes to the UI to indicate that the name is
-                    // unavailable
-                    $(messageSpan).html("Cloud names must start with = and contain letters, numbers and dots");
-                    $(messageSpan).css('color', 'red');
-                }
-	        	
-	            
-	        },
-	        changed: function(elem) {
-				//Called when user is typing
-	            console.log('Changing cloud...');
-	        },
-	        // indicates if the leading symbol should be removed prior to adding the 
-	        // name to the path
-	        stripSymbol:true, 
-	        
-	        // indicates the location of the availability service
-	        availibilityAPI: "https://checkavailability-prod.respectnetwork.net/api/availability/equals/"
-	    }); 
-	});
- 
- 
- </script>
+        <div>
+            <input id="cloudName" type="text" class="form-control signup-name" placeholder="=you..."
+                   required="required" autofocus="autofocus"/>
+            <span id="cloudNameHelp" class="help-inline"></span>
+        </div>
 
+        <br/>
+
+        <span class="error" name="isAvailable" id="isAvailable"></span>
+
+        <p class="secondary">e.g., =jane, =janedoe, =jane.doe</p>
+
+        <button type="submit" name="submit" id="submit" class="btn btn-lg btn-primary signup-submit">Next</button>
+
+        <input type="hidden" name="giftCode" id="giftCode" th:value="*{giftCode}" th:if="${signUpInfo} != null"/>
+    </form>
+</div>
+
+<th:block layout:fragment="postFooterContent">
+    <script src="js/libs/nameavailability.js"></script>
+    <script>
+
+        $(document).ready(function () {
+
+            // the value of this var is the id of the input element
+            // that the user is typing into
+            var cloudNameField = "#cloudName";
+
+            // the value of this var is the id of the display element
+            // that will be used to convey information to the user
+            var messageSpan = cloudNameField + "Help";
+
+            $(cloudNameField).checkCloud({
+
+                completed: function (elem, success) {
+
+                    $(cloudNameField).removeClass('btn-primary-loading');
+
+                    // success var will contain a 1 if the name is available and 0 if it not available.
+                    console.log('Checking cloud... :: success=' + success);
+
+                    // clear error
+                    if ($(cloudNameField).val() == '') {
+                        $(messageSpan).html('');
+                        return;
+                    }
+
+                    if (success == 1) { // available
+                        $(messageSpan).html("Your cloud name is available");
+                        $(messageSpan).css('color', 'green');
+                    } else if (success == 0) { // unavailable
+                        $(messageSpan).html("This cloud name is NOT available");
+                        $(messageSpan).css('color', 'red');
+                    } else { // formatting error
+                        $(messageSpan).html("Cloud names must contain at least 2 letters, numbers, or dots");
+                        $(messageSpan).css('color', 'red');
+                    }
+                },
+
+                // user is typing
+                changed: function (elem) {
+                    $(cloudNameField).addClass('btn-primary-loading');
+                    console.log('Changing cloud...');
+                },
+
+                // indicates if the leading symbol should be removed prior to adding the name to the path
+                stripSymbol: true,
+
+                // indicates the location of the availability service
+                availabilityApi: "https://checkavailability-prod.respectnetwork.net/api/availability/equals/"
+            });
+        });
+
+    </script>
+</th:block>
 
 </body>
+
 </html>

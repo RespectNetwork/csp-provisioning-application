@@ -55,27 +55,24 @@
 
         <div class="middle">
             <div class="error" name="error" id="error" th:text="${error}">This is an error</div>
-            Choose your cloud name
-            <form action="#" role="form" th:object="${signUpInfo}" th:action="@{/signup}" method="post"
-                  autocomplete="off">
 
-                <div class="control-group error" th:fragment="cloudnameinput">
+            Choose your cloud name
+
+            <form action="#" role="form" th:object="${signUpInfo}" th:action="@{/signup}" method="post" autocomplete="off">
+
+                <div class="control-group error" th:fragment="textInput(name)">
                     <div class="controls">
-                        <input type="text" class="inputCloudName" name="cloudName" value="" id="cloudName"
+                        <input type="text" class="inputCloudName" th:name="${name}" value="" th:id="${name}"
                                placeholder="=you..." required="required"/>
-                        <span class="help-inline" id="cloudNameHelp"></span>
+                        <span class="help-inline" th:id="${name} + 'Help'"></span>
                     </div>
                 </div>
 
+                <p class="secondary">e.g., =jane, =janedoe, =jane.doe</p>
 
-                <br></br>
-                <span class="error" name="isAvailable" id="isAvailable"></span>
+                <button type="submit" name="submit" id="submit" class="button" th:fragment="button(text)" th:text="${text}">Submit</button>
 
-                <p class="secondary">e.g., =jane, =janedoe, =jane.doe
-                </p>
-                <button type="submit" name="submit" id="submit" class="button">Submit</button>
-                <input type="hidden" name="giftCode" id="giftCode" th:value="*{giftCode}"
-                       th:if="${signUpInfo} != null"/>
+                <input type="hidden" name="giftCode" id="giftCode" th:value="*{giftCode}" th:if="${signUpInfo} != null"/>
             </form>
         </div>
 
