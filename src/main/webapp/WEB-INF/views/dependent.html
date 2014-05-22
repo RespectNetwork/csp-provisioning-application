@@ -46,6 +46,8 @@
 	<!--include the javascript that checks availability-->
 	<script src="js/libs/nameavailability.js"></script>
 	<script src="js/libs/validatedate.js"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css" />
+<script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
 </head>
 
 <body>
@@ -86,12 +88,12 @@
       		<div id="allDependents">
       			
 				<div>      			
-                <input type="text" name="dependentCloudName" value="" class="inputFields smallMarg" id="dependentCloudName" placeholder="=dependent name" required="required" autofocus="autofocus"  />
+                <input type="text" th:field="*{dependentFormIndividual[0].dependentCloudName}" id="dependentCloudName" name ="dependentCloudName" value="" class="inputFields smallMarg" placeholder="=dependent name" required="required" autofocus="autofocus"  />
 				<br></br>
 				<span class="error"  name="isAvailable" id="isAvailable"></span>	
 				<br/> Passwords need to be at least 8 characters and <br/>have at least 2 digits , 2 letters and one special symbol like @,#,$ etc.
 				<br />          	
- 				<input type="password" name="dependentCloudPassword" value="" class="inputFields smallMarg" 
+				<input type="password" th:field="*{dependentFormIndividual[0].dependentPassword}" name="dependentCloudPassword" value="" class="inputFields smallMarg"
                                 id="dependentCloudPassword" placeholder="password" required="required"
                                 th:value="*{dependentCloudPassword}" />
  				
@@ -105,7 +107,7 @@
 	          	</p>
   -->   
   				<p class="payment3">Dependent's birthdate: </p>
-				<input type="text" name="dependentBirthDate" value="" class="inputFields smallMarg" id="dependentBirthDate" placeholder="MM/DD/YYYY" required="required" onchange="validateDate(this.value)"/>
+				<input type="text" th:field="*{dependentFormIndividual[0].dependentBirthDate}" name="dependentBirthDate" value="" class="inputFields smallMarg dependentBirthDate" placeholder="MM/DD/YYYY" required="required" onchange="validateDate(this.value)"/>
 				<br></br><span class="error"  name="isValidDate" id="isValidDate"></span>
                 <p class="secondary">
 		     	<input type="checkbox" name="consent" id="consent"  required="required"  />
@@ -229,7 +231,13 @@
          }
 
          disableEnableContinue();
-     }		
+     }
+     function setDatePicker() {
+         $(function() {
+            $( ".dependentBirthDate" ).datepicker({changeMonth: true, changeYear: true, yearRange: "1990:2020"});
+        });
+     }
+     setDatePicker();
     checkCloudNameAvailability("dependentCloudName", "isAvailable");
 
     $("#addAnotherDependent").click(function(){
@@ -244,15 +252,14 @@
       var isValidDate = 'isValidDate' +  window.mycounter;
 	  var divId = 'dependent'+ window.mycounter;
 
-	  var strA = '<div id="'+divId+'"><table ><tr><td><p class="payment3">Dependent&apos;s cloud name &nbsp;&nbsp;&nbsp;&nbsp;<a href="#" onclick="removeDiv('+divId+');">Delete Dependent</a></p></td></tr>  <tr> <td> <input type="text" class="inputFields smallMarg" name="' ;
-      var strB = strA + depCloudName ;
-      var strC = strB + '"  id="' ;
+      var strA = '<div id="'+divId+'"><table ><tr><td><p class="payment3">Dependent&apos;s cloud name &nbsp;&nbsp;&nbsp;&nbsp;<a href="#" onclick="removeDiv('+divId+');">Delete Dependent</a></p></td></tr>  <tr> <td> <input type="text" class="inputFields smallMarg" name="dependentFormIndividual[' + window.mycounter + '].dependentCloudName' ;
+      var strC = strA + '"  id="' ;
       var strD = strC +  depCloudName ;
       var strE = strD + '" placeholder="=dependent name" required="required" /> </td> </tr><tr><td><span class="error"  name="' ;
       var strF = strE + depIsAvailable ;
       var strG = strF + '"  id="' ;
       var strH = strG + depIsAvailable ;
-      var strI = strH + '"></span></td></tr> <tr><td><input type="password" class="inputFields smallMarg" name="dependentCloudPassword"  id="dependentCloudPassword" placeholder="password" required="required"/> </td></tr><tr><td><p class="payment3">Dependent&apos;s birthdate:</p></td></tr><tr><td><input type="text" class="inputFields smallMarg" name="dependentBirthDate" value="" id="dependentBirthDate" placeholder="MM/DD/YYYY" required="required" onchange="validateDate(this.value, ' ;
+      var strI = strH + '"></span></td></tr> <tr><td><input type="password" name="dependentFormIndividual[' + window.mycounter + '].dependentPassword" class="inputFields smallMarg" id="dependentCloudPassword" placeholder="password" required="required"/> </td></tr><tr><td><p class="payment3">Dependent&apos;s birthdate:</p></td></tr><tr><td><input type="text" class="inputFields smallMarg dependentBirthDate" name="dependentFormIndividual[' + window.mycounter + '].dependentBirthDate" value="" placeholder="MM/DD/YYYY" required="required" onchange="validateDate(this.value, ' ;
       var strJ = strI + window.mycounter ;
       var strK = strJ + ')"   /></td></tr><tr><td><span class="error"  name="isValidDate" id="isValidDate"></span></td></tr><tr><td><span class="error"  name="' ;
       var strL = strK + isValidDate ;
@@ -262,6 +269,7 @@
       $( strO ).appendTo("#allDependents");
 
       checkCloudNameAvailability(depCloudName, depIsAvailable);
+      setDatePicker();
     });
 });
 function removeDiv(depDiv) {
