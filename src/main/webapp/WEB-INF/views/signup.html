@@ -66,6 +66,7 @@
 							</p>
 						<button type="submit" name="submit" id="submit" class="button">Submit</button>
                         <input type="hidden" name="giftCode" id="giftCode" th:value="*{giftCode}" th:if="${signUpInfo} != null" />
+                        <input type="hidden" name="avAPI" value="" id="avAPI" th:value="*{nameAvailabilityCheckURL} + '/api/availability/equals/'"/>
 					</form>
 				</div>
 			</div>
@@ -121,17 +122,13 @@
 	        		// available
                     $(messageSpan).html(" &radic; Your cloud name is available. Claim it.");
 	        		$(messageSpan).css('color', 'green');
-	        		 		      		
-                }else if(success==0){
+                    $(messageSpan).css('font-size', '13px');
+                }else {
                     // Make whatever changes to the UI to indicate that the name is
                     // unavailable
                     $(messageSpan).html("Sorry, that cloud name is not available. Please try again.");
                     $(messageSpan).css('color', 'red');
-                }else{
-                    // Make whatever changes to the UI to indicate that the name is
-                    // unavailable
-                    $(messageSpan).html("Sorry, that cloud name is not available. Please try again.");
-                    $(messageSpan).css('color', 'red');
+                    $(messageSpan).css('font-size', '13px');
                 }
 	        	
 	            
@@ -145,7 +142,7 @@
 	        stripSymbol:true, 
 	        
 	        // indicates the location of the availability service
-	        availibilityAPI: "https://checkavailability-prod.respectnetwork.net/api/availability/equals/"
+	        availibilityAPI :  document.getElementById("avAPI").value
 	    }); 
 	});
  
