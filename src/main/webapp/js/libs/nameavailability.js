@@ -44,7 +44,7 @@
                cloudCheck = setTimeout(function () {
                    typing = false;
                    cloudName = $elem.val().toLowerCase();
-                   if(!cloudName.startsWith("=")) {
+                   if(cloudName.indexOf("=") != 0) {
                        cloudName = "="+cloudName;
                    }
                    if ( typeof options.completed === "function" ) {
