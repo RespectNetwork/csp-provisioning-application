@@ -152,7 +152,7 @@ public class PasswordController {
         mv = new ModelAndView("postTxn");
         mv.addObject("cloudName", cloudName);
         forwardingPage += "/cloudPage";
-        statusText = "Password has been successfully updated.\n";
+        statusText = "Your password has been changed successfully.\n";
         mv.addObject("statusText", statusText);
         mv.addObject("postURL", forwardingPage);
         mv.addObject("submitMethod", method);

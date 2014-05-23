@@ -710,7 +710,8 @@ public class RegistrationController
          }
          try
          {
-            if (theManager.isCloudNameAvailable(cloudName))
+			 //Added one more condition to check registry too using AvailabilityAPI for cloud name. 
+            if (theManager.isCloudNameAvailableInRegistry(cloudName) && theManager.isCloudNameAvailable(cloudName))
             {
                logger.info(cloudName + " is available, so going to show the validation screen");
                mv = new ModelAndView("userdetails");
@@ -730,9 +731,7 @@ public class RegistrationController
                errors = true;
                error = "CloudName is not available. Please choose another valid CloudName";
             }
-         } catch (UserRegistrationException e)
-         {
-
+         } catch (Exception e) {
             logger.info("Exception in registerCloudName " + e.getMessage());
             errors = true;
             error = "Sorry ! The system has encountered an error. Please try again.";
