@@ -1448,7 +1448,9 @@ textarea[readonly] {
 button[disabled] {
   background-color:#B6B6B6;
 }
-
+input[type="submit"][disabled] {
+  background-color:#B6B6B6;
+}
 input[type="radio"][disabled],
 input[type="checkbox"][disabled],
 input[type="radio"][readonly],
