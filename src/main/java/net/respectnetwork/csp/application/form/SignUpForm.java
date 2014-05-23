@@ -14,6 +14,7 @@ public class SignUpForm {
     /** gift code */
     private String giftCode;
        
+    private String nameAvailabilityCheckURL ;
     /**
      * @return the cloudName
      */
@@ -76,7 +77,12 @@ public class SignUpForm {
 	public void setGiftCode(String giftCode) {
 		this.giftCode = giftCode;
 	}
-    
-    
-    
+
+    public void setNameAvailabilityCheckURL(String url) {
+        this.nameAvailabilityCheckURL = url;
+    }
+
+    public String getNameAvailabilityCheckURL() {
+        return this.nameAvailabilityCheckURL;
+    }
 }

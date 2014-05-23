@@ -27,27 +27,5 @@ function validateDate(date, dependentCounter) {
     $(isValidDate).html(retVal);
     $(isValidDate).css('color', 'red');
 
-    if(window.mycounter == undefined) {
-        if(retVal == null) {
-            document.getElementById('submit').disabled = false;
-        }
-    } else { 
-        var i=0;
-        var validDate = true;
-        while(i<=window.mycounter && validDate) {
-            if(i == 0) {
-                if($('span#isValidDate').text() != "") {
-                    validDate = false;
-                }
-            } else {
-                if($('span#isValidDate+window.mycounter').text() != "") {
-                    validDate = false;
-                }
-            }
-            i++;
-        }
-        if(validDate) {
-            document.getElementById('submit').disabled = false;
-        }
-    }
+    disableEnableContinue();
 }

@@ -692,7 +692,10 @@ a.text-warning:hover,
 a.text-warning:focus {
   color: #a47e3c;
 }
-
+.dependent-error {
+    color: #FF0000;
+    font-size: 13px;
+}
 .text-error {
   color: #b94a48;
 }
