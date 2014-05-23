@@ -139,6 +139,7 @@ public class PasswordController {
             passwordManager.changePassword(cloudName,
                     changePasswordForm.getCurrentPassword(),
                     changePasswordForm.getNewPassword());
+            regSession.setPassword(changePasswordForm.getNewPassword());
         } catch (PasswordValidationException ex) {
             logger.error("Error while change password.", ex);
             errors = true;
