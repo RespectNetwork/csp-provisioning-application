@@ -20,7 +20,7 @@ body {
 }
 
 body > .container {
-    padding: 60px 15px 0;
+    padding: 90px 15px 0;
     text-align: center;
 }
 .container .text-muted {
@@ -45,7 +45,7 @@ body > .container {
 }
 
 .page-header {
-    margin-top: 100px;
+    margin-top: 68px;
     margin-bottom: 0px;
 }
 h1 {
@@ -71,6 +71,7 @@ h1 {
 }
 .form-primary input[type="text"],
 .form-primary input[type="tel"],
+.form-primary input[type="password"],
 .form-primary input[type="email"] {
     height: 50px;
     font-size: 24px;
@@ -98,6 +99,7 @@ h1 {
     -moz-border-radius: 4px;
     border-radius: 4px;
     text-shadow: none;
+    margin-top: 20px;
 }
 .btn-primary:hover,
 .btn-primary:focus {

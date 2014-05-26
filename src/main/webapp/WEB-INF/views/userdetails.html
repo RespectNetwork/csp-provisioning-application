@@ -22,7 +22,8 @@
 
     <span style="color:red" class="error" th:text="${error}"></span>
 
-    <form action="#" class="form-primary" th:object="${userInfo}" th:action="@{/processuserdetails}" method="post">
+    <form action="#" th:action="@{/processuserdetails}" method="post"
+          class="form-primary" th:object="${userInfo}"  >
 
         <!--/* Email address */-->
         <div class="form-group">
@@ -40,50 +41,27 @@
                    th:value="*{mobilePhone}"/>
         </div>
 
-
-
-
-
-
-
-
-
-        <!--<div class="form-group">-->
-            <!--<span class="input-group-addon">-->
-                <!--<input type="text" class="form-control" id="cc" name="cc" placeholder=" " required="required" />-->
-            <!--</span>-->
-            <!--<input type="text" class="form-control" id="mobilePhone" name="mobilePhone" placeholder="mobile: nnnnnnnnnn"-->
-                   <!--required="required" onFocus="clearText(this)"-->
-                   <!--onBlur="clearText(this.className = 'onblurtextPhone smallTop')"-->
-                   <!--th:value="*{mobilePhone}"/>-->
-        <!--</div>-->
-
-
-        <!--<p><input type="text" class="ccField ccTop" name="cc" id="cc" placeholder=" " required="required"-->
-                  <!--th:value="*{cc}"/>-->
-            <!--<input type="text" class="phoneField" name="mobilePhone" id="mobilePhone"-->
-                   <!--placeholder="mobile: nnnnnnnnnn" required="required"-->
-                   <!--onFocus="clearText(this)" onBlur="clearText(this.className = 'onblurtextPhone smallTop')"-->
-                   <!--th:value="*{mobilePhone}"/>-->
-        <!--</p>-->
-
         <p class="secondary">Create a password for logging into your personal cloud:<br/>min 8 char with 2 digits, 2
             letters and 1 symbol e.g. @,#,$
         </p>
 
-        <p class="secondary"><input type="password" class="inputFields smallMarg" name="password" value=""
-                                    id="password" placeholder="create password" required="required"
-                                    onFocus="clearText(this)"
-                                    onBlur="clearText(this.className = 'onblurtext smallMarg')"/>
-            <br/><input type="password" class="inputFields smallMarg" name="confirmPassword" value=""
-                        id="confirmPassword" placeholder="confirm password" required="required"
-                        onFocus="clearText(this)" onBlur="clearText(this.className = 'onblurtext smallMarg')"/>
-        </p>
+        <!--/* Password fields */-->
+        <div class="form-group">
+            <input type="password" id="password" name="password"
+                   class="form-control" placeholder="create password"
+                   required="required"/>
+        </div>
+
+        <div class="form-group">
+            <input type="password" id="confirmPassword" name="confirmPassword"
+                   class="form-control" placeholder="confirm password"
+                   required="required"/>
+        </div>
 
         <div id="responseDiv" class="error" style="color:red"></div>
 
 
-        <button type="submit" name="submit" id="submit" class="button btn btn-lg btn-primary signup-submit">Next</button>
+        <button type="submit" name="submit" id="submit" class="button btn btn-lg btn-primary">Next</button>
 
     </form>
 </div>
@@ -93,7 +71,7 @@
     <script src="js/libs/data.js"></script>
 
     <script>
-        $("#mobilePhone").intlTelInput();
+        $("#mobilePhone").intlTelInput({autoHideDialCode: true, dialCodeDelimiter: "."});
     </script>
 </th:block>
 
