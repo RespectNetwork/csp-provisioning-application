@@ -16,22 +16,17 @@
     </div>
 
     <form action="#" class="form-primary" role="form" th:object="${signUpInfo}" th:action="@{/signup}" method="post"
-          autocomplete="off" accept-charset="UTF-8">
+          accept-charset="UTF-8" id="signup">
 
-        <div>
-            <input type="text" id="cloudName" name="cloudName"
-                   class="form-control signup-name" placeholder="=you..."
-                   required="required" autofocus="autofocus" />
+        <div class="form-group" id="cloudNameGroup">
+            <input type="text" id="cloudName" name="cloudName" class="form-control" placeholder="=you..."
+                   autofocus="autofocus" required="required" />
             <span id="cloudNameHelp" class="help-inline"></span>
         </div>
 
-        <br/>
-
-        <span class="error" name="isAvailable" id="isAvailable"></span>
-
         <p class="secondary">e.g., =jane, =janedoe, =jane.doe</p>
 
-        <button type="submit" name="submit" id="submit" class="btn btn-lg btn-primary">Next</button>
+        <button type="submit" name="submitBtn" id="submitBtn" class="btn btn-lg btn-primary">Next</button>
 
         <input type="hidden" name="giftCode" id="giftCode" th:value="*{giftCode}" th:if="${signUpInfo} != null"/>
     </form>
@@ -43,44 +38,56 @@
 
         $(document).ready(function () {
 
+            var cloudNameGroup = $('#cloudNameGroup');
+
             // the value of this var is the id of the input element
             // that the user is typing into
             var cloudNameField = "#cloudName";
+            var cloudNameInput = $(cloudNameField);
 
             // the value of this var is the id of the display element
             // that will be used to convey information to the user
-            var messageSpan = cloudNameField + "Help";
+            var messageSpan = $(cloudNameField + 'Help');
 
-            $(cloudNameField).checkCloud({
+            var isAvailable = false;
+
+            cloudNameInput.checkCloud({
 
                 completed: function (elem, success) {
 
-                    $(cloudNameField).removeClass('btn-primary-loading');
+                    cloudNameInput.removeClass('btn-primary-loading');
 
                     // success var will contain a 1 if the name is available and 0 if it not available.
                     console.log('Checking cloud... :: success=' + success);
 
                     // clear error
-                    if ($(cloudNameField).val() == '') {
-                        $(messageSpan).html('');
+                    if (cloudNameInput.val().trim() == '') {
+                        messageSpan.html('');
+                        cloudNameGroup.removeClass('has-error');
+                        cloudNameGroup.removeClass('has-success');
                         return;
                     }
 
                     if (success == 1) { // available
-                        $(messageSpan).html("Your cloud name is available");
-                        $(messageSpan).css('color', 'green');
+                        messageSpan.html("Your cloud name is available");
+                        messageSpan.css('color', 'green');
+                        cloudNameGroup.addClass('has-success');
+                        isAvailable = true;
                     } else if (success == 0) { // unavailable
-                        $(messageSpan).html("This cloud name is NOT available");
-                        $(messageSpan).css('color', 'red');
+                        messageSpan.html("This cloud name is NOT available");
+                        messageSpan.css('color', 'red');
+                        cloudNameGroup.addClass('has-error');
                     } else { // formatting error
-                        $(messageSpan).html("Cloud names must contain at least 2 letters, numbers, or dots");
-                        $(messageSpan).css('color', 'red');
+                        messageSpan.html("Cloud names must contain at least 2 letters, numbers, or dots");
+                        messageSpan.css('color', 'red');
+                        cloudNameGroup.addClass('has-error');
                     }
                 },
 
                 // user is typing
                 changed: function (elem) {
-                    $(cloudNameField).addClass('btn-primary-loading');
+                    isAvailable = false;
+                    cloudNameInput.addClass('btn-primary-loading');
                     console.log('Changing cloud...');
                 },
 
@@ -89,6 +96,26 @@
 
                 // indicates the location of the availability service
                 availabilityApi: "https://checkavailability-prod.respectnetwork.net/api/availability/equals/"
+            });
+
+            $('#signup').validate({
+                rules: {
+                    cloudName: {
+                        required: true,
+                        minlength: 3
+                    }
+                },
+                debug: true,
+                submitHandler: function(form) {
+                    if (isAvailable) {
+                        form.submit();
+                    } else {
+                        cloudNameInput.focus();
+                    }
+                },
+                errorPlacement: function(error, element) {
+                    // nothing - using custom error msgs
+                }
             });
         });
 
