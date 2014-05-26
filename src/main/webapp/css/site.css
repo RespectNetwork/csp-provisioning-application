@@ -88,6 +88,26 @@ h1 {
     vertical-align: middle;
 }
 
+.form-secondary input[type="text"],
+.form-secondary input[type="tel"],
+.form-secondary input[type="password"],
+.form-secondary input[type="email"] {
+    height: inherit;
+    font-size: 16px;
+    text-align: left;
+    -moz-border-radius:5px; /* Firefox */
+    -webkit-border-radius: 5px; /* Safari, Chrome */
+    -khtml-border-radius: 5px; /* KHTML */
+    border-radius: 5px; /* CSS3 */
+    vertical-align: middle;
+}
+.form-secondary .form-control {
+    padding: 10px;
+}
+label {
+    font-weight: normal;
+}
+
 
 /* Form button */
 
@@ -152,10 +172,16 @@ body.userdetails div.flag-dropdown {
 
 
 /* validate */
-body.validate label {
-    font-weight: normal;
-}
-
 body.validate button#resendCodes {
     width: 180px;
+}
+
+
+/* payment */
+body.payment .radio {
+    text-align: left;
+}
+
+body.payment #giftCodeRadio {
+    height: 38px; /* Hack to get radio button vertically centred in gift code text input */
 }
