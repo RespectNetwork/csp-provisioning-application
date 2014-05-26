@@ -6,8 +6,8 @@
 
 <body class="signup">
 
-<div layout:fragment="nav"></div>
 <!--/* No nav dropdown for this page */-->
+<div layout:fragment="nav"></div>
 
 <div class="container" layout:fragment="bodyContent">
 
@@ -19,8 +19,9 @@
           autocomplete="off" accept-charset="UTF-8">
 
         <div>
-            <input id="cloudName" type="text" class="form-control signup-name" placeholder="=you..."
-                   required="required" autofocus="autofocus"/>
+            <input type="text" id="cloudName" name="cloudName"
+                   class="form-control signup-name" placeholder="=you..."
+                   required="required" autofocus="autofocus" />
             <span id="cloudNameHelp" class="help-inline"></span>
         </div>
 
