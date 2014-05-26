@@ -21,7 +21,7 @@
 
 
         <form action="#" th:action="@{/validatecodes}" method="post"
-              class="form-primary" th:object="${validateInfo}">
+              class="form-primary" th:object="${validateInfo}" id="validateCodesForm">
 
             <!--/* Email code */-->
             <div class="form-group">
@@ -37,7 +37,7 @@
             <div class="form-group">
                 <input type="text" id="smsCode" name="smsCode"
                        class="form-control" placeholder="text code"
-                       required="required" autofocus="autofocus"/>
+                       required="required"/>
                 <p class="help-block" th:text="|Sent to ${verifyingPhone}|">
                     Sent to +123546789
                 </p>
@@ -46,7 +46,7 @@
             <!--/* I agree checkbox */-->
             <div class="form-group">
                 <label class="secondary">
-                    <input type="checkbox" name="terms" />
+                    <input type="checkbox" id="terms" name="terms" />
                     I agree to the
                     <a target="_blank" onclick="return windowpop(this.href, 545, 433);"
                        href="http://openidentityexchange.org/trust-frameworks/respect-trust-framework">
@@ -75,7 +75,50 @@
 </div>
 
 <th:block layout:fragment="postFooterContent">
+    <script>
+        /*<![CDATA[*/
+        $(document).ready(function () {
+            $('#validateCodesForm').validate({
+                rules: {
+                    emailCode: {
+                        required: true
+                    },
+                    smsCode: {
+                        required: true
+                    },
+                    terms: {
+                        required: true
+                    }
+                },
+                messages: {
+                    emailCode: {
+                        required: 'Please enter the email code'
+                    },
+                    smsCode: {
+                        required: 'Please enter the sms code'
+                    },
+                    terms: {
+                        required: 'Please agree to the terms and conditions'
+                    }
+                },
+                errorClass: 'form-control-feedback',
+                validClass: 'form-control-feedback',
 
+                success: function(label) {
+                    label.closest('[class^="form-group"]').addClass('has-feedback');
+                    label.addClass('glyphicon glyphicon-ok');
+                },
+                highlight: function(element, errorClass, validClass) {
+                    $(element).closest('[class^="form-group"]').addClass('has-error').removeClass('has-success has-feedback');
+                    $(element.form).find("label[for=" + element.id + "]").removeClass('glyphicon glyphicon-ok');
+                },
+                unhighlight: function(element, errorClass, validClass) {
+                    $(element).closest('[class^="form-group"]').removeClass('has-error').addClass('has-success');
+                }
+            });
+        });
+        /*]]>*/
+    </script>
 </th:block>
 
 </body>
