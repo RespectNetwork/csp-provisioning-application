@@ -5,7 +5,7 @@
       layout:decorator="fragments/page">
 
 <head>
-    <link href="css/intlTelInput.css" rel="stylesheet" />
+    <link href="css/intlTelInput.css" rel="stylesheet"/>
 </head>
 
 <body class="userdetails">
@@ -23,7 +23,7 @@
     <span style="color:red" class="error" th:text="${error}"></span>
 
     <form action="#" th:action="@{/processuserdetails}" method="post"
-          class="form-primary" th:object="${userInfo}"  >
+          class="form-primary" th:object="${userInfo}" id="userDetailsForm">
 
         <!--/* Email address */-->
         <div class="form-group">
@@ -60,8 +60,7 @@
 
         <div id="responseDiv" class="error" style="color:red"></div>
 
-
-        <button type="submit" name="submit" id="submit" class="button btn btn-lg btn-primary">Next</button>
+        <button type="submit" name="submitBtn" id="submitBtn" class="button btn btn-lg btn-primary">Next</button>
 
     </form>
 </div>
@@ -69,9 +68,104 @@
 <th:block layout:fragment="postFooterContent">
     <script src="js/libs/intlTelInput.min.js"></script>
     <script src="js/libs/data.js"></script>
-
     <script>
+        /*<![CDATA[*/
         $("#mobilePhone").intlTelInput({autoHideDialCode: true, dialCodeDelimiter: "."});
+
+        $(document).ready(function () {
+
+            function satisfiesRange(value, reqCount, range) {
+                var foundCount = 0;
+                for (var i = 0; i < value.length; i++) {
+                    var idx = range.indexOf(value[i]);
+                    if (idx >= 0 && ++foundCount == reqCount) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            $.validator.addMethod('checkPasswordAlpha', function (value, element, params) {
+                return satisfiesRange(value, params.count, params.range);
+            });
+            $.validator.addMethod('checkPasswordNumeric', function (value, element, params) {
+                return satisfiesRange(value, params.count, params.range);
+            });
+            $.validator.addMethod('checkPasswordSymbolic', function (value, element, params) {
+                return satisfiesRange(value, params.count, params.range);
+            });
+            $.validator.addMethod('validatePhoneNumber', function (value, element, params) {
+                return /^\+[0-9]{1,3}\.[0-9]{4,14}(?:x.+)?$/.test(value);
+            });
+
+            var PASSWORD_MIN_LENGTH = 8;
+            var PASSWORD_MIN_ALPHA = 2;
+            var PASSWORD_MIN_NUMERIC = 2;
+            var PASSWORD_MIN_SYMBOLIC = 1;
+
+            var PASSWORD_ALPHA = 'abcdefghijklmnopqrstuvwqyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            var PASSWORD_NUMERIC = '1234567890';
+            var PASSWORD_SYMBOLS = '~!@#$%^&*()_+`-={}|[]\\;\':",./<>?';
+
+            $('#userDetailsForm').validate({
+                rules: {
+                    email: {
+                        required: true,
+                        email: true
+                    },
+                    mobilePhone: {
+                        required: true,
+                        validatePhoneNumber: true
+                    },
+                    password: {
+                        required: true,
+                        minlength: PASSWORD_MIN_LENGTH,
+                        checkPasswordAlpha: { count: PASSWORD_MIN_ALPHA, range: PASSWORD_ALPHA },
+                        checkPasswordNumeric: { count: PASSWORD_MIN_NUMERIC, range: PASSWORD_NUMERIC },
+                        checkPasswordSymbolic: { count: PASSWORD_MIN_SYMBOLIC, range: PASSWORD_SYMBOLS }
+                    },
+                    confirmPassword: {
+                        required: true,
+                        equalTo: '#password'
+                    }
+                },
+                messages: {
+                    email: 'Please enter a valid email address',
+                    mobilePhone: {
+                        required: 'Please enter a mobile number',
+                        validatePhoneNumber: 'Please enter a mobile number in the form +CCC.NNNNNNNNNN'
+                    },
+                    password: {
+                        required: 'Please provide a password',
+                        minlength: 'Your password must be at least ' + PASSWORD_MIN_LENGTH + ' characters',
+                        checkPasswordAlpha: 'Password must contain at least ' + PASSWORD_MIN_ALPHA + ' letters',
+                        checkPasswordNumeric: 'Password must contain at least ' + PASSWORD_MIN_NUMERIC + ' numbers',
+                        checkPasswordSymbolic: 'Password must contain at least ' + PASSWORD_MIN_SYMBOLIC + ' symbols'
+                    },
+                    confirmPassword: {
+                        required: 'Please repeat password',
+                        equalTo: 'Passwords do not much'
+                    }
+                },
+                errorClass: 'form-control-feedback',
+                validClass: 'form-control-feedback',
+
+                success: function(label) {
+                    label.parent().addClass('has-feedback');
+                    label.addClass('glyphicon glyphicon-ok');
+                },
+                highlight: function(element, errorClass, validClass) {
+                    $(element).parent().addClass('has-error').removeClass('has-success');
+                    // remove success elements
+                    $(element).parent().removeClass('has-feedback');
+                    $(element.form).find("label[for=" + element.id + "]").removeClass('glyphicon glyphicon-ok');
+                },
+                unhighlight: function(element, errorClass, validClass) {
+                    $(element).parent().removeClass('has-error').addClass('has-success');
+                }
+            });
+        });
+        /*]]>*/
     </script>
 </th:block>
 

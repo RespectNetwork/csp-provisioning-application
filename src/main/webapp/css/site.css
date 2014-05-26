@@ -108,6 +108,28 @@ label {
     font-weight: normal;
 }
 
+/* Form feedback elements */
+
+label.form-control-feedback {
+    font-weight: normal;
+}
+label.form-control-feedback.glyphicon {
+    font-size: 18px;
+}
+
+.has-feedback .form-control {
+    padding-right: 10px; /* this should be the same as form-control padding */
+}
+.has-feedback .form-control-feedback {
+    top: 8px;
+}
+
+.has-error .form-control {
+    border-color: #ff0000;
+}
+.has-success .form-control {
+    border-color: #00ff00
+}
 
 /* Form button */
 
@@ -172,16 +194,10 @@ body.userdetails div.flag-dropdown {
 
 
 /* validate */
+body.validate label {
+    font-weight: normal;
+}
+
 body.validate button#resendCodes {
     width: 180px;
-}
-
-
-/* payment */
-body.payment .radio {
-    text-align: left;
-}
-
-body.payment #giftCodeRadio {
-    height: 38px; /* Hack to get radio button vertically centred in gift code text input */
 }
