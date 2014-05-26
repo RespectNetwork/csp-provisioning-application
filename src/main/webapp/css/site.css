@@ -86,29 +86,34 @@ h1 {
 
 /* Form button */
 
-.btn-primary {
+.btn {
     height: 40px;
     width: 150px;
-    border: 0px;
+    /* border: 0px; */
     color: #ffffff;
     padding: 7px 0;
     font: 20px "AvenirNext", helvetica, arial, sans-serif;
     background-image: none;
-    background-color: #02e4ff;
     -webkit-border-radius: 4px;
     -moz-border-radius: 4px;
     border-radius: 4px;
     text-shadow: none;
     margin-top: 20px;
 }
+.btn-primary {
+    background-color: #02e4ff;
+    border-color: #02b4cc;
+}
 .btn-primary:hover,
 .btn-primary:focus {
-    background-color: #02e4ff;
+    background-color: #02cbe6;
+    border-color: #029eb3;
     background-position: 0 -15px;
 }
 .btn-primary:active,
 .btn-primary.active {
-    background-color: #02e4ff;
+    background-color: #02cbe6;
+    border-color: #029eb3;
 }
 .btn-primary-loading {
     background-image: url("../img/ajax-loader.gif");
@@ -118,7 +123,7 @@ h1 {
 
 
 /* Page-specific customisations */
-/* signup  */
+/* signup */
 body.signup input#cloudName {
     margin-bottom: 10px;
 
@@ -138,4 +143,13 @@ body.userdetails div.form-group div.intl-tel-input {
 /* Make flag stay above :focus input */
 body.userdetails div.flag-dropdown {
     z-index: 4;
+}
+
+/* validate */
+body.validate label {
+    font-weight: normal;
+}
+
+body.validate button#resendCodes {
+    width: 180px;
 }
