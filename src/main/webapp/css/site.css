@@ -36,12 +36,17 @@ body > .container {
 .navbar {
     height: 90px;
 }
-.navbar-header {
+.navbar .container {
     margin-top: 30px;
 }
 .navbar-default {
     background-color: #fdfdfd;
     background-image: none;
+}
+.navbar .cloudName {
+    margin-top: 10px;
+    color: #02e4ff;
+    font-size: 28px;
 }
 
 .page-header {
@@ -144,6 +149,7 @@ body.userdetails div.form-group div.intl-tel-input {
 body.userdetails div.flag-dropdown {
     z-index: 4;
 }
+
 
 /* validate */
 body.validate label {
