@@ -69,7 +69,9 @@ h1 {
 .form-primary .form-control:focus {
     z-index: 2;
 }
-.form-primary input[type="text"] {
+.form-primary input[type="text"],
+.form-primary input[type="tel"],
+.form-primary input[type="email"] {
     height: 50px;
     font-size: 24px;
     text-align: center;
@@ -113,13 +115,25 @@ h1 {
 }
 
 
-/* Sign-up Customisations */
-
-.signup-name {
+/* Page-specific customisations */
+/* signup  */
+body.signup input#cloudName {
     margin-bottom: 10px;
 
 }
 
-.signup-submit {
+body.signup #submit {
     margin-top: 10px;
+}
+
+
+/* userdetails */
+/* intl-tel-input JS wraps the input in another div, which we need to adjust */
+body.userdetails div.form-group div.intl-tel-input {
+    width: 100%;
+
+}
+/* Make flag stay above :focus input */
+body.userdetails div.flag-dropdown {
+    z-index: 4;
 }

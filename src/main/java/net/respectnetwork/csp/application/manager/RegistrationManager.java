@@ -124,7 +124,7 @@ public class RegistrationManager {
     public static final String CSPGiftCardPurchaseURIKey = "<$https><#giftcard><#registration>";
     
     public static final String CloudNameRegEx = "^=[a-z\\d]+((.|-)[a-z\\d]+)*$";
-    public static final String phoneNumberRegEx = "^\\+[0-9]{1,3}\\.[0-9]{4,14}(?:x.+)?$";
+    public static final String phoneNumberRegEx = "^\\+[0-9]{5,17}(?:x.+)?$";
     public static final String validINameFormat = "Personal cloud names must start with an = sign and business cloud names with a + sign. After that, they may contain up to 64 characters in any supported character set, plus dots or dashes. They may not start or end with a dot or a dash nor contain consecutive dots or dashes. The supported character sets include Latin (which covers many European languages such as German, Swedish and Spanish), Chinese, Japanese, and Korean.";
     
     /**
@@ -405,7 +405,7 @@ public class RegistrationManager {
     public void sendValidationCodes(String sessionId, String email, String mobilePhone)
         throws CSPValidationException{
         if (sendMailAndSMS) {
-            logger.debug("Not sending Validation messages: sendMailAndSMS = true ");
+            logger.debug("Sending Validation messages: sendMailAndSMS = true ");
             userValidator.sendValidationMessages(sessionId, email, mobilePhone);
         } else {
             logger.debug("Not sending Validation messages: sendMailAndSMS = false ");
