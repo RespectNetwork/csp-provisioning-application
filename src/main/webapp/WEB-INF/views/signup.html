@@ -21,7 +21,8 @@
         <div class="form-group" id="cloudNameGroup">
             <input type="text" id="cloudName" name="cloudName" class="form-control" placeholder="=you..."
                    autofocus="autofocus" required="required" />
-            <span id="cloudNameHelp" class="help-inline"></span>
+            <span id="cloudNameHelpIcon" class="glyphicon glyphicon-ok form-control-feedback hidden"></span>
+            <span id="cloudNameHelp" class="form-control-feedback"></span>
         </div>
 
         <p class="secondary">e.g., =jane, =janedoe, =jane.doe</p>
@@ -39,6 +40,7 @@
         $(document).ready(function () {
 
             var cloudNameGroup = $('#cloudNameGroup');
+            var cloudNameHelpIcon = $('#cloudNameHelpIcon');
 
             // the value of this var is the id of the input element
             // that the user is typing into
@@ -55,7 +57,13 @@
 
                 completed: function (elem, success) {
 
+                    // no longer loading
                     cloudNameInput.removeClass('btn-primary-loading');
+
+                    // reset view state
+                    cloudNameGroup.removeClass('has-success has-warning has-error');
+                    cloudNameHelpIcon.addClass('hidden');
+                    cloudNameHelpIcon.removeClass('glyphicon-ok glyphicon-remove glyphicon-warning-sign');
 
                     // success var will contain a 1 if the name is available and 0 if it not available.
                     console.log('Checking cloud... :: success=' + success);
@@ -63,24 +71,24 @@
                     // clear error
                     if (cloudNameInput.val().trim() == '') {
                         messageSpan.html('');
-                        cloudNameGroup.removeClass('has-error');
-                        cloudNameGroup.removeClass('has-success');
                         return;
                     }
 
-                    if (success == 1) { // available
-                        messageSpan.html("Your cloud name is available");
-                        messageSpan.css('color', 'green');
+                    cloudNameHelpIcon.removeClass('hidden');
+
+                    if (success === 1) { // available
+                        messageSpan.html('Your cloud name is available');
                         cloudNameGroup.addClass('has-success');
+                        cloudNameHelpIcon.addClass('glyphicon-ok');
                         isAvailable = true;
-                    } else if (success == 0) { // unavailable
+                    } else if (success === 0) { // unavailable
                         messageSpan.html("This cloud name is NOT available");
-                        messageSpan.css('color', 'red');
-                        cloudNameGroup.addClass('has-error');
+                        cloudNameGroup.addClass('has-warning');
+                        cloudNameHelpIcon.addClass('glyphicon-warning-sign');
                     } else { // formatting error
-                        messageSpan.html("Cloud names must contain at least 2 letters, numbers, or dots");
-                        messageSpan.css('color', 'red');
                         cloudNameGroup.addClass('has-error');
+                        messageSpan.html("Cloud names must contain at least 2 letters, numbers, or dots");
+                        cloudNameHelpIcon.addClass('glyphicon-remove');
                     }
                 },
 
