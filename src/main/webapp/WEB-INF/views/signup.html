@@ -15,8 +15,9 @@
         <h1>Choose your cloud name:</h1>
     </div>
 
-    <form action="#" class="form-primary" role="form" th:object="${signUpInfo}" th:action="@{/signup}" method="post"
-          accept-charset="UTF-8" id="signup">
+    <form action="#" th:action="@{/signup}" method="post"
+          class="form-primary" role="form" th:object="${signUpInfo}"
+          autocomplete="off" accept-charset="UTF-8" id="signup">
 
         <div class="form-group" id="cloudNameGroup">
             <input type="text" id="cloudName" name="cloudName" class="form-control" placeholder="=you..."
