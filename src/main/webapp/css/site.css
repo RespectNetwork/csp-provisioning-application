@@ -88,18 +88,28 @@ h1 {
     vertical-align: middle;
 }
 
+/* form-secondary is a smaller left-aligned form */
+.form-secondary .form-group {
+    text-align: left;
+}
+.form-secondary .help-block,
+.form-secondary button {
+    text-align: center;
+}
 .form-secondary input[type="text"],
 .form-secondary input[type="tel"],
 .form-secondary input[type="password"],
 .form-secondary input[type="email"] {
     height: inherit;
     font-size: 16px;
-    text-align: left;
     -moz-border-radius:5px; /* Firefox */
     -webkit-border-radius: 5px; /* Safari, Chrome */
     -khtml-border-radius: 5px; /* KHTML */
     border-radius: 5px; /* CSS3 */
     vertical-align: middle;
+}
+.form-secondary input[type="radio"] {
+    margin-right: 10px;
 }
 .form-secondary .form-control {
     padding: 10px;
@@ -168,6 +178,23 @@ label.form-control-feedback.glyphicon {
     background-position: right 10px center;
 }
 
+/* Equation */
+.equation {
+    text-align: left;
+    display: table;
+    font-size: 140%;
+    margin-left: auto;
+    margin-right: auto;
+}
+.equation .plus {
+    font-size: 140%;
+}
+.equation .equals {
+    border-top: 1px solid #999A9B;
+    padding-top: 8px;
+    margin-top: 4px;
+}
+
 
 /* Page-specific customisations */
 /* signup */
@@ -201,4 +228,32 @@ body.validate label {
 
 body.validate button#resendCodes {
     width: 180px;
+}
+
+
+/* payment */
+body.payment .form-group {
+    margin-bottom: 25px;
+}
+body.payment .input-group-addon {
+    border: none;
+}
+body.payment #giftCodes {
+    border-radius: 5px;
+}
+body.payment #giftCodeHelp {
+    margin-left: 47px;
+}
+body.payment #agreeCheckbox {
+    margin-right: 7px;
+}
+body.payment .form-group img {
+    margin-right: 8px;
+}
+body.payment .help-block {
+    color: inherit;
+}
+body.payment #orderSummary {
+    text-align: right;
+    margin-bottom: 15px;
 }
