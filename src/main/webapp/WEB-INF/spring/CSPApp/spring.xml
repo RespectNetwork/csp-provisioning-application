@@ -235,5 +235,8 @@
         <beans:constructor-arg value="${csp.nameAvailabilityCheckURL}"/>
         <beans:qualifier value="nameAvailabilityCheckURL"/>
     </beans:bean>
-    
+    <beans:bean id="passwordManager"
+        class="net.respectnetwork.csp.application.manager.PasswordManager" >
+       <beans:constructor-arg name="cspRegistrar" ref="basicCSP"/>
+	</beans:bean>
 </beans:beans>

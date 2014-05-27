@@ -3,8 +3,10 @@ package net.respectnetwork.csp.application.controller;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
@@ -16,6 +18,7 @@ import net.respectnetwork.csp.application.dao.DAOException;
 import net.respectnetwork.csp.application.dao.DAOFactory;
 import net.respectnetwork.csp.application.exception.UserRegistrationException;
 import net.respectnetwork.csp.application.form.DependentForm;
+import net.respectnetwork.csp.application.form.DependentFormIndividual;
 import net.respectnetwork.csp.application.form.PaymentForm;
 import net.respectnetwork.csp.application.manager.RegistrationManager;
 import net.respectnetwork.csp.application.manager.StripePaymentProcessor;
@@ -209,11 +212,11 @@ public class PersonalCloudDependentController
       cspModel = DAOFactory.getInstance().getCSPDAO()
             .get(this.getCspCloudName());
 
-      logger.debug("All dependents ..." + dependentForm.getDependentCloudName() );
-      String[] arrDependentCloudName = dependentForm.getDependentCloudName()
-            .split(",");
-      String[] arrPasswd = dependentForm.getDependentCloudPassword()
-            .split(",");
+      List<DependentFormIndividual> dependentList = new ArrayList<DependentFormIndividual>();
+      dependentList = dependentForm.getDependentFormIndividual();
+
+      ArrayList<String> arrDependentCloudName = dependentForm.getDependentCloudName();
+      ArrayList<String> allPasswd = dependentForm.getDependentCloudPassword();
 
       String errorStr = "";
 
@@ -230,7 +233,7 @@ public class PersonalCloudDependentController
                errors = true;
                break;
             }
-            if(!RegistrationManager.validatePassword(arrPasswd[i]))
+            if(!RegistrationManager.validatePassword(allPasswd.get(i)))
             {
                errorStr += "\nInvalid password. Please provide a password that is at least 8 characters, have at least 2 letters, 2 numbers and at least one special character, e.g. @, #, $ etc.";;
                errors = true;
@@ -277,7 +280,7 @@ public class PersonalCloudDependentController
       }
       
       cspModel = DAOFactory.getInstance().getCSPDAO().get(this.getCspCloudName());
-      BigDecimal quantity = BigDecimal.valueOf((long) arrDependentCloudName.length);
+      BigDecimal quantity = BigDecimal.valueOf((long) arrDependentCloudName.size());
       
       
 
@@ -292,7 +295,7 @@ public class PersonalCloudDependentController
       {
          regSession.setTransactionType(PaymentForm.TXN_TYPE_DEP);
       }
-      paymentForm.setNumberOfClouds(arrDependentCloudName.length);
+      paymentForm.setNumberOfClouds(arrDependentCloudName.size());
       if(cspModel.getPaymentGatewayName().equals("GIFT_CODE_ONLY"))
       {
          paymentForm.setGiftCodesOnly(true);

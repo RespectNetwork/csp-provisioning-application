@@ -608,6 +608,18 @@ public class PersonalCloudController
       ModelAndView mv = null;
       PaymentForm paymentForm = new PaymentForm(paymentFormIn);
 
+      CSPModel cspModel = null;
+      try {
+          cspModel = DAOFactory.getInstance().getCSPDAO()
+                  .get(this.getCspCloudName());
+          if (cspModel.getPaymentGatewayName().equals("GIFT_CODE_ONLY")) {
+              paymentForm.setGiftCodesOnly(true);
+          }
+      } catch (DAOException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+      }
+
       String cloudName = regSession.getCloudName();
       String sessionIdentifier = regSession.getSessionId();
       String email = regSession.getVerifiedEmail();
@@ -838,7 +850,7 @@ public class PersonalCloudController
                      if (gcrObj != null)
                      {
                         errors = true;
-                        errorText += "This giftcode , id "
+                        errorText += "This giftcode id "
                               + giftCode
                               + " has already been redeemed. Please remove it from the list. \n";
 
@@ -847,7 +859,7 @@ public class PersonalCloudController
                   } else
                   {
                      errors = true;
-                     errorText += "The giftcode , id " + giftCode
+                     errorText += "The giftcode id " + giftCode
                            + " is not valid. Please check the giftcode id.\n";
                   }
                } catch (DAOException e2)
@@ -993,17 +1005,6 @@ public class PersonalCloudController
          logger.debug("Going to show the CC payment screen now.");
          mv = new ModelAndView("creditCardPayment");
          String cspHomeURL = request.getContextPath();
-         CSPModel cspModel = null;
-
-         try
-         {
-            cspModel = DAOFactory.getInstance().getCSPDAO()
-                  .get(this.getCspCloudName());
-         } catch (DAOException e)
-         {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-         }
 
          BigDecimal amount = regSession.getCostPerCloudName().multiply(
                new BigDecimal(paymentForm.getNumberOfClouds()));
@@ -1069,12 +1070,11 @@ public class PersonalCloudController
       {
          return null;
       }
-      String[] arrDependentCloudName = dependentForm.getDependentCloudName()
-            .split(",");
-      String[] arrDependentCloudPasswords = dependentForm
-            .getDependentCloudPassword().split(",");
-      String[] arrDependentCloudBirthDates = dependentForm
-            .getDependentBirthDate().split(",");
+      ArrayList<String> arrDependentCloudName = dependentForm.getDependentCloudName();
+      ArrayList<String> arrDependentCloudPasswords = dependentForm
+            .getDependentCloudPassword();
+      ArrayList<String> arrDependentCloudBirthDates = dependentForm
+            .getDependentBirthDate();
 
       int cloudsPurchasedWithGiftCodes = 0;
       if (payment != null) // payment via CC
@@ -1102,7 +1102,7 @@ public class PersonalCloudController
                continue;
             }
          }
-         if (i >= arrDependentCloudName.length)
+         if (i >= arrDependentCloudName.size())
          {
             break;
          }
@@ -1123,8 +1123,8 @@ public class PersonalCloudController
                .registerDependent(CloudName.create(cloudName),
                      regSession.getPassword(),
                      CloudName.create(dependentCloudName),
-                     arrDependentCloudPasswords[i],
-                     arrDependentCloudBirthDates[i],
+                     arrDependentCloudPasswords.get(i),
+                     arrDependentCloudBirthDates.get(i),
                      paymentType,
                      paymentRefId);
          if (dependentCloudNumber != null)
@@ -1188,7 +1188,7 @@ public class PersonalCloudController
          }
          i++;
       }
-      if (i < arrDependentCloudName.length)
+      if (i < arrDependentCloudName.size())
       {
          mv = new ModelAndView("creditCardPayment");
          /*
