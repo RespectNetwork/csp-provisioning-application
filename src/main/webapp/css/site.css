@@ -139,7 +139,7 @@ label.form-control-feedback.glyphicon {
 .btn {
     height: 40px;
     width: 150px;
-    /* border: 0px; */
+    border: 0px;
     color: #ffffff;
     padding: 7px 0;
     font: 20px "AvenirNext", helvetica, arial, sans-serif;
@@ -149,21 +149,18 @@ label.form-control-feedback.glyphicon {
     border-radius: 4px;
     text-shadow: none;
     margin-top: 20px;
+    transition: background-color 300ms ease-out 0s;
 }
 .btn-primary {
     background-color: #02e4ff;
-    border-color: #02b4cc;
+    box-shadow: 0px 1px 1px 0px rgba(50, 50, 50, 0.5);
 }
 .btn-primary:hover,
 .btn-primary:focus {
-    background-color: #02cbe6;
-    border-color: #029eb3;
-    background-position: 0 -15px;
+    background-color: #1CD183;
 }
-.btn-primary:active,
 .btn-primary.active {
-    background-color: #02cbe6;
-    border-color: #029eb3;
+    background-color: #1CD183;
 }
 .btn-primary-loading {
     background-image: url("../img/ajax-loader.gif");
