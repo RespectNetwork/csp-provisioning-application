@@ -8,6 +8,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.respectnetwork.csp.application.exception.UserRegistrationException;
+import net.respectnetwork.csp.application.model.AvailabilityResponse;
 import net.respectnetwork.sdk.csp.BasicCSPInformation;
 import net.respectnetwork.sdk.csp.CSP;
 import net.respectnetwork.sdk.csp.UserValidator;
@@ -19,6 +20,14 @@ import net.respectnetwork.sdk.csp.payment.PaymentProcessor;
 import net.respectnetwork.sdk.csp.payment.PaymentStatusCode;
 import net.respectnetwork.sdk.csp.validation.CSPValidationException;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -966,5 +975,56 @@ public class RegistrationManager {
    {
       this.nameAvailabilityCheckURL = nameAvailabilityCheckURL;
    }
+// TODO:
+    // 1. We should write Rest client to make a call to AvailabilityAPI.
+    // That way we can reuse it whereever it is required in application.
+    // 2. Url to AvailabilityAPI needs to modify to cater both Plus and Equal
+    /**
+     * This method checks the availability of cloud name into the registry.
+     * 
+     * @param cloudName
+     * @return
+     * @throws Exception
+     */
+    public boolean isCloudNameAvailableInRegistry(String cloudName)
+            throws Exception {
+        logger.info("Going to get cloud name availability from registry "
+                + nameAvailabilityCheckURL);
 
+        boolean available = false;
+        CloseableHttpClient httpclient = HttpClients.createDefault();
+        if (cloudName.startsWith("=")) {
+            cloudName = cloudName.substring(cloudName.indexOf("=") + 1);
+        }
+        String url = nameAvailabilityCheckURL + "/api/availability/equals/"
+                + cloudName;
+        logger.debug("Final cloud name availability check URL : "
+                + nameAvailabilityCheckURL);
+        CloseableHttpResponse response = null;
+        try {
+            HttpGet httpGet = new HttpGet(url);
+            response = httpclient.execute(httpGet);
+            // TODO: in case Http status code is not 200, what we should do.
+            // Right now returning false in case status not OK
+            if (HttpStatus.SC_OK == response.getStatusLine().getStatusCode()) {
+                HttpEntity entity = response.getEntity();
+                byte[] bytes = EntityUtils.toByteArray(entity);
+                if (bytes.length == 0) {
+                    return available;
+                }
+                ObjectMapper objectMapper = new ObjectMapper();
+                AvailabilityResponse availabilityResponse = objectMapper
+                        .readValue(bytes, AvailabilityResponse.class);
+                available = availabilityResponse.isAvailable();
+                logger.info("Is cloud name {} available: " + available,
+                        cloudName);
+            }
+        } finally {
+            if (response != null) {
+                response.close();
+            }
+            httpclient.close();
+        }
+        return available;
+    }
 }

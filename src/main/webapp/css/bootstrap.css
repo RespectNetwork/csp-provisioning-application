@@ -692,7 +692,10 @@ a.text-warning:hover,
 a.text-warning:focus {
   color: #a47e3c;
 }
-
+.dependent-error {
+    color: #FF0000;
+    font-size: 13px;
+}
 .text-error {
   color: #b94a48;
 }
@@ -1448,7 +1451,9 @@ textarea[readonly] {
 button[disabled] {
   background-color:#B6B6B6;
 }
-
+input[type="submit"][disabled] {
+  background-color:#B6B6B6;
+}
 input[type="radio"][disabled],
 input[type="checkbox"][disabled],
 input[type="radio"][readonly],

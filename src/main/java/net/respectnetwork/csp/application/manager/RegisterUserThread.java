@@ -112,10 +112,10 @@ public class RegisterUserThread implements Runnable
 
          cspRegistrar.setRespectNetworkMembershipInRN(cloudNumber, new Date(),
                null);
-         if(cdc != null && cdc.equals(NeustarRNDiscountCode.OnePersonOneName))
-         {
-            cspRegistrar.setRespectFirstMembershipInRN(cloudNumber);
-         }
+//         if(cdc != null && cdc.equals(NeustarRNDiscountCode.OnePersonOneName))
+//         {
+//            cspRegistrar.setRespectFirstMembershipInRN(cloudNumber);
+//         }
          // Step 8: Change Secret Token
 
          cspRegistrar.setCloudSecretTokenInCSP(cloudNumber, userPassword);

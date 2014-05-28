@@ -9,6 +9,7 @@ import net.respectnetwork.csp.application.dao.DAOException;
 import net.respectnetwork.csp.application.dao.DAOFactory;
 import net.respectnetwork.csp.application.form.SignUpForm;
 import net.respectnetwork.csp.application.invite.InvitationManager;
+import net.respectnetwork.csp.application.manager.RegistrationManager;
 import net.respectnetwork.csp.application.model.GiftCodeModel;
 
 import org.slf4j.Logger;
@@ -36,6 +37,8 @@ public class HomeController {
     public static final String URL_PARAM_NAME_INVITE_CODE = "invitecode";
     public static final String URL_PARAM_NAME_GIFT_CODE   = "giftcode"  ;
     public static final String URL_PARAM_NAME_INVITER     = "inviter"   ;
+
+    private RegistrationManager theManager;
 
 	/** 
      * Invitation Service
@@ -142,7 +145,7 @@ public class HomeController {
          {
             signUpForm.setCloudName(cloudName);
          }
-         
+        signUpForm.setNameAvailabilityCheckURL(theManager.getNameAvailabilityCheckURL());
         mv.addObject("signUpInfo", signUpForm);
         return mv;
 	}
@@ -167,4 +170,12 @@ public class HomeController {
        return "CSPTC";
    }
 
+    public RegistrationManager getTheManager() {
+        return theManager;
+    }
+
+    @Autowired
+    public void setTheManager(RegistrationManager theManager) {
+        this.theManager = theManager;
+    }
 }

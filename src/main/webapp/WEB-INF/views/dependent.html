@@ -46,6 +46,7 @@
 	<!--include the javascript that checks availability-->
 	<script src="js/libs/nameavailability.js"></script>
 	<script src="js/libs/validatedate.js"></script>
+	<script src="js/libs/validatePwd.js"></script>
 <link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css" />
 <script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
 </head>
@@ -82,7 +83,7 @@
       <div class="span5" >		
 			<br/><span style="color:red" th:text="${error}"></span><br/>      	
 	      <p class="primaryLeftJustified">Add clouds for my dependents </p>
-			<br></br><span class="error"  name="duplicateCloudName" id="duplicateCloudName"></span>	      
+			<br></br><span class="dependent-error"  name="duplicateCloudName" id="duplicateCloudName"></span>
 	      	<p class="payment3">Dependent's cloud name:</p>                           
           <form action="#"  th:object="${dependentForm}" th:action="@{/dependentSubmit}" method="post">
       		<div id="allDependents">
@@ -95,8 +96,8 @@
 				<br />          	
 				<input type="password" th:field="*{dependentFormIndividual[0].dependentPassword}" name="dependentCloudPassword" value="" class="inputFields smallMarg"
                                 id="dependentCloudPassword" placeholder="password" required="required"
-                                th:value="*{dependentCloudPassword}" />
- 				
+                                th:value="*{dependentCloudPassword}" onchange="validatePwd(this.value)" />
+                <br></br><span class="dependent-error"  name="isValidPassword" id="isValidPassword"></span>
  			    	<p class="secondary"></p>
 <!-- 			    	
            		<p class="payment3">Dependent's birthdate:
@@ -108,7 +109,7 @@
   -->   
   				<p class="payment3">Dependent's birthdate: </p>
 				<input type="text" th:field="*{dependentFormIndividual[0].dependentBirthDate}" name="dependentBirthDate" value="" class="inputFields smallMarg dependentBirthDate" placeholder="MM/DD/YYYY" required="required" onchange="validateDate(this.value)"/>
-				<br></br><span class="error"  name="isValidDate" id="isValidDate"></span>
+				<br></br><span class="dependent-error"  name="isValidDate" id="isValidDate"></span>
                 <p class="secondary">
 		     	<input type="checkbox" name="consent" id="consent"  required="required"  />
             	I consent to my dependent obtaining a personal cloud.        
@@ -155,24 +156,20 @@
 	        	{
 	        		// Make whatever changes to the UI to indicate that the name is
 	        		// available
-	        		$(messageSpan).html(" &radic; Your cloud name is available");
+                    $(messageSpan).html(" &radic; Your cloud name is available. Claim it.");
 	        		$(messageSpan).css('color', 'green');
+                    $(messageSpan).css('font-size', '13px');
 					document.getElementById('submit').disabled = false;		
 					if(window.mycounter != undefined) {
   						checkIfCloudNamesAreUnique();
 					}
-                }else if(success==0){
+                }else {
                     // Make whatever changes to the UI to indicate that the name is
                     // unavailable
-                    $(messageSpan).html("This cloud name is NOT available");
+                    $(messageSpan).html("Sorry, that cloud name is not available. Please try again.");
                     $(messageSpan).css('color', 'red');
+                    $(messageSpan).css('font-size', '13px');
 					document.getElementById('submit').disabled = true;	
-                }else{
-                    // Make whatever changes to the UI to indicate that the name is
-                    // unavailable
-                    $(messageSpan).html("This cloud name is INVALID");
-                    $(messageSpan).css('color', 'red');
-					document.getElementById('submit').disabled = true;		
                 }
 				
 
@@ -234,7 +231,7 @@
      }
      function setDatePicker() {
          $(function() {
-            $( ".dependentBirthDate" ).datepicker({changeMonth: true, changeYear: true, yearRange: "1990:2020"});
+            $( ".dependentBirthDate" ).datepicker({changeMonth: true, changeYear: true, yearRange: "1900:2020"});
         });
      }
      setDatePicker();
@@ -250,23 +247,30 @@
       var depCloudName = 'dependentCloudName' +  window.mycounter;
       var depIsAvailable = 'isAvailable' +  window.mycounter;
       var isValidDate = 'isValidDate' +  window.mycounter;
-	  var divId = 'dependent'+ window.mycounter;
+      var divId = 'dependent'+ window.mycounter;
+      var isValidPassword = 'isValidPassword' +  window.mycounter;
 
       var strA = '<div id="'+divId+'"><table ><tr><td><p class="payment3">Dependent&apos;s cloud name &nbsp;&nbsp;&nbsp;&nbsp;<a href="#" onclick="removeDiv('+divId+');">Delete Dependent</a></p></td></tr>  <tr> <td> <input type="text" class="inputFields smallMarg" name="dependentFormIndividual[' + window.mycounter + '].dependentCloudName' ;
-      var strC = strA + '"  id="' ;
-      var strD = strC +  depCloudName ;
-      var strE = strD + '" placeholder="=dependent name" required="required" /> </td> </tr><tr><td><span class="error"  name="' ;
-      var strF = strE + depIsAvailable ;
-      var strG = strF + '"  id="' ;
-      var strH = strG + depIsAvailable ;
-      var strI = strH + '"></span></td></tr> <tr><td><input type="password" name="dependentFormIndividual[' + window.mycounter + '].dependentPassword" class="inputFields smallMarg" id="dependentCloudPassword" placeholder="password" required="required"/> </td></tr><tr><td><p class="payment3">Dependent&apos;s birthdate:</p></td></tr><tr><td><input type="text" class="inputFields smallMarg dependentBirthDate" name="dependentFormIndividual[' + window.mycounter + '].dependentBirthDate" value="" placeholder="MM/DD/YYYY" required="required" onchange="validateDate(this.value, ' ;
-      var strJ = strI + window.mycounter ;
-      var strK = strJ + ')"   /></td></tr><tr><td><span class="error"  name="isValidDate" id="isValidDate"></span></td></tr><tr><td><span class="error"  name="' ;
-      var strL = strK + isValidDate ;
-      var strM = strL + '"  id="' ;
-      var strN = strM + isValidDate ;
-      var strO = strN + '"></span></td></tr><tr><td><p class="secondary"> <input type="checkbox" name="consent"  required="required" /> I consent to my dependent obtaining a personal cloud.</p></td></tr></table></div>';
-      $( strO ).appendTo("#allDependents");
+      var strB = strA + '"  id="' ;
+      var strC = strB +  depCloudName ;
+      var strD = strC + '" placeholder="=dependent name" required="required" /> </td> </tr><tr><td><span class="error"  name="' ;
+      var strE = strD + depIsAvailable ;
+      var strF = strE + '"  id="' ;
+      var strG = strF + depIsAvailable ;
+      var strH = strG + '"></span></td></tr> <tr><td><input type="password" name="dependentFormIndividual[' + window.mycounter + '].dependentPassword" class="inputFields smallMarg" id="dependentCloudPassword" placeholder="password" required="required" onchange="validatePwd(this.value, ' ;
+      var strI = strH + window.mycounter ;
+      var strJ = strI + ')" /> </td></tr><tr><td><span class="dependent-error"  name="' ;
+      var strK = strJ + isValidPassword ;
+      var strL = strK + '"  id="' ;
+      var strM = strL + isValidPassword;
+      var strN = strM + '"></span></td></tr><tr><td><p class="payment3">Dependent&apos;s birthdate:</p></td></tr><tr><td><input type="text" class="inputFields smallMarg dependentBirthDate" name="dependentFormIndividual[' + window.mycounter + '].dependentBirthDate" value="" placeholder="MM/DD/YYYY" required="required" onchange="validateDate(this.value, ' ;
+      var strO = strN + window.mycounter ;
+      var strP = strO + ')"   /></td></tr><tr><td><span class="dependent-error"  name="' ;
+      var strQ = strP + isValidDate ;
+      var strR = strQ + '"  id="' ;
+      var strS = strR + isValidDate ;
+      var strT = strS + '"></span></td></tr><tr><td><p class="secondary"> <input type="checkbox" name="consent"  required="required" /> I consent to my dependent obtaining a personal cloud.</p></td></tr></table></div>';
+      $( strT ).appendTo("#allDependents");
 
       checkCloudNameAvailability(depCloudName, depIsAvailable);
       setDatePicker();
@@ -280,26 +284,39 @@ function removeDiv(depDiv) {
     $(depDiv).remove();
 }	
 //Function to disable enable the Continue button.
-//Enable Continue botton, if no error in dependent cloudname and birthdate.
+//Enable Continue botton, if no error in dependent cloudname, password and birthdate.
 function disableEnableContinue() {
     var enableSubmit = true;
     if($('span#duplicateCloudName').text() != "") {
         enableSubmit = false;
     } else {
         if(window.mycounter == undefined) {
-            if($('span#isValidDate').text() != "") {
+            if($('span#isAvailable').text() == "Sorry, that cloud name is not available. Please try again.") {
+                enableSubmit = false;
+            }
+            if(($('span#isValidDate').text() != "") || ($('span#isValidPassword').text() != "")) {
                enableSubmit = false;
             }
         } else {
             var i=0;
             while(i<=window.mycounter && enableSubmit) {
                 if(i == 0) {
-                    if($('span#isValidDate').text() != "") {
+                    if($('span#isAvailable').text() == "Sorry, that cloud name is not available. Please try again.") {
                         enableSubmit = false;
+                        break;
+                    }
+                    if(($('span#isValidDate').text() != "") || ($('span#isValidPassword').text() != "")) {
+                        enableSubmit = false;
+                        break;
                     }
                 } else {
-                    if(($('span#isValidDate'+window.mycounter).text() != "")) {
+                    if($('span#isAvailable'+window.mycounter).text() == "Sorry, that cloud name is not available. Please try again.") {
                         enableSubmit = false;
+                        break;
+                    }
+                    if(($('span#isValidDate'+window.mycounter).text() != "") || ($('span#isValidPassword'+window.mycounter).text() != "")) {
+                        enableSubmit = false;
+                        break;
                     }
                 }
                 i++;
