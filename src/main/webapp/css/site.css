@@ -134,13 +134,6 @@ label.form-control-feedback.glyphicon {
     top: 8px;
 }
 
-.has-error .form-control {
-    border-color: #ff0000;
-}
-.has-success .form-control {
-    border-color: #00ff00
-}
-
 /* Form button */
 
 .btn {
