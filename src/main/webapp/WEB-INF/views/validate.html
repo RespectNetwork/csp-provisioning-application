@@ -78,7 +78,7 @@
     <script>
         /*<![CDATA[*/
         $(document).ready(function () {
-            $('#validateCodesForm').validate({
+            addFormValidation('#validateCodesForm', {
                 rules: {
                     emailCode: {
                         required: true
@@ -100,29 +100,6 @@
                     terms: {
                         required: 'Please agree to the terms and conditions'
                     }
-                },
-                errorClass: 'form-control-feedback',
-                validClass: 'form-control-feedback',
-
-                errorPlacement: function(label, element) {
-                    var group = element.closest('[class^="form-group"]');
-                    var secondary = group.find('[class^="secondary"]'); // if wrapped in secondary (e.g. check boxes)
-                    var insertAfterElement = element;
-                    if (secondary.length > 0) {
-                        insertAfterElement = secondary;
-                    }
-                    label.insertAfter(insertAfterElement);
-                },
-                success: function(label) {
-                    label.closest('[class^="form-group"]').addClass('has-feedback');
-                    label.addClass('glyphicon glyphicon-ok');
-                },
-                highlight: function(element, errorClass, validClass) {
-                    $(element).closest('[class^="form-group"]').addClass('has-error').removeClass('has-success has-feedback');
-                    $(element.form).find("label[for=" + element.id + "]").removeClass('glyphicon glyphicon-ok');
-                },
-                unhighlight: function(element, errorClass, validClass) {
-                    $(element).closest('[class^="form-group"]').removeClass('has-error').addClass('has-success');
                 }
             });
         });

@@ -17,11 +17,11 @@
 
     <form action="#" th:action="@{/signup}" method="post"
           class="form-primary" role="form" th:object="${signUpInfo}"
-          autocomplete="off" accept-charset="UTF-8" id="signup">
+          autocomplete="off" accept-charset="UTF-8" id="signupForm">
 
         <div class="form-group" id="cloudNameGroup">
             <input type="text" id="cloudName" name="cloudName" class="form-control" placeholder="=you..."
-                   autofocus="autofocus" required="required" />
+                   autofocus="autofocus" />
             <span id="cloudNameHelpIcon" class="glyphicon glyphicon-ok form-control-feedback hidden"></span>
             <span id="cloudNameHelp" class="form-control-feedback"></span>
         </div>
@@ -37,6 +37,10 @@
 <th:block layout:fragment="postFooterContent">
     <script src="js/libs/nameavailability.js"></script>
     <script>
+
+        var NAME_AVAILABLE = 'Your cloud name is available';
+        var NAME_UNAVAILABLE = 'This cloud name is NOT available';
+        var NAME_INVALID = 'Cloud names must contain at least 2 letters, numbers, or dots';
 
         $(document).ready(function () {
 
@@ -107,19 +111,16 @@
                 availabilityApi: "https://checkavailability-prod.respectnetwork.net/api/availability/equals/"
             });
 
-            $('#signup').validate({
+            $.validator.addMethod("isAvailable", function (value, element, param) {
+                        return isAvailable;
+                    });
+
+            addFormValidation('#signupForm', {
                 rules: {
                     cloudName: {
                         required: true,
-                        minlength: 3
-                    }
-                },
-                debug: true,
-                submitHandler: function(form) {
-                    if (isAvailable) {
-                        form.submit();
-                    } else {
-                        cloudNameInput.focus();
+                        minlength: 3,
+                        isAvailable: true
                     }
                 },
                 errorPlacement: function(error, element) {

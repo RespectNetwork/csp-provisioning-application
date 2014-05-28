@@ -107,7 +107,7 @@
             var PASSWORD_NUMERIC = '1234567890';
             var PASSWORD_SYMBOLS = '~!@#$%^&*()_+`-={}|[]\\;\':",./<>?';
 
-            $('#userDetailsForm').validate({
+            addFormValidation('#userDetailsForm', {
                 rules: {
                     email: {
                         required: true,
@@ -146,22 +146,6 @@
                         required: 'Please repeat password',
                         equalTo: 'Passwords do not much'
                     }
-                },
-                errorClass: 'form-control-feedback',
-                validClass: 'form-control-feedback',
-
-                success: function(label) {
-                    label.parent().addClass('has-feedback');
-                    label.addClass('glyphicon glyphicon-ok');
-                },
-                highlight: function(element, errorClass, validClass) {
-                    $(element).parent().addClass('has-error').removeClass('has-success');
-                    // remove success elements
-                    $(element).parent().removeClass('has-feedback');
-                    $(element.form).find("label[for=" + element.id + "]").removeClass('glyphicon glyphicon-ok');
-                },
-                unhighlight: function(element, errorClass, validClass) {
-                    $(element).parent().removeClass('has-error').addClass('has-success');
                 }
             });
         });
