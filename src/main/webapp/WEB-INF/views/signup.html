@@ -107,19 +107,16 @@
                 availabilityApi: /*[[${signUpInfo.nameAvailabilityCheckURL + '/api/availability/equals/'}]]*/ "https://checkavailability-prod.respectnetwork.net/api/availability/equals/"
             });
 
-            $('#signup').validate({
+            $.validator.addMethod("isAvailable", function (value, element, param) {
+                return isAvailable;
+            });
+
+            addFormValidation('#signupForm', {
                 rules: {
                     cloudName: {
                         required: true,
-                        minlength: 3
-                    }
-                },
-                debug: true,
-                submitHandler: function(form) {
-                    if (isAvailable) {
-                        form.submit();
-                    } else {
-                        cloudNameInput.focus();
+                        minlength: 3,
+                        isAvailable: true
                     }
                 },
                 errorPlacement: function(error, element) {
