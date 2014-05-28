@@ -24,7 +24,7 @@
               class="form-primary" th:object="${validateInfo}" id="validateCodesForm">
 
             <!--/* Email code */-->
-            <div class="form-group">
+            <div class="form-group" data-show-valid-glyph="false">
                 <input type="text" id="emailCode" name="emailCode"
                        class="form-control" placeholder="email code"
                        required="required" autofocus="autofocus"/>
@@ -34,7 +34,7 @@
             </div>
 
             <!--/* Text code */-->
-            <div class="form-group">
+            <div class="form-group" data-show-valid-glyph="false">
                 <input type="text" id="smsCode" name="smsCode"
                        class="form-control" placeholder="text code"
                        required="required"/>

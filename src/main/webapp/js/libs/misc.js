@@ -61,8 +61,11 @@ function addFormValidation(formSelector, validation) {
                 label.insertAfter(insertAfterElement);
             },
             success: function (label) {
-                label.closest('[class^="form-group"]').addClass('has-feedback');
-                label.addClass('glyphicon glyphicon-ok');
+                var group = label.closest('[class^="form-group"]');
+                group.addClass('has-feedback');
+                if (group.data('show-valid-glyph') !== false) {
+                    label.addClass('glyphicon glyphicon-ok');
+                }
             },
             highlight: function (element, errorClass, validClass) {
                 $(element).closest('[class^="form-group"]').addClass('has-error').removeClass('has-success has-feedback');
