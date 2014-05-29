@@ -336,7 +336,7 @@ public class RegistrationManager {
         throws UserRegistrationException {
               
         try {
-            CloudNumber[] existingCloudNumbers = cspRegistrar.checkPhoneAndEmailAvailableInRN(email, mobilePhone); 
+            CloudNumber[] existingCloudNumbers = cspRegistrar.checkPhoneAndEmailAvailableInRN(mobilePhone, email); 
             if (!requireUniqueness) { 
                 logger.warn("Overriding eMail/SMS uniqueness check.");
                 existingCloudNumbers = new CloudNumber[2];
