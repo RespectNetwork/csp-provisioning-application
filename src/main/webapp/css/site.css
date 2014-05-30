@@ -1,0 +1,252 @@
+/* Common/Main Content */
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    margin-bottom: 100px; /* Margin bottom by footer height */
+    color: #999a9b;
+    background-color: #efefef;
+    font-family: "Avenir Next", sans-serif;
+}
+
+#footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 100px; /* Set the fixed height of the footer here */
+}
+
+body > .container {
+    padding: 90px 15px 0;
+    text-align: center;
+}
+.container .text-muted {
+    margin: 20px 0;
+}
+
+#footer > .container {
+    padding-right: 15px;
+    padding-left: 15px;
+    text-align: right;
+}
+
+.navbar {
+    height: 90px;
+}
+.navbar .container {
+    margin-top: 30px;
+}
+.navbar-default {
+    background-color: #fdfdfd;
+    background-image: none;
+}
+.navbar .cloudName {
+    margin-top: 10px;
+    color: #02e4ff;
+    font-size: 28px;
+}
+
+.page-header {
+    margin-top: 68px;
+    margin-bottom: 0px;
+}
+h1 {
+    font-size: 28px;
+    font-weight: normal;
+    line-height: normal;
+    color: #6d6f70;
+    font-family: "AvenirNextLTW01-Regular",sans-serif;
+}
+
+/* Form layout */
+
+.form-primary {
+    max-width: 410px;
+    padding: 15px;
+    margin: 0 auto;
+}
+.form-control {
+    padding: 0;
+}
+.form-primary .form-control:focus {
+    z-index: 2;
+}
+.form-primary input[type="text"],
+.form-primary input[type="tel"],
+.form-primary input[type="password"],
+.form-primary input[type="email"] {
+    height: 50px;
+    font-size: 24px;
+    text-align: center;
+    -moz-border-radius:5px; /* Firefox */
+    -webkit-border-radius: 5px; /* Safari, Chrome */
+    -khtml-border-radius: 5px; /* KHTML */
+    border-radius: 5px; /* CSS3 */
+    vertical-align: middle;
+}
+
+/* form-secondary is a smaller left-aligned form */
+.form-secondary .form-group {
+    text-align: left;
+}
+.form-secondary .help-block,
+.form-secondary button {
+    text-align: center;
+}
+.form-secondary input[type="text"],
+.form-secondary input[type="tel"],
+.form-secondary input[type="password"],
+.form-secondary input[type="email"] {
+    height: inherit;
+    font-size: 16px;
+    -moz-border-radius:5px; /* Firefox */
+    -webkit-border-radius: 5px; /* Safari, Chrome */
+    -khtml-border-radius: 5px; /* KHTML */
+    border-radius: 5px; /* CSS3 */
+    vertical-align: middle;
+}
+.form-secondary input[type="radio"] {
+    margin-right: 10px;
+}
+.form-secondary .form-control {
+    padding: 10px;
+}
+label {
+    font-weight: normal;
+}
+
+/* Form feedback elements */
+
+label.form-control-feedback {
+    font-weight: normal;
+}
+label.form-control-feedback.glyphicon {
+    font-size: 18px;
+}
+
+.has-feedback .form-control {
+    padding-right: 0; /* this should be the same as form-control padding */
+}
+.has-feedback .form-control-feedback {
+    top: 8px;
+}
+
+/* Form button */
+
+.btn {
+    height: 40px;
+    width: 150px;
+    border: 0px;
+    color: #ffffff;
+    padding: 7px 0;
+    font: 20px "AvenirNext", helvetica, arial, sans-serif;
+    background-image: none;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    text-shadow: none;
+    margin-top: 20px;
+    transition: background-color 300ms ease-out 0s;
+}
+.btn-primary {
+    background-color: #02e4ff;
+    box-shadow: 0px 1px 1px 0px rgba(50, 50, 50, 0.5);
+}
+.btn-primary:hover,
+.btn-primary:focus {
+    background-color: #1CD183;
+}
+.btn-primary.active {
+    background-color: #1CD183;
+}
+.btn-primary-loading {
+    background-image: url("../img/ajax-loader.gif");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+}
+
+/* Equation */
+.equation {
+    text-align: left;
+    display: table;
+    font-size: 140%;
+    margin-left: auto;
+    margin-right: auto;
+}
+.equation .plus {
+    font-size: 140%;
+}
+.equation .equals {
+    border-top: 1px solid #999A9B;
+    padding-top: 8px;
+    margin-top: 4px;
+}
+
+
+/* Page-specific customisations */
+/* signup */
+body.signup input#cloudName {
+    margin-bottom: 10px;
+
+}
+
+body.signup #submitBtn {
+    margin-top: 10px;
+}
+
+
+/* userdetails */
+/* intl-tel-input JS wraps the input in another div, which we need to adjust */
+body.userdetails div.input-group {
+    width: 100%;
+}
+body.userdetails div.form-group div.intl-tel-input {
+    width: 120px;
+    display: table-cell;
+}
+/* Make flag stay above :focus input */
+body.userdetails div.flag-dropdown {
+    z-index: 4;
+    height: 50px; /* set the same as form-primary input height */
+}
+
+
+/* validate */
+body.validate label {
+    font-weight: normal;
+}
+
+body.validate button#resendCodes {
+    width: 180px;
+}
+
+
+/* payment */
+body.payment .form-group {
+    margin-bottom: 25px;
+}
+body.payment .input-group-addon {
+    border: none;
+}
+body.payment #giftCodes {
+    border-radius: 5px;
+}
+body.payment #giftCodeHelp {
+    margin-left: 47px;
+}
+body.payment #agreeCheckbox {
+    margin-right: 7px;
+}
+body.payment .form-group img {
+    margin-right: 8px;
+}
+body.payment .help-block {
+    color: inherit;
+}
+body.payment #orderSummary {
+    text-align: right;
+    margin-bottom: 15px;
+}

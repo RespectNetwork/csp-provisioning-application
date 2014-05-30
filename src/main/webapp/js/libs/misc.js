@@ -38,3 +38,46 @@ function clearText(field){
 	{
 		return true;
 	}
+
+if (typeof String.prototype.startsWith != 'function') {
+    String.prototype.startsWith = function (str){
+        return (this.lastIndexOf(str, 0) === 0);
+    };
+}
+
+function addFormValidation(formSelector, validation) {
+    $(formSelector).validate(
+        $.extend({
+            errorClass: 'form-control-feedback',
+            validClass: 'form-control-feedback',
+
+            errorPlacement: function (label, element) {
+                var formGroup = element.closest('[class^="form-group"]');
+                var secondary = formGroup.find('[class^="secondary"]'); // if wrapped in secondary (e.g. check boxes)
+                var inputGroup = element.closest('[class^="input-group"]'); // if horizontal controls
+                var insertAfterElement = element;
+                if (secondary.length > 0) {
+                    insertAfterElement = secondary;
+                }
+                if (inputGroup.length > 0) {
+                    insertAfterElement = inputGroup;
+                }
+                label.insertAfter(insertAfterElement);
+            },
+            success: function (label) {
+                var group = label.closest('[class^="form-group"]');
+                group.addClass('has-feedback');
+                if (group.data('show-valid-glyph') !== false) {
+                    label.addClass('glyphicon glyphicon-ok');
+                }
+            },
+            highlight: function (element, errorClass, validClass) {
+                $(element).closest('[class^="form-group"]').addClass('has-error').removeClass('has-success has-feedback');
+                $(element.form).find("label[for=" + element.id + "]").removeClass('glyphicon glyphicon-ok');
+            },
+            unhighlight: function (element, errorClass, validClass) {
+                $(element).closest('[class^="form-group"]').removeClass('has-error').addClass('has-success');
+            }
+        }, validation)
+    );
+}
