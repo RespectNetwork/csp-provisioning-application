@@ -248,7 +248,7 @@ public class RegistrationController
 
             String sessionId = UUID.randomUUID().toString();
             regSession.setSessionId(sessionId);
-            regSession.setCloudName(signUpForm.getCloudName());
+            regSession.setCloudName(cloudName);
             //regSession.setInviteCode(inviteCode);
             regSession.setGiftCode(giftCode);
             //regSession.setVerifiedEmail(invite.getInvitedEmailAddress());

@@ -191,11 +191,18 @@ public class PasswordManager {
             throws PasswordValidationException {
 
         logger.info("reset user password for cloud name: " + clName);
-        CloudName cloudName = CloudName.create(clName);
+
         CloudNumber cloudNumber;
+
+        if (!RegistrationManager.validateCloudName(clName)) {
+            throw new PasswordValidationException(
+                    CSPErrorsEnum.VE_INVALID_CLOUD_NAME_FORMAT.code(),
+                    CSPErrorsEnum.VE_INVALID_CLOUD_NAME_FORMAT.message());
+        }
+        CloudName cloudName = CloudName.create(clName);
+        logger.info("going to change password for cloud name: " + clName);
         // update the new password for CSP user
         validatePasswordFormat(newPassword);
-        logger.info("going to change password for cloud name: " + clName);
         try {
             cloudNumber = cspRegistrar.checkCloudNameAvailableInRN(cloudName);
             if (cloudNumber == null) {
