@@ -26,7 +26,7 @@
           class="form-primary" th:object="${userInfo}" id="userDetailsForm">
 
         <!--/* Email address */-->
-        <div class="form-group">
+        <div class="form-group" data-show-valid-glyph="false">
             <input type="email" id="email" name="email"
                    class="form-control" placeholder="email address"
                    required="required" autofocus="autofocus"
@@ -34,11 +34,17 @@
         </div>
 
         <!--/* Mobile number */-->
-        <div class="form-group">
-            <input type="tel" id="mobilePhone" name="mobilePhone"
-                   class="form-control" placeholder="mobile phone"
-                   required="required"
-                   th:value="*{mobilePhone}"/>
+        <div class="form-group" data-show-valid-glyph="false">
+            <div class="input-group">
+                <input type="text" id="cc" name="cc"
+                       class="form-control" placeholder=""
+                       required="required"
+                       th:value="*{cc}"/>
+                <input type="tel" id="mobilePhone" name="mobilePhone"
+                       class="form-control" placeholder="mobile phone"
+                       required="required"
+                       th:value="*{mobilePhone}"/>
+            </div>
         </div>
 
         <p class="secondary">Create a password for logging into your personal cloud:<br/>min 8 char with 2 digits, 2
@@ -70,7 +76,7 @@
     <script src="js/libs/data.js"></script>
     <script>
         /*<![CDATA[*/
-        $("#mobilePhone").intlTelInput({autoHideDialCode: true, dialCodeDelimiter: "."});
+        $("#cc").intlTelInput();
 
         $(document).ready(function () {
 
@@ -94,8 +100,11 @@
             $.validator.addMethod('checkPasswordSymbolic', function (value, element, params) {
                 return satisfiesRange(value, params.count, params.range);
             });
+            $.validator.addMethod('validateCC', function (value, element, params) {
+                return /^\+[0-9]{1,3}(?:x.+)?$/.test(value);
+            });
             $.validator.addMethod('validatePhoneNumber', function (value, element, params) {
-                return /^\+[0-9]{1,3}\.[0-9]{4,14}(?:x.+)?$/.test(value);
+                return /^[0-9]{4,14}(?:x.+)?$/.test(value);
             });
 
             var PASSWORD_MIN_LENGTH = 8;
@@ -112,6 +121,10 @@
                     email: {
                         required: true,
                         email: true
+                    },
+                    cc: {
+                        required: true,
+                        validateCC: true
                     },
                     mobilePhone: {
                         required: true,
@@ -131,10 +144,8 @@
                 },
                 messages: {
                     email: 'Please enter a valid email address',
-                    mobilePhone: {
-                        required: 'Please enter a mobile number',
-                        validatePhoneNumber: 'Please enter a mobile number in the form +CCC.NNNNNNNNNN'
-                    },
+                    cc: 'Please choose a country code',
+                    mobilePhone: 'Please enter a mobile number',
                     password: {
                         required: 'Please provide a password',
                         minlength: 'Your password must be at least ' + PASSWORD_MIN_LENGTH + ' characters',
@@ -146,6 +157,9 @@
                         required: 'Please repeat password',
                         equalTo: 'Passwords do not much'
                     }
+                },
+                groups: {
+                    mobile: "cc mobilePhone"
                 }
             });
         });

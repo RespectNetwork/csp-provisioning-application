@@ -52,11 +52,15 @@ function addFormValidation(formSelector, validation) {
             validClass: 'form-control-feedback',
 
             errorPlacement: function (label, element) {
-                var group = element.closest('[class^="form-group"]');
-                var secondary = group.find('[class^="secondary"]'); // if wrapped in secondary (e.g. check boxes)
+                var formGroup = element.closest('[class^="form-group"]');
+                var secondary = formGroup.find('[class^="secondary"]'); // if wrapped in secondary (e.g. check boxes)
+                var inputGroup = element.closest('[class^="input-group"]'); // if horizontal controls
                 var insertAfterElement = element;
                 if (secondary.length > 0) {
                     insertAfterElement = secondary;
+                }
+                if (inputGroup.length > 0) {
+                    insertAfterElement = inputGroup;
                 }
                 label.insertAfter(insertAfterElement);
             },

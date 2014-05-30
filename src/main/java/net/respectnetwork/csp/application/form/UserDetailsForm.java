@@ -21,6 +21,8 @@ public class UserDetailsForm {
     /** Cloudname */
     private String cloudName;   
 
+    private String cc;
+
     /** Confirm Password */
     private String confirmPassword;
 
@@ -132,10 +134,19 @@ public class UserDetailsForm {
    {
       this.cloudName = cloudName;
    }
-   public String getPhone()
+   public String getCc()
    {
-      return mobilePhone;
+      return cc;
    }
+   public void setCc(String cc)
+   {
+      this.cc = cc;
+   }
+
+    public String getPhone()
+    {
+       return cc + "." +  mobilePhone;
+    }
    public String getConfirmPassword()
    {
       return confirmPassword;

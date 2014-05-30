@@ -200,9 +200,12 @@ body.signup #submitBtn {
 
 /* userdetails */
 /* intl-tel-input JS wraps the input in another div, which we need to adjust */
-body.userdetails div.form-group div.intl-tel-input {
+body.userdetails div.input-group {
     width: 100%;
-
+}
+body.userdetails div.form-group div.intl-tel-input {
+    width: 120px;
+    display: table-cell;
 }
 /* Make flag stay above :focus input */
 body.userdetails div.flag-dropdown {
