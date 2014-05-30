@@ -4,11 +4,13 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import net.respectnetwork.csp.application.dao.DAOException;
 import net.respectnetwork.csp.application.dao.DAOFactory;
 import net.respectnetwork.csp.application.model.SignupInfoModel;
+import net.respectnetwork.csp.application.util.EmailHelper;
 import net.respectnetwork.sdk.csp.CSP;
 import net.respectnetwork.sdk.csp.discount.NeustarRNDiscountCode;
 import net.respectnetwork.sdk.csp.exception.CSPRegistrationException;
@@ -20,6 +22,9 @@ import xdi2.client.exceptions.Xdi2ClientException;
 import xdi2.core.xri3.CloudName;
 import xdi2.core.xri3.CloudNumber;
 import xdi2.core.xri3.XDI3Segment;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 public class RegisterUserThread implements Runnable
 {   
@@ -38,7 +43,11 @@ public class RegisterUserThread implements Runnable
    private String                               paymentRefId                         = "";
 
    private NeustarRNDiscountCode                cdc                                  = null;
-
+   private String                               userEmail                            = null;
+   private String                               contactSupportEmail                  = null;
+   private Locale                               locale                               = null;
+   private String                               cspCloudName                         = null;
+   private String                               cspHomePage                          = null;
    @Override
    public void run()
    {
@@ -48,7 +57,14 @@ public class RegisterUserThread implements Runnable
       signupInfo.setPhone(verifiedPhone);
       signupInfo.setPaymentType(paymentType);
       signupInfo.setPaymentRefId(paymentRefId);
-      
+      int retryCount = 0;
+      EmailHelper emailHelper = new EmailHelper();
+      cspCloudName = this.getCspCloudName();
+      cspHomePage = this.getCspHomePage();
+      contactSupportEmail = this.getCspContactSupportEmail();
+      userEmail = this.getUserEmail();
+      // 5 times retry registration in case of failure. Retry interval is 2 minutes.
+      while (retryCount < 5) {
       try
       {
          // Step 1: Register Cloud with Cloud Number and Shared Secret
@@ -132,16 +148,41 @@ public class RegisterUserThread implements Runnable
             logger.error("DB Exception : " + e.getMessage());
          }
 
+         // Step 10 : send the notification email for successful registration of cloudname.
+         // Send the email at email address registered for the cloud name.
+         emailHelper.sendRegistrationSuccessNotificaionEmail(userEmail, cloudName.toString(), locale, cspCloudName, cspHomePage);
+         break;
       } catch (CSPRegistrationException ex1)
       {
-         logger.error("Failed to register cloudname with CSP. CloudName : " + cloudName.toString() + " , CloudNumber : " + cloudNumber.toString());
-         logger.error("SignupInfo : " + signupInfo.toString());
-         logger.error("CSPRegistrationException from RegisterUserThread " + ex1.getMessage());
+          try {
+              retryCount++;
+              logger.error("Failed to register cloudname with CSP. CloudName : " + cloudName.toString() + " , CloudNumber : " + cloudNumber.toString());
+              logger.error("SignupInfo : " + signupInfo.toString());
+              logger.error("CSPRegistrationException from RegisterUserThread " + ex1.getMessage());
+              // Send the notification email for registration failure of cloudname.
+              // Send email to configured contact support address.
+              emailHelper.sendRegistrationFailureNotificaionEmail(contactSupportEmail, cloudName.toString(), locale, cspCloudName);
+              // Wait for 2 minutes before retry
+              Thread.sleep(120000);
+          } catch (InterruptedException e) {
+              logger.error("Interrupted while waiting for cloud name registration {}.", e.getLocalizedMessage());
+          }
       } catch (Xdi2ClientException ex2)
       {
-         logger.error("Failed to register cloudname. CloudName : " + cloudName.toString() + " , CloudNumber : " + cloudNumber.toString());
-         logger.error("SignupInfo : " + signupInfo.toString());
-         logger.error("Xdi2ClientException from RegisterUserThread " + ex2.getMessage());
+          try {
+              retryCount++;
+              logger.error("Failed to register cloudname. CloudName : " + cloudName.toString() + " , CloudNumber : " + cloudNumber.toString());
+              logger.error("SignupInfo : " + signupInfo.toString());
+              logger.error("Xdi2ClientException from RegisterUserThread " + ex2.getMessage());
+              // Send the notification email for registration failure of cloudname.
+              // Send email to configured contact support address.
+              emailHelper.sendRegistrationFailureNotificaionEmail(contactSupportEmail, cloudName.toString(), locale, cspCloudName);
+              // Wait for 2 minutes before retry
+              Thread.sleep(120000);
+          } catch (InterruptedException e) {
+              logger.error("Interrupted while waiting for cloud name registration {}.", e.getLocalizedMessage());
+          }
+      }
       }
    }
 
@@ -269,5 +310,49 @@ public class RegisterUserThread implements Runnable
   public void setPaymentRefId( String paymentRefId )
   {
       this.paymentRefId = paymentRefId;
+  }
+
+  public void setCspContactSupportEmail(String contactSupportEmail) {
+      this.contactSupportEmail = contactSupportEmail;
+  }
+
+  public String getCspContactSupportEmail()
+  {
+     return this.contactSupportEmail;
+  }
+
+  public void setCspCloudName(String cspCloudName) {
+      this.cspCloudName = cspCloudName;
+  }
+
+  public String getCspCloudName()
+  {
+     return this.cspCloudName;
+  }
+
+  public void setCspHomePage(String cspHomePage) {
+      this.cspHomePage = cspHomePage;
+  }
+
+  public String getCspHomePage()
+  {
+     return this.cspHomePage;
+  }
+
+  public void setLocale(Locale locale) {
+      this.locale = locale;
+  }
+
+  public Locale getLocale()
+  {
+     return this.locale;
+  }
+
+  public void setUserEmail(String email) {
+      this.userEmail = email;
+  }
+
+  public String getUserEmail() {
+      return this.userEmail;
   }
 }

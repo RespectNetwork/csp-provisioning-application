@@ -3,12 +3,14 @@ package net.respectnetwork.csp.application.manager;
 import java.math.BigDecimal;
 import java.util.Currency;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.respectnetwork.csp.application.exception.UserRegistrationException;
 import net.respectnetwork.csp.application.model.AvailabilityResponse;
+import net.respectnetwork.csp.application.util.EmailHelper;
 import net.respectnetwork.sdk.csp.BasicCSPInformation;
 import net.respectnetwork.sdk.csp.CSP;
 import net.respectnetwork.sdk.csp.UserValidator;
@@ -125,6 +127,12 @@ public class RegistrationManager {
     private String cspTCURL;
     
     private String nameAvailabilityCheckURL;
+    
+    private String cspHomePage;
+    
+    private String contactSupportEmail;
+    
+    private String cspCloudName;
     
     public static final String GeoLocationPostURIKey = "<$https><#network.globe><$set>";
     public static final String RNpostRegistrationLandingPageURIKey = "<$https><#post><#registration>";
@@ -422,8 +430,7 @@ public class RegistrationManager {
         
     }
     
-    public CloudNumber registerUser(CloudName cloudName, String verifiedPhone, String verifiedEmail, String userPassword , NeustarRNDiscountCode cdc, String paymentType, String paymentRefId) throws CSPRegistrationException, Xdi2ClientException {
-        
+    public CloudNumber registerUser(final CloudName cloudName, String verifiedPhone, final String verifiedEmail, String userPassword , NeustarRNDiscountCode cdc, String paymentType, String paymentRefId, final Locale locale) throws CSPRegistrationException, Xdi2ClientException {
         
         CloudNumber cloudNumber = CloudNumber.createRandom(cloudName.getCs());
         if(cloudNumber != null)
@@ -439,6 +446,11 @@ public class RegistrationManager {
            rut.setCdc(cdc);
            rut.setPaymentType(paymentType);
            rut.setPaymentRefId(paymentRefId);
+           rut.setLocale(locale);
+           rut.setCspCloudName(this.cspCloudName);
+           rut.setCspHomePage(this.cspHomePage);
+           rut.setCspContactSupportEmail(this.contactSupportEmail);
+           rut.setUserEmail(verifiedEmail);
            Thread t = new Thread(rut);
            t.start();
            
@@ -524,7 +536,7 @@ public class RegistrationManager {
 		this.requireInviteCode = requireInviteCode;
 	}
 	
-	public CloudNumber registerDependent(CloudName guardianCloudName , String guardianToken , CloudName dependentCloudName,  String dependentToken , String s_dependentBirthDate, String paymentType, String paymentRefId){
+	public CloudNumber registerDependent(CloudName guardianCloudName , String guardianToken , CloudName dependentCloudName,  String dependentToken , String s_dependentBirthDate, String paymentType, String paymentRefId, String guardianEmailAddress, Locale locale){
 				  CloudNumber depCloudNumber = CloudNumber.createRandom(dependentCloudName.getCs());
 				  
 				  RegisterDependentCloudThread rdct = new RegisterDependentCloudThread();
@@ -538,6 +550,11 @@ public class RegistrationManager {
 				  rdct.setS_dependentBirthDate(s_dependentBirthDate);
 				  rdct.setPaymentType(paymentType);
 				  rdct.setPaymentRefId(paymentRefId);
+				  rdct.setGuardianEmail(guardianEmailAddress);
+				  rdct.setCspCloudName(this.cspCloudName);
+				  rdct.setCspHomePage(this.cspHomePage);
+				  rdct.setCspContactSupportEmail(this.contactSupportEmail);
+				  rdct.setLocale(locale);
 				  Thread t = new Thread(rdct);
 				  t.start();
 					
@@ -633,7 +650,7 @@ public class RegistrationManager {
 				*/
 		return depCloudNumber;
 	}
-	
+
 	/**
      * @param phone to set
      */
@@ -769,6 +786,24 @@ public class RegistrationManager {
    public void setCspTCURL(String cspTCURL)
    {
       this.cspTCURL = cspTCURL;
+   }
+
+   @Autowired
+   @Qualifier("contactSupportEmail")
+   public void setCspContactSupportEmail(String contactSupportEmail) {
+       this.contactSupportEmail = contactSupportEmail;
+   }
+
+   @Autowired
+   @Qualifier("cspCloudName")
+   public void setCspCloudName(String cspCloudName) {
+       this.cspCloudName = cspCloudName;
+   }
+
+   @Autowired
+   @Qualifier("cspHomePage")
+   public void setCspHomePage(String cspHomePage) {
+       this.cspHomePage = cspHomePage;
    }
 
    public static boolean validateCloudName(String iname) {

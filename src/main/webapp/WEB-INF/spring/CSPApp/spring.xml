@@ -239,4 +239,12 @@
         class="net.respectnetwork.csp.application.manager.PasswordManager" >
        <beans:constructor-arg name="cspRegistrar" ref="basicCSP"/>
 	</beans:bean>
+    <beans:bean id="contactSupportEmail" class="java.lang.String">
+        <beans:constructor-arg value="${csp.contactSupportEmail}"/>
+        <beans:qualifier value="contactSupportEmail"/>
+    </beans:bean>
+    <beans:bean id="cspHomePage" class="java.lang.String">
+        <beans:constructor-arg value="${csp.cspHomePage}"/>
+        <beans:qualifier value="cspHomePage"/>
+    </beans:bean>
 </beans:beans>
