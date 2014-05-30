@@ -309,7 +309,7 @@ public class RegistrationController
           }
            if(!RegistrationManager.validatePhoneNumber(userDetailsForm.getPhone()))
            {
-              String errorStr = "Invalid Phone Number. Please provide the phone number like this pattern +CCC.NNNNNNNNNNxEEEE";
+              String errorStr = "Invalid Phone Number. Please provide your phone number in international format (+ccnnnnnnnnn)";
               logger.debug("Invalid Phone Number entered..."
                       + userDetailsForm.getPhone());
               mv.addObject("error", errorStr);
