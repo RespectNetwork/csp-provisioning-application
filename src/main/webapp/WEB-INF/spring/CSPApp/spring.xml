@@ -238,5 +238,6 @@
     <beans:bean id="passwordManager"
         class="net.respectnetwork.csp.application.manager.PasswordManager" >
        <beans:constructor-arg name="cspRegistrar" ref="basicCSP"/>
+	   <beans:constructor-arg name="registrationManager" ref="regManager"/>
 	</beans:bean>
 </beans:beans>

@@ -5,10 +5,15 @@ public enum CSPErrorsEnum {
     VE_INVALID_CURRENT_PASSWORD(1000, "You have provided an incorrect current password."),
     VE_INVALID_PASSWORD_FORMAT(1001, "Invalid password. Please provide a password that is at least 8 characters, have at least 2 letters, 2 numbers and at least one special character, e.g. @, #, $ etc."),
     VE_INVALID_CLOUD_NAME(1002, "The Cloud Name provided is not valid."),
- 
+    VE_INVALID_NOT_REGISTERED_EMAIL(1003, "The email address provided is not registered with this cloud name."),
+    VE_INVALID_NOT_REGISTERED_PHONE(1004, "The phone number provided is not registered with this cloud name."),
     
-    VE_ERROR_CLOUD_NAME_NOT_EXIST(1003, "The Cloud Name provided does not exist."),
-    VE_ERROR_CLOUD_NAME_PASSWORD_NOT_EXIST(1004, "Invalid CloudName/Paswword.");
+    VE_ERROR_CLOUD_NAME_NOT_EXIST(1101, "The Cloud Name provided does not exist."),
+    
+    VE_ERROR_CLOUD_NAME_PASSWORD_NOT_EXIST(1102, "Invalid CloudName/Paswword."),
+    
+    
+    VE_ERROR_SYSTEM_ERROR(2000, "Currently we are not able to fulfill your request due to some system error. Please try again later.");
     
     private int code;
     private String message;

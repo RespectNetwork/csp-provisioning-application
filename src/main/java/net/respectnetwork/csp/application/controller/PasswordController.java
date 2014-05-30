@@ -3,12 +3,16 @@
  */
 package net.respectnetwork.csp.application.controller;
 
+import java.util.UUID;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import net.respectnetwork.csp.application.exception.PasswordValidationException;
 import net.respectnetwork.csp.application.form.ChangePasswordForm;
+import net.respectnetwork.csp.application.form.ForgotPasswordForm;
+import net.respectnetwork.csp.application.form.ValidateForm;
 import net.respectnetwork.csp.application.manager.PasswordManager;
 import net.respectnetwork.csp.application.session.RegistrationSession;
 
@@ -160,4 +164,134 @@ public class PasswordController {
         mv.addObject("queryStr", "");
         return mv;
     }
+
+    /**
+     * This method render forgot password page.
+     * 
+     * @param request
+     * @param model
+     * @return
+     */
+    @RequestMapping(value = "/forgotPassword", method = RequestMethod.GET)
+    public ModelAndView forgotPassword(HttpServletRequest request, Model model) {
+        logger.info("showing forgot password page");
+        ModelAndView mv = new ModelAndView("forgotPassword");
+
+        String sessionId = UUID.randomUUID().toString();
+        regSession.setSessionId(sessionId);
+
+        return mv;
+    }
+
+    /**
+     * This method render forgot password page.
+     * 
+     * @param request
+     * @param model
+     * @return
+     */
+    @RequestMapping(value = "/processResetPassword", method = RequestMethod.POST)
+    public ModelAndView processResetPasswordDetails(
+            @Valid @ModelAttribute("forgotPasswordInfo") ForgotPasswordForm forgotPasswordForm,
+            BindingResult result, HttpServletRequest request,
+            HttpServletResponse response) {
+
+        logger.debug("Process recover password user details");
+
+        ModelAndView mv = null;
+        boolean errors = false;
+        mv = new ModelAndView("forgotPassword");
+        String cloudName = forgotPasswordForm.getCloudName();
+        mv.addObject("forgotPasswordInfo", forgotPasswordForm);
+        if (cloudName != null && !cloudName.startsWith("=")) {
+            cloudName = "=" + cloudName;
+        }
+        try {
+            passwordManager.verifyRecoverPasswordDetails(cloudName,
+                    forgotPasswordForm.getEmailAddress(),
+                    forgotPasswordForm.getPhoneNumber());
+
+        } catch (PasswordValidationException ex) {
+            String errorStr = "System Error checking Email/Phone Number Uniqueness";
+            logger.warn(errorStr + " : {}", ex.getMessage());
+            mv.addObject("error", ex.getMessage());
+            errors = true;
+        }
+
+        if (!errors) {
+            mv = new ModelAndView("validate");
+            ValidateForm validateForm = new ValidateForm();
+            mv.addObject("validateInfo", validateForm);
+            mv.addObject("cloudName", cloudName);
+            mv.addObject("verifyingEmail", forgotPasswordForm.getEmailAddress());
+            mv.addObject("verifyingPhone", forgotPasswordForm.getPhoneNumber());
+            mv.addObject("resetPwd", true);
+            // Add CloudName/ Email / Phone to Session
+
+            logger.debug("Setting verified email "
+                    + regSession.getVerifiedEmail());
+            regSession.setCloudName(cloudName);
+            regSession.setVerifiedEmail(forgotPasswordForm.getEmailAddress());
+            regSession.setVerifiedMobilePhone(forgotPasswordForm
+                    .getPhoneNumber());
+        }
+        return mv;
+    }
+
+    /**
+     * This method update the password for a cloud name and on success send
+     * control to the next page in flow.
+     * 
+     * @param changePasswordForm
+     * @param request
+     * @param response
+     * @param result
+     * @return
+     */
+    @RequestMapping(value = "/resetPassword", method = RequestMethod.POST)
+    public ModelAndView resetPassword(
+            @Valid @ModelAttribute("resetPasswordInfo") ChangePasswordForm changePasswordForm,
+            HttpServletRequest request, HttpServletResponse response,
+            BindingResult result) {
+        ModelAndView mv = null;
+        boolean errors = false;
+        String errorTxt = null;
+        String forwardingPage = request.getContextPath();
+        String method = "post";
+        String statusText = "";
+
+        mv = new ModelAndView("resetPassword");
+        mv.addObject("resetPasswordInfo", changePasswordForm);
+
+        String cloudName = regSession.getCloudName();
+        String sessionId = regSession.getSessionId();
+
+        // Session Check
+        if (sessionId == null || cloudName == null) {
+            mv.addObject("error", "Invalid Session");
+            return mv;
+        }
+        try {
+            passwordManager.resetPassword(cloudName,
+                    changePasswordForm.getNewPassword());
+            regSession.setPassword(changePasswordForm.getNewPassword());
+        } catch (PasswordValidationException ex) {
+            logger.error("Error while reset password.", ex);
+            errors = true;
+            errorTxt = ex.getMessage();
+        }
+        if (errors) {
+            mv.addObject("error", errorTxt);
+            return mv;
+        }
+        mv = new ModelAndView("postTxn");
+        forwardingPage += "/login";
+        statusText = "Your password has been changed successfully.\n";
+        mv.addObject("statusText", statusText);
+        mv.addObject("postURL", forwardingPage);
+        mv.addObject("submitMethod", method);
+        mv.addObject("queryStr", "");
+        return mv;
+    }
+
 }
