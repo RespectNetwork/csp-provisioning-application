@@ -248,7 +248,7 @@ public class RegistrationController
 
             String sessionId = UUID.randomUUID().toString();
             regSession.setSessionId(sessionId);
-            regSession.setCloudName(signUpForm.getCloudName());
+            regSession.setCloudName(cloudName);
             //regSession.setInviteCode(inviteCode);
             regSession.setGiftCode(giftCode);
             //regSession.setVerifiedEmail(invite.getInvitedEmailAddress());
@@ -309,7 +309,7 @@ public class RegistrationController
           }
            if(!RegistrationManager.validatePhoneNumber(userDetailsForm.getPhone()))
            {
-              String errorStr = "Invalid Phone Number. Please provide the phone number like this pattern +CCC.NNNNNNNNNNxEEEE";
+              String errorStr = "Invalid Phone Number. Please provide your phone number in international format (+ccnnnnnnnnn)";
               logger.debug("Invalid Phone Number entered..."
                       + userDetailsForm.getPhone());
               mv.addObject("error", errorStr);
@@ -440,11 +440,13 @@ public class RegistrationController
       String sessionIdentifier = regSession.getSessionId();
       String verifyingEmail = request.getParameter("verifyingEmail");
       String verifyingPhone = request.getParameter("verifyingPhone");
+	  // To check if request comes from reset password 
+      boolean resetPwd = Boolean.parseBoolean(request.getParameter("resetPwd"));
       mv.addObject("validateInfo", validateForm);
       mv.addObject("cloudName", regSession.getCloudName());
       mv.addObject("verifyingEmail", verifyingEmail);
       mv.addObject("verifyingPhone", verifyingPhone);
-      
+      mv.addObject("resetPwd", resetPwd);
       if(request.getParameter("resendCodes") != null)
       {
          try
@@ -507,37 +509,41 @@ public class RegistrationController
       }
 
       if (!errors) {
-         
-         mv = new ModelAndView("payment");
-         mv.addObject("cspTCURL", this.getTheManager().getCspTCURL());
-         PaymentForm paymentForm = new PaymentForm();
-         paymentForm.setTxnType(PaymentForm.TXN_TYPE_SIGNUP);
-         if(regSession != null)
-         {
-            regSession.setTransactionType(PaymentForm.TXN_TYPE_SIGNUP);
-         }
-         paymentForm.setNumberOfClouds(1);
-         if(regSession.getGiftCode() != null && !regSession.getGiftCode().isEmpty())
-         {
-            logger.debug("Setting giftcode from session " + regSession.getGiftCode());
-            paymentForm.setGiftCodes(regSession.getGiftCode());
-         }
-         if(cspModel.getPaymentGatewayName().equals("GIFT_CODE_ONLY"))
-         {
-            paymentForm.setGiftCodesOnly(true);
-         }
-         mv.addObject("paymentInfo", paymentForm);
+         if (!resetPwd) {
+			 mv = new ModelAndView("payment");
+			 mv.addObject("cspTCURL", this.getTheManager().getCspTCURL());
+			 PaymentForm paymentForm = new PaymentForm();
+			 paymentForm.setTxnType(PaymentForm.TXN_TYPE_SIGNUP);
+			 if(regSession != null)
+			 {
+				regSession.setTransactionType(PaymentForm.TXN_TYPE_SIGNUP);
+			 }
+			 paymentForm.setNumberOfClouds(1);
+			 if(regSession.getGiftCode() != null && !regSession.getGiftCode().isEmpty())
+			 {
+				logger.debug("Setting giftcode from session " + regSession.getGiftCode());
+				paymentForm.setGiftCodes(regSession.getGiftCode());
+			 }
+			 if(cspModel.getPaymentGatewayName().equals("GIFT_CODE_ONLY"))
+			 {
+				paymentForm.setGiftCodesOnly(true);
+			 }
+			 mv.addObject("paymentInfo", paymentForm);
 
-         // Check for cost override based on phone number
-         CurrencyCost totalCost = getCostIncludingOverride(cspModel,
-                 regSession.getVerifiedMobilePhone(),
-                 paymentForm.getNumberOfClouds());
+			 // Check for cost override based on phone number
+			 CurrencyCost totalCost = getCostIncludingOverride(cspModel,
+					 regSession.getVerifiedMobilePhone(),
+					 paymentForm.getNumberOfClouds());
 
-         regSession.setCurrency(totalCost.getCurrencyCode());
-         regSession.setCostPerCloudName(totalCost.getAmount());
+			 regSession.setCurrency(totalCost.getCurrencyCode());
+			 regSession.setCostPerCloudName(totalCost.getAmount());
 
-         mv.addObject("totalAmountText", formatCurrencyAmount(totalCost));
-         mv.addObject("paymentInfo", paymentForm);
+			 mv.addObject("totalAmountText", formatCurrencyAmount(totalCost));
+			 mv.addObject("paymentInfo", paymentForm);
+		 } else {
+		     mv = new ModelAndView("resetPassword");
+             mv.addObject("cloudName", regSession.getCloudName());
+		 }
       }
 
       return mv;

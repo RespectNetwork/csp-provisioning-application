@@ -5,7 +5,9 @@ package net.respectnetwork.csp.application.manager;
 
 import net.respectnetwork.csp.application.constants.CSPErrorsEnum;
 import net.respectnetwork.csp.application.exception.PasswordValidationException;
+import net.respectnetwork.csp.application.exception.UserRegistrationException;
 import net.respectnetwork.sdk.csp.CSP;
+import net.respectnetwork.sdk.csp.validation.CSPValidationException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,11 +31,16 @@ public class PasswordManager {
      */
     private CSP cspRegistrar;
 
+    /** Registration Manager */
+    private RegistrationManager registrationManager;
+
     /**
      * Constructor
      */
-    public PasswordManager(CSP cspRegistrar) {
+    public PasswordManager(CSP cspRegistrar,
+            RegistrationManager registrationManager) {
         this.cspRegistrar = cspRegistrar;
+        this.registrationManager = registrationManager;
     }
 
     /**
@@ -108,6 +115,115 @@ public class PasswordManager {
                     CSPErrorsEnum.VE_INVALID_PASSWORD_FORMAT.code(),
                     CSPErrorsEnum.VE_INVALID_PASSWORD_FORMAT.message());
         }
+    }
+
+    public void verifyRecoverPasswordDetails(String cloudName,
+            String emailAddress, String phoneNumber)
+            throws PasswordValidationException {
+        CloudNumber cloudNumber;
+        CloudName clName = CloudName.create(cloudName);
+        try {
+            cloudNumber = cspRegistrar.checkCloudNameAvailableInRN(clName);
+            logger.debug("Cloud name {} is associated with cloud number {}",
+                    cloudName, cloudNumber);
+            if (cloudNumber == null) {
+                logger.error("Cloud name {} does not exist in the system.",
+                        cloudName);
+                throw new PasswordValidationException(
+                        CSPErrorsEnum.VE_ERROR_CLOUD_NAME_NOT_EXIST.code(),
+                        CSPErrorsEnum.VE_ERROR_CLOUD_NAME_NOT_EXIST.message());
+
+            }
+            CloudNumber[] existingUsers = registrationManager
+                    .checkEmailAndMobilePhoneUniqueness(emailAddress,
+                            phoneNumber);
+
+            if (existingUsers[0] == null
+                    || !cloudNumber.equals(existingUsers[0])) {
+                logger.debug("Phone {} is used by {}", phoneNumber,
+                        existingUsers[0]);
+                throw new PasswordValidationException(
+                        CSPErrorsEnum.VE_INVALID_NOT_REGISTERED_PHONE.code(),
+                        CSPErrorsEnum.VE_INVALID_NOT_REGISTERED_PHONE.message());
+            }
+            if (existingUsers[1] == null
+                    || !cloudNumber.equals(existingUsers[1])) {
+                logger.debug("Email {} is used by {}", emailAddress,
+                        existingUsers[1]);
+                throw new PasswordValidationException(
+                        CSPErrorsEnum.VE_INVALID_NOT_REGISTERED_EMAIL.code(),
+                        CSPErrorsEnum.VE_INVALID_NOT_REGISTERED_EMAIL.message());
+            }
+        } catch (Xdi2ClientException ex) {
+            logger.error("Sytem error : ", ex);
+            throw new PasswordValidationException(
+                    CSPErrorsEnum.VE_ERROR_SYSTEM_ERROR.code(),
+                    CSPErrorsEnum.VE_ERROR_SYSTEM_ERROR.message());
+        } catch (UserRegistrationException ex) {
+            logger.error("System error : ", ex);
+            throw new PasswordValidationException(
+                    CSPErrorsEnum.VE_ERROR_SYSTEM_ERROR.code(),
+                    CSPErrorsEnum.VE_ERROR_SYSTEM_ERROR.message());
+        }
+
+        // If all is okay send out the validation messages.
+        try {
+            registrationManager.sendValidationCodes(cloudNumber.toString(),
+                    emailAddress, phoneNumber);
+        } catch (CSPValidationException ex) {
+            logger.error(
+                    "System Error sending validation messages. Please check email and mobile phone number.",
+                    ex);
+            throw new PasswordValidationException(
+                    CSPErrorsEnum.VE_ERROR_SYSTEM_ERROR.code(),
+                    CSPErrorsEnum.VE_ERROR_SYSTEM_ERROR.message());
+        }
+
+    }
+
+    /**
+     * 
+     * @param cloudName
+     * @param newPassword
+     * @throws PasswordValidationException
+     */
+    public void resetPassword(String clName, String newPassword)
+            throws PasswordValidationException {
+
+        logger.info("reset user password for cloud name: " + clName);
+
+        CloudNumber cloudNumber;
+
+        if (!RegistrationManager.validateCloudName(clName)) {
+            throw new PasswordValidationException(
+                    CSPErrorsEnum.VE_INVALID_CLOUD_NAME_FORMAT.code(),
+                    CSPErrorsEnum.VE_INVALID_CLOUD_NAME_FORMAT.message());
+        }
+        CloudName cloudName = CloudName.create(clName);
+        logger.info("going to change password for cloud name: " + clName);
+        // update the new password for CSP user
+        validatePasswordFormat(newPassword);
+        try {
+            cloudNumber = cspRegistrar.checkCloudNameAvailableInRN(cloudName);
+            if (cloudNumber == null) {
+                logger.error("Cloud name does not exist : " + cloudName);
+                throw new PasswordValidationException(
+                        CSPErrorsEnum.VE_ERROR_CLOUD_NAME_NOT_EXIST.code(),
+                        CSPErrorsEnum.VE_ERROR_CLOUD_NAME_NOT_EXIST.message());
+
+            }
+
+            cspRegistrar.setCloudSecretTokenInCSP(cloudNumber, newPassword);
+            logger.info("Successfully reset the passord.");
+        } catch (Xdi2ClientException ex) {
+            logger.error("Failed to reset the password for CloudName: "
+                    + clName);
+            logger.error("Error while updating password: ", ex);
+            throw new PasswordValidationException(
+                    CSPErrorsEnum.VE_ERROR_SYSTEM_ERROR.code(),
+                    CSPErrorsEnum.VE_ERROR_SYSTEM_ERROR.message());
+        }
+
     }
 
 }

@@ -20,9 +20,9 @@ public class UserDetailsForm {
     
     /** Cloudname */
     private String cloudName;   
-    
+
     private String cc;
-    
+
     /** Confirm Password */
     private String confirmPassword;
 
@@ -142,7 +142,7 @@ public class UserDetailsForm {
    {
       this.cc = cc;
    }
-    
+
     public String getPhone()
     {
        return cc + "." +  mobilePhone;

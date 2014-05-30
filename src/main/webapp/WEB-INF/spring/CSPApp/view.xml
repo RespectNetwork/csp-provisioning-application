@@ -22,6 +22,12 @@
 
     <beans:bean id="templateEngine" class="org.thymeleaf.spring3.SpringTemplateEngine">
         <beans:property name="templateResolver" ref="templateResolver" />
+
+        <beans:property name="additionalDialects">
+            <beans:set>
+                <beans:bean class="nz.net.ultraq.thymeleaf.LayoutDialect"/>
+            </beans:set>
+        </beans:property>
     </beans:bean>
 
     <beans:bean class="org.thymeleaf.spring3.view.ThymeleafViewResolver">
