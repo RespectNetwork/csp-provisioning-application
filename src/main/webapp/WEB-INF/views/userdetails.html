@@ -138,9 +138,9 @@
                     password: {
                         required: 'Please provide a password',
                         minlength: 'Your password must be at least ' + PASSWORD_MIN_LENGTH + ' characters',
-                        checkPasswordAlpha: 'Password must contain at least ' + PASSWORD_MIN_ALPHA + ' letters',
-                        checkPasswordNumeric: 'Password must contain at least ' + PASSWORD_MIN_NUMERIC + ' numbers',
-                        checkPasswordSymbolic: 'Password must contain at least ' + PASSWORD_MIN_SYMBOLIC + ' symbols'
+                        checkPasswordAlpha: 'Password must contain at least ' + PASSWORD_MIN_ALPHA + ' letter' + (PASSWORD_MIN_ALPHA > 1 ? 's' : ''),
+                        checkPasswordNumeric: 'Password must contain at least ' + PASSWORD_MIN_NUMERIC + ' number' + (PASSWORD_MIN_NUMERIC > 1 ? 's' : ''),
+                        checkPasswordSymbolic: 'Password must contain at least ' + PASSWORD_MIN_SYMBOLIC + ' symbol' + (PASSWORD_MIN_SYMBOLIC > 1 ? 's' : '')
                     },
                     confirmPassword: {
                         required: 'Please repeat password',
