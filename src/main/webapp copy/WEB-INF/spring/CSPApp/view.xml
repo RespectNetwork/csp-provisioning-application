@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/mvc"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:beans="http://www.springframework.org/schema/beans"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+
+ 
+
+	<!-- <mvc:resources mapping="/static/**" location="/static/" /> -->
+	        	
+    <beans:bean id="templateResolver"
+        class="org.thymeleaf.templateresolver.ServletContextTemplateResolver">
+        <beans:property name="prefix" value="/WEB-INF/views/" />
+        <beans:property name="suffix" value=".html" />
+        <beans:property name="templateMode" value="HTML5" />
+    </beans:bean>
+
+    <beans:bean id="templateEngine" class="org.thymeleaf.spring3.SpringTemplateEngine">
+        <beans:property name="templateResolver" ref="templateResolver" />
+    </beans:bean>
+
+    <beans:bean class="org.thymeleaf.spring3.view.ThymeleafViewResolver">
+        <beans:property name="templateEngine" ref="templateEngine" />
+    </beans:bean>
+    
+    
+    <beans:bean id="viewResolver"
+        class="org.springframework.web.servlet.view.InternalResourceViewResolver" >
+        <beans:property name="prefix">
+            <beans:value>/WEB-INF/pages/</beans:value>
+        </beans:property>
+        
+        <beans:property name="suffix">
+            <beans:value>""</beans:value>
+        </beans:property>
+        
+    </beans:bean>
+	    
+   
+</beans:beans>

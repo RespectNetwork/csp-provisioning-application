@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+
+
+    <annotation-driven/>
+
+    <!-- Property Configuration -->
+
+    <beans:bean
+        class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <beans:property name="locations">
+            <beans:list>
+      <!--          <beans:value>classpath:csp.default.properties</beans:value> -->
+                <beans:value>classpath:csp.${csp.env}.properties</beans:value>
+                <beans:value>classpath:db.${csp.env}.properties</beans:value>
+                <beans:value>file:${cspprop.location}/csp.properties</beans:value>
+                <beans:value>classpath:twilio.properties</beans:value>
+                <beans:value>classpath:mail.properties</beans:value>
+                <beans:value>classpath:notification.properties</beans:value>
+      <!--          <beans:value>classpath:db.properties</beans:value> -->
+            </beans:list>
+        </beans:property>
+        <beans:property name="ignoreResourceNotFound"
+            value="true" />
+        <beans:property name="ignoreUnresolvablePlaceholders"
+            value="false" />
+    </beans:bean>
+    
+    <!--  Imports -->
+              
+    <beans:import resource="resources.xml"/>
+    <beans:import resource="i18n.xml"/>
+    <beans:import resource="view.xml"/>
+    <beans:import resource="notification.xml"/>
+    <beans:import resource="payment.xml"/>
+    <beans:import resource="invitation.xml"/>
+         	
+	<context:component-scan base-package="net.respectnetwork.csp.application" scoped-proxy="targetClass" />
+	<!-- Enables the Spring MVC @Controller programming model -->
+	<annotation-driven />
+    
+    
+    <!-- Registration Session-scoped bean exposed as a proxy -->
+    <beans:bean id="registrationSession" class="net.respectnetwork.csp.application.session.RegistrationSession" scope="session">
+        <aop:scoped-proxy/>
+    </beans:bean>
+
+    
+    <!-- Business Logic -->
+    
+    <!-- Registration Manager -->
+    
+    <beans:bean id="regManager"
+        class="net.respectnetwork.csp.application.manager.RegistrationManager" >
+        <beans:qualifier value="active"/> 
+        <beans:constructor-arg name="cspRegistrar" ref="basicCSP"/>  
+        <beans:property name="userValidator" ref="basicUserValidator"/>  
+        <beans:property name="paymentProcesser" ref="nopPaymentProcessor"/>  
+        <beans:property name="registrationAmount" ref="registrationAmount"/> 
+        <beans:property name="registrationCurrencyCode" ref="registrationCurrencyCode"/> 
+        <beans:property name="personalCloudEndPoint" value="${csp.cspCloudBaseXdiEndpoint}"/> 
+        <beans:property name="requireUniqueness" value="${csp.requireUniqueness}"/>  <!-- Never run as false in Production -->  
+        <beans:property name="sendMailAndSMS" value="${csp.sendMailAndSMS}"/>  <!-- Never run as false in Production --> 
+        <beans:property name="validateCodes" value="${csp.validateCodes}"/>  <!-- Never run as false in Production --> 
+		<beans:property name="requireInviteCode" value="${csp.requireInviteCode}"/>  <!-- Never run as false in Production -->
+		<beans:property name="cspHomeURL" value="${csp.cspHomeURL}"/>  
+		<beans:property name="cspInviteURL" value="${csp.cspInviteURL}"/>   
+		<beans:property name="cspRespectConnectBaseURL" value="${csp.cspRespectConnectBaseURL}"/>
+		<beans:property name="cspTCURL" value="${csp.cspTCURL}"/>
+		<beans:property name="nameAvailabilityCheckURL" value="${csp.nameAvailabilityCheckURL}"/> 				  	
+    </beans:bean>
+    
+    
+	<!-- Personal Cloud Manager -->
+    
+    <beans:bean id="personalCloudManager"
+        class="net.respectnetwork.csp.application.manager.PersonalCloudManager" >         
+            
+        <beans:property name="personalCloudDiscoveryClient" ref="xdiDiscoveryClient"/>    
+    </beans:bean>
+        
+    <!-- CSP SDK Implementation -->
+     <beans:bean id="basicCSP"
+        class="net.respectnetwork.sdk.csp.BasicCSP" >
+        <beans:property name="cspInformation" ref="csp"/>
+    </beans:bean>
+    
+    <!-- AutoWired into WelcomeController -->
+    <beans:bean id="cspName" class="java.lang.String">
+        <beans:constructor-arg value="${csp.cspName}"/>
+        <beans:qualifier value="cspName"/>
+    </beans:bean>
+    
+    <beans:bean id="cspCloudName" class="java.lang.String">
+        <beans:constructor-arg value="${csp.cspCloudName}"/>
+        <beans:qualifier value="cspCloudName"/>
+    </beans:bean>
+
+    <beans:bean id="cspInviteURL" class="java.lang.String">
+        <beans:constructor-arg value="${csp.cspInviteURL}"/>
+        <beans:qualifier value="cspInviteURL"/>
+    </beans:bean>
+    
+    <beans:bean id="cspContactPhone" class="java.lang.String">
+        <beans:constructor-arg value="${csp.contactPhone}"/>
+        <beans:qualifier value="cspContactPhone"/>
+    </beans:bean>
+    
+    <beans:bean id="cspContactEmail" class="java.lang.String">
+        <beans:constructor-arg value="${csp.contactEmail}"/>
+        <beans:qualifier value="cspContactEmail"/>
+    </beans:bean>
+  
+    <!-- CSP  Configuration -->
+    <beans:bean name="csp" class="net.respectnetwork.sdk.csp.BasicCSPInformation">
+        <beans:constructor-arg name="cspCloudNumber" ref="cspCloudNumber"/>
+        <beans:constructor-arg name="cspSecretToken" value="${csp.cspSecretToken}"/>
+        <beans:constructor-arg name="cspRegistryXdiEndpoint" value="${csp.cspRegistryXdiEndpoint}"/>
+        <beans:constructor-arg name="cspCloudBaseXdiEndpoint" value="${csp.cspCloudBaseXdiEndpoint}"/>
+        <beans:constructor-arg name="rnCloudNumber" ref="rnCloudNumber"/>
+        <beans:constructor-arg name="rnRegistrationServiceXdiEndpoint" value="${csp.rnRegistrationServiceXdiEndpoint}"/>
+        <beans:constructor-arg name="rnCspLinkContract" ref="rnCspLinkContract"/>
+        <beans:constructor-arg name="cspSignaturePrivateKey">
+            <beans:null />
+        </beans:constructor-arg>
+        <beans:constructor-arg name="rnCspSecretToken" value="${csp.rnCspSecretToken}"/>
+        <beans:constructor-arg name="xdiDiscoveryClient" ref="xdiDiscoveryClient"/>
+    </beans:bean>
+      
+    
+    <beans:bean id="xdiDiscoveryClient" class="xdi2.discovery.XDIDiscoveryClient">
+        <beans:constructor-arg  ref="xdiHttpClient"/>
+    </beans:bean>   
+    
+    <beans:bean id="xdiHttpClient" class="xdi2.client.http.XDIHttpClient">
+        <beans:constructor-arg value="${csp.cspDiscoveryClientURL}"/>
+    </beans:bean>
+        
+    <beans:bean id="cspCloudNumber" class="xdi2.core.xri3.CloudNumber" factory-method="create">
+        <beans:constructor-arg name="string" value="${csp.cloudNumber}"/>
+    </beans:bean>
+    
+    <beans:bean id="rnCloudNumber" class="xdi2.core.xri3.CloudNumber" factory-method="create">
+        <beans:constructor-arg name="string" value="${csp.rnCloudNumber}"/>
+    </beans:bean>
+       
+    <beans:bean id="rnCspLinkContract" class="xdi2.core.xri3.XDI3Segment" factory-method="create">
+        <beans:constructor-arg name="string" value="${csp.rnCspLinkContract}"/>
+    </beans:bean>
+    
+    <beans:bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <beans:property name="driverClassName" value="${db.driver}"/>
+        <beans:property name="url" value="${db.jdbcUrl}"/>
+        <beans:property name="username" value="${db.username}"/>
+        <beans:property name="password" value="${db.password}"/>
+        <beans:property name="initialSize" value="${db.minPoolSize}"/>
+        <beans:property name="maxActive" value="${db.maxPoolSize}"/>
+        <beans:property name="removeAbandoned" value="true"/>
+        <beans:property name="validationQuery" value="select count(*) from csp where 1 = 0"/>
+        <beans:property name="testOnBorrow" value="true"/>
+        
+        
+    </beans:bean>
+
+    <beans:bean id="cspDAOImpl" class="net.respectnetwork.csp.application.dao.mysql.CSPDAOImpl" scope="singleton">
+        <beans:property name="dataSource" ref="dataSource"/>
+    </beans:bean>
+
+    <beans:bean id="cspCostOverrideDAOImpl" class="net.respectnetwork.csp.application.dao.mysql.CSPCostOverrideDAOImpl" scope="singleton">
+        <beans:property name="dataSource" ref="dataSource"/>
+    </beans:bean>
+
+    <beans:bean id="paymentDAOImpl" class="net.respectnetwork.csp.application.dao.mysql.PaymentDAOImpl" scope="singleton">
+        <beans:property name="dataSource" ref="dataSource"/>
+    </beans:bean>
+
+    <beans:bean id="inviteDAOImpl" class="net.respectnetwork.csp.application.dao.mysql.InviteDAOImpl" scope="singleton">
+        <beans:property name="dataSource" ref="dataSource"/>
+    </beans:bean>
+
+    <beans:bean id="inviteResponseDAOImpl" class="net.respectnetwork.csp.application.dao.mysql.InviteResponseDAOImpl" scope="singleton">
+        <beans:property name="dataSource" ref="dataSource"/>
+    </beans:bean>
+
+    <beans:bean id="giftCodeDAOImpl" class="net.respectnetwork.csp.application.dao.mysql.GiftCodeDAOImpl" scope="singleton">
+        <beans:property name="dataSource" ref="dataSource"/>
+    </beans:bean>
+
+    <beans:bean id="giftCodeRedemptionDAOImpl" class="net.respectnetwork.csp.application.dao.mysql.GiftCodeRedemptionDAOImpl" scope="singleton">
+        <beans:property name="dataSource" ref="dataSource"/>
+    </beans:bean>
+
+    <beans:bean id="dependentCloudDAOImpl" class="net.respectnetwork.csp.application.dao.mysql.DependentCloudDAOImpl" scope="singleton">
+        <beans:property name="dataSource" ref="dataSource"/>
+    </beans:bean>
+    
+    <beans:bean id="signupInfoDAOImpl" class="net.respectnetwork.csp.application.dao.mysql.SignupInfoDAOImpl" scope="singleton">
+        <beans:property name="dataSource" ref="dataSource"/>
+    </beans:bean>
+
+    <beans:bean id="promoCodeDAOImpl" class="net.respectnetwork.csp.application.dao.mysql.PromoCodeDAOImpl" scope="singleton">
+        <beans:property name="dataSource" ref="dataSource"/>
+    </beans:bean>
+    
+    <beans:bean id="promoCloudDAOImpl" class="net.respectnetwork.csp.application.dao.mysql.PromoCloudDAOImpl" scope="singleton">
+        <beans:property name="dataSource" ref="dataSource"/>
+    </beans:bean>
+    
+    <beans:bean id="daoFactory" class="net.respectnetwork.csp.application.dao.DAOFactory" scope="singleton">
+        <beans:property name="cSPDAO"                ref="cspDAOImpl"/>
+        <beans:property name="cSPCostOverrideDAO"    ref="cspCostOverrideDAOImpl"/>
+        <beans:property name="paymentDAO"            ref="paymentDAOImpl"/>
+        <beans:property name="inviteDAO"             ref="inviteDAOImpl"/>
+        <beans:property name="inviteResponseDAO"     ref="inviteResponseDAOImpl"/>
+        <beans:property name="giftCodeDAO"           ref="giftCodeDAOImpl"/>
+        <beans:property name="giftCodeRedemptionDAO" ref="giftCodeRedemptionDAOImpl"/>
+        <beans:property name="dependentCloudDAO"     ref="dependentCloudDAOImpl"/>
+        <beans:property name="signupInfoDAO"     	 ref="signupInfoDAOImpl"/>
+        <beans:property name="promoCodeDAO"     	 ref="promoCodeDAOImpl"/>
+        <beans:property name="promoCloudDAO"     	 ref="promoCloudDAOImpl"/>
+        
+    </beans:bean>
+
+    <beans:bean id="daoContextProvider" class="net.respectnetwork.csp.application.dao.DAOContextProvider" />
+    
+     <beans:bean id="nameAvailabilityCheckURL" class="java.lang.String">
+        <beans:constructor-arg value="${csp.nameAvailabilityCheckURL}"/>
+        <beans:qualifier value="nameAvailabilityCheckURL"/>
+    </beans:bean>
+    
+</beans:beans>

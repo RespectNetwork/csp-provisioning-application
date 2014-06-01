@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<!-- HTML5 Boilerplate -->
+<!--[if lt IE 7]>      <html xmlns:th="http://www.thymeleaf.org" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html xmlns:th="http://www.thymeleaf.org" class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html xmlns:th="http://www.thymeleaf.org" class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html xmlns:th="http://www.thymeleaf.org" class="no-js"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8" />
+    <title>Respect Network</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+
+    <!-- CSS -->
+    
+<link href="https://s3.amazonaws.com/rnfonts/demo.css" rel="stylesheet" type="text/css" />
+
+    
+    <link href="css/bootstrap.css" rel="stylesheet" />
+    <link href="css/style.css" rel="stylesheet" />
+   <style type="text/css" >
+
+      /* Sticky footer styles
+      -------------------------------------------------- */
+
+      html,
+      body {
+        height: 100%;
+        /* The html and body elements cannot have any padding or margin. */
+      }
+
+      /* Wrapper for page content to push down footer */
+      #wrap {
+        min-height: 100%;
+        height: auto !important;
+        height: 100%;
+        /* Negative indent footer by it's height */
+        margin: 0 auto -60px;
+      }
+
+      /* Set the fixed height of the footer here */
+      #push,
+      #footer {
+        height: 60px;
+      }
+      #footer {
+        border-top: solid 1px #d9d9d9;
+      }
+
+      /* Lastly, apply responsive CSS fixes as necessary */
+      @media (max-width: 979px) {
+        #footer {
+          margin-left: -20px;
+          margin-right: -20px;
+          padding-left: 20px;
+          padding-right: 20px;
+        }
+        .bodyContainer {
+					padding-top: 50px !important;
+				}
+      }
+      
+      @media (max-width: 767px) {
+        #footer {
+          margin-left: -20px;
+          margin-right: -20px;
+          padding-left: 20px;
+          padding-right: 20px;
+        }
+        .bodyContainer {
+					padding-top: 50px !important;
+				}
+      }
+      @media (max-width: 450px) {
+				#feedback { 
+  			top: 80%;
+  			z-index: 9999;
+			}
+}
+
+      /* Custom page CSS
+      -------------------------------------------------- */
+      /* Not required for template or sticky footer method. */
+
+      #wrap > .container {
+        padding-top: 150px;
+      }
+      
+      .bodyContainer {
+      	padding-top: 125px;
+      }
+      
+      .container .credit {
+        margin: 20px 0;
+        text-align:center;
+      }
+
+      code {
+        font-size: 80%;
+      }
+      
+/* floating Help button
+------------------------------------------------------*/
+#feedback { 
+  height: 104px; 
+  width: 104px; 
+  position: fixed; 
+  top: 95%;
+  left: 150px;
+  z-index: 9999;
+}
+#feedback a { 
+  display: block; 
+  background: #fff; 
+  height: 15px; 
+  width: 70px; 
+  padding: 8px 16px;
+  color: #efefef; 
+  font-size: 17px; 
+  text-decoration: none; 
+  text-align:center;
+}
+
+#feedback a:hover { 
+  background: #06c; 
+}
+
+      
+
+    </style>
+    <link href="css/bootstrap-responsive.css" rel="stylesheet" />
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="img/ico/apple-touch-icon-144-precomposed.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/ico/apple-touch-icon-114-precomposed.png" />
+      <link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/ico/apple-touch-icon-72-precomposed.png" />
+                    <link rel="apple-touch-icon-precomposed" href="img/ico/apple-touch-icon-57-precomposed.png" />
+                                   <link rel="shortcut icon" href="img/ico/favicon.png" />
+<script>     
+     function goToRNlandingPage()
+	 {
+
+		query = document.getElementById('queryStr').value;
+		url = document.getElementById('postURL').value ;	
+		urlAndQs = "?" + query;
+		
+		window.open(url+urlAndQs,"_self");
+	 }
+</script>
+ <script src="js/libs/misc.js"> </script> 
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>	                                  
+<script src="js/libs/bootstrap-dropdown.js"></script>                                
+</head>
+<body>
+
+<!-- Part 1: Wrap all page content here -->
+    <div id="wrap">
+
+      <!-- Fixed navbar -->
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+      <div class="row-fluid">  
+        <div class="span4 smallTop">
+        	<p class="cspHeader right"><img src="img/csp_logo.png" /></p>
+        </div>
+        <div class="span4"></div>
+        <div class="span4 equation">
+             <ul class="nav">
+                 <a  href="#" class="dropdown-toggle" data-toggle="dropdown"><span th:text="${cloudName}"/> &nbsp;<b class="caret"></b> &nbsp;</a>
+                <ul class="dropdown-menu">
+                  <li><a th:href="@{/logout}">Logout</a></li>
+              </ul>
+
+            </ul> 
+        </div>
+      </div>
+			</div>
+  	</div>
+	</div>
+
+      <!-- Begin page content -->
+      <div class="bodyContainer">
+		<div class="middle2"> 
+			<div>
+					<input type="hidden" id="queryStr" name="queryStr" th:value="${queryStr}" />         	  
+  			  		<input type="hidden" id="postURL" name="postURL" th:value="${postURL}" />
+					<button type="button" id="goToRN" class="button big" onclick="goToRNlandingPage();">Invite People To Join Respect Network</button>
+          </div>
+          <br></br>
+          <br></br>	
+          <form method="get" action="#" th:action="@{/invite}">
+          	  <input type="hidden" id="name" name="name" th:value="${cloudName}" />
+              <button id="full" type="submit" class="button big">Buy Personal Cloud Gift Cards</button>
+          </form>
+          <br></br>
+          <br></br>
+          <form method="get" action="#" th:action="@{/dependent}">
+          	  <input type="hidden" id="name" name="name" th:value="${cloudName}" />
+              <button id="full" type="submit" class="button big">Buy Clouds For Dependents</button>
+          </form>
+		</div>
+	</div>	  
+
+    <div id="footer">
+      	<!--
+  			<div class="help">
+  				<div id="help">
+  					<a target="_blank" onclick="return windowpop(this.href, 545, 433); " th:href="@{/help}">Help</a>
+				</div>
+	 		</div>
+	 	-->
+    </div>
+
+
+</div>
+</body>
+</html>

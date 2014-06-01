@@ -1,0 +1,1255 @@
+/* Sticky footer styles
+-------------------------------------------------- */
+
+      html,
+      body {
+        height: 100%;
+        /* The html and body elements cannot have any padding or margin. */
+      }
+
+      /* Wrapper for page content to push down footer */
+      #wrap {
+        min-height: 100%;
+        height: auto !important;
+        height: 100%;
+        /* Negative indent footer by it's height */
+        margin: 0 auto -100px;
+      }
+ 
+      /* Set the fixed height of the footer here */ 
+      #push,
+      #footer {
+        height: 100px;
+        overflow: hidden;
+      }
+   
+		 .border {
+        border-top: solid 1px #d9d9d9;
+      }
+      
+
+
+      /* Custom page CSS
+      -------------------------------------------------- */
+      /* Not required for template or sticky footer method. */
+
+      #wrap > .container {
+        padding-top: 150px;
+      }
+      
+      .bodyContainer {
+      	padding-top: 148px;
+      }
+      
+      .paymentBody{
+      	padding-top: 125px;
+      }
+      
+      .container .credit {
+        margin: 20px 0;
+        text-align:center;
+      }
+
+      code {
+        font-size: 80%;
+      }
+      
+/* floating Help button
+------------------------------------------------------*/
+#help { 
+  height: 104px; 
+  width: 104px; 
+  position: fixed; 
+  top: 93%;
+  z-index: 9999;
+}
+#help a { 
+  display: block; 
+  background: #b6b6b6; 
+  height: 15px; 
+  width: 70px; 
+  padding: 8px 16px;
+  color: #fdfdfd; 
+  font-size: 17px; 
+  text-decoration: none; 
+  text-align:center;
+  	-webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+}
+
+#help a:hover { 
+  background: #b6b6b6; 
+}
+
+.test {
+	background-image:url("../img/RespectNetwork_Logo_H_RGB.png"); 
+	background-repeat: no-repeat;
+	height: 57px;
+	margin-left: 150px;
+}
+
+.cspLogo {
+	background-image:url("../img/csp_logo.png"); 
+	background-repeat: no-repeat;
+	height: 57px;
+	margin-left: 100px;
+}
+
+.row {
+	margin-left: 0px; 
+}
+
+.page-header {
+	width: 960px;
+	margin-left: auto;
+  margin-right: auto;
+}
+
+.midHdr {
+	font-family: AvenirNext-Demibold;
+	padding-top: 50px;
+  font-size: 28px;
+  color: #02e4ff;
+  text-align: center;
+}
+
+.bodyHdr {
+  font-size: 24px;
+  color: #999A9B;
+  text-align: center;
+}
+
+.rightHdr {
+	margin-left: 30px !important;
+}
+
+.cspHeader {
+	font-size: 20px;
+	margin-top: 20px;
+}
+
+.giftTotal{
+	float: right;
+	margin-top: 15px;
+	padding-right: 100px;
+}
+
+.pull-right {
+	float: right;
+	font-size: 14px;
+	color: #999A9B;
+	padding-top: 5px;
+}
+
+.pull-left {
+	float: left;
+}
+
+.float-right {
+	float: right;
+}
+
+.center {
+	text-align: center;
+}
+
+.right: {
+	text-align: right;
+}
+
+.tinyTop{
+	margin-top: 15px;
+}
+.noMarg {
+	margin: 0px;
+}
+
+.smallMarg {
+	margin-top: 10px;
+}
+
+.smallerTop {
+	margin-top: 20px;
+}
+
+.smallTop {
+	margin-top: 30px;
+}
+
+.ccTop {
+	margin-top: 30px;
+}
+
+.bigTop {
+	margin-top: 50px;
+}
+
+.biggerTop {
+	margin-top: 65px;
+}
+
+.margin-bottom {
+	margin-bottom: 0px;
+}
+
+.details {
+	height: 370px;	
+}
+
+.middle {
+	font-size: 40px;
+	padding: 40px 0 25px;
+	height: 370px;
+}
+
+.middle1 {
+	font-size: 38px;
+	padding: 0px 0 0px;
+	height: 80%;
+}
+
+.middle2 {
+	font-size: 28px;
+	padding: 42px 0 75px;
+	height: 550px;
+	line-height: 34px;
+}
+
+
+.primary, .cloud, .inputForm, .middle, .middle2 {
+	text-align: center;
+}
+.left {
+	text-align: left;
+}
+.helpButton {
+	margin-left: 80px;
+	width: 100px;
+	background-color: #999a9b;
+	text-align: center;
+	margin-bottom: -20px;
+	height: 30px;
+	padding-top:5px;
+	-webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  border: 0px;
+  vertical-align: bottom;
+}
+
+.cspMain {
+ text-align:right;
+ border-bottom:  solid 1px #d9d9d9;
+}
+
+.csp {
+	padding:130px;
+	font-size: 14px;
+  float:right;
+
+}
+
+.cspMedium {
+	padding-top: 25px;
+	padding-bottom: 10px;
+}
+
+.equals {
+	border-top: #02e4ff solid 1px;
+	padding-top: 20px;
+	font-size: 24px;
+	width: 50%;
+}
+
+.payment1 {
+	font-size:24px;
+	margin: 0px 0 50px;
+}
+
+.payment2 {
+	font-size:20px;
+	margin: 0px 0 50px;
+}
+.payment3 {
+	font-size:20px;
+	margin: 0px 0 10px;
+}
+
+.payment4 {
+	font-size:24px;
+	margin: 20px 0 0px;
+	text-align: center;
+}
+
+.notes {
+	font-size:12px;
+}
+
+.primary {
+	font-size:24px;
+	margin: 50px 0 50px;
+}
+
+.primaryLeftJustified {
+	font-size:28px;
+	margin: 10px 0 10px;
+	text-align: left;
+}
+
+.secondary {
+	font-size:16px;
+	margin-top: 0px;
+	line-height: 25px;
+}
+
+.leftHdr {
+	font-size:14px;
+	margin-top: 0px;
+	margin-left:150px;
+}
+
+.equation {
+	padding-top: 35px;
+  font-size: 24px;
+  color: #02e4ff;
+}
+
+/* input form styles */
+input[type="text"], input[type="password"]{
+	font-family: Avenir Next;
+	-webkit-appearance: none;
+	background-color: #fdfdfd;
+	border: 0px solid #cccccc;
+	box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.2);
+	padding: 8px;
+	height: auto;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+input[type="submit"], button{
+	background: #02e4ff;
+	padding: 0.4375rem 2rem;
+	width: auto;
+	font-size: 1.375rem;
+	margin-bottom: 2.5rem;
+	-webkit-box-shadow: 0px 1px 1px 0px rgba(50, 50, 50, 0.5);
+	-moz-box-shadow: 0px 1px 1px 0px rgba(50, 50, 50, 0.5);
+	box-shadow: 0px 1px 1px 0px rgba(50, 50, 50, 0.5);
+	transition: background-color 300ms ease-out;
+}
+.button:hover, .button:focus, .button:hover, .button:focus {
+  	background-color: #1cd183; 
+}
+.inputCloudName {
+	margin-top: 50px;
+	-moz-border-radius:5px; /* Firefox */
+	-webkit-border-radius: 5px; /* Safari, Chrome */
+	-khtml-border-radius: 5px; /* KHTML */
+	border-radius: 5px; /* CSS3 */
+	/* height: 50px; */
+	width: 410px;
+	font-family: Avenir Next;
+	font-size: 24px;
+	color: #b6b6b6;
+	text-align: center;
+}
+
+.inputFields {
+	-moz-border-radius:5px; /* Firefox */
+	-webkit-border-radius: 5px; /* Safari, Chrome */
+	-khtml-border-radius: 5px; /* KHTML */
+	border-radius: 5px; /* CSS3 */
+	height: 50px;
+	width: 410px;
+	font-size: 24px;
+	color: #b6b6b6;
+	text-align: center;
+}
+
+.onblurtext {
+	color: #999a9b 
+	-moz-border-radius:5px; /* Firefox */
+	-webkit-border-radius: 5px; /* Safari, Chrome */
+	-khtml-border-radius: 5px; /* KHTML */
+	border-radius: 5px; /* CSS3 */
+	height: 50px;
+	width: 410px;
+	font-size: 24px;
+	text-align: center;
+}	
+
+.phoneField {
+	-moz-border-radius:5px; /* Firefox */
+	-webkit-border-radius: 5px; /* Safari, Chrome */
+	-khtml-border-radius: 5px; /* KHTML */
+	border-radius: 5px; /* CSS3 */
+	height: 50px;
+	width: 280px;
+	font-size: 24px;
+	color: #b6b6b6;
+	text-align: center;
+}
+
+.ccField {
+	-moz-border-radius:5px; /* Firefox */
+	-webkit-border-radius: 5px; /* Safari, Chrome */
+	-khtml-border-radius: 5px; /* KHTML */
+	border-radius: 5px; /* CSS3 */
+	height: 60px;
+	width: 120px;
+	font-size: 24px;
+	color: #b6b6b6;
+	text-align: center;
+}
+
+.onblurtextPhone {
+	color: #999a9b 
+	-moz-border-radius:5px; /* Firefox */
+	-webkit-border-radius: 5px; /* Safari, Chrome */
+	-khtml-border-radius: 5px; /* KHTML */
+	border-radius: 5px; /* CSS3 */
+	height: 50px;
+	width: 280px;
+	font-size: 24px;
+	text-align: center;
+}	
+
+
+	
+.mini {
+	width: 37px;
+	margin-top: 10px;
+}
+
+.error {
+	font-size:14px;
+	color: #ff5c02;
+	line-height: 24px;
+	padding-bottom: 10px;
+}
+.error.valid{
+	display: inline-block!important;
+	text-indent: -9999px;
+	background: url("../img/valid.png") no-repeat center center; 
+	width: 40px; 
+	height: 19px;
+	margin-left: -40px;
+}
+.password-validation {
+	color: #02e4ff;
+	font-size: 14px;
+	line-height: 20px;
+}
+.password-validation div{
+	width: 70px;
+	display: inline-block;
+	text-align: left;
+	background: #fff;
+	padding: 5px 28px 5px 5px;
+}
+.password-validation div.validated{
+	background: #fff url("../img/valid.png") no-repeat right center; 
+}
+.date {
+	width: 118px;
+	margin-top:10px;
+}
+.uberdinky {
+	width: 100px;
+	margin-top: 10px;
+}
+
+.dinky {
+	width: 125px;
+	margin-top: 10px;
+}
+
+.tiny {
+	width: 130px;
+}
+
+.short {
+	width: 175px;
+}
+
+.narrow {
+	width: 400px;
+}
+
+.skinny {
+	height: 40px;
+}
+
+.minusPad {
+	margin-top: -30px;
+}
+
+
+.button {
+	/* removed -rm
+	width: 150px; */
+	width: auto;
+	background-color:#02e4ff;
+	color: #fff;
+	-webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  padding: 7px 32px;
+  border: 0px;
+  font: 20px "AvenirNext", helvetica, arial, sans-serif;
+	height: 40px;
+	margin-top:20px;
+}
+
+.big {
+	width:425px;
+}
+
+.med {
+	width: 245px;
+}
+
+.small {
+	width: 30px;
+	height: 30px;
+	background-color:#fff;
+	color: #02e4ff;
+	-webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  padding: 0px;
+  border: 2px solid #02e4ff;
+}
+
+.plusButton {
+	font-size:20px;
+	margin: 0px;
+	vertical-align: bottom;
+	
+}
+
+button,
+input,
+select,
+textarea {
+  margin: 0;
+  padding: 0;
+  font-size: 100%;
+  vertical-align: baseline;
+}
+
+   /* CUSTOMIZE THE NAVBAR
+    -------------------------------------------------- */
+
+    /* Special class on .container surrounding .navbar, used for positioning it into place. */
+    .navbar-wrapper {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 10;
+      margin-top: 20px;
+      margin-bottom: -90px; /* Negative margin to pull up carousel. 90px is roughly margins and height of navbar. */
+    }
+    .span4  .navbar-inner {
+			margin-right:30%;
+			background-color: transparent;
+    }
+
+    /* Remove border and change up box shadow for more contrast */
+    .navbar .navbar-inner {
+      border: 0;
+    }
+
+		.navbar .nav > li {
+		float: right;
+		margin-top: 40px;
+		}
+
+    /* Downsize the brand/project name a bit */
+    .navbar .brand {
+      padding: 14px 20px 16px; /* Increase vertical padding to match navbar links */
+      font-size: 16px;
+      font-weight: bold;
+      text-shadow: 0 -1px 0 rgba(0,0,0,.5);
+    }
+
+    /* Navbar links: increase padding for taller navbar */
+    .navbar .nav > li > a {
+      padding: 15px 10px;
+    }
+    
+    .navbar .nav {
+			margin: 0 60px 0 0; 
+		}
+		
+    /* Offset the responsive button for proper vertical alignment */
+    .navbar .btn-navbar {
+      margin-top: 10px;
+    }
+
+/* Bigger Tablets */
+@media (min-width: 768px) and (max-width: 979px) {
+	.nav-collapse .nav > li {
+		text-align: right;
+	}
+/* removed -rm
+	.secondary {
+	font-size:12px;
+}*/
+
+	.navbar .btn-navbar {
+		margin-top: 45px;
+	}
+
+.bodyHdr {
+  font-size: 20px;
+  color: #999A9B;
+  text-align: center;
+}
+
+	.test {
+		background-image:url("../img/icon_57.png"); 
+		background-repeat: no-repeat;
+		height: 57px;
+		margin-left: 150px;
+	}
+				
+	.leftPad {
+		padding-left: 50px; 
+	}
+		
+  #wrap > .container {
+    padding-top: 50px !important;
+  }
+   
+  .bodyContainer {
+		padding-top: 5px !important;
+	}
+
+	.paymentBody {
+		padding-top: 5px;
+	}
+	
+	.narrow {
+		width: 300px;
+	}
+
+	.inputFields {
+		width:300px;
+		height:35px;
+		font-size: 20px;
+		margin-top: 20px;
+	}
+	.inputCloudName {
+		/* removed -rm
+		width: 300px; 
+		height: 45px; */
+	}
+
+	.pwdInputForm {
+		margin-top: 15px;
+		height: 35px;
+		width: 300px;
+		font-size: 20px;
+	}
+
+	.onblurtext {
+		height: 35px;
+		width: 300px;
+		font-size: 24px;
+	}	
+	
+	.phoneField {
+		height: 35px;
+		width: 200px;
+		font-size: 20px;
+	}
+	.onblurtextPhone {
+		height: 35px;
+		width: 200px;
+		font-size: 24px;
+	}	
+
+	.ccField {
+		height: 45px;
+		width: 100px;
+		font-size: 20px;
+	}
+
+	.smallMarg {
+		margin-top: 10px;
+	}
+	
+	.primary {
+		margin: 30 0 30px;
+	}
+	
+	.middle {
+	/* removed -rm
+		font-size: 30px; */
+		font-size: 40px;
+/*		padding: 52px 0 35px;   */
+		height: 300px;
+	}
+
+	.middle1 {
+		font-size: 30px;
+		height: 80%px;
+	}
+	
+	.middle2 {
+		/* removed -rm
+		font-size: 20px; */
+		font-size: 28px;
+		padding: 20px 0 0px;
+		height: 350px;
+	}
+	
+	.middle3 {
+		font-size: 24px;
+		padding: 20px 0 0px;
+		height: 250px;
+	}
+	
+	.csp {
+ 		padding-top: 80px;
+ 		font-size: 14px;
+ 		float:right;
+	}
+	
+	.cspMain {
+ 		padding-top: 0px;
+ 		font-size: 14px;
+		float:right;
+	}
+	.bigTop {
+		margin-top: 45px;
+	}	
+	.big {
+		width:300px;
+	}
+	.midHdr {
+  	font-size: 24px;
+	}
+	.skinny {
+		height: 30px;
+		width: 180px;
+	}
+	.payment1 {
+		margin: 0px 0 25px;
+	}
+	
+	select, textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"], .uneditable-input {
+		/* removed -rm
+		font-size: 18px; */
+		font-size: 24px;
+	}
+}
+
+/* Small Tablets and Big Ass Phones */
+
+@media (min-width: 451px) and (max-width: 767px) {
+	.test {
+		background-image:url("../img/icon_57.png"); 
+		background-repeat: no-repeat;
+		height: 57px;
+		margin-left: 100px;
+	}
+
+	.cspLogo {
+		background-image:url("../img/csp_logo_sm.png"); 
+		background-repeat: no-repeat;
+		height: 57px;
+		margin-left: 50px;	
+		margin-top: 20px;
+	}
+
+  #wrap > .container {
+    padding-top: 5px !important;
+  }
+
+  .bodyContainer {
+		padding-top: 5px;
+	}
+.secondary {
+	/* removed -rm
+	font-size:12px; */
+	font-size: 15px;
+}
+
+	.paymentBody {
+		padding-top: 5px;
+	}
+	
+	.midHdr {
+		padding-top: 25px;
+  	font-size: 20px;
+  	color: #02e4ff;
+	}
+
+	/*removed -rm
+	.inputCloudName {
+		width: 225px;
+		height: 35px;
+	}*/
+	.pwdInputForm {
+		margin-top: 10px;
+		height: 25px;
+		width: 225px;
+		font-size: 14px;
+	}
+	.inputFields {
+		margin-top: 10px;
+		width: 225px;
+		height: 25px;
+		font-size: 14px;
+	}
+	.phoneField {
+		height: 25px;
+		width: 180px;
+		font-size: 14px;
+	}
+	.onblurtextPhone {
+		height: 35px;
+		width: 200px;
+		font-size: 24px;
+	}	
+
+	.ccField {
+		height: 35px;
+		width: 60px;
+		font-size: 14px;
+	}
+	.onblurtext {
+		height: 25px;
+		width: 240px;
+		font-size: 14px;
+	}	
+	.onblurtextPhone {
+		height: 35px;
+		width: 180px;
+		font-size: 14px;
+	}	
+
+	.narrow {
+		width: 250px;
+	}
+	.primaryLeftJustified {
+		font-size:20px;
+		margin: 0px;
+		text-align: left;
+	}
+
+	.mung {
+		padding-top: 0px;
+	}
+	
+	.payment3 {
+		font-size:18px;
+		margin: 0px;
+	}
+
+	.plusButton {
+		font-size: 16px;
+		margin: 0px;
+		vertical-align: middle;
+	}
+
+	.middle {
+		/* removed -rm
+		font-size: 24px;*/
+		font-size: 30px;
+		padding: 25px 0 35px;
+		height: 270px;
+	}
+	
+	.middle2 {
+	 	font-size: 16px;
+		padding: 5px 0 5px;
+		height: 390px;
+	}
+	
+	.csp {
+ 		padding-top: 30px;
+ 		font-size: 12px;
+ 		float:right;
+	}
+	.bigTop {
+		margin-top: 0px;
+	}
+	.smallTop {
+		margin-top: 0px;
+	}
+	
+	.ccTop {
+		margin-top: 0px;
+	}
+	
+	.button {
+		/* removed -rm
+		height:32px; */
+	}
+	
+	.smallMarg {
+		margin-top: 10px;
+	}
+	
+	.big {
+	width:250px;
+	}
+
+	/*removed -rm
+	select, textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"], .uneditable-input {
+		font-size: 18px;
+	}*/
+}
+
+@media (max-width: 1200px) and (min-width: 978px){
+	.test {
+		background-image: url("../img/RespectNetwork_Logo_H_RGB.png");
+		background-repeat: no-repeat;
+		height: 57px;
+		margin-left: 50px;
+	}
+}
+
+/* Small Phones */
+@media (max-width: 450px) {
+	.test {
+		background-image:url("../img/icon_57.png"); 
+		background-repeat: no-repeat;
+		height: 57px;
+		margin-left: 25px;
+	}
+	.row-fluid .span4 {
+ 	 width: 31%;
+	}
+	.secondary {
+	/* removed -rm
+	font-size:10px; */
+	font-size: 15px;
+}
+
+.bodyHdr {
+  font-size: 18px;
+  color: #999A9B;
+  text-align: center;
+}
+
+	.span4 {
+		width:103px;
+		float:left;
+	}
+	
+	.row-fluid .span5 {
+		width: 375px;
+	}
+	
+	.span2 {
+		width: 10px;
+	}
+
+	.leftHdr {
+		margin-left: 0px;
+	}
+
+  #wrap > .container {
+    padding-top: 50px !important;
+  }
+
+	.inputCloudName {
+		/* removed -rm
+		width: 250px; */
+		width: 96%;
+		height: 35px;
+		margin-top: 10px;
+	}
+
+	.cspLogo {
+		background-image:url("../img/csp_logo_sm.png"); 
+		background-repeat: no-repeat;
+		height: 57px;
+		margin-left: 25px;
+		margin-top: 20px;
+	}
+
+	.inputFields {
+		margin-top: 10px;
+		width: 180px;
+		height: 25px;
+		font-size: 14px;
+	}
+
+	.pwdInputForm {
+		margin-top: 10px;
+		height: 25px;
+		width: 180px;
+		font-size: 14px;
+	}
+	.smallTop {
+		margin-top: 0px;
+		width: 250px;
+		height: 30px;
+	}
+
+	.phoneField {
+		height: 35px;
+		width: 175px;
+		font-size: 14px;
+	}
+
+	.onblurtext {
+		height: 25px;
+		width: 180px;
+		font-size: 14px;
+	}	
+	.onblurtextPhone {
+		height: 35px;
+		width: 175px;
+		font-size: 14px;
+	}	
+
+	.primaryLeftJustified {
+		font-size:14px;
+		margin: 0px;
+		text-align: left;
+	}
+
+	.ccField {
+		height: 45px;
+		width: 75px;
+		font-size: 14px;
+	}
+
+	.mung {
+		padding-top: 0px;
+	}
+
+	.payment3 {
+		font-size:12px;
+		margin: 0px;
+	}
+
+	.plusButton {
+		font-size: 10px;
+		margin: 0px;
+		vertical-align: middle;
+	}
+
+	.navbar-inner {
+		height: 60px;
+	}
+
+	.bodyContainer {
+	/* removed -rm
+		padding-top: 15px !important; */
+		padding-top: 54px;
+	}	
+	.middle2 {
+	 	font-size: 16px;
+		padding: 5px 0 5px;
+		height: 475px;
+	}
+	
+	.middle {
+		/* removed -rm
+		font-size: 20px; */
+		font-size: 30px;
+		padding: 0px 0 15px;
+		height: 300px;
+	}
+
+	.big {
+		width:250px;
+	}
+	
+	.midHdr {
+  	font-size: 20px;
+  	padding-top:25px;
+	}
+	
+	
+	.ccTop {
+		margin: 0px;
+	}
+	
+	.bigTop{
+		margin-top: 30px;
+	}
+	
+	select, textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"], .uneditable-input {
+		/* removed -rm
+		font-size: 18px;
+		*/
+		font-size: 24px;
+	}
+	
+	.navbar-fixed-top {
+ 		margin-bottom: 0px;
+	}
+	
+	.button {
+	/* removed -rm
+		padding: 0px; */
+		padding: 7px 32px;
+		font: 18px "AvenirNext", helvetica, arial, sans-serif;
+		/* removed -rm
+		height: 30px; */
+		margin-top: 0px;
+	}
+	
+	.payment1 {
+		margin: 0px 0 0px;
+	}
+	
+	.payment2 {
+		margin: 0px 0 15px;
+	}
+
+}
+
+
+
+@media (min-width: 451px) and (max-width: 979px) {
+
+	.span4 {
+		width:300px;
+		float:left;
+	}
+
+	.leftHdr {
+		margin-left: 125px;
+	}
+	
+	.equation {
+		padding-top: 25px;
+		font-size: 20px;
+	}
+}
+
+@media (max-width: 979px) and (min-width: 768px){
+	[class*="span"] {
+	margin-left: 0px;
+	}
+}
+
+
+
+@media (min-width: 1200px) {
+	.row {
+		margin-left: 0px; 
+	}
+}
+ 
+@media (max-width: 979px) and (min-width: 768px){
+	.navbar .nav > li {
+		float: none;
+		margin-top: 0px;
+	}
+	.navbar .nav {
+		margin: 0px;
+	}
+	
+	.nav-collapse .nav > li > a, .nav-collapse .dropdown-menu a {
+		color: #d9d9d9;
+		background-color: white;	
+	}
+	.navbar .nav > li > a:focus,
+	.navbar .nav > li > a:hover {
+  	color: #02e4ff;
+  	text-decoration: none;
+  	background-color: white;
+	}
+
+}
+
+@media (max-width: 767px) and (min-width: 451px) {
+	[class*="span"], .uneditable-input[class*="span"], .row-fluid [class*="span"] {
+		float: left; 
+		margin-top: 25px;
+		background-color:transparent;
+	}
+		.navbar .nav > li {
+		float: none;
+		margin-top: 0px;
+	}
+	.navbar .nav {
+		margin: 0px;
+	}
+	
+	.nav-collapse .nav > li > a, .nav-collapse .dropdown-menu a {
+		color: #d9d9d9;
+		background-color: white;	
+	}
+	.navbar .nav > li > a:focus,
+	.navbar .nav > li > a:hover {
+  	color: #02e4ff;
+  	text-decoration: none;
+  	background-color: white;
+	}
+}
+
+
+@media (max-width: 450px) {
+/*	[class*="span"], .uneditable-input[class*="span"], .row-fluid [class*="span"]	{
+		margin-top: 2px; 
+		float: left; 
+		width: 33%; 
+		background-color:transparent;
+	}
+*/	
+	[class*="span"], .uneditable-input[class*="span"], .row-fluid [class*="span"]	{
+	}
+
+	.span4 {
+		margin-top: 2px; 
+		float: left; 
+		width: 33%; 
+		background-color:transparent;
+}
+		
+	.navbar .navbar-btn {
+		background-color: transparent;
+	}
+		.navbar .nav > li {
+		float: none;
+		margin-top: 0px;
+	}
+	.navbar .nav {
+		margin: 0px;
+	}
+		.nav-collapse .nav > li > a, .nav-collapse .dropdown-menu a {
+		color: #d9d9d9;
+		background-color: white;	
+	}
+	.navbar .nav > li > a:focus,
+	.navbar .nav > li > a:hover {
+  	color: #02e4ff;
+  	text-decoration: none;
+  	background-color: white;
+	}
+	
+	.nav-collapse .nav > li > a, .nav-collapse .dropdown-menu a {
+		color: #d9d9d9;
+		background-color: white;	
+	}
+	.navbar .nav > li > a:focus,
+	.navbar .nav > li > a:hover {
+  	color: #02e4ff;
+  	text-decoration: none;
+  	background-color: white;
+	}
+	.span10 {
+		width: 360px;
+	}
+	.equation {
+		padding-top: 20px;
+		font-size: 18px;
+		margin-left: -50px;
+	}
+
+
+}
+

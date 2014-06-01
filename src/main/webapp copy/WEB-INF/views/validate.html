@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Respect Network</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+
+    <!-- CSS -->
+    <link href="css/bootstrap.css" rel="stylesheet" />
+    <link href="css/bootstrap-responsive.css" rel="stylesheet" />
+    <link href="css/style.css" rel="stylesheet" />
+<link href="https://s3.amazonaws.com/rnfonts/demo.css" rel="stylesheet" type="text/css" />
+		<script src="js/libs/misc.js"> </script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="img/ico/apple-touch-icon-144-precomposed.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/ico/apple-touch-icon-114-precomposed.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/ico/apple-touch-icon-72-precomposed.png" />
+    <link rel="apple-touch-icon-precomposed" href="img/ico/apple-touch-icon-57-precomposed.png" />
+    <link rel="shortcut icon" href="img/ico/favicon.png" />
+    <script>
+	
+	</script>
+</head>
+
+<body>
+<!-- Part 1: Wrap all page content here -->
+<div id="wrap">
+<!-- Fixed navbar -->
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+      	<div class="row-fluid">  
+          <div class="span4 smallTop"><p class="test"></p>
+          </div>
+          <div class="span4 midHdr">
+          </div>
+          
+     	  <div class="span4 midHdr"><span th:text="${cloudName}"/>
+          </div>
+      	</div>
+	  	</div>
+		</div>  
+	</div>
+      <!-- Begin page content -->
+      <div class="bodyContainer">
+				<div class="middle2"> <span style="color:red" class="error"  th:text="${error}"></span><br/>Verification codes have been sent to your email and phone. <br />Enter those codes in the fields below.<br/>Codes are not case sensitive. 
+					<form action="#" th:object="${validateInfo}" th:action="@{/validatecodes}" method="post" class="margin-top">
+
+ 						<input type="text" name="emailCode" class="inputFields smallTop" id="emailCode" placeholder="email code" onFocus="clearText(this)" onBlur="clearText(this.className = 'onblurtext smallTop')"  />
+						<p class="secondary"><span th:text="|Sent to ${verifyingEmail}|"> Sent to</span></p>
+						
+						<input type="text" name="smsCode"  class="inputFields smallTop" id="smsCode" placeholder="text code" onFocus="clearText(this)" onBlur="clearText(this.className = 'onblurtext smallTop')" />
+             			<p class="secondary"> <span th:text="|Sent to ${verifyingPhone}|">Sent to</span></p>
+     					
+     				<p class="secondary"> <input type="checkbox" name="terms" /> &nbsp;
+     				I agree to the <a target="_blank"  onclick="return windowpop(this.href, 545, 433);" href="http://openidentityexchange.org/trust-frameworks/respect-trust-framework" >Respect Trust Framework</a>
+     				<!-- <a target="_blank" onclick="return windowpop(this.href, 545, 433); " th:href="@{/respectTrustFramework}" >Respect Trust Framework</a> --> 
+     				and the one-person one-account rule.</p>
+						<input type="submit" name="submit" id="submit" class="button" value="Verify" />
+						&nbsp;&nbsp;<input type="submit" name="resendCodes" id="resendCodes" class="button" value="Send new codes" />
+						
+						<input type="hidden" name="verifyingEmail" th:value="${verifyingEmail}" id="verifyingEmail" />
+						<input type="hidden" name="verifyingPhone" th:value="${verifyingPhone}" id="verifyingPhone" />
+						
+						
+				</form>
+									
+			</div>
+	</div>	  
+</div>
+
+<div id="footer">
+  <div class="row-fluid">
+    <div class="span1"></div>
+    <div class="span10 cspMain">YOUR CLOUD SERVICE PROVIDER | <img src="img/csp_logo.png" /> &nbsp;
+		</div>
+	</div>
+<!--  <div class="row-fluid">
+  	<div class="span1"></div>
+  	<div class="span3">
+  		<div id="help"><a target="_blank" onclick="return windowpop(this.href, 545, 433); " th:href="@{/help}">Help</a>
+			</div>
+		</div>
+		<div class="span6"></div>
+	</div>
+-->
+</div>
+
+    <!-- Javascript
+    ================================================== -->
+    <!-- <script src="js/libs/bootstrap-collapse.js"></script> -->
+
+
+
+</body>
+</html>

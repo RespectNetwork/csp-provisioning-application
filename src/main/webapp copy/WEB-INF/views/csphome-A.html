@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+<title></title>
+<meta name="description" content="HTML 5 CSS 3 Spring Form" />
+
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+
+<link rel="stylesheet" href="../../css/style.css"
+    th:href="@{/css/style.css}" />
+<script src="../../js/libs/modernizr-2.0.6.min.js"
+    th:src="@{/js/libs/modernizr-2.0.6.min.js}"></script>
+</head>
+
+
+<body>
+    <div id="container">
+        <header> </header>
+
+        <div id="fullpage">
+
+            <div id="banner" style="text-align: center; width: 750px">
+                <div style="color: orange; font-size: 20px; line-height: 2;">WELCOME TO YOUR CLOUD SERVICE PROVIDER</div>
+                <div style="color: #726E6D; font-size: 15px; line-height: 2;">A new global private network starting in 2014</div>
+            </div>
+           
+            <div id="content" style="float: left">
+                <div id="leftpanel"
+                     style="float: left; width: 300px; font-color: #726E6D">
+                    <p style="color: orange"> About Respect Network Private Registration: </p>
+                     
+                    <p>We are now in the Private Registration period where new
+                        members can join the network and secure their personal cloud name
+                        by invitation only. Existing and new members will also be able to
+                        distribute invitation codes to those closest to them. Early
+                        sign-ups will receive special privileges including first access
+                        and discounted apps and services as the network becomes available.
+                        Please click through to secure your registration.</p>
+
+                
+                    <div th:if="${error}">
+                        <p>
+                            <span style="color: orange" th:text="${error}">System Error</span>
+                        </p>
+                    </div>
+                </div>
+
+                <div id="rightpanel" style="float: left; width: 400px;">
+
+					<div id="invited"
+						style="float: left; width: 400px; text-align: center"
+						th:if="${inviteInfo.inviterCloudName}">
+
+						<div>
+							<p>You have been invited to register for the Respect Network
+								by</p>
+						</div>
+						
+						<div style="text-align: center">
+							<span style="color: orange"
+								th:text="${inviteInfo.inviterCloudName}"> your friend</span>
+					    </div>
+						
+						<div>
+						    <table style="width: 220px; solid; margin: 0 auto;">
+													  
+							    <form id="signupform" action="#" th:action="@{/signup}" method="post">
+									<input type="submit" value="Sign Up" name="submit"
+										class="submit" />								
+							    </form>
+							    
+							</table>
+														
+                        </div>
+
+						
+						
+
+					</div>
+					
+					<div id="notinvited"
+                        style="float: left; width: 400px;  text-align: center"
+                        th:unless="${inviteInfo.inviterCloudName}">
+
+                        <div>
+                            <p>Coming later this year you will be able to have your own Personal Cloud. Check back later for open registration.</p>
+                        </div>
+                       
+                    </div>
+                    
+				</div>
+            </div>
+
+            <div style="text-align: center;" id="prefooter">
+                <span style="color: rgb(190, 165, 99);"> Stay tuned
+                    for further developments in 2014 as we launch the world's first
+                    private network.</span>
+            </div>
+
+            <div style="text-align: center;" id="footer">
+                <span style="color: grey;"> <a
+                    href="http://www.respectnetwork.net">Respect Network</a></span>
+            </div>
+        </div>
+    </div>
+
+
+    <!--! end of #container -->
+
+
+    <script>
+        /*<![CDATA[*/
+        //Embbeded Javascript    
+        /*]]>*/
+    </script>
+
+</body>
+</html>

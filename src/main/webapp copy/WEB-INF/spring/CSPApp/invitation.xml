@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+
+
+
+    <!-- MockInviter Service -->  
+    <beans:bean id="mockInviter"
+        class="net.respectnetwork.csp.application.invite.MockInviterService" > 
+        <beans:constructor-arg name="inviteFileName" value="${csp.inviteMapLocation}"/>  
+    </beans:bean>
+    
+    
+    <!-- MockInviter Service -->  
+    <beans:bean id="invitationManager"
+        class="net.respectnetwork.csp.application.invite.InvitationManager" >
+        <beans:property name="invitationService" ref="mockInviter"/>
+        <beans:property name="cspStore" ref="cspStore"/>
+     </beans:bean>
+     
+     
+    <beans:bean id="cspStore" class="net.respectnetwork.csp.application.csp.CSPMapStore">
+        <beans:property name="cspMap">
+            <beans:map>
+                 <beans:entry key ="respectnetwork" value-ref="rnCSP"/>
+                 <beans:entry key ="${csp.cspName}" value-ref="myCSP"/>
+            </beans:map>
+        </beans:property>
+    </beans:bean>
+    
+    <beans:bean id="rnCSP" class="net.respectnetwork.csp.application.csp.CSP">
+        <beans:property name="identifier" value="respectnetwork"/>
+        <beans:property name="displayName" value="RespectNetwork"/>
+        <beans:property name="inviteURL" value="http://localhost:8080/rn-consumer-application"/>
+        <beans:property name="homeURL" value="/"/>
+        <beans:property name="inviteCode" value="HNlamN0iTl64x5NpBTJSA"/>
+        <beans:property name="regURL" value="http://localhost:8080/csp-provisioning-application"/>
+    </beans:bean>
+    
+    <beans:bean id="myCSP" class="net.respectnetwork.csp.application.csp.CSP">
+        <beans:property name="identifier" value="${csp.cspName}"/>
+        <beans:property name="displayName" value="${csp.cspDisplayName}"/>
+        <beans:property name="inviteURL" value="${csp.cspInviteURL}"/>
+        <beans:property name="homeURL" value="${csp.cspHomeURL}"/>
+        <beans:property name="inviteCode" value="${csp.cspInviteCode}"/>
+        <beans:property name="regURL" value="${csp.cspRegURL}"/>
+    </beans:bean>
+        
+</beans:beans>

@@ -1,0 +1,134 @@
+#fullpage {
+    float: left;
+    border: 1px solid #000;
+    padding: 10px 10px 10px 10px;
+    margin: 15px 15px 15px 15px;
+    width: 750px;
+    background: #fff;
+    /* -- CSS3 - define rounded corners -- */
+    -webkit-border-radius: 10px;
+    -moz-border-radius: px;
+    border-radius: 2px;
+    /* -- CSS3 - create a background gradient -- */
+    /*  background: -webkit-gradient(linear, 0% 0%, 0% 40%, from(#CCC), to(#FFF)
+        );
+    background: -moz-linear-gradient(0% 0% 90deg, #FFF, #CCC);*/
+    /* -- CSS3 - add a drop shadow -- */
+    -webkit-box-shadow: 0px 0 10px #00;
+    -moz-box-shadow: 0px 0 10px #000;
+    box-shadow: 0px 0 7px #000;
+}
+#header {
+    float: left;
+    font-size: 35px;
+    //border: 1px solid #ddd;
+    padding: 4px 10px 10px 10px;
+    margin: 15px 15px 15px 15px;
+    width: 350px;
+    backgrond: #fff;
+}
+#footer {
+    float: left;
+    font-size: 25px;
+    //border: 1px solid #ddd;
+    padding: 10px 10px 10px 10px;
+    margin: 15px 15px 15px 15px;
+    width: 700px;
+    background: #fff;
+    text-align: center
+}
+#content {
+    float: left;
+    //border: 1px solid #ddd;
+    padding: 10px 10px 10px 10px;
+    margin: 15px 15px 15px 15px;
+    width: 700px;
+    margin: 0 auto;
+}
+body {
+    margin: 0 auto;
+    font-size: 30px;
+    line-height: 1.231;
+    /*font-family: Frutiger, "Frutiger Linotype", Univers, Calibri, "Gill Sans", "Gill Sans MT", "Myriad Pro", Myriad, "DejaVu Sans Condensed", "Liberation Sans", "Nimbus Sans L", Tahoma, Geneva, "Helvetica Neue", Helvetica, Arial, sans-serif;*/
+    font-family: Cambria, "Hoefler Text", Utopia, "Liberation Serif", "Nimbus Roman No9 L Regular", Times, "Times New Roman", serif;
+    /*font-family: 'Yanone Kaffeesatz', arial, sans-serif;*/
+    /*font-family: Constantia, "Lucida Bright", Lucidabright, "Lucida Serif", Lucida, "DejaVu Serif", "Bitstream Vera Serif", "Liberation Serif", Georgia, serif;*/
+    /*font-family: "Segoe UI", Candara, "Bitstream Vera Sans", "DejaVu Sans", "Bitstream Vera Sans", "Trebuchet MS", Verdana, "Verdana Ref", sans-serif;*/
+}
+
+input[type='text'],input[type='password']  {
+    padding: 2px;
+    margin: 4px 0 4px 0;
+    background: #fff;
+    width: 400px;
+    font-size: 30px;
+    color: #555;
+    border: 1px #ddd solid;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+}
+
+
+#shorttext {
+    padding: 8px;
+    margin: 4px 0 4px 0;
+    background: #fff;
+    width: 80px;
+    font-size: 30px;
+    color: #555;
+    border: 1px #ddd solid;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+}
+
+input[type='submit'] {
+    padding: 8px;
+    margin: 4px 0 4px 0;
+    background: #fff;
+    width: 400px;
+    font-size: 30px;
+    color: #fff;
+    background-color: #02E4FF;
+    border: 1px #ddd solid;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+}
+
+input[type='checkbox'] {
+    width: 20px;
+}
+
+#signUpTable {
+    text-align: center;
+    //border: 1px solid #000000;
+    margin: 0 auto;
+    border-spacing: 5px;
+    border-collapse: separate;
+}
+
+td {
+    //border: 1px #ddd solid; 
+}
+
+#headerText {
+    margin: 0 auto;
+    padding: 4px 10px 4px 10px;
+    font-size: 40px;
+    line-height: 1.00;
+    color: #02E4FF;
+}
+#subHeaderText {
+    margin: 0 auto;
+    font-size: 30px;
+    padding: 4px 10px 4px 10px;
+    line-height: 1.00;
+    color: #02E4FF;
+}
+
+#error {
+    color: red;
+    font-size: 15px;
+    line-height: 1.00; 
+    padding: 0px;
+    margin: 0 0 0 0;
+}
