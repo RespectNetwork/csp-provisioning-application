@@ -1,5 +1,6 @@
 package net.respectnetwork.csp.application.manager;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Currency;
 import java.util.HashMap;
@@ -8,6 +9,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.respectnetwork.csp.application.exception.CSPException;
 import net.respectnetwork.csp.application.exception.UserRegistrationException;
 import net.respectnetwork.csp.application.model.AvailabilityResponse;
 import net.respectnetwork.csp.application.util.EmailHelper;
@@ -24,6 +26,7 @@ import net.respectnetwork.sdk.csp.validation.CSPValidationException;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -1010,7 +1013,7 @@ public class RegistrationManager {
    {
       this.nameAvailabilityCheckURL = nameAvailabilityCheckURL;
    }
-// TODO:
+   // TODO:
     // 1. We should write Rest client to make a call to AvailabilityAPI.
     // That way we can reuse it whereever it is required in application.
     // 2. Url to AvailabilityAPI needs to modify to cater both Plus and Equal
@@ -1022,7 +1025,7 @@ public class RegistrationManager {
      * @throws Exception
      */
     public boolean isCloudNameAvailableInRegistry(String cloudName)
-            throws Exception {
+             throws CSPException {
         logger.info("Going to get cloud name availability from registry "
                 + nameAvailabilityCheckURL);
 
@@ -1054,11 +1057,21 @@ public class RegistrationManager {
                 logger.info("Is cloud name {} available: " + available,
                         cloudName);
             }
+        } catch (ClientProtocolException e) {
+            logger.error("Error while checking cloud name.", e);
+            throw new CSPException("System error while checking cloud name.");
+        } catch (IOException e) {
+            logger.error("Error while checking cloud name.", e);
+            throw new CSPException("System error while checking cloud name.");
         } finally {
+            try {
             if (response != null) {
                 response.close();
             }
             httpclient.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         return available;
     }

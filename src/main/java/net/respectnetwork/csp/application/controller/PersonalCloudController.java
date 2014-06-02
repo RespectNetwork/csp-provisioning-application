@@ -17,6 +17,9 @@ import javax.validation.Valid;
 import net.respectnetwork.csp.application.dao.DAOException;
 import net.respectnetwork.csp.application.dao.DAOFactory;
 import net.respectnetwork.csp.application.dao.SignupInfoDAO;
+import net.respectnetwork.csp.application.exception.CSPException;
+import net.respectnetwork.csp.application.exception.CSPProValidationException;
+import net.respectnetwork.csp.application.exception.UserRegistrationException;
 import net.respectnetwork.csp.application.form.DependentForm;
 import net.respectnetwork.csp.application.form.InviteForm;
 import net.respectnetwork.csp.application.form.PaymentForm;
@@ -733,7 +736,42 @@ public class PersonalCloudController
       {
          regSession.setGiftCode("");
       }
+       // check the availability of cloud name before re-directing a user to
+        // payment page.
+        try {
+            validateCloudNameAvailability(cloudName, txnType);
+        } catch (CSPProValidationException ex) {
+            logger.error("Sorry! The dependent cloud name is not available.",
+                    ex);
+            if (PaymentForm.TXN_TYPE_DEP.equals(txnType)) {
+                mv = new ModelAndView("dependent");
+                mv.addObject("error", ex.getMessage());
+                mv.addObject("cloudName", cloudName);
+                mv.addObject("dependentForm", regSession.getDependentForm());
+            } else if (PaymentForm.TXN_TYPE_SIGNUP.equals(txnType)) {
+                mv = new ModelAndView("signup");
+                mv.addObject("cloudName", cloudName);
+                mv.addObject("error", ex.getMessage());
+            }
+            return mv;
 
+        } catch (Exception e1) {
+            if (PaymentForm.TXN_TYPE_DEP.equals(txnType)) {
+                errorText = "Sorry! The system encountered an error while registering dependent clouds.\n"
+                        + registrationManager.getCSPContactInfo();
+                mv = new ModelAndView("dependent");
+                mv.addObject("error", errorText);
+                mv.addObject("cloudName", cloudName);
+                mv.addObject("dependentForm", regSession.getDependentForm());
+            } else if (PaymentForm.TXN_TYPE_SIGNUP.equals(txnType)) {
+                errorText = "Sorry! The system encountered an error while registering your cloudname.\n"
+                        + registrationManager.getCSPContactInfo();
+                mv = new ModelAndView("signup");
+                mv.addObject("cloudName", cloudName);
+                mv.addObject("error", errorText);
+            }
+            return mv;
+        }
       // String forwardingPage = request.getContextPath();
       String method = "post";
       String queryStr = "";
@@ -1059,7 +1097,45 @@ public class PersonalCloudController
       return mv;
    }
 
-   private ModelAndView createDependentClouds(String cloudName,
+     /**
+     * 
+     * @param cloudName
+     * @param txnType
+     * @throws UserRegistrationException
+     * @throws CSPException
+     */
+    private void validateCloudNameAvailability(String cloudName, String txnType)
+            throws UserRegistrationException, CSPException {
+        if (PaymentForm.TXN_TYPE_SIGNUP.equals(txnType)) {
+            // check availability of cloud name before billing once again
+            if (!registrationManager.isCloudNameAvailableInRegistry(cloudName)
+                    && !registrationManager.isCloudNameAvailable(cloudName)) {
+                throw new CSPProValidationException(
+                        "Sorry! The cloud name is not available. Please try with some different cloud name.");
+            }
+        }
+        if (PaymentForm.TXN_TYPE_DEP.equals(txnType)) {
+            DependentForm dependentForm = regSession.getDependentForm();
+            if (dependentForm != null
+                    && dependentForm.getDependentCloudName().size() > 0) {
+                ArrayList<String> dependentCloudNameList = dependentForm
+                        .getDependentCloudName();
+                for (String dependentCloudName : dependentCloudNameList) {
+                    // check availability of cloud name before billing once
+                    // again
+                    if (!registrationManager
+                            .isCloudNameAvailableInRegistry(dependentCloudName)
+                            && !registrationManager
+                                    .isCloudNameAvailable(dependentCloudName)) {
+                        throw new CSPProValidationException(
+                                "Sorry! The dependent cloud name is not available. Please try with some different cloud name.");
+                    }
+                }
+            }
+        }
+    }
+
+private ModelAndView createDependentClouds(String cloudName,
          PaymentModel payment, String[] giftCodes, String promoCode , HttpServletRequest request)
    {
       ModelAndView mv = null;
