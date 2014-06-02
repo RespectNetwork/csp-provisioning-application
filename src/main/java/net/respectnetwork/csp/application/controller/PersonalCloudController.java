@@ -1165,6 +1165,7 @@ private ModelAndView createDependentClouds(String cloudName,
       // register the dependent cloudnames
 
       String guardianEmailAddress = getRegisteredEmailAddress();
+      String guardianPhoneNumber = getRegisteredPhoneNumber();
       int i = 0;
       for (String dependentCloudName : arrDependentCloudName)
       {
@@ -1206,6 +1207,7 @@ private ModelAndView createDependentClouds(String cloudName,
                      paymentType,
                      paymentRefId,
                      guardianEmailAddress,
+                     guardianPhoneNumber,
                      request.getLocale());
          if (dependentCloudNumber != null)
          {
@@ -1320,20 +1322,40 @@ private ModelAndView createDependentClouds(String cloudName,
     */
    public String getRegisteredEmailAddress() {
        String emailAddress = null;
-       // Retrieve verified email address
+       SignupInfoModel signupInfo = getSignupInfo();
+       if (signupInfo != null) {
+           emailAddress = signupInfo.getEmail();
+       }
+       return emailAddress;
+   }
+
+   /**
+    * Method to get the registered phone number of signed in cloudname.
+    * @return phoneNumber.
+    */
+   public String getRegisteredPhoneNumber() {
+       String phoneNumber = null;
+       SignupInfoModel signupInfo = getSignupInfo();
+       if (signupInfo != null) {
+           phoneNumber = signupInfo.getPhone();
+       }
+       return phoneNumber;
+   }
+
+   /**
+    * Method to get logged in user's signup info.
+    */
+   private SignupInfoModel getSignupInfo() {
+       SignupInfoModel signupInfo = null;
        SignupInfoDAO signupInfoDAO = DAOFactory.getInstance().getSignupInfoDAO();
        try
        {
-          SignupInfoModel signupInfo = signupInfoDAO.get(regSession.getCloudName());
-          if (signupInfo != null)
-          {
-              emailAddress = signupInfo.getEmail();
-          }
+          signupInfo = signupInfoDAO.get(regSession.getCloudName());
        } catch (DAOException e)
        {
           logger.error("Error getting signupInfo: " + e.getMessage());
        }
-       return emailAddress;
+       return signupInfo;
    }
 
    private boolean registerCloudName(String cloudName, String phone,

@@ -541,7 +541,7 @@ public class RegistrationManager {
 		this.requireInviteCode = requireInviteCode;
 	}
 	
-	public CloudNumber registerDependent(CloudName guardianCloudName , String guardianToken , CloudName dependentCloudName,  String dependentToken , String s_dependentBirthDate, String paymentType, String paymentRefId, String guardianEmailAddress, Locale locale){
+	public CloudNumber registerDependent(CloudName guardianCloudName , String guardianToken , CloudName dependentCloudName,  String dependentToken , String s_dependentBirthDate, String paymentType, String paymentRefId, String guardianEmailAddress, String guardianPhone, Locale locale){
 				  CloudNumber depCloudNumber = CloudNumber.createRandom(dependentCloudName.getCs());
 				  
 				  RegisterDependentCloudThread rdct = new RegisterDependentCloudThread();
@@ -556,6 +556,7 @@ public class RegistrationManager {
 				  rdct.setPaymentType(paymentType);
 				  rdct.setPaymentRefId(paymentRefId);
 				  rdct.setGuardianEmail(guardianEmailAddress);
+				  rdct.setGuardianPhone(guardianPhone);
 				  rdct.setCspCloudName(this.cspCloudName);
 				  rdct.setCspHomePage(this.cspHomePage);
 				  rdct.setCspContactSupportEmail(this.contactSupportEmail);

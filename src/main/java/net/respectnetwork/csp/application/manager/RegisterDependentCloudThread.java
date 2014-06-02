@@ -48,6 +48,7 @@ public class RegisterDependentCloudThread implements Runnable
    private String paymentType = "";
    private String paymentRefId = "";
    private String guardianEmail = "";
+   private String guardianPhone = "";
    private String cspHomePage = "";
    private String contactSupportEmail = "";
    private String cspCloudName = "";
@@ -70,6 +71,7 @@ public class RegisterDependentCloudThread implements Runnable
       rut.setPaymentRefId(paymentRefId);
       rut.setCdc(RegistrationManager.depCloudNameDiscountCode);
       rut.setUserEmail(guardianEmail);
+      rut.setUserPhone(guardianPhone);
       rut.setCspCloudName(cspCloudName);
       rut.setCspHomePage(cspHomePage);
       rut.setCspContactSupportEmail(contactSupportEmail);
@@ -316,8 +318,8 @@ public class RegisterDependentCloudThread implements Runnable
   }
 
   /**
-   * Method to set the guardian's email address. It is required to send an email
-   * in case of dependent cloudname registration failure.
+   * Method to set the guardian's email address. This detail is required in the email
+   * sent in case of dependent cloudname registration failure.
    *
    * @return emailAddress.
    */
@@ -331,6 +333,24 @@ public class RegisterDependentCloudThread implements Runnable
    */
   public void setGuardianEmail(String email) {
       this.guardianEmail = email;
+  }
+
+  /**
+   * Method to set the guardian's phone number. This detail is required in the email
+   * sent in case of dependent cloudname registration failure.
+   *
+   * @return guardianPhone.
+   */
+  public String getGuardianPhone() {
+      return this.guardianPhone;
+  }
+
+  /**
+   * Set guardian's phone number.
+   * @param phoneNum guardian's phone number.
+   */
+  public void setGuardianPhone(String guardianPhone) {
+      this.guardianPhone = guardianPhone;
   }
 
   /**
