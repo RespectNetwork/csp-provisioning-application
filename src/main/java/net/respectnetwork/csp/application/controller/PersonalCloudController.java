@@ -23,6 +23,7 @@ import net.respectnetwork.csp.application.exception.UserRegistrationException;
 import net.respectnetwork.csp.application.form.DependentForm;
 import net.respectnetwork.csp.application.form.InviteForm;
 import net.respectnetwork.csp.application.form.PaymentForm;
+import net.respectnetwork.csp.application.form.SignUpForm;
 import net.respectnetwork.csp.application.invite.InvitationManager;
 import net.respectnetwork.csp.application.manager.BrainTreePaymentProcessor;
 import net.respectnetwork.csp.application.manager.PersonalCloudManager;
