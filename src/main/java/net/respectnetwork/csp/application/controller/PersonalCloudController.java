@@ -23,6 +23,7 @@ import net.respectnetwork.csp.application.exception.UserRegistrationException;
 import net.respectnetwork.csp.application.form.DependentForm;
 import net.respectnetwork.csp.application.form.InviteForm;
 import net.respectnetwork.csp.application.form.PaymentForm;
+import net.respectnetwork.csp.application.form.SignUpForm;
 import net.respectnetwork.csp.application.invite.InvitationManager;
 import net.respectnetwork.csp.application.manager.BrainTreePaymentProcessor;
 import net.respectnetwork.csp.application.manager.PersonalCloudManager;
@@ -750,7 +751,9 @@ public class PersonalCloudController
                 mv.addObject("dependentForm", regSession.getDependentForm());
             } else if (PaymentForm.TXN_TYPE_SIGNUP.equals(txnType)) {
                 mv = new ModelAndView("signup");
-                mv.addObject("cloudName", cloudName);
+                SignUpForm signUpForm = new SignUpForm();
+                signUpForm.setNameAvailabilityCheckURL(registrationManager.getNameAvailabilityCheckURL());
+                mv.addObject("signUpInfo", signUpForm);
                 mv.addObject("error", ex.getMessage());
             }
             return mv;
@@ -767,7 +770,8 @@ public class PersonalCloudController
                 errorText = "Sorry! The system encountered an error while registering your cloudname.\n"
                         + registrationManager.getCSPContactInfo();
                 mv = new ModelAndView("signup");
-                mv.addObject("cloudName", cloudName);
+                SignUpForm signUpForm = new SignUpForm();
+                signUpForm.setNameAvailabilityCheckURL(registrationManager.getNameAvailabilityCheckURL());
                 mv.addObject("error", errorText);
             }
             return mv;

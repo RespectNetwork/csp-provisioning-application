@@ -217,7 +217,7 @@ public class PersonalCloudDependentController
 
       ArrayList<String> arrDependentCloudName = dependentForm.getDependentCloudName();
       ArrayList<String> allPasswd = dependentForm.getDependentCloudPassword();
-
+      dependentForm.setNameAvailabilityCheckURL(theManager.getNameAvailabilityCheckURL());
       String errorStr = "";
 
       int i = 0 ;
@@ -251,7 +251,6 @@ public class PersonalCloudDependentController
       {
          mv = new ModelAndView("dependent");
          mv.addObject("cspModel", cspModel);
-         dependentForm.setNameAvailabilityCheckURL(theManager.getNameAvailabilityCheckURL());
          model.addAttribute("dependentForm", dependentForm);
          model.addAttribute("cloudName", cloudName);
          mv.addObject("cspModel", cspModel);
@@ -270,7 +269,6 @@ public class PersonalCloudDependentController
          mv = new ModelAndView("dependent");
          mv.addObject("error", errorStr);
          mv.addObject("cspModel", cspModel);
-         dependentForm.setNameAvailabilityCheckURL(theManager.getNameAvailabilityCheckURL());
          model.addAttribute("dependentForm", dependentForm);
          model.addAttribute("cloudName", cloudName);
          mv.addObject("cspModel", cspModel);
