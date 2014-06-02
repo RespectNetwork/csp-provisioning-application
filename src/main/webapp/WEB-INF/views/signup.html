@@ -13,6 +13,7 @@
 
     <div class="page-header">
         <h1>Choose your cloud name:</h1>
+		<br/><span style="color:red" th:text="${error}"></span>
     </div>
 
     <form action="#" th:action="@{/signup}" method="post"
@@ -21,7 +22,7 @@
 
         <div class="form-group" id="cloudNameGroup">
             <input type="text" id="cloudName" name="cloudName" class="form-control" placeholder="=you..."
-                   autofocus="autofocus" required="required" />
+                   autofocus="autofocus" required="required" th:value="${cloudName}" />
             <span id="cloudNameHelpIcon" class="glyphicon glyphicon-ok form-control-feedback hidden"></span>
             <span id="cloudNameHelp" class="form-control-feedback"></span>
         </div>
@@ -104,7 +105,7 @@
                 stripSymbol: true,
 
                 // indicates the location of the availability service
-                availabilityApi: /*[[${signUpInfo.nameAvailabilityCheckURL + '/api/availability/equals/'}]]*/ "https://checkavailability-prod.respectnetwork.net/api/availability/equals/"
+                availabilityApi: /*[[${signUpInfo.nameAvailabilityCheckURL + '/api/availability/equals/'}]]*/ "https://registration-stage.respectnetwork.net/rn-checkavailability-service/api/availability/equals/"
             });
 
             $.validator.addMethod("isAvailable", function (value, element, param) {
