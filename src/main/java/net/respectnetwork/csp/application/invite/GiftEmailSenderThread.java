@@ -12,6 +12,7 @@ public class GiftEmailSenderThread implements Runnable
 {
    private String subject = "";
    private String toAddress = "";
+   private String bccAddress = "";
    private String content = "";
 
    private static final Logger logger = LoggerFactory.getLogger(GiftEmailSenderThread.class);
@@ -21,14 +22,21 @@ public class GiftEmailSenderThread implements Runnable
       BasicNotificationService svc = (BasicNotificationService) DAOContextProvider.getApplicationContext().getBean("basicNotifier");
       
       svc.setEmailSubject(subject);
+      String emailAddresses = null;
       try
       {
-         svc.sendEmailNotification(toAddress, content);
+          if(bccAddress == null) {
+              emailAddresses = toAddress;
+              svc.sendEmailNotification(toAddress, content);
+          } else {
+              emailAddresses = toAddress + "," + bccAddress;
+              svc.sendEmailNotification(toAddress, bccAddress, content);
+          }
          //this is a hack
          svc.setEmailSubject("Verifying your email address");
       } catch (NotificationException e)
       {
-         logger.error("Could not send mail to " + toAddress + " , with content \n" + content);
+         logger.error("Could not send mail to " + emailAddresses + " , with content \n" + content);
          logger.error("Mail exception " + e.getMessage());
       }
 
@@ -48,6 +56,14 @@ public class GiftEmailSenderThread implements Runnable
    public void setToAddress(String toAddress)
    {
       this.toAddress = toAddress;
+   }
+   public String getBccAddress()
+   {
+      return bccAddress;
+   }
+   public void setBccAddress(String bccAddress)
+   {
+      this.bccAddress = bccAddress;
    }
    public String getContent()
    {

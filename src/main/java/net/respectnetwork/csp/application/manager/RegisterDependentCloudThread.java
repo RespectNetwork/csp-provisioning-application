@@ -52,6 +52,7 @@ public class RegisterDependentCloudThread implements Runnable
    private String contactSupportEmail = "";
    private String cspCloudName = "";
    private Locale locale = null;
+   private String cspContactEmail = "";
    
    @Override
    public void run()
@@ -73,6 +74,7 @@ public class RegisterDependentCloudThread implements Runnable
       rut.setCspHomePage(cspHomePage);
       rut.setCspContactSupportEmail(contactSupportEmail);
       rut.setLocale(locale);
+      rut.setCspContactEmail(cspContactEmail);
       Thread t = new Thread(rut);
       t.start();
       try
@@ -390,5 +392,14 @@ public class RegisterDependentCloudThread implements Runnable
   public Locale getLocale()
   {
      return this.locale;
+  }
+
+  public void setCspContactEmail(String cspContactEmail) {
+      this.cspContactEmail = cspContactEmail;
+  }
+
+  public String getCspContactEmail()
+  {
+     return this.cspContactEmail;
   }
 }
