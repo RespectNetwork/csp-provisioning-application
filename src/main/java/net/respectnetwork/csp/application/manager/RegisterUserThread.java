@@ -48,6 +48,7 @@ public class RegisterUserThread implements Runnable
    private Locale                               locale                               = null;
    private String                               cspCloudName                         = null;
    private String                               cspHomePage                          = null;
+   private String                               cspContactEmail                      = null;
    @Override
    public void run()
    {
@@ -63,6 +64,7 @@ public class RegisterUserThread implements Runnable
       cspHomePage = this.getCspHomePage();
       contactSupportEmail = this.getCspContactSupportEmail();
       userEmail = this.getUserEmail();
+      cspContactEmail = this.getCspContactEmail();
       // 5 times retry registration in case of failure. Retry interval is 2 minutes.
       while (retryCount < 5) {
       try
@@ -150,7 +152,7 @@ public class RegisterUserThread implements Runnable
 
          // Step 10 : send the notification email for successful registration of cloudname.
          // Send the email at email address registered for the cloud name.
-         emailHelper.sendRegistrationSuccessNotificaionEmail(userEmail, cloudName.toString(), locale, cspCloudName, cspHomePage);
+         emailHelper.sendRegistrationSuccessNotificaionEmail(userEmail, cspContactEmail, cloudName.toString(), locale, cspCloudName, cspHomePage);
          break;
       } catch (CSPRegistrationException ex1)
       {
@@ -161,7 +163,7 @@ public class RegisterUserThread implements Runnable
               logger.error("CSPRegistrationException from RegisterUserThread " + ex1.getMessage());
               // Send the notification email for registration failure of cloudname.
               // Send email to configured contact support address.
-              emailHelper.sendRegistrationFailureNotificaionEmail(contactSupportEmail, cloudName.toString(), locale, cspCloudName);
+              emailHelper.sendRegistrationFailureNotificaionEmail(contactSupportEmail, cloudName.toString(), locale, cspCloudName, paymentType, paymentRefId, userEmail, verifiedPhone);
               // Wait for 2 minutes before retry
               Thread.sleep(120000);
           } catch (InterruptedException e) {
@@ -176,7 +178,7 @@ public class RegisterUserThread implements Runnable
               logger.error("Xdi2ClientException from RegisterUserThread " + ex2.getMessage());
               // Send the notification email for registration failure of cloudname.
               // Send email to configured contact support address.
-              emailHelper.sendRegistrationFailureNotificaionEmail(contactSupportEmail, cloudName.toString(), locale, cspCloudName);
+              emailHelper.sendRegistrationFailureNotificaionEmail(contactSupportEmail, cloudName.toString(), locale, cspCloudName, paymentType, paymentRefId, userEmail, verifiedPhone);
               // Wait for 2 minutes before retry
               Thread.sleep(120000);
           } catch (InterruptedException e) {
@@ -354,5 +356,14 @@ public class RegisterUserThread implements Runnable
 
   public String getUserEmail() {
       return this.userEmail;
+  }
+
+  public void setCspContactEmail(String cspContactEmail) {
+      this.cspContactEmail = cspContactEmail;
+  }
+
+  public String getCspContactEmail()
+  {
+     return this.cspContactEmail;
   }
 }

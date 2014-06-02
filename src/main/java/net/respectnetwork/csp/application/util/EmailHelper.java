@@ -28,13 +28,14 @@ public class EmailHelper {
 
     /**
      * Method to send notification email for successful registration.
-     * @param emailAddress Registered email address of cloud name purchased. 
+     * @param emailAddress Registered email address of cloud name purchased.
+     * @param bccEmailAddress csp contact email address. 
      * @param cloudName cloud name to be registered in case of signup. Or guardian's cloudname in case of dependent registration. 
      * @param locale
      * @param cspCloudName cspcloudname
      * @param homePage csp homepage.
      */
-    public void sendRegistrationSuccessNotificaionEmail(String emailAddress, String cloudName, Locale locale, String cspCloudName, String homePage)
+    public void sendRegistrationSuccessNotificaionEmail(String emailAddress, String bccEmailAddress, String cloudName, Locale locale, String cspCloudName, String homePage)
     {
         logger.info("Sending notificaion email for successful registration of cloudname: " + cloudName);
 
@@ -62,7 +63,7 @@ public class EmailHelper {
         builder.append(getMessageFromResource("register.mail.faq" , cspHomePage, null , locale));
         builder.append(getMessageFromResource("register.mail.footer" , cspName, null , locale));
 
-        sendMail(builder, subject, emailAddress);
+        sendMail(builder, subject, emailAddress, bccEmailAddress);
     }
 
     /**
@@ -72,7 +73,7 @@ public class EmailHelper {
      * @param locale
      * @param cspCloudName cspcloudname
      */
-    public void sendRegistrationFailureNotificaionEmail(String emailAddress, String cloudName, Locale locale, String cspCloudName)
+    public void sendRegistrationFailureNotificaionEmail(String emailAddress, String cloudName, Locale locale, String cspCloudName, String paymentType, String paymentRefId, String userEmail, String verifiedPhone)
     {
         logger.info("Sending notificaion email for registration failure of cloudname: " + cloudName);
 
@@ -90,15 +91,23 @@ public class EmailHelper {
 
         Object[] cloudNames = new Object[] { cloudName };
         Object[] cspName = new Object[] { cspCloudName };
+        Object[] email = new Object[] { userEmail };
+        Object[] phone = new Object[] { verifiedPhone };
+        Object[] payType = new Object[] { paymentType };
+        Object[] payRefId = new Object[] { paymentRefId };
 
         String subject = getMessageFromResource("registerFailure.mail.subject", cloudNames, null, locale);
 
         StringBuilder builder = new StringBuilder();
         builder.append(getMessageFromResource("registerFailure.mail.text.0" , cloudNames, null , locale));
         builder.append(getMessageFromResource("registerFailure.mail.text.1" , cspName, null , locale));
+        builder.append(getMessageFromResource("registerFailure.mail.customer.detail" , null, null , locale));
+        builder.append(getMessageFromResource("registerFailure.mail.address" , email, null , locale));
+        builder.append(getMessageFromResource("registerFailure.mail.phone" , phone, null , locale));
+        builder.append(getMessageFromResource("registerFailure.mail.payment.type" , payType, null , locale));
+        builder.append(getMessageFromResource("registerFailure.mail.payment.refid" , payRefId, null , locale));
         builder.append(getMessageFromResource("registerFailure.mail.footer" , null, null , locale));
-
-        sendMail(builder, subject, emailAddress);
+        sendMail(builder, subject, emailAddress, null);
     }
 
     /**
@@ -107,20 +116,25 @@ public class EmailHelper {
      * @param subject email subject.
      * @param emailAddress email TO address.
      */
-    private void sendMail(StringBuilder builder, String subject, String emailAddress) {
+    private void sendMail(StringBuilder builder, String subject, String emailToAddress, String emailBccAddress) {
+        String emailAddresses = emailToAddress;
         try
         {
+           if(emailBccAddress != null) {
+               emailAddresses = emailAddresses + "," + emailBccAddress;
+           }
            GiftEmailSenderThread get = new GiftEmailSenderThread();
            get.setContent(builder.toString());
            get.setSubject(subject);
-           get.setToAddress(emailAddress);
+           get.setToAddress(emailToAddress);
+           get.setBccAddress(emailBccAddress);
 
            Thread t = new Thread(get);
            t.start();
         }
         catch( Exception e )
         {
-           logger.error("Failed to send invite email to " + emailAddress, e);
+           logger.error("Failed to send invite email to " + emailAddresses, e);
         }
     }
 

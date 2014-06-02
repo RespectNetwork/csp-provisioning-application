@@ -455,6 +455,7 @@ public class RegistrationManager {
            rut.setCspHomePage(this.cspHomePage);
            rut.setCspContactSupportEmail(this.contactSupportEmail);
            rut.setUserEmail(verifiedEmail);
+           rut.setCspContactEmail(cspContactEmail);
            Thread t = new Thread(rut);
            t.start();
            
@@ -559,6 +560,7 @@ public class RegistrationManager {
 				  rdct.setCspHomePage(this.cspHomePage);
 				  rdct.setCspContactSupportEmail(this.contactSupportEmail);
 				  rdct.setLocale(locale);
+				  rdct.setCspContactEmail(cspContactEmail);
 				  Thread t = new Thread(rdct);
 				  t.start();
 					
