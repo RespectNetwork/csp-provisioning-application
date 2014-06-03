@@ -324,7 +324,7 @@ public class RegistrationManager {
         boolean availability = false;
         
         try {
-            if (cspRegistrar.checkCloudNameAvailableInRN(CloudName.create(cloudName)) == null) {
+            if (cspRegistrar.checkCloudNameInRN(CloudName.create(cloudName)) == null) {
                 availability = true;
             }
         } catch (Exception e) {

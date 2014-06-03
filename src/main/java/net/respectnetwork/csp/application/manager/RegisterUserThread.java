@@ -104,7 +104,7 @@ public class RegisterUserThread implements Runnable
          // step 3: Check if the Cloud Name is available
 
          CloudNumber existingCloudNumber = cspRegistrar
-               .checkCloudNameAvailableInRN(cloudName);
+               .checkCloudNameInRN(cloudName);
 
          if (existingCloudNumber != null)
          {

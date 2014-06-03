@@ -221,7 +221,7 @@ public class PersonalCloudController
          CloudNumber cloudNumber;
          try
          {
-            cloudNumber = myCSP.checkCloudNameAvailableInRN(cloudName);
+            cloudNumber = myCSP.checkCloudNameInRN(cloudName);
             String secretToken = null;
             if (regSession != null)
             {
