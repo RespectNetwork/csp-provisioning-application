@@ -152,6 +152,12 @@
                     console.log(success);
                 }
 
+                // clear error
+                if ($(cloudnameField).val().trim() == '') {
+                    $(messageSpan).html('');
+                    return;
+                }
+
 	        	if(success==1)
 	        	{
 	        		// Make whatever changes to the UI to indicate that the name is
@@ -187,7 +193,7 @@
 
 	        // indicates the location of the availability service
 
-	        availibilityAPI :  document.getElementById("avAPI").value
+	        availabilityApi :  document.getElementById("avAPI").value
 
 	    }); 
 	}

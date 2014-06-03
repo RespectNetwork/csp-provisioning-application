@@ -1,214 +1,112 @@
 <!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="fragments/page">
 
-<html xmlns:th="http://www.thymeleaf.org">
+<body class="payment">
 
-<head>
-    <meta charset="utf-8" />
-    <title>Respect Network</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
+<!--/* No nav dropdown for this page */-->
+<div layout:fragment="nav"></div>
 
-    <!-- CSS -->
-    <link href="css/bootstrap.css" rel="stylesheet" />
-		<link href="css/bootstrap-responsive.css" rel="stylesheet" />
-    <link href="css/style.css" rel="stylesheet" />
-    <link href="https://s3.amazonaws.com/rnfonts/demo.css" rel="stylesheet" type="text/css" />
-	<!--include jquery-->
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-	<script src="js/libs/misc.js"> </script>
+<div class="container" layout:fragment="bodyContent">
+    <div class="row-fluid" th:object="${paymentInfo}">
+        <div class="col-sm-1"></div>
 
-	<style>
-	.paymentBody .row-fluid .span4 {
-		text-align: left;
-	}
-
-@media (max-width: 450px) {
-	.paymentBody .row-fluid .span4 {
- 	 width: 80%;
-	}
-	.paymentBody {
-		padding-top: 25px;
-	}
-	.paymentBody .row-fluid .span2 {
- 	 width: 10%;
-	}
-	.paymentBody .row-fluid .span5 {
- 	 width: 80%;
- 	 padding-left: 35px;
-	}
-	.payment1 {
-		font-size: 20px;
-	}
-}
-
-@media (max-width: 767px) and (min-width: 451px){
-	.paymentBody .row-fluid .span4 {
- 	 width: 60%;
- 	 margin-top: 0px;
- 	 padding-left: 30px;
-
-	}
-	.paymentBody {
-		padding-top: 5px;
-	}
-	.paymentBody .row-fluid .span2 {
- 	 	width: 0%;
-	}
-	.paymentBody .row-fluid .span5 {
- 	 width: 50%;
- 	 padding-left: 35px;
- 	 margin-top: 0px;
-	}
-
-}
-	</style>
-
-<!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
-<!--[if lt IE 9]>
-<script src="js/html5shiv.js"></script>
-<![endif]-->
-
-<!-- Fav and touch icons -->
-<link rel="apple-touch-icon-precomposed" sizes="144x144" href="img/ico/apple-touch-icon-144-precomposed.png" />
-<link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/ico/apple-touch-icon-114-precomposed.png" />
-<link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/ico/apple-touch-icon-72-precomposed.png" />
-<link rel="apple-touch-icon-precomposed" href="img/ico/apple-touch-icon-57-precomposed.png" />
-<link rel="shortcut icon" href="img/ico/favicon.png" />
-<script src="js/libs/misc.js"> </script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-	
-</head>
-
-<body>
-<!-- Part 1: Wrap all page content here -->
-<div id="wrap">
-
-<!-- Fixed navbar -->
-  <div class="navbar navbar-fixed-top">
-    <div class="navbar-inner">
-      <div class="container">
-      	<div class="row-fluid">
-          <div class="span4 smallTop"><p class="test"></p>
-          </div>
-          
-          <div class="span4">
-         		
-     	</div>
-     	 <div class="span4 midHdr"><span th:text="${cloudName}"/>
-          </div>		
-      	</div>
-	  	</div>
-		</div>
-	</div>
-
-<!-- Begin page content -->
-	<div class="paymentBody">
-  	<form id="payment_form" name="payment_form" action="#" th:object="${paymentInfo}" th:action="@{/makePayment}" method="post">
-        <div class="row-fluid">
-            <div class="span2"></div>
-            <div class="span4">
-                <p class="payment1"><span style="color:red" th:text="${error}"> </span><br/>Select Payment Method</p>
-				
-	      		<p class="payment2">Separate multiple gift codes by spaces</p>
-	      		
-                <div th:switch="*{txnType}">
-                    <div th:case="'signup'">
-                        <p class="payment2">
-
-                        <div th:if="${#strings.length(paymentInfo.giftCodes)}">
-                            <input type="radio" id="paymentType" name="paymentType" value="giftCard" checked="true"/>
-                            &nbsp; <input type="text" name="giftCodes" id="giftCodes" class="inputFields med skinny"
-                                          placeholder=" gift code" th:value="*{giftCodes}"/>
-                        </div>
-                        <div th:if="${#strings.length(paymentInfo.giftCodes) == 0}">	         		
-        					<input type="radio" id="paymentType" name="paymentType" value="giftCard" />&nbsp; <input type="text" name="giftCodes"  id="giftCodes" class="inputFields med skinny" placeholder=" gift code" />				        			
-        				</div> 
-                        </p>
-                        <div th:if="${paymentInfo.giftCodesOnly == false}">
-                        <p class="payment2">
-                            <input type="radio" id="paymentType" name="paymentType" value="creditCard"> &nbsp; <img
-                                src="img/credit-card-front.png"/> &nbsp;Credit cards </input>
-                        </p>
-                        </div>
-                    </div>
-                    <div th:case="'buyGiftCard'">
-                    	<div th:if="${paymentInfo.giftCodesOnly == false}">
-                        <p class="payment2">
-                            <input type="radio" id="paymentType" name="paymentType" value="creditCard"> &nbsp; <img
-                                src="img/credit-card-front.png"/> &nbsp;Credit cards </input>
-                        </p>
-                        </div>
-                        <div th:if="${paymentInfo.giftCodesOnly == true}">
-                        	<p class="secondary">Coming soon!</p>
-                        </div>
-                    </div>
-                    <div th:case="'buyDependentCloud'">
-		  			<p class="payment2">
-        				<input type="checkbox"  id="paymentType" name="paymentType" value="giftCard" />
-	      		&nbsp;  <input type="text" name="giftCodes"  id="giftCodes" class="inputFields med skinny" placeholder=" gift code"/>      		 
-	      			</p>
-	      			<div th:if="${paymentInfo.giftCodesOnly == false}">
-	        		<p class="payment2">
-	        		<input type="checkbox"  id="paymentType" name="paymentType" value="creditCard"> &nbsp;  <img src="img/credit-card-front.png" /> &nbsp;Credit cards </input>
-					</p>
-					</div>
-		  		</div>
-		   			
-		  </div>
-		  <div>
-                <p class="secondary">
-                    <input type="checkbox" name="cspTandC" required="required"/> &nbsp;I agree to the
-                     &nbsp;
-                    <a target="_blank" onclick="return windowpop(this.href, 545, 433); " th:href="${cspTCURL}">Cloud Service Provider Terms
-                        of Service</a>
-                </p>
-
+        <div class="col-sm-5">
+            <div class="page-header">
+                <h1>Select Payment Method</h1>
+                <span style="color:red" th:text="${error}"> </span>
             </div>
-          </div>
-          
-            <div class="span5 leftPad">
-                <div class="equation">Respect Network
-                    <br/>LIFETIME membership
-                    <br/>+<br/>LIFETIME Base
-                    <br/>Cloud hosting
+
+            <!--/* Don't show payment form if buying gift card and no credit card processor enabled */-->
+            <form action="#" th:action="@{/makePayment}" method="post"
+                  class="form-secondary"
+                  th:unless="*{txnType == 'buyGiftCard' and giftCodesOnly}">
+
+                <!--/* Gift cards */-->
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <input type="radio" name="paymentType" id="giftCodeRadio"
+                                   value="giftCard" th:checked="*{giftCodesOnly}"/>
+                        </span>
+                        <input type="text" id="giftCodes" name="giftCodes"
+                               placeholder="gift code"
+                               class="form-control" th:value="*{giftCodes}"/>
+                    </div>
+                    <p class="help-block" id="giftCodeHelp">Separate multiple gift codes by spaces</p>
                 </div>
-                <div class="equals" th:text="${totalAmountText}"> $xx USD </div>
-            </div>
-        </div>
-        <div class="row-fluid">
-            <div class="span2"></div>
-            <div class="span4">
-                <button type="submit" name="submit" id="submit" class="button">Continue</button>
+
+                <!--/* Credit card */-->
+                <div class="form-group" th:unless="*{giftCodesOnly}">
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <input type="radio" name="paymentType" id="creditCardRadio"
+                                   value="creditCard"/>
+                        </span>
+                        <label for="creditCardRadio">
+                            <img src="img/credit-card-front.png"/>Credit card
+                        </label>
+                    </div>
+                </div>
+
+                <!--/* I agree checkbox */-->
+                <div class="form-group">
+                    <div class="input-group">
+                    <span class="input-group-addon">
+                       <input type="checkbox" name="cspTandC" id="agreeCheckbox"
+                              th:checked="*{cspTandC}"/>
+                        </span>
+                        <label class="secondary" for="agreeCheckbox">
+                            I agree to the
+                            <a target="_blank" onclick="return windowpop(this.href, 545, 433);"
+                               href="http://openidentityexchange.org/trust-frameworks/respect-trust-framework">
+                                Respect Trust Framework
+                            </a>
+                            and the one-person one-account rule.
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" name="submit" id="submit" class="button btn btn-lg btn-primary">Continue</button>
+
                 <input type="hidden" name="numberOfClouds" value="" id="numberOfClouds" th:value="*{numberOfClouds}"/>
                 <input type="hidden" name="txnType" value="" id="txnType" th:value="*{txnType}"/>
+            </form>
+
+            <!--/* Show placeholder if buying gift card and no credit card processor enabled */-->
+            <div th:if="*{txnType == 'buyGiftCard' and giftCodesOnly}">
+                <h2>Coming soon!</h2>
             </div>
-            <div class="span5"></div>
         </div>
 
-    </form>
-</div>
-</div>
-<div id="footer">
-  <div class="row-fluid">
-    <div class="span1"></div>
-    <div class="span10 cspMain">YOUR CLOUD SERVICE PROVIDER | <img src="img/csp_logo.png" /> &nbsp;
-		</div>
-	</div>
-<!--  <div class="row-fluid">
-  	<div class="span1"></div>
-  	<div class="span3">
-  		<div id="help"><a target="_blank" onclick="return windowpop(this.href, 545, 433); " th:href="@{/help}">Help</a></div>
-		</div>
-		<div class="span6"></div>
-	</div>
--->
+
+        <div class="col-sm-1"></div>
+
+
+        <!--/* Order summary */-->
+        <div class="col-sm-4">
+            <div class="page-header" id="orderSummary">
+                <h1>Order summary</h1>
+            </div>
+
+            <div class="equation">
+                <div class="addend">
+                    Respect Network<br/>
+                    LIFETIME membership
+                </div>
+                <div class="plus">+</div>
+                <div class="addend">
+                    LIFETIME Base<br/>
+                    Cloud hosting
+                </div>
+                <div class="equals" th:text="${totalAmountText}"> $xx USD</div>
+            </div>
+        </div>
+
+    </div>
 </div>
 
-    <!-- Javascript
-    ================================================== -->
-   <!-- <script src="js/libs/bootstrap-collapse.js"></script> -->
-
-    
 </body>
 </html>

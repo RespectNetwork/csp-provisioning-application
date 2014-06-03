@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,6 +47,13 @@ public class RegisterDependentCloudThread implements Runnable
    private String guardianToken = "";
    private String paymentType = "";
    private String paymentRefId = "";
+   private String guardianEmail = "";
+   private String guardianPhone = "";
+   private String cspHomePage = "";
+   private String contactSupportEmail = "";
+   private String cspCloudName = "";
+   private Locale locale = null;
+   private String cspContactEmail = "";
    
    @Override
    public void run()
@@ -62,6 +70,13 @@ public class RegisterDependentCloudThread implements Runnable
       rut.setPaymentType(paymentType);
       rut.setPaymentRefId(paymentRefId);
       rut.setCdc(RegistrationManager.depCloudNameDiscountCode);
+      rut.setUserEmail(guardianEmail);
+      rut.setUserPhone(guardianPhone);
+      rut.setCspCloudName(cspCloudName);
+      rut.setCspHomePage(cspHomePage);
+      rut.setCspContactSupportEmail(contactSupportEmail);
+      rut.setLocale(locale);
+      rut.setCspContactEmail(cspContactEmail);
       Thread t = new Thread(rut);
       t.start();
       try
@@ -300,5 +315,111 @@ public class RegisterDependentCloudThread implements Runnable
   public void setPaymentRefId( String paymentRefId )
   {
       this.paymentRefId = paymentRefId;
+  }
+
+  /**
+   * Method to set the guardian's email address. This detail is required in the email
+   * sent in case of dependent cloudname registration failure.
+   *
+   * @return emailAddress.
+   */
+  public String getGuardianEmail() {
+      return this.guardianEmail;
+  }
+
+  /**
+   * Set guardian's email address.
+   * @param email guardian's email address.
+   */
+  public void setGuardianEmail(String email) {
+      this.guardianEmail = email;
+  }
+
+  /**
+   * Method to set the guardian's phone number. This detail is required in the email
+   * sent in case of dependent cloudname registration failure.
+   *
+   * @return guardianPhone.
+   */
+  public String getGuardianPhone() {
+      return this.guardianPhone;
+  }
+
+  /**
+   * Set guardian's phone number.
+   * @param phoneNum guardian's phone number.
+   */
+  public void setGuardianPhone(String guardianPhone) {
+      this.guardianPhone = guardianPhone;
+  }
+
+  /**
+   * Set contact support email address.
+   * @param contactSupportEmail, contact support email address.
+   */
+  public void setCspContactSupportEmail(String contactSupportEmail) {
+      this.contactSupportEmail = contactSupportEmail;
+  }
+
+  /**
+   * Method to get the contact support's email address. It is required to send
+   * an email in case of dependent cloudname registration failure.
+   * @return email, contact support email address.
+   */
+  public String getCspContactSupportEmail()
+  {
+     return this.contactSupportEmail;
+  }
+
+  /**
+   * Set csp cloudname.
+   * @param cspCloudName
+   */
+  public void setCspCloudName(String cspCloudName) {
+      this.cspCloudName = cspCloudName;
+  }
+
+  /**
+   * Method to get csp cloud name.
+   * @return csp cloud name
+   */
+  public String getCspCloudName()
+  {
+     return this.cspCloudName;
+  }
+
+  /**
+   * Method to set csp home page. It will represent csp url.
+   * @param cspHomePage csp url.
+   */
+  public void setCspHomePage(String cspHomePage) {
+      this.cspHomePage = cspHomePage;
+  }
+
+  /**
+   * Method to get the cspHomePage. It will return the configured csp url.
+   * @return cspHomePage
+   */
+  public String getCspHomePage()
+  {
+     return this.cspHomePage;
+  }
+
+  public void setLocale(Locale locale) {
+      this.locale = locale;
+  }
+
+  public Locale getLocale()
+  {
+     return this.locale;
+  }
+
+  public void setCspContactEmail(String cspContactEmail) {
+      this.cspContactEmail = cspContactEmail;
+  }
+
+  public String getCspContactEmail()
+  {
+     return this.cspContactEmail;
   }
 }
