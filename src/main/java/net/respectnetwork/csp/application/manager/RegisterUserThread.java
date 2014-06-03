@@ -65,7 +65,11 @@ public class RegisterUserThread implements Runnable
       cspHomePage = this.getCspHomePage();
       contactSupportEmail = this.getCspContactSupportEmail();
       userEmail = this.getUserEmail();
-      userPhone = this.getUserPhone();
+      if(verifiedPhone != " ") {
+          userPhone = verifiedPhone;
+      } else {
+          userPhone = this.getUserPhone();
+      }
       cspContactEmail = this.getCspContactEmail();
       // 5 times retry registration in case of failure. Retry interval is 2 minutes.
       while (retryCount < 5) {
