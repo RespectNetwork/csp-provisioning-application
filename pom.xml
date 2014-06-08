@@ -6,7 +6,7 @@
     <groupId>net.respectnetwork.csp.application</groupId>
     <artifactId>csp-provisioning-application</artifactId>
     <packaging>war</packaging>
-    <version>0.4.2</version>
+    <version>0.4.3</version>
     <name>CSP Provisioning Application</name>
     <description>CSP Provisioning Application</description>
 
@@ -17,7 +17,7 @@
         <java.version>1.6</java.version>
         <org.slf4j-version>1.7.5</org.slf4j-version>
         <xdi2-version>0.4.1</xdi2-version>
-        <cspsdk-version>0.3.2</cspsdk-version>
+        <cspsdk-version>0.3.3</cspsdk-version>
         <thymeleaf-version>2.1.1.RELEASE</thymeleaf-version>
         <jetty-version>6.1.10</jetty-version>
     </properties>
