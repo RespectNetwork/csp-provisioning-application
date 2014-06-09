@@ -293,7 +293,7 @@ $.extend($.validator, {
 		passtestchars: $.validator.format("Please enter at least 1 special character"),
 		passtestlength: $.validator.format("Must be at least 8 characters"),
 		passtestlength: $.validator.format("Must be at least 8 characters"),
-		phonenumber: $.validator.format("Please enter 10 characters"),
+		phonenumber: $.validator.format("Please enter a valid phone number"),
 	},
 
 	autoCreateRanges: false,
