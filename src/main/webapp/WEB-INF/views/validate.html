@@ -50,22 +50,22 @@
       <!-- Begin page content -->
       <div id="content-wrapper">  
 				<div class="middle"> <span style="color:red" class="error"  th:text="${error}"></span>
-				<p>Verification codes have been sent to your email and phone. Enter those codes in the fields below.<br/>Codes are not case sensitive. </p>
+				<p>Verification codes have been sent to your email and phone. Enter those codes in the fields below.</p>
 					<form action="#" th:object="${validateInfo}" th:action="@{/validatecodes}" method="post" class="margin-top" id="validateCodes-form">
             <div class="formGroup">
  						 <input type="text" name="emailCode" class="inputFields smallTop" id="emailCode" placeholder="email code" onFocus="clearText(this)" onBlur="clearText(this.className = 'onblurtext smallTop')"  />
-              <p class="secondary"><span th:text="|Sent to ${verifyingEmail}|"> Sent to</span></p>
+              <p class="secondary"><span th:text="|Sent to ${verifyingEmail}|"> Sent to</span><span class="html-remove"> r@rachelmanning.com</span><span class="edit"><a href="#emailModal">edit email</a></span></p>
             </div>
             <div class="formGroup">
 						<input type="text" name="smsCode"  class="inputFields smallTop" id="smsCode" placeholder="text code" onFocus="clearText(this)" onBlur="clearText(this.className = 'onblurtext smallTop')" />
-             			<p class="secondary"> <span th:text="|Sent to ${verifyingPhone}|">Sent to</span></p>
+             			<p class="secondary"> <span th:text="|Sent to ${verifyingPhone}|">Sent to</span><span class="html-remove"> (323) 283-7653</span><span class="edit"><a href="#phoneModal">edit phone</a></span></p>
             </div>
-     				<p class="secondary"> <input type="checkbox" name="terms" /> &nbsp;
+     				<p class="tertiary"> <input type="checkbox" name="terms" /> &nbsp;
      				I agree to the <a target="_blank"  onclick="return windowpop(this.href, 545, 433);" href="http://openidentityexchange.org/trust-frameworks/respect-trust-framework" >Respect Trust Framework</a>
      				<!-- <a target="_blank" onclick="return windowpop(this.href, 545, 433); " th:href="@{/respectTrustFramework}" >Respect Trust Framework</a> --> 
      				and the one-person one-account rule.</p>
 						<input type="submit" name="submit" id="submit" class="button" value="Verify" />
-						&nbsp;&nbsp;<input type="submit" name="resendCodes" id="resendCodes" class="button" value="Send new codes" />
+						<input type="submit" name="resendCodes" id="resendCodes" class="no-style-button" value="Send new codes" />
 						
 						<input type="hidden" name="verifyingEmail" th:value="${verifyingEmail}" id="verifyingEmail" />
 						<input type="hidden" name="verifyingPhone" th:value="${verifyingPhone}" id="verifyingPhone" />
@@ -84,6 +84,28 @@
       </div>
     </div>
   </div>
+</div>
+<div id="phoneModal" class="modalDialog">
+	<div>
+		<a href="#close" title="Close" class="close">X</a>
+		<p>Edit Phone</p>
+		<div class="formGroup mobile-fields">
+          <input type="text" class="phoneField" name="mobilePhone" id="mobilePhone" placeholder="mobile: nnnnnnnnnn" required="required" onFocus="clearText(this)" onBlur="clearText(this.className = 'onblurtextPhone smallTop')" th:value="*{mobilePhone}" />                     
+      	</div>
+      	<input type="submit" class="button" value="Send new code" /><br/>
+      	<a href="#close">cancel</a>
+	</div>
+</div>
+<div id="emailModal" class="modalDialog">
+	<div>
+		<a href="#close" title="Close" class="close">X</a>
+		<p>Edit Email</p>
+		<div class="formGroup">
+				  <input type="text" class="inputFields" name="email"  id="email" placeholder="email address" required="required" onFocus="clearText(this)" onBlur="clearText(this.className = 'onblurtext smallTop')" th:value="*{email}" />
+				  <input type="submit" class="button" value="Send new code" /><br/>
+				  <a href="#close" class="no-style-button">cancel</a>
+		</div>
+	</div>
 </div>
 
     <!-- Javascript
