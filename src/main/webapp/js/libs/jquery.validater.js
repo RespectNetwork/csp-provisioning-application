@@ -293,7 +293,7 @@ $.extend($.validator, {
 		passtestchars: $.validator.format("Please enter at least 1 special character"),
 		passtestlength: $.validator.format("Must be at least 8 characters"),
 		passtestlength: $.validator.format("Must be at least 8 characters"),
-		phonenumber: $.validator.format("Please enter a valid phone number"),
+		phonenumber: $.validator.format("Please enter a valid phone number,  <br />digits only, no spaces, dashes or ()"),
 	},
 
 	autoCreateRanges: false,
@@ -1056,7 +1056,7 @@ $.extend($.validator, {
 			return returnValue;
 		},
 		phonenumber: function(value, element) {
-			return this.optional(element) || /^(.*\d){10}/.test(value);	
+			return this.optional(element) || /^[0-9\ ]+$/.test(value);	
 		},
 		
 		// http://docs.jquery.com/Plugins/Validation/Methods/minlength
