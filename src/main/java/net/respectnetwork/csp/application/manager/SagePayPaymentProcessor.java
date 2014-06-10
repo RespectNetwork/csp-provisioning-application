@@ -62,6 +62,10 @@ public class SagePayPaymentProcessor
       msg.setDeliverySurname(request.getParameter("BillingSurname"));
       msg.setDeliveryAddress1(request.getParameter("BillingAddress1"));
       msg.setDeliveryCity(request.getParameter("BillingCity"));
+      if(request.getParameter("BillingState") != null && !request.getParameter("BillingState").isEmpty())
+      {
+         msg.setDeliveryState(request.getParameter("BillingState"));
+      }
       msg.setDeliveryCountry(request.getParameter("BillingCountry"));
       msg.setDeliveryPostCode(request.getParameter("BillingPostCode"));
 
