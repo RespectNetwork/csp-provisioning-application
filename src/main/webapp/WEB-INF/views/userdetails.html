@@ -1,171 +1,101 @@
 <!DOCTYPE html>
-<html lang="en"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorator="fragments/page">
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Respect Network</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
 
-<head>
-    <link href="css/intlTelInput.css" rel="stylesheet"/>
+    <!-- CSS -->
+    <link href="css/bootstrap.css" rel="stylesheet" />
+		<link href="css/bootstrap-responsive.css" rel="stylesheet" />
+		<link href="css/intlTelInput.css" rel="stylesheet" />
+    <link href="css/stylesheet.css" rel="stylesheet" />
+<link href="https://s3.amazonaws.com/rnfonts/demo.css" rel="stylesheet" type="text/css" />
+	<!--include jquery-->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+	<script src="js/libs/misc.js"> </script>
+
+<!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+<!--[if lt IE 9]>
+<script src="js/html5shiv.js"></script>
+<![endif]-->
+
+<!-- Fav and touch icons -->
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="img/ico/apple-touch-icon-144-precomposed.png" />
+<link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/ico/apple-touch-icon-114-precomposed.png" />
+<link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/ico/apple-touch-icon-72-precomposed.png" />
+<link rel="apple-touch-icon-precomposed" href="img/ico/apple-touch-icon-57-precomposed.png" />
+<link rel="shortcut icon" href="img/ico/favicon.png" />
 </head>
 
-<body class="userdetails">
-
-<!--/* No nav dropdown for this page */-->
-<div layout:fragment="nav"></div>
-
-<div class="container" layout:fragment="bodyContent">
-
-    <div class="page-header">
-        <h1>Email and phone verification is required to secure <br/>
-            your cloud name in the Respect Network.</h1>
+<body>
+<!-- Part 1: Wrap all page content here -->
+<div id="wrap">
+<!-- Fixed navbar -->
+  <div class="navbar navbar-top">
+    <div class="navbar-inner">
+      <div class="container">
+      	<div class="row-fluid small-screen">  
+          <h1><img src="img/respect-network-logo.png" alt="Respect Network"/></h1>  
+      	</div>        
+        <div class="header-cloud-name">
+            <span th:text="${cloudName}"/>
+        </div>
+      </div>
     </div>
-
-    <span style="color:red" class="error" th:text="${error}"></span>
-
-    <form action="#" th:action="@{/processuserdetails}" method="post"
-          class="form-primary" th:object="${userInfo}" id="userDetailsForm">
-
-        <!--/* Email address */-->
-        <div class="form-group" data-show-valid-glyph="false">
-            <input type="email" id="email" name="email"
-                   class="form-control" placeholder="email address"
-                   required="required" autofocus="autofocus"
-                   th:value="*{email}" />
-        </div>
-
-        <!--/* Mobile number */-->
-        <div class="form-group" data-show-valid-glyph="false">
-            <div class="input-group">
-                <input type="text" id="cc" name="cc"
-                       class="form-control" placeholder=""
-                       required="required"
-                       th:value="*{cc}"/>
-                <input type="tel" id="mobilePhone" name="mobilePhone"
-                       class="form-control" placeholder="mobile phone"
-                       required="required"
-                       th:value="*{mobilePhone}"/>
-            </div>
-        </div>
-
-        <p class="secondary">Create a password for logging into your personal cloud:<br/>min 8 char with 2 digits, 2
-            letters and 1 symbol e.g. @,#,$
-        </p>
-
-        <!--/* Password fields */-->
-        <div class="form-group">
-            <input type="password" id="password" name="password"
-                   class="form-control" placeholder="create password"
-                   required="required"/>
-        </div>
-
-        <div class="form-group">
-            <input type="password" id="confirmPassword" name="confirmPassword"
-                   class="form-control" placeholder="confirm password"
-                   required="required"/>
-        </div>
-
-        <div id="responseDiv" class="error" style="color:red"></div>
-
-        <button type="submit" name="submitBtn" id="submitBtn" class="button btn btn-lg btn-primary">Next</button>
-
-    </form>
+  </div>  
+      <!-- Begin page content -->
+  <div id="content-wrapper">  			
+    <div class="middle"> 
+      <p>Email and phone verification is required to secure your cloud name in the Respect Network.</p>
+ 			<form id="registration-form" action="#" th:object="${userInfo}" th:action="@{/processuserdetails}" method="post" class="smallTop">
+ 				<div class="formGroup">
+				  <input type="text" class="inputFields" name="email"  id="email" placeholder="email address" required="required" autocomplete="off" th:value="*{email}" />
+				</div>
+				<div class="formGroup mobile-fields">
+				  <input type="text" class="ccField ccTop" name="cc" id="cc" placeholder=" " required="required"  th:value="*{cc}" />
+          <input type="text" class="phoneField" name="mobilePhone" id="mobilePhone" placeholder="mobile: nnnnnnnnnn" required="required" autocomplete="off" th:value="*{mobilePhone}" />                     
+      	</div>
+      	<div class="formGroup password-fields">
+  				<p class="secondary">Create a password for logging into your personal cloud. Password requirements:</p>
+  				<div class="hide-error">
+  				<div class="password-validation">
+      		  <div id="val-letters">2 or more letters</div>
+            <div id="val-numbers">2 or more numbers</div>
+            <div id="val-characters">1 or more symbols</div>
+            <div id="val-charnum">8 or more characters</div>
+      		</div>
+      		<input type="password"  class="inputFields smallMarg" name="password" value="" id="password" placeholder="create password" required="required" onFocus="clearText(this)" onBlur="clearText(this.className = 'onblurtext smallMarg')" />
+  				</div>
+      		
+      		<input type="password"  class="inputFields smallMarg" name="confirmPassword" value="" id="confirmPassword" placeholder="confirm password" required="required" onFocus="clearText(this)" onBlur="clearText(this.className = 'onblurtext smallMarg')" />
+          <div id="responseDiv" class="error" style="color:red"></div>
+      	</div>
+        <input type="submit" class="button" value="Submit" />
+      </form>
+		</div>
+  </div>
+  <div class="push"></div>
 </div>
-
-<th:block layout:fragment="postFooterContent">
-    <script src="js/libs/intlTelInput.min.js"></script>
-    <script src="js/libs/data.js"></script>
-    <script>
-        /*<![CDATA[*/
-        $("#cc").intlTelInput();
-
-        $(document).ready(function () {
-
-            function satisfiesRange(value, reqCount, range) {
-                var foundCount = 0;
-                for (var i = 0; i < value.length; i++) {
-                    var idx = range.indexOf(value[i]);
-                    if (idx >= 0 && ++foundCount == reqCount) {
-                        return true;
-                    }
-                }
-                return false;
-            }
-
-            $.validator.addMethod('checkPasswordAlpha', function (value, element, params) {
-                return satisfiesRange(value, params.count, params.range);
-            });
-            $.validator.addMethod('checkPasswordNumeric', function (value, element, params) {
-                return satisfiesRange(value, params.count, params.range);
-            });
-            $.validator.addMethod('checkPasswordSymbolic', function (value, element, params) {
-                return satisfiesRange(value, params.count, params.range);
-            });
-            $.validator.addMethod('validateCC', function (value, element, params) {
-                return /^\+[0-9]{1,3}(?:x.+)?$/.test(value);
-            });
-            $.validator.addMethod('validatePhoneNumber', function (value, element, params) {
-                return /^[0-9]{4,14}(?:x.+)?$/.test(value);
-            });
-
-            var PASSWORD_MIN_LENGTH = 8;
-            var PASSWORD_MIN_ALPHA = 2;
-            var PASSWORD_MIN_NUMERIC = 2;
-            var PASSWORD_MIN_SYMBOLIC = 1;
-
-            var PASSWORD_ALPHA = 'abcdefghijklmnopqrstuvwqyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-            var PASSWORD_NUMERIC = '1234567890';
-            var PASSWORD_SYMBOLS = '~!@#$%^&*()_+`-={}|[]\\;\':",./<>?';
-
-            addFormValidation('#userDetailsForm', {
-                rules: {
-                    email: {
-                        required: true,
-                        email: true
-                    },
-                    cc: {
-                        required: true,
-                        validateCC: true
-                    },
-                    mobilePhone: {
-                        required: true,
-                        validatePhoneNumber: true
-                    },
-                    password: {
-                        required: true,
-                        minlength: PASSWORD_MIN_LENGTH,
-                        checkPasswordAlpha: { count: PASSWORD_MIN_ALPHA, range: PASSWORD_ALPHA },
-                        checkPasswordNumeric: { count: PASSWORD_MIN_NUMERIC, range: PASSWORD_NUMERIC },
-                        checkPasswordSymbolic: { count: PASSWORD_MIN_SYMBOLIC, range: PASSWORD_SYMBOLS }
-                    },
-                    confirmPassword: {
-                        required: true,
-                        equalTo: '#password'
-                    }
-                },
-                messages: {
-                    email: 'Please enter a valid email address',
-                    cc: 'Please choose a country code',
-                    mobilePhone: 'Please enter a mobile number',
-                    password: {
-                        required: 'Please provide a password',
-                        minlength: 'Your password must be at least ' + PASSWORD_MIN_LENGTH + ' characters',
-                        checkPasswordAlpha: 'Password must contain at least ' + PASSWORD_MIN_ALPHA + ' letter' + (PASSWORD_MIN_ALPHA > 1 ? 's' : ''),
-                        checkPasswordNumeric: 'Password must contain at least ' + PASSWORD_MIN_NUMERIC + ' number' + (PASSWORD_MIN_NUMERIC > 1 ? 's' : ''),
-                        checkPasswordSymbolic: 'Password must contain at least ' + PASSWORD_MIN_SYMBOLIC + ' symbol' + (PASSWORD_MIN_SYMBOLIC > 1 ? 's' : '')
-                    },
-                    confirmPassword: {
-                        required: 'Please repeat password',
-                        equalTo: 'Passwords do not much'
-                    }
-                },
-                groups: {
-                    mobile: "cc mobilePhone"
-                }
-            });
-        });
-        /*]]>*/
-    </script>
-</th:block>
-
+<div id="footer">
+  <div class="container">
+    <div class="row-fluid">
+      <div class="cspMain">YOUR CLOUD SERVICE PROVIDER | <img src="img/csp_logo.png" /> &nbsp;
+    </div>
+  </div>
+</div>
+</div>
+    <!-- Javascript
+    ================================================== -->
+		
+		<script src="js/libs/intlTelInput.min.js"></script>
+		<script src="js/libs/data.js"></script>		
+<script>
+  $("#cc").intlTelInput();
+</script>
+<script src="js/libs/jquery.validater.js"></script> 
+<script src="js/libs/valid.js"></script> 
 </body>
 </html>
