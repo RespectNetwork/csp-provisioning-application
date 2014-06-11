@@ -24,6 +24,7 @@ import net.respectnetwork.csp.application.form.ValidateForm;
 import net.respectnetwork.csp.application.manager.RegistrationManager;
 import net.respectnetwork.csp.application.model.CSPCostOverrideModel;
 import net.respectnetwork.csp.application.model.CSPModel;
+import net.respectnetwork.csp.application.model.CSPProductModel;
 import net.respectnetwork.csp.application.session.RegistrationSession;
 import net.respectnetwork.sdk.csp.validation.CSPValidationException;
 
@@ -578,6 +579,35 @@ public class RegistrationController
       CurrencyCost costOneCloud = new CurrencyCost(currency, costPerCloud);
       return costOneCloud.multiply(numberOfClouds);
    }
+
+   /**
+    * Method to calculate the cost of buying additional cloudnames.
+    */
+    static CurrencyCost getCostToBuyAdditionalCloudName(CSPModel cspModel,
+            String productId, int numberOfClouds) {
+        String currency = cspModel.getCurrency();
+        BigDecimal costPerAdditionalCloud = cspModel.getCostPerCloudName();
+
+        CSPProductModel cspProductModel = null;
+        try {
+            cspProductModel = DAOFactory.getInstance().getCSPProductDAO()
+                    .get(productId, cspModel.getCspCloudName());
+            if (cspProductModel != null) {
+                logger.debug("AdditionalCloudName cost found: "
+                        + cspProductModel.getProductCost().toString());
+                currency = cspProductModel.getProductCurrency();
+                costPerAdditionalCloud = cspProductModel.getProductCost();
+            } else {
+                logger.debug("No cost for additional cloud name found (using default cost)");
+            }
+        } catch (DAOException e) {
+            logger.error(e.toString());
+        }
+
+        CurrencyCost costOneCloud = new CurrencyCost(currency,
+                costPerAdditionalCloud);
+        return costOneCloud.multiply(numberOfClouds);
+    }
 
    /**
     * Format a currency and amount for human display.

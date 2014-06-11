@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="utf-8" />
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+
+    <!-- CSS -->
+    <link href="css/bootstrap.css" rel="stylesheet" />
+    <link href="css/bootstrap-responsive.css" rel="stylesheet" />
+    <link href="css/intlTelInput.css" rel="stylesheet" />
+    <link href="css/style.css" rel="stylesheet" />
+    <link href="https://s3.amazonaws.com/rnfonts/demo.css" rel="stylesheet" type="text/css" />
+    <style type="text/css" >
+      /* Sticky footer styles -------------------------------------------------- */
+
+      html,
+      body {
+        height: 100%;
+        /* The html and body elements cannot have any padding or margin. */
+      }
+
+      /* Wrapper for page content to push down footer */
+      #wrap {
+        min-height: 100%;
+        height: auto !important;
+        height: 100%;
+        /* Negative indent footer by it's height */
+        margin: 0 auto -60px;
+      }
+
+      /* Set the fixed height of the footer here */
+      #push,
+      #footer {
+        height: 60px;
+      }
+      #footer {
+        border-top: solid 1px #d9d9d9;
+      }
+
+      /* Lastly, apply responsive CSS fixes as necessary */
+      @media (max-width: 979px) {
+        #footer {
+          margin-left: -20px;
+          margin-right: -20px;
+          padding-left: 20px;
+          padding-right: 20px;
+        }
+        .bodyContainer {
+                    padding-top: 50px !important;
+                }
+      }
+      
+      @media (max-width: 767px) {
+        #footer {
+          margin-left: -20px;
+          margin-right: -20px;
+          padding-left: 20px;
+          padding-right: 20px;
+        }
+        .bodyContainer {
+                    padding-top: 50px !important;
+                }
+      }
+      @media (max-width: 450px) {
+                #feedback { 
+            top: 80%;
+            z-index: 9999;
+            }
+      }
+
+      /* Custom page CSS
+      -------------------------------------------------- */
+      /* Not required for template or sticky footer method. */
+
+      #wrap > .container {
+        padding-top: 150px;
+      }
+      
+      .bodyContainer {
+        padding-top: 125px;
+      }
+    </style>
+
+    <!--include jquery-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="js/libs/misc.js"> </script>
+    <script src="js/libs/nameavailability.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+    <script src="js/html5shiv.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="img/ico/apple-touch-icon-144-precomposed.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/ico/apple-touch-icon-114-precomposed.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/ico/apple-touch-icon-72-precomposed.png" />
+    <link rel="apple-touch-icon-precomposed" href="img/ico/apple-touch-icon-57-precomposed.png" />
+    <link rel="shortcut icon" href="img/ico/favicon.png" />
+  </head>
+  <!-- script-->
+  <script src="js/libs/bootstrap-dropdown.js"></script>
+
+  <body class="additionalCloud">
+    <div id="wrapper">
+
+    <!-- Fixed navbar -->
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <div class="row-fluid">  
+            <div class="span4 smallTop">
+              <p class="cspHeader right"><img src="img/csp_logo.png" /></p>
+            </div>
+            <div class="span4"></div>
+            <div class="span4 equation">
+              <ul class="nav">
+                <a  href="#" class="dropdown-toggle" data-toggle="dropdown"><span th:text="${cloudName}"/> &nbsp;<b class="caret"></b> &nbsp;</a>
+                <ul class="dropdown-menu">
+                  <li><a th:href="@{/logout}">Logout</a></li>
+                </ul>
+              </ul> 
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Begin page content -->
+    <div class="bodyContainer">
+      <form action="#" th:action="@{/saveAdditionalCloud}" method="post"
+          class="form-primary" role="form" th:object="${additionalCloudForm}"
+          autocomplete="off" accept-charset="UTF-8" id="additionalCloud">
+
+        <div class="middle2" id="cloudNameGroup">
+          Choose your additional cloud names:
+          <br/>
+          <span class="dependent-error"  name="duplicateCloudName" id="duplicateCloudName"></span>
+          <br/>
+          <input type="text" id="additionalCloudNames0" name="additionalCloudNames[0]"
+                class="inputFields smallMarg cname" placeholder="=additional cloud name..." autofocus="autofocus" th:value="*{additionalCloudNames[0]}?:null"/>
+          <br/>
+          <span class="dependent-error"  name="isValidCloudName0" id="isValidCloudName0"></span>
+          <br/>
+          <input type="text" id="additionalCloudNames1" name="additionalCloudNames[1]"
+                class="inputFields smallMarg cname" placeholder="=additional cloud name..." autofocus="autofocus" th:value="*{additionalCloudNames[1]}?:null"/>
+          <br/>
+          <span class="dependent-error"  name="isValidCloudName1" id="isValidCloudName1"></span>
+          <br/>
+          <input type="text" id="additionalCloudNames2" name="additionalCloudNames[2]"
+                class="inputFields smallMarg cname" placeholder="=additional cloud name..." autofocus="autofocus" th:value="*{additionalCloudNames[2]}?:null"/>
+          <br/>
+          <span class="dependent-error"  name="isValidCloudName2" id="isValidCloudName2"></span>
+          <br/>
+          <input type="text" id="additionalCloudNames3" name="additionalCloudNames[3]"
+                class="inputFields smallMarg cname" placeholder="=additional cloud name..." autofocus="autofocus" th:value="*{additionalCloudNames[3]}?:null"/>
+          <br/>
+          <span class="dependent-error"  name="isValidCloudName3" id="isValidCloudName3"></span>
+          <br/>
+          <input type="text" id="additionalCloudNames4" name="additionalCloudNames[4]"
+                class="inputFields smallMarg cname" placeholder="=additional cloud name..." autofocus="autofocus" th:value="*{additionalCloudNames[4]}?:null"/>
+          <br/>
+          <span class="dependent-error"  name="isValidCloudName4" id="isValidCloudName4"></span>
+
+          <input type="hidden" name="avAPI" value="" id="avAPI" th:value="*{nameAvailabilityCheckURL} + '/api/availability/equals/'"/>
+
+          <p><input type="submit" class="button" id="submit" value="Submit" /></p>
+        </div>
+      </form>
+    </div>
+
+    <th:block layout:fragment="postFooterContent">
+      <script src="js/libs/nameavailability.js"></script>
+      <script src="js/libs/misc.js"></script>
+      <script>
+        /*<![CDATA[*/
+          $(document).ready(function () {
+              $(".cname").keyup(function(){
+                  checkCloudNameAvailability(this);
+              })
+
+              function checkCloudNameAvailability(meobj) {
+                  // Get the position of input text box
+                  var pos = meobj.id.split('additionalCloudNames')[1];
+
+                  // the value of this var is the id of the input element
+                  // that the user is typing into
+                  var cloudnameField = "#"+meobj.id;
+                  // the value of this var is the id of the display element 
+                  // that will be used to convey information to the user
+                  var messageSpan = "#isValidCloudName"+pos;
+
+                  $(cloudnameField).checkCloud({
+                      completed: function(elem, success) {
+                      // success var will contain a 1 if the name is available
+                      // and 0 if it not available.
+
+                      if(window.console) {
+                          console.log('Checking cloud...');
+                          console.log(success);
+                      }
+
+                      // clear error
+                      if ($(cloudnameField).val().trim() == '') {
+                          $(messageSpan).html('');
+                          return;
+                      }
+
+                      if(success==1)
+                      {
+                          // Make whatever changes to the UI to indicate that the name is
+                          // available
+                          $(messageSpan).html(" &radic; Your cloud name is available. Claim it.");
+                          $(messageSpan).css('color', 'green');
+                          $(messageSpan).css('font-size', '13px');
+                          disableEnableSubmitButtom();     
+                      }else {
+                          // Make whatever changes to the UI to indicate that the name is
+                          // unavailable
+                          $(messageSpan).html("Sorry, that cloud name is not available. Please try again.");
+                          $(messageSpan).css('color', 'red');
+                          $(messageSpan).css('font-size', '13px');
+                          disableEnableSubmitButtom();
+                      }
+                  },
+                  changed: function(elem) {
+                      //Called when user is typing
+                      if(window.console) {
+                          console.log('Changing cloud...');
+                      }
+                  },
+                  // indicates if the leading symbol should be removed prior to adding the 
+                  // name to the path
+                  stripSymbol:true, 
+
+                  // indicates the location of the availability service
+                  availabilityApi :  document.getElementById("avAPI").value
+              }); 
+          }
+
+          function disableCloudNameTextBoxIfNotNull() {
+              var alreadyCreatedNames = 0;
+              for(var i = 0; i < 5; i++) {
+                  var id = "additionalCloudNames"+ i;
+                  var txtTitle = document.getElementById(id).value;
+                  if(txtTitle.trim() != "") {
+                      document.getElementById(id).disabled = true;
+                      alreadyCreatedNames++;
+                  }
+              }
+              if(alreadyCreatedNames == 5) {
+                  document.getElementById('submit').disabled = true;
+              }
+           }
+
+           function disableEnableSubmitButtom() {
+               checkIfCloudNamesAreUnique();
+               var enableSubmit = true;
+               if($('span#duplicateCloudName').text() != "") {
+                   enableSubmit = false;
+               } else {
+                   for(var i = 0; i < 5; i++) {
+                       if($('span#isValidCloudName'+i).text() == "Sorry, that cloud name is not available. Please try again.") {
+                           enableSubmit = false;
+                           break;
+                       }
+                   }
+               }
+               if(enableSubmit) {
+                   document.getElementById('submit').disabled = false;
+               } else {
+                   document.getElementById('submit').disabled = true;
+               }
+           }
+
+           function getAllCloudNames() {
+               var cNameList = [];
+               for(var i = 0; i < 5; i++) {
+                   if(($('#additionalCloudNames'+i).val().trim() != "")) {
+                        cNameList.push($("#additionalCloudNames"+i).val());
+                    }
+               }
+               return cNameList;
+           }
+
+           function checkIfCloudNamesAreUnique() {
+               var arr = getAllCloudNames();
+               var map = {}, i, size;
+               var retVal = null;
+               for (i = 0, size = arr.length; i < size; i++){
+                   if (map[arr[i]]) {
+                       document.getElementById('submit').disabled = true;
+                       retVal = "Additional cloud names cannot be duplicate.";
+                       break;
+                   }
+                   map[arr[i]] = true;
+               }
+               $("#duplicateCloudName").html(retVal);
+               $("#duplicateCloudName").css('color', 'red');
+               if(retVal == null) {
+                   $("#duplicateCloudName").text('');
+               }
+           }
+
+           disableCloudNameTextBoxIfNotNull();
+         });
+        /*]]>*/
+        </script>
+      </th:block>
+    </div>
+  </body>
+</html>

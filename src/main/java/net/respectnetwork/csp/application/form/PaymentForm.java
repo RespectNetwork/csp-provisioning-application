@@ -19,7 +19,7 @@ public class PaymentForm {
    public final static String TXN_TYPE_SIGNUP = "signup"; 
    public final static String TXN_TYPE_BUY_GC = "buyGiftCard";
    public final static String TXN_TYPE_DEP = "buyDependentCloud";
-   
+   public final static String TXN_TYPE_ADD = "buyAdditionalCloud";
 
    private String giftCodes;
    

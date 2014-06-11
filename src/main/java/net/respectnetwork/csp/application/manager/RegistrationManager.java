@@ -675,7 +675,11 @@ public class RegistrationManager {
     public void setCspContactEmail(String cspEmail) {
         this.cspContactEmail = cspEmail;
     }
-    
+
+    public String getCspContactEmail() {
+        return this.cspContactEmail;
+    }
+
     public String getCSPContactInfo() {
     	
     	return "Please contact the CSP at " + this.cspContactPhone + " or via email at " + this.cspContactEmail;
@@ -801,16 +805,28 @@ public class RegistrationManager {
        this.contactSupportEmail = contactSupportEmail;
    }
 
+   public String getCspContactSupportEmail() {
+       return this.contactSupportEmail;
+   }
+
    @Autowired
    @Qualifier("cspCloudName")
    public void setCspCloudName(String cspCloudName) {
        this.cspCloudName = cspCloudName;
    }
 
+   public String getCspCloudName(){
+       return this.cspCloudName;
+   }
+
    @Autowired
    @Qualifier("cspHomePage")
    public void setCspHomePage(String cspHomePage) {
        this.cspHomePage = cspHomePage;
+   }
+
+   public String getCspHomePage(){
+       return this.cspHomePage;
    }
 
    public static boolean validateCloudName(String iname) {

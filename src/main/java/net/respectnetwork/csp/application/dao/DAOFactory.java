@@ -21,6 +21,7 @@ public class DAOFactory
 	private SignupInfoDAO         signupInfoDAO;
 	private PromoCodeDAO         promoCodeDAO;
 	private PromoCloudDAO         promoCloudDAO;
+	private CSPProductDAO         cSPProductDAO;
 
 	public static DAOFactory getInstance()
 	{
@@ -172,5 +173,13 @@ public class DAOFactory
    public void setPromoCloudDAO(PromoCloudDAO promoCloudDAO)
    {
       this.promoCloudDAO = promoCloudDAO;
+   }
+
+   public CSPProductDAO getCSPProductDAO() {
+       return cSPProductDAO;
+   }
+
+   public void setCSPProductDAO(CSPProductDAO cSPProductDAO) {
+       this.cSPProductDAO = cSPProductDAO;
    }
 }
