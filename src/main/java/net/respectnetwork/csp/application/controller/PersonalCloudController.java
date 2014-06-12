@@ -20,11 +20,13 @@ import net.respectnetwork.csp.application.dao.SignupInfoDAO;
 import net.respectnetwork.csp.application.exception.CSPException;
 import net.respectnetwork.csp.application.exception.CSPProValidationException;
 import net.respectnetwork.csp.application.exception.UserRegistrationException;
+import net.respectnetwork.csp.application.form.AdditionalCloudForm;
 import net.respectnetwork.csp.application.form.DependentForm;
 import net.respectnetwork.csp.application.form.InviteForm;
 import net.respectnetwork.csp.application.form.PaymentForm;
 import net.respectnetwork.csp.application.form.SignUpForm;
 import net.respectnetwork.csp.application.invite.InvitationManager;
+import net.respectnetwork.csp.application.manager.AdditionalCloudManager;
 import net.respectnetwork.csp.application.manager.BrainTreePaymentProcessor;
 import net.respectnetwork.csp.application.manager.PersonalCloudManager;
 import net.respectnetwork.csp.application.manager.PinNetAuPaymentProcessor;
@@ -200,8 +202,8 @@ public class PersonalCloudController
       {
          return processLogout(request, model);
       }
-		
-	  if(!RegistrationManager.validateCloudName(cName) ) {
+
+      if(!RegistrationManager.validateCloudName(cName) ) {
           errors = true;
           errorText = RegistrationManager.validINameFormat;
       }
@@ -280,9 +282,9 @@ public class PersonalCloudController
 
             } else
             {
-			   errorText += "Invalid User/Password.";
+               errorText += "Invalid User/Password.";
                errors = true;
-			   logger.info("Authenticating to personal cloud failed for "
+               logger.info("Authenticating to personal cloud failed for "
                        + cloudName);
             }
          } catch (Xdi2ClientException e)
@@ -290,7 +292,7 @@ public class PersonalCloudController
             // TODO Auto-generated catch block
             e.printStackTrace();
             errors = true;
-			errorText += "Invalid User/Password.";
+            errorText += "Invalid User/Password.";
             logger.debug("Authenticating to personal cloud failed for "
                   + cloudName);
          }
@@ -300,13 +302,13 @@ public class PersonalCloudController
          logger.info("CSP Object is null. ");
          errors = true;
       }
-	  }
+      }
       if (errors)
       {
          String cspHomeURL = request.getContextPath();
          String formPostURL = cspHomeURL + "/cloudPage";
          mv = new ModelAndView("login");
-		 mv.addObject("error", errorText);
+         mv.addObject("error", errorText);
          mv.addObject("postURL", formPostURL);
 
       }
@@ -519,6 +521,22 @@ public class PersonalCloudController
 
                }
 
+            } else if (txnType.equals(PaymentForm.TXN_TYPE_ADD))
+            {
+                AdditionalCloudManager acm = new AdditionalCloudManager(regSession, registrationManager);
+                if ((mv = acm.createAdditionalClouds(cloudName, payment, null,
+                        "", getRegisteredEmailAddress(), getRegisteredPhoneNumber(), request)) != null)
+                {
+                   forwardingPage = getRNpostRegistrationLandingPage();
+                   queryStr = this.formatQueryStr(cloudName, regSession.getRnQueryString(), request);
+                   statusText = "Thank you " + cloudName + " for your additional cloud order."
+                           + "We will shortly notify once we complete registering your cloud with the network.";
+                } else
+                {
+                   forwardingPage += "/cloudPage";
+                   statusText = "Sorry! The system encountered an error while registering additional clouds.\n"
+                         + registrationManager.getCSPContactInfo();
+                }
             } else if (txnType.equals(PaymentForm.TXN_TYPE_BUY_GC))
             {
                logger.debug("Going to create gift cards now for " + cloudName);
@@ -755,6 +773,33 @@ public class PersonalCloudController
                 signUpForm.setNameAvailabilityCheckURL(registrationManager.getNameAvailabilityCheckURL());
                 mv.addObject("signUpInfo", signUpForm);
                 mv.addObject("error", ex.getMessage());
+            } else if (PaymentForm.TXN_TYPE_ADD.equals(txnType)) {
+                mv = new ModelAndView("additionalCloud");
+                AdditionalCloudForm additionalCloudForm = new AdditionalCloudForm();
+                additionalCloudForm.setNameAvailabilityCheckURL(registrationManager.getNameAvailabilityCheckURL());
+
+                List<String> additionalCloudNames = null;
+                try {
+                    CloudName loggedinCloudName = CloudName.create(cloudName);
+                    AdditionalCloudManager acm = new AdditionalCloudManager(regSession,
+                            registrationManager);
+                    additionalCloudNames = acm
+                            .getAdditionalCloudNamesInCSP(loggedinCloudName);
+                } catch (Xdi2ClientException ex2) {
+                    logger.error("Failed to fetch the cloudNumber for cloudName "
+                            + cloudName);
+                    logger.error("Xdi2ClientException while getting cloud number "
+                            + ex2.getMessage());
+
+                    mv = new ModelAndView("login");
+                    mv.addObject("postURL",  request.getContextPath() + "/cloudPage");
+                    return mv;
+                }
+                if(additionalCloudNames != null) {
+                    additionalCloudForm.setAdditionalCloudNames(additionalCloudNames);
+                }
+                mv.addObject("additionalCloudForm", additionalCloudForm);
+                mv.addObject("error", ex.getMessage());
             }
             return mv;
 
@@ -772,6 +817,35 @@ public class PersonalCloudController
                 mv = new ModelAndView("signup");
                 SignUpForm signUpForm = new SignUpForm();
                 signUpForm.setNameAvailabilityCheckURL(registrationManager.getNameAvailabilityCheckURL());
+                mv.addObject("error", errorText);
+            } else if (PaymentForm.TXN_TYPE_ADD.equals(txnType)) {
+                errorText = "Sorry! The system encountered an error while registering your additional cloud.\n"
+                        + registrationManager.getCSPContactInfo();
+                mv = new ModelAndView("additionalCloud");
+                AdditionalCloudForm additionalCloudForm = new AdditionalCloudForm();
+                additionalCloudForm.setNameAvailabilityCheckURL(registrationManager.getNameAvailabilityCheckURL());
+
+                List<String> additionalCloudNames = null;
+                try {
+                    CloudName loggedinCloudName = CloudName.create(cloudName);
+                    AdditionalCloudManager acm = new AdditionalCloudManager(regSession,
+                            registrationManager);
+                    additionalCloudNames = acm
+                            .getAdditionalCloudNamesInCSP(loggedinCloudName);
+                } catch (Xdi2ClientException ex2) {
+                    logger.error("Failed to fetch the cloudNumber for cloudName "
+                            + cloudName);
+                    logger.error("Xdi2ClientException while getting cloud number "
+                            + ex2.getMessage());
+
+                    mv = new ModelAndView("login");
+                    mv.addObject("postURL",  request.getContextPath() + "/cloudPage");
+                    return mv;
+                }
+                if(additionalCloudNames != null) {
+                    additionalCloudForm.setAdditionalCloudNames(additionalCloudNames);
+                }
+                mv.addObject("additionalCloudForm", additionalCloudForm);
                 mv.addObject("error", errorText);
             }
             return mv;
@@ -847,7 +921,26 @@ public class PersonalCloudController
 
             }
 
-         }
+         } else if (txnType.equals(PaymentForm.TXN_TYPE_ADD))
+         {
+             AdditionalCloudManager acm = new AdditionalCloudManager(regSession, registrationManager);
+             if ((mv = acm.createAdditionalClouds(cloudName, null, null,
+                     giftCodesVal.toUpperCase(), getRegisteredEmailAddress(), getRegisteredPhoneNumber(), request)) != null)
+             {
+                if (mv.getViewName().equals("additionalCloudDone")) // all additional clouds have been paid for
+                {
+                   forwardingPage = getRNpostRegistrationLandingPage();
+                   queryStr = this.formatQueryStr(cloudName, regSession.getRnQueryString(), request);
+                   statusText = "Thank you " + cloudName + " for your additional cloud order."
+                           + "We will shortly notify once we complete registering your cloud with the network.";
+                }
+             } else
+             {
+                forwardingPage += "/cloudPage";
+                statusText = "Sorry! The system encountered an error while registering additional clouds.\n"
+                      + registrationManager.getCSPContactInfo();
+             }
+          }
          mv = new ModelAndView("AutoSubmitForm");
 
          mv.addObject("URL", request.getContextPath()
@@ -1009,7 +1102,31 @@ public class PersonalCloudController
                         + registrationManager.getCSPContactInfo();
 
                }
-            }
+            } else if (txnType.equals(PaymentForm.TXN_TYPE_ADD))
+            {
+                AdditionalCloudManager acm = new AdditionalCloudManager(regSession, registrationManager);
+                if ((mv = acm.createAdditionalClouds(cloudName, null, giftCodes,
+                        "", getRegisteredEmailAddress(), getRegisteredPhoneNumber(), request)) != null)
+                {
+                   if (mv.getViewName().equals("additionalCloudDone")) // all additional clouds have been paid for
+                   {
+                      forwardingPage = getRNpostRegistrationLandingPage();
+                      queryStr = this.formatQueryStr(cloudName, regSession.getRnQueryString(), request);
+                      statusText = "Thank you " + cloudName + " for your additional cloud order."
+                              + "We will shortly notify once we complete registering your cloud with the network.";
+                   } else
+                   // all dependents have not been paid for. So, go to creditCardPayment.
+                   {
+                      ccpayments = true;
+                   }
+                } else
+                {
+                   forwardingPage += "/cloudPage";
+                   statusText = "Sorry! The system encountered an error while registering additional clouds.\n"
+                         + registrationManager.getCSPContactInfo();
+
+                }
+             }
             mv = new ModelAndView("AutoSubmitForm");
 
             mv.addObject("URL", request.getContextPath()
@@ -1133,6 +1250,30 @@ public class PersonalCloudController
                                     .isCloudNameAvailable(dependentCloudName)) {
                         throw new CSPProValidationException(
                                 "Sorry! The dependent cloud name is not available. Please try with some different cloud name.");
+                    }
+                }
+            }
+        }
+        if (PaymentForm.TXN_TYPE_ADD.equals(txnType)) {
+            AdditionalCloudForm additionalCloudForm = regSession
+                    .getAdditionalCloudForm();
+            if (additionalCloudForm != null
+                    && additionalCloudForm.getAdditionalCloudNames().size() > 0) {
+                List<String> additionalCloudNameList = additionalCloudForm
+                        .getAdditionalCloudNames();
+                for (String additionalCloudName : additionalCloudNameList) {
+                    if (!(additionalCloudName == null)) {
+                        if (!additionalCloudName.trim().isEmpty()) {
+                            // check availability of cloud name before billing once
+                            // again
+                            if (!registrationManager
+                                    .isCloudNameAvailableInRegistry(additionalCloudName)
+                                    && !registrationManager
+                                            .isCloudNameAvailable(additionalCloudName)) {
+                                throw new CSPProValidationException(
+                                        "Sorry! The additional cloud name is not available. Please try with some different cloud name.");
+                            }
+                        }
                     }
                 }
             }

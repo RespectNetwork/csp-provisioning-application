@@ -206,6 +206,12 @@
           </form>
 		   <br></br>
           <br></br>
+          <form method="get" action="#" th:action="@{/additionalCloud}">
+              <input type="hidden" id="name" name="name" th:value="${cloudName}" />
+              <button id="full" type="submit" class="button big">Buy Additional Clouds</button>
+          </form>
+           <br></br>
+          <br></br>
           <form method="get" action="#" th:action="@{/changePassword}">
           	  <input type="hidden" id="name" name="name" th:value="${cloudName}" />
               <button id="full" type="submit" class="button big">Change Password</button>
