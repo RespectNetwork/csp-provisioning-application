@@ -142,11 +142,24 @@
 	        // indicates if the leading symbol should be removed prior to adding the 
 	        // name to the path
 	        stripSymbol:true, 
-	        
-	        // indicates the location of the availability service
-	        availibilityAPI: "https://checkavailability-prod.respectnetwork.net/api/availability/equals/"
-	    }); 
-	});
+
+                // indicates the location of the availability service
+                availabilityApi: /*[[${signUpInfo.nameAvailabilityCheckURL + '/api/availability/equals/'}]]*/ "https://registration-stage.respectnetwork.net/rn-checkavailability-service/api/availability/equals/"
+            });
+        addFormValidation('#signupForm', {
+                rules: {
+                    cloudName: {
+                        required: true,
+                        minlength: 3,
+                        isAvailable: true
+                    }
+                },
+                errorPlacement: function(error, element) {
+                    // nothing - using custom error msgs
+                }
+            });
+        });
+
  
  
  </script>
