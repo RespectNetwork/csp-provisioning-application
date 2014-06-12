@@ -1,6 +1,6 @@
-// Cloud name availability checker for jQuery
-// Respect Network & The Trusted Cloud Company 
-
+// Cloud name availiblity checker for jQuery
+// Respect Network & The Trusted Cloud Company
+// Borrowed heavily from <https://github.com/narfdotpl/jquery-typing>
 (function ($) {
 
     $.fn.checkCloud = function (opts) {
@@ -55,7 +55,6 @@
 
         // hooke various input events
         $elem.on('change keydown keyup paste input blur', function (event) {
-
             var newCloudName = $elem.val().toLowerCase().trim();
             console.log('event.type=' + event.type + ', newCloudName=' + newCloudName + ', cloudName=' + cloudName);
 
