@@ -1056,7 +1056,7 @@ $.extend($.validator, {
 			return returnValue;
 		},
 		phonenumber: function(value, element) {
-			return this.optional(element) || /^[0-9\ ]+$/.test(value);	
+			return this.optional(element) || /^[0-9]+$/.test(value);	
 		},
 		
 		// http://docs.jquery.com/Plugins/Validation/Methods/minlength

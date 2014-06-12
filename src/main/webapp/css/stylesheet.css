@@ -223,7 +223,6 @@ box-shadow: 0px 1px 1px 0px rgba(50, 50, 50, 0.5);
 	font-size: 14px;
 	line-height: 20px;
 	position: relative;
-	z-index: 10;
 }
 .password-validation div{
 	width: 16%;
@@ -262,9 +261,10 @@ box-shadow: 0px 1px 1px 0px rgba(50, 50, 50, 0.5);
   display: table-cell;
   width: 109px;
 }
-.intl-tel-input .flag-dropdown {
+/*.intl-tel-input .flag-dropdown {
   height: 46px;
 }
+*/
 .intl-tel-input .error.valid{
   display: none!important;
 }
@@ -306,7 +306,7 @@ box-shadow: 0px 1px 1px 0px rgba(50, 50, 50, 0.5);
   position: absolute;
   margin-left: 32px;
   width: 92%;
-  top: 0px;
+  margin-top: -50px;
 }
 .paymentBody .span6, .paymentBody .span5{
   width: 100%;
