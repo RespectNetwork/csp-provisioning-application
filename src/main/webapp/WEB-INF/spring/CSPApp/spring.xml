@@ -214,6 +214,10 @@
         <beans:property name="dataSource" ref="dataSource"/>
     </beans:bean>
     
+    <beans:bean id="cspProductDAOImpl" class="net.respectnetwork.csp.application.dao.mysql.CSPProductDAOImpl" scope="singleton">
+        <beans:property name="dataSource" ref="dataSource"/>
+    </beans:bean>
+    
     <beans:bean id="daoFactory" class="net.respectnetwork.csp.application.dao.DAOFactory" scope="singleton">
         <beans:property name="cSPDAO"                ref="cspDAOImpl"/>
         <beans:property name="cSPCostOverrideDAO"    ref="cspCostOverrideDAOImpl"/>
@@ -226,6 +230,7 @@
         <beans:property name="signupInfoDAO"     	 ref="signupInfoDAOImpl"/>
         <beans:property name="promoCodeDAO"     	 ref="promoCodeDAOImpl"/>
         <beans:property name="promoCloudDAO"     	 ref="promoCloudDAOImpl"/>
+        <beans:property name="cSPProductDAO"         ref="cspProductDAOImpl"/>
         
     </beans:bean>
 
