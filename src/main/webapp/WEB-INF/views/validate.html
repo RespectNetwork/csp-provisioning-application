@@ -54,11 +54,19 @@
 					<form action="#" th:object="${validateInfo}" th:action="@{/validatecodes}" method="post" class="margin-top" id="validateCodes-form">
             <div class="formGroup">
  						 <input type="text" name="emailCode" class="inputFields smallTop" id="emailCode" placeholder="email code" onFocus="clearText(this)" onBlur="clearText(this.className = 'onblurtext smallTop')"  />
-              <p class="secondary"><span th:text="|Sent to ${verifyingEmail}|"> Sent to</span><span class="html-remove"> </span><span class="edit"><a href="#emailModal">edit email</a></span></p>
+
+              <p class="secondary"><span th:text="|Sent to ${verifyingEmail}|"> Sent to</span><span class="html-remove"> </span>
+              <!-- commenting out edit email pop-up for short term
+              <span class="edit"><a href="#emailModal">edit email</a></span>
+              --> </p>
+             
             </div>
             <div class="formGroup">
 						<input type="text" name="smsCode"  class="inputFields smallTop" id="smsCode" placeholder="text code" onFocus="clearText(this)" onBlur="clearText(this.className = 'onblurtext smallTop')" />
-             			<p class="secondary"> <span th:text="|Sent to ${verifyingPhone}|">Sent to</span><span class="html-remove"> </span><span class="edit"><a href="#phoneModal">edit phone</a></span></p>
+             			<p class="secondary"> <span th:text="|Sent to ${verifyingPhone}|">Sent to</span><span class="html-remove"></span>
+             			<!-- commenting out edit phone pop-up for short term
+									<span class="edit"><a href="#phoneModal">edit phone</a></span>
+									--></p>
             </div>
      				<p class="tertiary"> <input type="checkbox" name="terms" /> &nbsp;
      				I agree to the <a target="_blank"  onclick="return windowpop(this.href, 545, 433);" href="http://openidentityexchange.org/trust-frameworks/respect-trust-framework" >Respect Trust Framework</a>

@@ -111,6 +111,14 @@ body {
   line-height: 24px;
   margin: .25rem auto;
 }
+
+#content-wrapper p.payment1{
+  font-size: 26px;
+  color: #999a9b;
+  line-height: 24px;
+  margin: 3.25rem .25rem;
+}
+
 .push{
   height: 100px;
 }
@@ -285,7 +293,7 @@ box-shadow: 0px 1px 1px 0px rgba(50, 50, 50, 0.5);
 #content-wrapper p.payment-type {
   font-size: 24px;
   color: #999a9b;
-  margin: 1.25rem auto;
+  margin: 1.25rem  .25rem;
   line-height: 48px;
   position: relative;
   height: 48px;
@@ -362,7 +370,7 @@ box-shadow: 0px 1px 1px 0px rgba(50, 50, 50, 0.5);
   /* form styles */
   input[type="text"] {
     max-width: 31.25rem;
-    margin: 0 auto;
+    margin: 10px auto;
   }
   
    input[type="password"] {
@@ -436,6 +444,9 @@ box-shadow: 0px 1px 1px 0px rgba(50, 50, 50, 0.5);
     width: 100%;
     max-width: 31.25rem;
   }
+  .smallMarg {
+		margin: 10px auto;
+	}
 }
 
 /*validate styles*/
@@ -506,3 +517,7 @@ box-shadow: 0px 1px 1px 0px rgba(50, 50, 50, 0.5);
 }
 
 .close:hover { background: #ccc; opacity: 1;}
+
+.smallMarg {
+	margin: 10px auto;
+}
