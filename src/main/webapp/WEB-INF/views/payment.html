@@ -74,14 +74,14 @@
                     </div> 
                   <div th:if="${paymentInfo.giftCodesOnly == false}">
                     <p class="payment-type">
-                      <input type="radio" id="paymentType" name="paymentType" value="creditCard" /> &nbsp; <img src="img/credit-card-front.png"/> &nbsp;Credit cards </input>
+                      <input type="radio" id="paymentType" name="paymentType" value="creditCard" /> &nbsp; <img src="img/credit-card-front.png"/> &nbsp;Credit cards
                     </p>
                   </div>
                 </div>
               <div th:case="'buyGiftCard'">
                   <div th:if="${paymentInfo.giftCodesOnly == false}">
                     <p class="payment1">
-                      <input type="radio" id="paymentType" name="paymentType" value="creditCard" /> &nbsp; <img src="img/credit-card-front.png"/> &nbsp;Credit cards </input>
+                      <input type="radio" id="paymentType" name="paymentType" value="creditCard" /> &nbsp; <img src="img/credit-card-front.png"/> &nbsp;Credit cards
                     </p>
                   </div>
                   <div th:if="${paymentInfo.giftCodesOnly == true}">
@@ -101,6 +101,15 @@
                 </div>
               
               
+                 <div th:case="'buyAdditionalCloud'">
+                      <p class="payment-type payment-type-gc">
+                  <input type="checkbox" id="paymentType" name="paymentType" value="giftCard" />
+                &nbsp;  <input type="text" name="giftCodes" id="giftCodes" class="inputFields med skinny" placeholder=" gift code"/>
+    </p>
+                      <div th:if="${paymentInfo.giftCodesOnly == false}">
+                        <input type="checkbox" id="paymentType" name="paymentType" value="creditCard" /> &nbsp;  <img src="img/credit-card-front.png" /> &nbsp;Credit cards
+                  </div>
+                </div>
               </div>
               <div>
                 
