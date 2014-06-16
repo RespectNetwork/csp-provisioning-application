@@ -71,6 +71,7 @@ public class RegisterUserThread implements Runnable
           userPhone = this.getUserPhone();
       }
       cspContactEmail = this.getCspContactEmail();
+      boolean isAdditionalCloud = false;
       // 5 times retry registration in case of failure. Retry interval is 2 minutes.
       while (retryCount < 5) {
       try
@@ -158,7 +159,7 @@ public class RegisterUserThread implements Runnable
 
          // Step 10 : send the notification email for successful registration of cloudname.
          // Send the email at email address registered for the cloud name.
-         emailHelper.sendRegistrationSuccessNotificaionEmail(userEmail, cspContactEmail, cloudName.toString(), locale, cspCloudName, cspHomePage);
+         emailHelper.sendRegistrationSuccessNotificaionEmail(userEmail, cspContactEmail, cloudName.toString(), locale, cspCloudName, cspHomePage, isAdditionalCloud);
          break;
       } catch (CSPRegistrationException ex1)
       {
@@ -169,7 +170,7 @@ public class RegisterUserThread implements Runnable
               logger.error("CSPRegistrationException from RegisterUserThread " + ex1.getMessage());
               // Send the notification email for registration failure of cloudname.
               // Send email to configured contact support address.
-              emailHelper.sendRegistrationFailureNotificaionEmail(contactSupportEmail, cloudName.toString(), locale, cspCloudName, paymentType, paymentRefId, userEmail, userPhone);
+              emailHelper.sendRegistrationFailureNotificaionEmail(contactSupportEmail, cloudName.toString(), locale, cspCloudName, paymentType, paymentRefId, userEmail, userPhone, isAdditionalCloud);
               // Wait for 2 minutes before retry
               Thread.sleep(120000);
           } catch (InterruptedException e) {
@@ -184,7 +185,7 @@ public class RegisterUserThread implements Runnable
               logger.error("Xdi2ClientException from RegisterUserThread " + ex2.getMessage());
               // Send the notification email for registration failure of cloudname.
               // Send email to configured contact support address.
-              emailHelper.sendRegistrationFailureNotificaionEmail(contactSupportEmail, cloudName.toString(), locale, cspCloudName, paymentType, paymentRefId, userEmail, userPhone);
+              emailHelper.sendRegistrationFailureNotificaionEmail(contactSupportEmail, cloudName.toString(), locale, cspCloudName, paymentType, paymentRefId, userEmail, userPhone, isAdditionalCloud);
               // Wait for 2 minutes before retry
               Thread.sleep(120000);
           } catch (InterruptedException e) {

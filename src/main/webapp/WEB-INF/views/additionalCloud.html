@@ -205,6 +205,7 @@
                       // clear error
                       if ($(cloudnameField).val().trim() == '') {
                           $(messageSpan).html('');
+                          disableEnableSubmitButtom();
                           return;
                       }
 
@@ -236,23 +237,32 @@
                   stripSymbol:true, 
 
                   // indicates the location of the availability service
-                  availabilityApi :  document.getElementById("avAPI").value
+                  availibilityAPI :  document.getElementById("avAPI").value
               }); 
           }
 
+          function checkIfNoCloudNameProvided() {
+              var blankcount = 0;
+              var availableCouldCount = $(".cname:input:not([disabled])").size();
+              for(var i = 0; i < availableCouldCount; i++) {
+                  if($(".cname:input:not([disabled])").get(i).value.trim() == "") {
+                      blankcount++;
+                  }
+              }
+              if(blankcount == availableCouldCount) {
+                  document.getElementById('submit').disabled = true;
+              }
+          }
+
           function disableCloudNameTextBoxIfNotNull() {
-              var alreadyCreatedNames = 0;
               for(var i = 0; i < 5; i++) {
                   var id = "additionalCloudNames"+ i;
                   var txtTitle = document.getElementById(id).value;
                   if(txtTitle.trim() != "") {
                       document.getElementById(id).disabled = true;
-                      alreadyCreatedNames++;
                   }
               }
-              if(alreadyCreatedNames == 5) {
-                  document.getElementById('submit').disabled = true;
-              }
+              document.getElementById('submit').disabled = true;
            }
 
            function disableEnableSubmitButtom() {
@@ -273,6 +283,7 @@
                } else {
                    document.getElementById('submit').disabled = true;
                }
+               checkIfNoCloudNameProvided();
            }
 
            function getAllCloudNames() {

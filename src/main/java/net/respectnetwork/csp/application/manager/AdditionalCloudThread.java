@@ -46,6 +46,7 @@ public class AdditionalCloudThread implements Runnable {
         cspHomePage = registrationManager.getCspHomePage();
         contactSupportEmail = registrationManager.getCspContactSupportEmail();
         cspContactEmail = registrationManager.getCspContactEmail();
+        boolean isAdditionalCloud = true;
 
         // 5 times retry registration in case of failure. Retry interval is 2
         // minutes.
@@ -70,7 +71,7 @@ public class AdditionalCloudThread implements Runnable {
                 // cloud name.
                 emailHelper.sendRegistrationSuccessNotificaionEmail(
                         verifiedEmail, cspContactEmail, cloudName.toString(),
-                        locale, cspCloudName, cspHomePage);
+                        locale, cspCloudName, cspHomePage, isAdditionalCloud);
                 break;
             } catch (Xdi2ClientException ex2) {
                 try {
@@ -87,7 +88,7 @@ public class AdditionalCloudThread implements Runnable {
                             contactSupportEmail, cloudName.toString(), locale,
                             cspCloudName, this.getPaymentType(),
                             this.getPaymentRefId(), verifiedEmail,
-                            verifiedPhone);
+                            verifiedPhone, isAdditionalCloud);
                     // Wait for 2 minutes before retry
                     Thread.sleep(120000);
                 } catch (InterruptedException e) {

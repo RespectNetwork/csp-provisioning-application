@@ -35,7 +35,7 @@ public class EmailHelper {
      * @param cspCloudName cspcloudname
      * @param homePage csp homepage.
      */
-    public void sendRegistrationSuccessNotificaionEmail(String emailAddress, String bccEmailAddress, String cloudName, Locale locale, String cspCloudName, String homePage)
+    public void sendRegistrationSuccessNotificaionEmail(String emailAddress, String bccEmailAddress, String cloudName, Locale locale, String cspCloudName, String homePage, boolean isAdditionalCloud)
     {
         logger.info("Sending notificaion email for successful registration of cloudname: " + cloudName);
 
@@ -58,7 +58,11 @@ public class EmailHelper {
         String subject = getMessageFromResource("register.mail.subject", cloudNames, null, locale);
 
         StringBuilder builder = new StringBuilder();
-        builder.append(getMessageFromResource("register.mail.text.0" , cloudNames, null , locale));
+        if(isAdditionalCloud) {
+            builder.append(getMessageFromResource("register.additionalcloud.mail.text.0" , cloudNames, null , locale));
+        } else {
+            builder.append(getMessageFromResource("register.cloud.mail.text.0" , cloudNames, null , locale));
+        }
         builder.append(getMessageFromResource("register.mail.text.1" , cspName, null , locale));
         builder.append(getMessageFromResource("register.mail.faq" , cspHomePage, null , locale));
         builder.append(getMessageFromResource("register.mail.footer" , cspName, null , locale));
@@ -73,7 +77,7 @@ public class EmailHelper {
      * @param locale
      * @param cspCloudName cspcloudname
      */
-    public void sendRegistrationFailureNotificaionEmail(String emailAddress, String cloudName, Locale locale, String cspCloudName, String paymentType, String paymentRefId, String userEmail, String verifiedPhone)
+    public void sendRegistrationFailureNotificaionEmail(String emailAddress, String cloudName, Locale locale, String cspCloudName, String paymentType, String paymentRefId, String userEmail, String verifiedPhone, boolean isAdditionalCloud)
     {
         logger.info("Sending notificaion email for registration failure of cloudname: " + cloudName);
 
@@ -99,7 +103,11 @@ public class EmailHelper {
         String subject = getMessageFromResource("registerFailure.mail.subject", cloudNames, null, locale);
 
         StringBuilder builder = new StringBuilder();
-        builder.append(getMessageFromResource("registerFailure.mail.text.0" , cloudNames, null , locale));
+        if(isAdditionalCloud) {
+            builder.append(getMessageFromResource("registerFailure.additionalcloud.mail.text.0" , cloudNames, null , locale));
+        } else {
+            builder.append(getMessageFromResource("registerFailure.cloud.mail.text.0" , cloudNames, null , locale));
+        }
         builder.append(getMessageFromResource("registerFailure.mail.text.1" , cspName, null , locale));
         builder.append(getMessageFromResource("registerFailure.mail.customer.detail" , null, null , locale));
         builder.append(getMessageFromResource("registerFailure.mail.address" , email, null , locale));
