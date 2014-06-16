@@ -337,8 +337,8 @@ public class RegistrationController
            }
             CloudNumber[] existingUsers = theManager
                   .checkEmailAndMobilePhoneUniqueness(
-                        userDetailsForm.getPhone(),
-                        userDetailsForm.getEmail());
+                        userDetailsForm.getEmail(),
+                        userDetailsForm.getPhone());
             
             if (existingUsers[0] != null)
             {
