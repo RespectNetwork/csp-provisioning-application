@@ -306,7 +306,11 @@ public class PersonalCloudInviteController
       BigDecimal totalCost = regSession.getCostPerCloudName().multiply(quantity);
 
       
-		mv = new ModelAndView("creditCardPayment");
+      if (cspModel.getPaymentGatewayName().equals("STRIPE")) {
+          mv = new ModelAndView("payment");
+      } else {
+          mv = new ModelAndView("creditCardPayment");
+      }
 		PaymentForm paymentForm = new PaymentForm();
 		if(cspModel.getPaymentGatewayName().equals("GIFT_CODE_ONLY"))
       {

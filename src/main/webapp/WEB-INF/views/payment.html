@@ -30,7 +30,6 @@
 <link rel="shortcut icon" href="img/ico/favicon.png" />
 <script src="js/libs/misc.js"> </script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-	
 </head>
 
 <body>
@@ -142,6 +141,34 @@
       </div>
     </div> 
 <!--  <div class="push"></div>-->
+<form id="cc_payment_form" action="#" th:object="${paymentInfo}" th:action="${postURL}" method="post">
+    <div th:if="${StripeJavaScript}">
+      <table id="sTable">
+        <tr><td  th:utext="${StripeJavaScript}">
+          <script th:inline="javascript">
+                /*<![CDATA[*/
+              var token = function(res){
+                var $input = $('<input type=hidden name=stripeToken />').val(res.id);
+                $('form').append($input).submit();
+              };
+
+              StripeCheckout.open({
+                  name:        'One Personal Cloud',
+                  key:         'pk_test_6pRNASCoBOKtIshFeQd4XMUh',
+                  amount:      2500,
+                  description: '$25 USD',
+                  image:       "img/cloud.png",
+                  token:       token
+              });
+              /*]]>*/
+          </script>
+        </td></tr>
+        </table>
+    </div>
+    <input type="hidden" name="numberOfClouds" value="" id="numberOfClouds" th:value="*{numberOfClouds}"/>
+    <input type="hidden" name="txnType" value="" id="txnType" th:value="*{txnType}"/>
+    <input type="hidden" name="amount" value="" id="amount" th:value="${amount}"/>
+</form>
 </div>
 <div id="footer">
   <div class="container">
