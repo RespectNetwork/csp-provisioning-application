@@ -125,7 +125,7 @@ public class EmailHelper {
         builder.append(getMessageFromResource("registerFailure.mail.phone" , phone, null , locale));
         builder.append(getMessageFromResource("registerFailure.mail.payment.type" , payType, null , locale));
         builder.append(getMessageFromResource("registerFailure.mail.payment.refid" , payRefId, null , locale));
-        builder.append(getMessageFromResource("registerFailure.mail.footer" , null, null , locale));
+        builder.append(getMessageFromResource("registerFailure.mail.footer" , cspName, null , locale));
         sendMail(builder, subject, emailAddress, null);
     }
 

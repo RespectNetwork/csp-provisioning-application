@@ -1009,8 +1009,11 @@ $.extend($.validator, {
 		atleasttwo: function(value, element) {
 			var returnValuel = this.optional(element) || /^(.*[a-zA-Z]){2,}/.test(value);
 			var returnValuen = this.optional(element) || /^(.*\d){2,}/.test(value);
-			var returnValuec = this.optional(element) || /^(?=.*[!@#$%]{1})[0-9a-zA-Z!@#$%]{1,}/.test(value);
-			var returnValuenum = this.optional(element) || /^[a-zA-Z0-9!@#$%]{8,}$/.test(value);
+			var returnValuec = this.optional(element) || /^(?=.*[!@#$%^&*()_+}{.,-]{1})[0-9a-zA-Z!@#$%^&*()_+}{.,-]{1,}/.test(value);
+			var returnValuenum = this.optional(element) || /^[a-zA-Z0-9!@#$%^&*()_+}{.,-]{8,}$/.test(value);
+
+//(?=^.{8,30}$)(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&amp;*()_+}{&quot;&quot;:;?/&gt;.&lt;,]).*$
+
 			if ( returnValuel ) {
 				$('#val-letters').addClass('validated');
 			} else {

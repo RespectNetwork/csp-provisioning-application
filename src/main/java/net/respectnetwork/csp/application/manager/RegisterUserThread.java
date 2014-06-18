@@ -77,7 +77,6 @@ public class RegisterUserThread implements Runnable
       signupInfo.setPhone(verifiedPhone);
       signupInfo.setPaymentType(paymentType);
       signupInfo.setPaymentRefId(paymentRefId);
-      int retryCount = 0;
       EmailHelper emailHelper = new EmailHelper();
       cspCloudName = this.getCspCloudName();
       cspHomePage = this.getCspHomePage();
@@ -90,8 +89,6 @@ public class RegisterUserThread implements Runnable
       }
       cspContactEmail = this.getCspContactEmail();
       boolean isAdditionalCloud = false;
-      // 5 times retry registration in case of failure. Retry interval is 2 minutes.
-      while (retryCount < 5) {
       try
       {
          // Step 1: Register Cloud with Cloud Number and Shared Secret
@@ -217,38 +214,30 @@ public class RegisterUserThread implements Runnable
          // Step 10 : send the notification email for successful registration of cloudname.
          // Send the email at email address registered for the cloud name.
          emailHelper.sendRegistrationSuccessNotificaionEmail(userEmail, cspContactEmail, cloudName.toString(), locale, cspCloudName, cspHomePage, isAdditionalCloud);
-         break;
       } catch (CSPRegistrationException ex1)
       {
-          try {
-              retryCount++;
               logger.error("Failed to register cloudname with CSP. CloudName : " + cloudName.toString() + " , CloudNumber : " + cloudNumber.toString());
               logger.error("SignupInfo : " + signupInfo.toString());
               logger.error("CSPRegistrationException from RegisterUserThread " + ex1.getMessage());
               // Send the notification email for registration failure of cloudname.
               // Send email to configured contact support address.
               emailHelper.sendRegistrationFailureNotificaionEmail(contactSupportEmail, cloudName.toString(), locale, cspCloudName, paymentType, paymentRefId, userEmail, userPhone, isAdditionalCloud);
-              // Wait for 2 minutes before retry
-              Thread.sleep(120000);
-          } catch (InterruptedException e) {
-              logger.error("Interrupted while waiting for cloud name registration {}.", e.getLocalizedMessage());
-          }
       } catch (Xdi2ClientException ex2)
       {
-          try {
-              retryCount++;
               logger.error("Failed to register cloudname. CloudName : " + cloudName.toString() + " , CloudNumber : " + cloudNumber.toString());
               logger.error("SignupInfo : " + signupInfo.toString());
               logger.error("Xdi2ClientException from RegisterUserThread " + ex2.getMessage());
               // Send the notification email for registration failure of cloudname.
               // Send email to configured contact support address.
               emailHelper.sendRegistrationFailureNotificaionEmail(contactSupportEmail, cloudName.toString(), locale, cspCloudName, paymentType, paymentRefId, userEmail, userPhone, isAdditionalCloud);
-              // Wait for 2 minutes before retry
-              Thread.sleep(120000);
-          } catch (InterruptedException e) {
-              logger.error("Interrupted while waiting for cloud name registration {}.", e.getLocalizedMessage());
-          }
-      } 
+      } catch (Exception ex3)
+      {
+              logger.error("Failed to register cloudname with CSP. CloudName : " + cloudName.toString() + " , CloudNumber : " + cloudNumber.toString());
+              logger.error("SignupInfo : " + signupInfo.toString());
+              logger.error("Exception from RegisterUserThread " + ex3.getMessage());
+              // Send the notification email for registration failure of cloudname.
+              // Send email to configured contact support address.
+              emailHelper.sendRegistrationFailureNotificaionEmail(contactSupportEmail, cloudName.toString(), locale, cspCloudName, paymentType, paymentRefId, userEmail, userPhone, isAdditionalCloud);
       }
    }
 
