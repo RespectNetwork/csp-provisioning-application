@@ -75,9 +75,14 @@
 		<beans:property name="cspInviteURL" value="${csp.cspInviteURL}"/>   
 		<beans:property name="cspRespectConnectBaseURL" value="${csp.cspRespectConnectBaseURL}"/>
 		<beans:property name="cspTCURL" value="${csp.cspTCURL}"/>
-		<beans:property name="nameAvailabilityCheckURL" value="${csp.nameAvailabilityCheckURL}"/> 				  	
+		<beans:property name="nameAvailabilityCheckURL" value="${csp.nameAvailabilityCheckURL}"/> 
+		<beans:property name="rnSocialSafeEndpoint" value="${csp.rnSocialSafeEndpoint}"/>
+		<beans:property name="rnSocialSafeToken" value="${csp.rnSocialSafeToken}"/>				  	
     </beans:bean>
-    
+    <beans:bean id="cspHelper"
+        class="net.respectnetwork.csp.application.util.CSPHelper">
+        <beans:constructor-arg name="registrationManager" ref="regManager"/>  
+    </beans:bean>
     
 	<!-- Personal Cloud Manager -->
     
@@ -213,8 +218,10 @@
     <beans:bean id="promoCloudDAOImpl" class="net.respectnetwork.csp.application.dao.mysql.PromoCloudDAOImpl" scope="singleton">
         <beans:property name="dataSource" ref="dataSource"/>
     </beans:bean>
-    
     <beans:bean id="cspProductDAOImpl" class="net.respectnetwork.csp.application.dao.mysql.CSPProductDAOImpl" scope="singleton">
+        <beans:property name="dataSource" ref="dataSource"/>
+    </beans:bean>
+    <beans:bean id="licenseKeyDAOImpl" class="net.respectnetwork.csp.application.dao.mysql.LicenseKeyDAOImpl" scope="singleton">
         <beans:property name="dataSource" ref="dataSource"/>
     </beans:bean>
     
@@ -231,7 +238,7 @@
         <beans:property name="promoCodeDAO"     	 ref="promoCodeDAOImpl"/>
         <beans:property name="promoCloudDAO"     	 ref="promoCloudDAOImpl"/>
         <beans:property name="cSPProductDAO"         ref="cspProductDAOImpl"/>
-        
+        <beans:property name="licenseKeyDAO"     	 ref="licenseKeyDAOImpl"/>
     </beans:bean>
 
     <beans:bean id="daoContextProvider" class="net.respectnetwork.csp.application.dao.DAOContextProvider" />

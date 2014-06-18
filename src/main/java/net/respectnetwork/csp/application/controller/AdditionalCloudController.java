@@ -21,6 +21,7 @@ import net.respectnetwork.csp.application.manager.AdditionalCloudManager;
 import net.respectnetwork.csp.application.manager.RegistrationManager;
 import net.respectnetwork.csp.application.model.CSPModel;
 import net.respectnetwork.csp.application.session.RegistrationSession;
+import net.respectnetwork.csp.application.util.CSPHelper;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -284,7 +285,7 @@ public class AdditionalCloudController {
             RequestMethod.GET, RequestMethod.POST })
     public ModelAndView showAdditionalCloudDoneForm(Model model,
             HttpServletRequest request) throws DAOException {
-        ModelAndView mv = PersonalCloudController.getCloudPage(request,
+        ModelAndView mv = CSPHelper.getCloudPage(request,
                 this.regSession.getCloudName());
         return mv;
     }

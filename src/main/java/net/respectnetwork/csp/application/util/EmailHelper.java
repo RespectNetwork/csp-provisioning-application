@@ -1,16 +1,13 @@
 package net.respectnetwork.csp.application.util;
 
 import java.util.Locale;
-import javax.servlet.http.HttpServletRequest;
 
 import net.respectnetwork.csp.application.dao.DAOContextProvider;
 import net.respectnetwork.csp.application.dao.DAOException;
 import net.respectnetwork.csp.application.dao.DAOFactory;
-import net.respectnetwork.csp.application.dao.SignupInfoDAO;
 import net.respectnetwork.csp.application.invite.GiftEmailSenderThread;
 import net.respectnetwork.csp.application.manager.PasswordManager;
 import net.respectnetwork.csp.application.model.CSPModel;
-import net.respectnetwork.csp.application.model.SignupInfoModel;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +22,16 @@ public class EmailHelper {
     /** Class Logger */
     private static final Logger logger = LoggerFactory
             .getLogger(PasswordManager.class);
+    
+    private String licenceKey;
+    
+    public String getLicenceKey() {
+        return licenceKey;
+    }
+
+    public void setLicenceKey(String licenceKey) {
+        this.licenceKey = licenceKey;
+    }
 
     /**
      * Method to send notification email for successful registration.
@@ -54,7 +61,8 @@ public class EmailHelper {
         Object[] cloudNames = new Object[] { cloudName };
         Object[] cspName = new Object[] { cspCloudName };
         Object[] cspHomePage = new Object[] { homePage };
-
+        Object[] licenceKeyValue = new Object[] { licenceKey };
+        
         String subject = getMessageFromResource("register.mail.subject", cloudNames, null, locale);
 
         StringBuilder builder = new StringBuilder();
@@ -65,6 +73,9 @@ public class EmailHelper {
         }
         builder.append(getMessageFromResource("register.mail.text.1" , cspName, null , locale));
         builder.append(getMessageFromResource("register.mail.faq" , cspHomePage, null , locale));
+        if(licenceKey != null) {
+            builder.append(getMessageFromResource("register.mail.licenceKey" , licenceKeyValue, null , locale));
+        }
         builder.append(getMessageFromResource("register.mail.footer" , cspName, null , locale));
 
         sendMail(builder, subject, emailAddress, bccEmailAddress);

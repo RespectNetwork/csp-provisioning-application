@@ -7,9 +7,14 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import net.respectnetwork.csp.application.constants.LicenceKeyEnum;
 import net.respectnetwork.csp.application.dao.DAOException;
 import net.respectnetwork.csp.application.dao.DAOFactory;
+import net.respectnetwork.csp.application.exception.CSPException;
+import net.respectnetwork.csp.application.model.LicenseKeyModel;
+import net.respectnetwork.csp.application.model.LicenseKeyResponse;
 import net.respectnetwork.csp.application.model.SignupInfoModel;
+import net.respectnetwork.csp.application.rest.client.RestServiceHttpClient;
 import net.respectnetwork.csp.application.util.EmailHelper;
 import net.respectnetwork.sdk.csp.CSP;
 import net.respectnetwork.sdk.csp.discount.NeustarRNDiscountCode;
@@ -50,6 +55,19 @@ public class RegisterUserThread implements Runnable
    private String                               cspCloudName                         = null;
    private String                               cspHomePage                          = null;
    private String                               cspContactEmail                      = null;
+   /**
+    * To check if licence key need to be fetched.
+    */
+   private boolean isLicenceKeyApplicable = false;
+   /**
+    * RN endpoint for social safe licence key
+    */
+   private String rnSocialSafeEndpoint;
+   /**
+    * Social safe secret token for CSP
+    */
+   private String rnSocialSafeToken;
+   private static final String licenceKeyPath = "/api/getLicenseKey";
    @Override
    public void run()
    {
@@ -156,6 +174,45 @@ public class RegisterUserThread implements Runnable
             logger.error("Problem inserting record in signupInfo table. Data : " + signupInfo.toString());
             logger.error("DB Exception : " + e.getMessage());
          }
+         
+         String licenceKey = null;
+         if (isLicenceKeyApplicable) {
+             logger.info("Get licence key for user cloud number : {}", cloudNumber.toString());
+             String cspCloudNumber = cspRegistrar.getCspInformation()
+                     .getCspCloudNumber().toString();
+             LicenseKeyModel licenceKeyModel = new LicenseKeyModel(
+                     cspCloudNumber, cloudNumber.toString(),
+                     rnSocialSafeToken);
+             RestServiceHttpClient restServiceHttpClient = new RestServiceHttpClient(
+                     rnSocialSafeEndpoint, licenceKeyPath,
+                     licenceKeyModel);
+             LicenseKeyResponse licenceKeyResponse = null;
+            try {
+                licenceKeyResponse = restServiceHttpClient
+                         .deserialize(restServiceHttpClient.postRequest(),
+                                 LicenseKeyResponse.class);
+            } catch (CSPException ex) {
+                logger.error("Error while parsing the licence key response: ", ex);
+            }
+            if (licenceKeyResponse != null) {
+                if(licenceKeyResponse.getKeyResponse() != null) {
+                     licenceKeyModel
+                             .setKeyName(LicenceKeyEnum.SOCIALSAFE.name());
+                     licenceKeyModel
+                             .setKeyValue(licenceKeyResponse.getKeyResponse().getKeyData());
+                     try {
+                         dao.getLicenseKeyDAO().insert(licenceKeyModel);
+                     } catch (DAOException ex) {
+                         logger.error("Error while inserting into licence key: ", ex);
+                     }
+                     licenceKey = licenceKeyModel.getKeyValue();
+                     emailHelper.setLicenceKey(licenceKey);
+                    } else {
+                        logger.error("Failed to get the license key. Error code is: "
+                                +licenceKeyResponse.getErrorCode()+" and reason : "+licenceKeyResponse.getErrorMessage());
+                    }
+            }
+         }
 
          // Step 10 : send the notification email for successful registration of cloudname.
          // Send the email at email address registered for the cloud name.
@@ -191,7 +248,7 @@ public class RegisterUserThread implements Runnable
           } catch (InterruptedException e) {
               logger.error("Interrupted while waiting for cloud name registration {}.", e.getLocalizedMessage());
           }
-      }
+      } 
       }
    }
 
@@ -381,4 +438,29 @@ public class RegisterUserThread implements Runnable
   {
      return this.cspContactEmail;
   }
+
+    public boolean isLicenceKeyApplicable() {
+        return isLicenceKeyApplicable;
+    }
+    
+    public void setLicenceKeyApplicable(boolean isLicenceKeyApplicable) {
+        this.isLicenceKeyApplicable = isLicenceKeyApplicable;
+    }
+    
+    public String getRnSocialSafeEndpoint() {
+        return rnSocialSafeEndpoint;
+    }
+    
+    public void setRnSocialSafeEndpoint(String rnSocialSafeEndpoint) {
+        this.rnSocialSafeEndpoint = rnSocialSafeEndpoint;
+    }
+    
+    public String getRnSocialSafeToken() {
+        return rnSocialSafeToken;
+    }
+    
+    public void setRnSocialSafeToken(String rnSocialSafeToken) {
+        this.rnSocialSafeToken = rnSocialSafeToken;
+    }
+  
 }
