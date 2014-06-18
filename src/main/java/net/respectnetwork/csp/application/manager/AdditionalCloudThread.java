@@ -40,7 +40,6 @@ public class AdditionalCloudThread implements Runnable {
 
     @Override
     public void run() {
-        int retryCount = 0;
         EmailHelper emailHelper = new EmailHelper();
         cspCloudName = registrationManager.getCspCloudName();
         cspHomePage = registrationManager.getCspHomePage();
@@ -48,9 +47,6 @@ public class AdditionalCloudThread implements Runnable {
         cspContactEmail = registrationManager.getCspContactEmail();
         boolean isAdditionalCloud = true;
 
-        // 5 times retry registration in case of failure. Retry interval is 2
-        // minutes.
-        while (retryCount < 5) {
             try {
                 // Step 1: Add an additional Cloud Name to an Existing Respect
                 // Network Account.
@@ -72,14 +68,11 @@ public class AdditionalCloudThread implements Runnable {
                 emailHelper.sendRegistrationSuccessNotificaionEmail(
                         verifiedEmail, cspContactEmail, cloudName.toString(),
                         locale, cspCloudName, cspHomePage, isAdditionalCloud);
-                break;
             } catch (Xdi2ClientException ex2) {
-                try {
-                    retryCount++;
                     logger.error("Failed to register cloudname. CloudName : "
                             + cloudName.toString() + " , CloudNumber : "
                             + cloudNumber.toString());
-                    logger.error("Xdi2ClientException from RegisterUserThread "
+                    logger.error("Xdi2ClientException from AdditionalCloudThread "
                             + ex2.getMessage());
                     // Send the notification email for registration failure of
                     // cloudname.
@@ -89,15 +82,21 @@ public class AdditionalCloudThread implements Runnable {
                             cspCloudName, this.getPaymentType(),
                             this.getPaymentRefId(), verifiedEmail,
                             verifiedPhone, isAdditionalCloud);
-                    // Wait for 2 minutes before retry
-                    Thread.sleep(120000);
-                } catch (InterruptedException e) {
-                    logger.error(
-                            "Interrupted while waiting for additional cloud name registration {}.",
-                            e.getLocalizedMessage());
-                }
+            } catch (Exception ex1) {
+                    logger.error("Failed to register cloudname. CloudName : "
+                            + cloudName.toString() + " , CloudNumber : "
+                            + cloudNumber.toString());
+                    logger.error("Exception from AdditionalCloudThread "
+                            + ex1.getMessage());
+                    // Send the notification email for registration failure of
+                    // cloudname.
+                    // Send email to configured contact support address.
+                    emailHelper.sendRegistrationFailureNotificaionEmail(
+                            contactSupportEmail, cloudName.toString(), locale,
+                            cspCloudName, this.getPaymentType(),
+                            this.getPaymentRefId(), verifiedEmail,
+                            verifiedPhone, isAdditionalCloud);
             }
-        }
     }
 
     /**
