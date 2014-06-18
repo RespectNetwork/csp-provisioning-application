@@ -50,6 +50,7 @@
   <div id="content-wrapper">  			
     <div class="middle"> 
       <p>Email and phone verification is required to secure your cloud name in the Respect Network.</p>
+      <span style="color:red" class="error" th:text="${error}"></span>
  			<form id="registration-form" action="#" th:object="${userInfo}" th:action="@{/processuserdetails}" method="post" class="smallTop">
  				<div class="formGroup">
 				  <input type="text" class="inputFields" name="email"  id="email" placeholder="email address" required="required" autocomplete="off" th:value="*{email}" />
