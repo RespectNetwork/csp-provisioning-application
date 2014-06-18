@@ -6,3 +6,4 @@ drop table  invite;
 drop table  payment;
 drop table  csp;
 drop table signup_info;
+drop table license_key;

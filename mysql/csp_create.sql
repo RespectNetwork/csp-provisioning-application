@@ -122,4 +122,11 @@ create table promo_cloud
 alter  table promo_cloud add (constraint fk_promo_cloud_csp_cloudname foreign key (csp_cloudname) references csp(csp_cloudname));
 alter  table promo_cloud add (constraint fk_promo_cloud_promo_id foreign key (promo_id) references promo_code(promo_id));
 
-
+create table license_key
+(
+  csp_cloudnumber VARCHAR(128) NOT NULL,
+  user_cloudnumber VARCHAR(128) NOT NULL,
+  key_name VARCHAR(128) NOT NULL,
+  key_value VARCHAR(256) NOT NULL,
+  PRIMARY KEY (csp_cloudnumber, user_cloudnumber)
+);

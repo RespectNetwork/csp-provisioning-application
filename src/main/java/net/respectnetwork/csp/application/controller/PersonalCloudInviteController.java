@@ -24,13 +24,12 @@ import net.respectnetwork.csp.application.manager.BrainTreePaymentProcessor;
 import net.respectnetwork.csp.application.manager.PinNetAuPaymentProcessor;
 import net.respectnetwork.csp.application.manager.RegistrationManager;
 import net.respectnetwork.csp.application.manager.StripePaymentProcessor;
-import net.respectnetwork.csp.application.model.CSPCostOverrideModel;
 import net.respectnetwork.csp.application.model.CSPModel;
 import net.respectnetwork.csp.application.model.GiftCodeModel;
 import net.respectnetwork.csp.application.model.InviteModel;
 import net.respectnetwork.csp.application.model.PaymentModel;
 import net.respectnetwork.csp.application.session.RegistrationSession;
-import net.respectnetwork.sdk.csp.notification.BasicNotificationService;
+import net.respectnetwork.csp.application.util.CSPHelper;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -263,7 +262,7 @@ public class PersonalCloudInviteController
 	@RequestMapping(value = "/inviteDone", method = RequestMethod.GET)
 	public ModelAndView showInviteDoneForm( Model model, HttpServletRequest request ) throws DAOException
 	{
-		ModelAndView mv = PersonalCloudController.getCloudPage(request, this.getCloudName());
+		ModelAndView mv = CSPHelper.getCloudPage(request, this.getCloudName());
 		return mv;
 	}
 
@@ -306,7 +305,11 @@ public class PersonalCloudInviteController
       BigDecimal totalCost = regSession.getCostPerCloudName().multiply(quantity);
 
       
-		mv = new ModelAndView("creditCardPayment");
+      if (cspModel.getPaymentGatewayName().equals("STRIPE")) {
+          mv = new ModelAndView("inviteReview");
+      } else {
+          mv = new ModelAndView("creditCardPayment");
+      }
 		PaymentForm paymentForm = new PaymentForm();
 		if(cspModel.getPaymentGatewayName().equals("GIFT_CODE_ONLY"))
       {
@@ -319,6 +322,8 @@ public class PersonalCloudInviteController
       }
       paymentForm.setNumberOfClouds(inviteForm.getGiftCardQuantity().intValue());
       mv.addObject("paymentInfo", paymentForm);
+      mv.addObject("amount", totalCost.toPlainString());
+      mv.addObject("numberOfClouds", inviteForm.getGiftCardQuantity().intValue());
       
 		if(cspModel.getPaymentGatewayName().equals("STRIPE")) 
 		{

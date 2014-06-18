@@ -7,9 +7,14 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import net.respectnetwork.csp.application.constants.LicenceKeyEnum;
 import net.respectnetwork.csp.application.dao.DAOException;
 import net.respectnetwork.csp.application.dao.DAOFactory;
+import net.respectnetwork.csp.application.exception.CSPException;
+import net.respectnetwork.csp.application.model.LicenseKeyModel;
+import net.respectnetwork.csp.application.model.LicenseKeyResponse;
 import net.respectnetwork.csp.application.model.SignupInfoModel;
+import net.respectnetwork.csp.application.rest.client.RestServiceHttpClient;
 import net.respectnetwork.csp.application.util.EmailHelper;
 import net.respectnetwork.sdk.csp.CSP;
 import net.respectnetwork.sdk.csp.discount.NeustarRNDiscountCode;
@@ -50,6 +55,19 @@ public class RegisterUserThread implements Runnable
    private String                               cspCloudName                         = null;
    private String                               cspHomePage                          = null;
    private String                               cspContactEmail                      = null;
+   /**
+    * To check if licence key need to be fetched.
+    */
+   private boolean isLicenceKeyApplicable = false;
+   /**
+    * RN endpoint for social safe licence key
+    */
+   private String rnSocialSafeEndpoint;
+   /**
+    * Social safe secret token for CSP
+    */
+   private String rnSocialSafeToken;
+   private static final String licenceKeyPath = "/api/getLicenseKey";
    @Override
    public void run()
    {
@@ -59,7 +77,6 @@ public class RegisterUserThread implements Runnable
       signupInfo.setPhone(verifiedPhone);
       signupInfo.setPaymentType(paymentType);
       signupInfo.setPaymentRefId(paymentRefId);
-      int retryCount = 0;
       EmailHelper emailHelper = new EmailHelper();
       cspCloudName = this.getCspCloudName();
       cspHomePage = this.getCspHomePage();
@@ -71,8 +88,7 @@ public class RegisterUserThread implements Runnable
           userPhone = this.getUserPhone();
       }
       cspContactEmail = this.getCspContactEmail();
-      // 5 times retry registration in case of failure. Retry interval is 2 minutes.
-      while (retryCount < 5) {
+      boolean isAdditionalCloud = false;
       try
       {
          // Step 1: Register Cloud with Cloud Number and Shared Secret
@@ -155,42 +171,73 @@ public class RegisterUserThread implements Runnable
             logger.error("Problem inserting record in signupInfo table. Data : " + signupInfo.toString());
             logger.error("DB Exception : " + e.getMessage());
          }
+         
+         String licenceKey = null;
+         if (isLicenceKeyApplicable) {
+             logger.info("Get licence key for user cloud number : {}", cloudNumber.toString());
+             String cspCloudNumber = cspRegistrar.getCspInformation()
+                     .getCspCloudNumber().toString();
+             LicenseKeyModel licenceKeyModel = new LicenseKeyModel(
+                     cspCloudNumber, cloudNumber.toString(),
+                     rnSocialSafeToken);
+             RestServiceHttpClient restServiceHttpClient = new RestServiceHttpClient(
+                     rnSocialSafeEndpoint, licenceKeyPath,
+                     licenceKeyModel);
+             LicenseKeyResponse licenceKeyResponse = null;
+            try {
+                licenceKeyResponse = restServiceHttpClient
+                         .deserialize(restServiceHttpClient.postRequest(),
+                                 LicenseKeyResponse.class);
+            } catch (CSPException ex) {
+                logger.error("Error while parsing the licence key response: ", ex);
+            }
+            if (licenceKeyResponse != null) {
+                if(licenceKeyResponse.getKeyResponse() != null) {
+                     licenceKeyModel
+                             .setKeyName(LicenceKeyEnum.SOCIALSAFE.name());
+                     licenceKeyModel
+                             .setKeyValue(licenceKeyResponse.getKeyResponse().getKeyData());
+                     try {
+                         dao.getLicenseKeyDAO().insert(licenceKeyModel);
+                     } catch (DAOException ex) {
+                         logger.error("Error while inserting into licence key: ", ex);
+                     }
+                     licenceKey = licenceKeyModel.getKeyValue();
+                     emailHelper.setLicenceKey(licenceKey);
+                    } else {
+                        logger.error("Failed to get the license key. Error code is: "
+                                +licenceKeyResponse.getErrorCode()+" and reason : "+licenceKeyResponse.getErrorMessage());
+                    }
+            }
+         }
 
          // Step 10 : send the notification email for successful registration of cloudname.
          // Send the email at email address registered for the cloud name.
-         emailHelper.sendRegistrationSuccessNotificaionEmail(userEmail, cspContactEmail, cloudName.toString(), locale, cspCloudName, cspHomePage);
-         break;
+         emailHelper.sendRegistrationSuccessNotificaionEmail(userEmail, cspContactEmail, cloudName.toString(), locale, cspCloudName, cspHomePage, isAdditionalCloud);
       } catch (CSPRegistrationException ex1)
       {
-          try {
-              retryCount++;
               logger.error("Failed to register cloudname with CSP. CloudName : " + cloudName.toString() + " , CloudNumber : " + cloudNumber.toString());
               logger.error("SignupInfo : " + signupInfo.toString());
               logger.error("CSPRegistrationException from RegisterUserThread " + ex1.getMessage());
               // Send the notification email for registration failure of cloudname.
               // Send email to configured contact support address.
-              emailHelper.sendRegistrationFailureNotificaionEmail(contactSupportEmail, cloudName.toString(), locale, cspCloudName, paymentType, paymentRefId, userEmail, userPhone);
-              // Wait for 2 minutes before retry
-              Thread.sleep(120000);
-          } catch (InterruptedException e) {
-              logger.error("Interrupted while waiting for cloud name registration {}.", e.getLocalizedMessage());
-          }
+              emailHelper.sendRegistrationFailureNotificaionEmail(contactSupportEmail, cloudName.toString(), locale, cspCloudName, paymentType, paymentRefId, userEmail, userPhone, isAdditionalCloud);
       } catch (Xdi2ClientException ex2)
       {
-          try {
-              retryCount++;
               logger.error("Failed to register cloudname. CloudName : " + cloudName.toString() + " , CloudNumber : " + cloudNumber.toString());
               logger.error("SignupInfo : " + signupInfo.toString());
               logger.error("Xdi2ClientException from RegisterUserThread " + ex2.getMessage());
               // Send the notification email for registration failure of cloudname.
               // Send email to configured contact support address.
-              emailHelper.sendRegistrationFailureNotificaionEmail(contactSupportEmail, cloudName.toString(), locale, cspCloudName, paymentType, paymentRefId, userEmail, userPhone);
-              // Wait for 2 minutes before retry
-              Thread.sleep(120000);
-          } catch (InterruptedException e) {
-              logger.error("Interrupted while waiting for cloud name registration {}.", e.getLocalizedMessage());
-          }
-      }
+              emailHelper.sendRegistrationFailureNotificaionEmail(contactSupportEmail, cloudName.toString(), locale, cspCloudName, paymentType, paymentRefId, userEmail, userPhone, isAdditionalCloud);
+      } catch (Exception ex3)
+      {
+              logger.error("Failed to register cloudname with CSP. CloudName : " + cloudName.toString() + " , CloudNumber : " + cloudNumber.toString());
+              logger.error("SignupInfo : " + signupInfo.toString());
+              logger.error("Exception from RegisterUserThread " + ex3.getMessage());
+              // Send the notification email for registration failure of cloudname.
+              // Send email to configured contact support address.
+              emailHelper.sendRegistrationFailureNotificaionEmail(contactSupportEmail, cloudName.toString(), locale, cspCloudName, paymentType, paymentRefId, userEmail, userPhone, isAdditionalCloud);
       }
    }
 
@@ -380,4 +427,29 @@ public class RegisterUserThread implements Runnable
   {
      return this.cspContactEmail;
   }
+
+    public boolean isLicenceKeyApplicable() {
+        return isLicenceKeyApplicable;
+    }
+    
+    public void setLicenceKeyApplicable(boolean isLicenceKeyApplicable) {
+        this.isLicenceKeyApplicable = isLicenceKeyApplicable;
+    }
+    
+    public String getRnSocialSafeEndpoint() {
+        return rnSocialSafeEndpoint;
+    }
+    
+    public void setRnSocialSafeEndpoint(String rnSocialSafeEndpoint) {
+        this.rnSocialSafeEndpoint = rnSocialSafeEndpoint;
+    }
+    
+    public String getRnSocialSafeToken() {
+        return rnSocialSafeToken;
+    }
+    
+    public void setRnSocialSafeToken(String rnSocialSafeToken) {
+        this.rnSocialSafeToken = rnSocialSafeToken;
+    }
+  
 }

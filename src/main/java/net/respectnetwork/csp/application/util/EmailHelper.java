@@ -1,16 +1,13 @@
 package net.respectnetwork.csp.application.util;
 
 import java.util.Locale;
-import javax.servlet.http.HttpServletRequest;
 
 import net.respectnetwork.csp.application.dao.DAOContextProvider;
 import net.respectnetwork.csp.application.dao.DAOException;
 import net.respectnetwork.csp.application.dao.DAOFactory;
-import net.respectnetwork.csp.application.dao.SignupInfoDAO;
 import net.respectnetwork.csp.application.invite.GiftEmailSenderThread;
 import net.respectnetwork.csp.application.manager.PasswordManager;
 import net.respectnetwork.csp.application.model.CSPModel;
-import net.respectnetwork.csp.application.model.SignupInfoModel;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +22,16 @@ public class EmailHelper {
     /** Class Logger */
     private static final Logger logger = LoggerFactory
             .getLogger(PasswordManager.class);
+    
+    private String licenceKey;
+    
+    public String getLicenceKey() {
+        return licenceKey;
+    }
+
+    public void setLicenceKey(String licenceKey) {
+        this.licenceKey = licenceKey;
+    }
 
     /**
      * Method to send notification email for successful registration.
@@ -35,7 +42,7 @@ public class EmailHelper {
      * @param cspCloudName cspcloudname
      * @param homePage csp homepage.
      */
-    public void sendRegistrationSuccessNotificaionEmail(String emailAddress, String bccEmailAddress, String cloudName, Locale locale, String cspCloudName, String homePage)
+    public void sendRegistrationSuccessNotificaionEmail(String emailAddress, String bccEmailAddress, String cloudName, Locale locale, String cspCloudName, String homePage, boolean isAdditionalCloud)
     {
         logger.info("Sending notificaion email for successful registration of cloudname: " + cloudName);
 
@@ -54,13 +61,21 @@ public class EmailHelper {
         Object[] cloudNames = new Object[] { cloudName };
         Object[] cspName = new Object[] { cspCloudName };
         Object[] cspHomePage = new Object[] { homePage };
-
+        Object[] licenceKeyValue = new Object[] { licenceKey };
+        
         String subject = getMessageFromResource("register.mail.subject", cloudNames, null, locale);
 
         StringBuilder builder = new StringBuilder();
-        builder.append(getMessageFromResource("register.mail.text.0" , cloudNames, null , locale));
+        if(isAdditionalCloud) {
+            builder.append(getMessageFromResource("register.additionalcloud.mail.text.0" , cloudNames, null , locale));
+        } else {
+            builder.append(getMessageFromResource("register.cloud.mail.text.0" , cloudNames, null , locale));
+        }
         builder.append(getMessageFromResource("register.mail.text.1" , cspName, null , locale));
         builder.append(getMessageFromResource("register.mail.faq" , cspHomePage, null , locale));
+        if(licenceKey != null) {
+            builder.append(getMessageFromResource("register.mail.licenceKey" , licenceKeyValue, null , locale));
+        }
         builder.append(getMessageFromResource("register.mail.footer" , cspName, null , locale));
 
         sendMail(builder, subject, emailAddress, bccEmailAddress);
@@ -73,7 +88,7 @@ public class EmailHelper {
      * @param locale
      * @param cspCloudName cspcloudname
      */
-    public void sendRegistrationFailureNotificaionEmail(String emailAddress, String cloudName, Locale locale, String cspCloudName, String paymentType, String paymentRefId, String userEmail, String verifiedPhone)
+    public void sendRegistrationFailureNotificaionEmail(String emailAddress, String cloudName, Locale locale, String cspCloudName, String paymentType, String paymentRefId, String userEmail, String verifiedPhone, boolean isAdditionalCloud)
     {
         logger.info("Sending notificaion email for registration failure of cloudname: " + cloudName);
 
@@ -99,14 +114,18 @@ public class EmailHelper {
         String subject = getMessageFromResource("registerFailure.mail.subject", cloudNames, null, locale);
 
         StringBuilder builder = new StringBuilder();
-        builder.append(getMessageFromResource("registerFailure.mail.text.0" , cloudNames, null , locale));
+        if(isAdditionalCloud) {
+            builder.append(getMessageFromResource("registerFailure.additionalcloud.mail.text.0" , cloudNames, null , locale));
+        } else {
+            builder.append(getMessageFromResource("registerFailure.cloud.mail.text.0" , cloudNames, null , locale));
+        }
         builder.append(getMessageFromResource("registerFailure.mail.text.1" , cspName, null , locale));
         builder.append(getMessageFromResource("registerFailure.mail.customer.detail" , null, null , locale));
         builder.append(getMessageFromResource("registerFailure.mail.address" , email, null , locale));
         builder.append(getMessageFromResource("registerFailure.mail.phone" , phone, null , locale));
         builder.append(getMessageFromResource("registerFailure.mail.payment.type" , payType, null , locale));
         builder.append(getMessageFromResource("registerFailure.mail.payment.refid" , payRefId, null , locale));
-        builder.append(getMessageFromResource("registerFailure.mail.footer" , null, null , locale));
+        builder.append(getMessageFromResource("registerFailure.mail.footer" , cspName, null , locale));
         sendMail(builder, subject, emailAddress, null);
     }
 

@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Map;
 
+import net.respectnetwork.csp.application.form.AdditionalCloudForm;
 import net.respectnetwork.csp.application.form.DependentForm;
 import net.respectnetwork.csp.application.form.InviteForm;
 
@@ -69,6 +70,8 @@ public class RegistrationSession implements Serializable {
     
     private long longitude = 0;
 
+    /** Additional cloud form**/
+    private AdditionalCloudForm additionalCloudForm = null;
     /**
      * @return the SessionId
      */
@@ -231,6 +234,14 @@ public class RegistrationSession implements Serializable {
 	public void setDependentForm(DependentForm dependentForm) {
 		this.dependentForm = dependentForm;
 	}
+
+    public AdditionalCloudForm getAdditionalCloudForm() {
+        return additionalCloudForm;
+    }
+
+    public void setAdditionalCloudForm(AdditionalCloudForm additionalCloudForm) {
+        this.additionalCloudForm = additionalCloudForm;
+    }
 
    public Map<String, String[]> getRNParamMap()
    {

@@ -1,119 +1,152 @@
 <!DOCTYPE html>
-<html lang="en"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorator="fragments/page">
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Respect Network</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
 
-<body class="signup">
+    <!-- CSS -->
+    <link href="css/bootstrap.css" rel="stylesheet" />
+    <link href="css/bootstrap-responsive.css" rel="stylesheet" />
+    <link href="css/stylesheet.css" rel="stylesheet" />
+<link href="https://s3.amazonaws.com/rnfonts/demo.css" rel="stylesheet" type="text/css" />
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.js"></script>
+    <![endif]-->
 
-<!--/* No nav dropdown for this page */-->
-<div layout:fragment="nav"></div>
+    <!-- Fav and touch icons -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="img/ico/apple-touch-icon-144-precomposed.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/ico/apple-touch-icon-114-precomposed.png" />
+      <link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/ico/apple-touch-icon-72-precomposed.png" />
+                    <link rel="apple-touch-icon-precomposed" href="img/ico/apple-touch-icon-57-precomposed.png" />
+                                   <link rel="shortcut icon" href="img/ico/favicon.png" />
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+	
+	<!--include the javascript that checks availability-->
+	<script src="js/libs/nameavailability.js"></script>
+    <script src="js/libs/misc.js"> </script>                               
+  </head>
 
-<div class="container" layout:fragment="bodyContent">
+<body>
+<!-- Part 1: Wrap all page content here -->
+<div id="wrap">
 
-    <div class="page-header">
-        <h1>Choose your cloud name:</h1>
-		<br/><span style="color:red" th:text="${error}"></span>
-    </div>
-
-    <form action="#" th:action="@{/signup}" method="post"
-          class="form-primary" role="form" th:object="${signUpInfo}"
-          autocomplete="off" accept-charset="UTF-8" id="signup">
-
-        <div class="form-group" id="cloudNameGroup">
-            <input type="text" id="cloudName" name="cloudName" class="form-control" placeholder="=you..."
-                   autofocus="autofocus" required="required"/>
-            <span id="cloudNameHelpIcon" class="glyphicon glyphicon-ok form-control-feedback hidden"></span>
-            <span id="cloudNameHelp" class="form-control-feedback"></span>
+<!-- Fixed navbar -->
+  <div class="navbar navbar-top">
+    <div class="navbar-inner">
+      <div class="container">
+      	<div class="row-fluid small-screen">  
+          <h1><img src="img/respect-network-logo.png" alt="Respect Network"/></h1>  
+      	</div>        
+        <div class="header-cloud-name">
+            <span th:text="${cloudName}"/>
         </div>
+      </div>
+    </div>
+  </div>  
+      <!-- Begin page content -->
 
-        <p class="secondary">e.g., =jane, =janedoe, =jane.doe</p>
+  <div id="content-wrapper">
+		<div class="middle">
+      <div class="error"  name="error" id="error" th:text="${error}"></div>                    
+        <h2>Choose your cloud name:</h2>
+        <form action="#" role="form" th:object="${signUpInfo}" th:action="@{/signup}" method="post">
+          <input type="text" class="inputCloudName" name="cloudName" value="" id="cloudName" placeholder="=you..." required="required" autofocus="autofocus" />
+          <br></br>
+            <span class="error"  name="isAvailable" id="isAvailable"></span>
 
-        <button type="submit" name="submitBtn" id="submitBtn" class="btn btn-lg btn-primary">Next</button>
-
-        <input type="hidden" name="giftCode" id="giftCode" th:value="*{giftCode}" th:if="${signUpInfo} != null"/>
-    </form>
+ 							<p class="secondary">e.g., =jane, =janedoe, =jane.doe
+							</p>
+						<button type="submit" name="submit" id="submit" class="button">Submit</button>
+                        <input type="hidden" name="giftCode" id="giftCode" th:value="*{giftCode}" th:if="${signUpInfo} != null" />
+					</form>
+				</div>
+			</div>
+			<div class="push"></div>
 </div>
 
-<th:block layout:fragment="postFooterContent">
-    <script src="js/libs/nameavailability.js"></script>
-    <script src="js/libs/misc.js"></script>
-    <script>
+  <div id="footer">
+    <div class="container">
+      <div class="row-fluid">
+        <div class="cspMain">YOUR CLOUD SERVICE PROVIDER | <img src="img/csp_logo.png" /> &nbsp;
+  		</div>
+    </div>
+  </div>
+<!--  <div class="row-fluid">
+  	<div class="span1"></div>
+  	<div class="span3">
+  		<div id="help"><a target="_blank" onclick="return windowpop(this.href, 545, 433); " th:href="@{/help}">Help</a></div>
+		</div>
+		<div class="span6"></div>
+	</div>
+-->
+</div>
 
-        $(document).ready(function () {
-
-            var cloudNameGroup = $('#cloudNameGroup');
-            var cloudNameHelpIcon = $('#cloudNameHelpIcon');
-
-            // the value of this var is the id of the input element
-            // that the user is typing into
-            var cloudNameField = "#cloudName";
-            var cloudNameInput = $(cloudNameField);
-
-            // the value of this var is the id of the display element
-            // that will be used to convey information to the user
-            var messageSpan = $(cloudNameField + 'Help');
-
-            var isAvailable = false;
-
-            cloudNameInput.checkCloud({
-
-                completed: function (elem, success) {
-
-                    // no longer loading
-                    cloudNameInput.removeClass('btn-primary-loading');
-
-                    // reset view state
-                    cloudNameGroup.removeClass('has-success has-warning has-error');
-                    cloudNameHelpIcon.addClass('hidden');
-                    cloudNameHelpIcon.removeClass('glyphicon-ok glyphicon-remove glyphicon-warning-sign');
-
-                    // success var will contain a 1 if the name is available and 0 if it not available.
-                    console.log('Checking cloud... :: success=' + success);
-
-                    // clear error
-                    if (cloudNameInput.val().trim() == '') {
-                        messageSpan.html('');
-                        return;
-                    }
-
-                    cloudNameHelpIcon.removeClass('hidden');
-
-                    if (success === 1) { // available
-                        messageSpan.html('Your cloud name is available');
-                        cloudNameGroup.addClass('has-success');
-                        cloudNameHelpIcon.addClass('glyphicon-ok');
-                        isAvailable = true;
-                    } else if (success === 0) { // unavailable
-                        messageSpan.html("This cloud name is NOT available");
-                        cloudNameGroup.addClass('has-warning');
-                        cloudNameHelpIcon.addClass('glyphicon-warning-sign');
-                    } else { // formatting error
-                        cloudNameGroup.addClass('has-error');
-                        messageSpan.html("Cloud names must contain at least 2 letters, numbers, or dots");
-                        cloudNameHelpIcon.addClass('glyphicon-remove');
-                    }
-                },
-
-                // user is typing
-                changed: function (elem) {
-                    isAvailable = false;
-                    cloudNameInput.addClass('btn-primary-loading');
-                    console.log('Changing cloud...');
-                },
-
-                // indicates if the leading symbol should be removed prior to adding the name to the path
-                stripSymbol: true,
+    <!-- Javascript
+    ================================================== -->
+    <!-- <script src="js/libs/bootstrap-collapse.js"></script> -->
+  
+<!--The following script hooks the HTML Elements to the javascript functionality-->
+	<!-- see the comments inside the javascript for details-->
+ <script>
+ 
+ $(document).ready(function () {
+ 
+ 		// the value of this var is the id of the input element 
+ 		// that the user is typing into
+ 		var cloudnameField = "#cloudName";
+ 
+	 	// the value of this var is the id of the display element 
+ 		// that will be used to convey information to the user
+ 		var messageSpan = "#isAvailable";
+ 
+ 		
+	    $(cloudnameField).checkCloud({
+	        completed: function(elem, success) {
+	        	
+	        	// success var will contain a 1 if the name is available
+	        	// and 0 if it not available.
+	        	
+	        	console.log('Checking cloud...');
+	            console.log(success);
+	        	
+	        	if(success==1)
+	        	{
+	        		// Make whatever changes to the UI to indicate that the name is
+	        		// available
+	        		$(messageSpan).html(" &radic; Your cloud name is available");
+	        		$(messageSpan).css('color', 'green');
+	        		 		      		
+                }else if(success==0){
+                    // Make whatever changes to the UI to indicate that the name is
+                    // unavailable
+                    $(messageSpan).html("This cloud name is NOT available");
+                    $(messageSpan).css('color', 'red');
+                }else{
+                    // Make whatever changes to the UI to indicate that the name is
+                    // unavailable
+                    $(messageSpan).html("This cloud name is INVALID");
+                    $(messageSpan).css('color', 'red');
+                }
+	        	
+	            
+	        },
+	        changed: function(elem) {
+				//Called when user is typing
+	            console.log('Changing cloud...');
+	        },
+	        // indicates if the leading symbol should be removed prior to adding the 
+	        // name to the path
+	        stripSymbol:true, 
 
                 // indicates the location of the availability service
                 availabilityApi: /*[[${signUpInfo.nameAvailabilityCheckURL + '/api/availability/equals/'}]]*/ "https://registration-stage.respectnetwork.net/rn-checkavailability-service/api/availability/equals/"
             });
-
-            $.validator.addMethod("isAvailable", function (value, element, param) {
-                return isAvailable;
-            });
-
-            addFormValidation('#signupForm', {
+        addFormValidation('#signupForm', {
                 rules: {
                     cloudName: {
                         required: true,
@@ -127,9 +160,10 @@
             });
         });
 
-    </script>
-</th:block>
+ 
+ 
+ </script>
+
 
 </body>
-
 </html>

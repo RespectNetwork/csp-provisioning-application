@@ -1,112 +1,127 @@
 <!DOCTYPE html>
-<html lang="en"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorator="fragments/page">
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Respect Network</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
 
-<body class="validate">
+    <!-- CSS -->
+    <link href="css/bootstrap.css" rel="stylesheet" />
+    <link href="css/bootstrap-responsive.css" rel="stylesheet" />
+    <link href="css/stylesheet.css" rel="stylesheet" />
+<link href="https://s3.amazonaws.com/rnfonts/demo.css" rel="stylesheet" type="text/css" />
+		<script src="js/libs/misc.js"> </script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 
-<!--/* No nav dropdown for this page */-->
-<div layout:fragment="nav"></div>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.js"></script>
+    <![endif]-->
 
-<div class="container" layout:fragment="bodyContent">
+    <!-- Fav and touch icons -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="img/ico/apple-touch-icon-144-precomposed.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/ico/apple-touch-icon-114-precomposed.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/ico/apple-touch-icon-72-precomposed.png" />
+    <link rel="apple-touch-icon-precomposed" href="img/ico/apple-touch-icon-57-precomposed.png" />
+    <link rel="shortcut icon" href="img/ico/favicon.png" />
+    <script>
+	
+	</script>
+</head>
 
-    <div class="page-header">
-        <h1>Verification codes have been sent to your email and phone<br/>
-        <small>Enter those codes in the fields below<br/>
-        Codes are not case sensitive</small></h1>
+<body>
+<!-- Part 1: Wrap all page content here -->
+<div id="wrap">
+<!-- Fixed navbar -->
+  <div class="navbar navbar-top">
+    <div class="navbar-inner">
+      <div class="container">
+      	<div class="row-fluid small-screen">  
+          <h1><img src="img/respect-network-logo.png" alt="Respect Network"/></h1>  
+      	</div>        
+        <div class="header-cloud-name">
+            <span th:text="${cloudName}"/>
+        </div>
+      </div>
     </div>
+  </div>  
+      <!-- Begin page content -->
+      <div id="content-wrapper">  
+				<div class="middle"> <span style="color:red" class="error"  th:text="${error}"></span>
+				<p>Verification codes have been sent to your email and phone. Enter those codes in the fields below.</p>
+					<form action="#" th:object="${validateInfo}" th:action="@{/validatecodes}" method="post" class="margin-top" id="validateCodes-form">
+            <div class="formGroup">
+ 						 <input type="text" name="emailCode" class="inputFields smallTop" id="emailCode" placeholder="email code" onFocus="clearText(this)" onBlur="clearText(this.className = 'onblurtext smallTop')"  />
 
-    <div class="middle2"><span style="color:red" class="error" th:text="${error}"></span><br/>
-
-
-        <form action="#" th:action="@{/validatecodes}" method="post"
-              class="form-primary" th:object="${validateInfo}" id="validateCodesForm">
-
-            <!--/* Email code */-->
-            <div class="form-group" data-show-valid-glyph="false">
-                <input type="text" id="emailCode" name="emailCode"
-                       class="form-control" placeholder="email code"
-                       required="required" autofocus="autofocus"/>
-                <p class="help-block" th:text="|Sent to ${verifyingEmail}|">
-                    Sent to abc@example.com
-                </p>
+              <p class="secondary"><span th:text="|Sent to ${verifyingEmail}|"> Sent to</span><span class="html-remove"> </span> </p>
+              <!-- commenting out edit email pop-up for short term
+              <span class="edit"><a href="#emailModal">edit email</a></span>
+              -->
+             
             </div>
-
-            <!--/* Text code */-->
-            <div class="form-group" data-show-valid-glyph="false">
-                <input type="text" id="smsCode" name="smsCode"
-                       class="form-control" placeholder="text code"
-                       required="required"/>
-                <p class="help-block" th:text="|Sent to ${verifyingPhone}|">
-                    Sent to +123546789
-                </p>
+            <div class="formGroup">
+						<input type="text" name="smsCode"  class="inputFields smallTop" id="smsCode" placeholder="text code" onFocus="clearText(this)" onBlur="clearText(this.className = 'onblurtext smallTop')" />
+             			<p class="secondary"> <span th:text="|Sent to ${verifyingPhone}|">Sent to</span><span class="html-remove"></span></p>
+             			<!-- commenting out edit phone pop-up for short term
+									<span class="edit"><a href="#phoneModal">edit phone</a></span>
+									-->
+									
             </div>
-
-            <!--/* I agree checkbox */-->
-            <div class="form-group">
-                <label class="secondary">
-                    <input type="checkbox" id="terms" name="terms" />
-                    I agree to the
-                    <a target="_blank" onclick="return windowpop(this.href, 545, 433);"
-                       href="http://openidentityexchange.org/trust-frameworks/respect-trust-framework">
-                        Respect Trust Framework
-                    </a>
-                    and the one-person one-account rule.
-                </label>
-            </div>
-
-            <!--/* Buttons */-->
-            <div class="form-group">
-                <button type="submit" name="submit" id="submit"
-                    class="btn btn-lg btn-primary">Verify</button>
-            </div>
-
-            <div class="form-group">
-                <button type="submit" name="resendCodes" id="resendCodes"
-                        class="btn btn-lg btn-info">Send new codes</button>
-            </div>
-
-
-            <input type="hidden" name="verifyingEmail" th:value="${verifyingEmail}" id="verifyingEmail"/>
-            <input type="hidden" name="verifyingPhone" th:value="${verifyingPhone}" id="verifyingPhone"/>
-            <input type="hidden" name="resetPwd" th:value="${resetPwd}" id="resetPwd"/>
-        </form>
+     				<p class="tertiary"> <input type="checkbox" name="terms" /> &nbsp;
+     				I agree to the <a target="_blank"  onclick="return windowpop(this.href, 545, 433);" href="http://openidentityexchange.org/wp-content/uploads/Respect%20Trust%20Framework_0.pdf" >Respect Trust Framework</a>
+     				<!-- <a target="_blank" onclick="return windowpop(this.href, 545, 433); " th:href="@{/respectTrustFramework}" >Respect Trust Framework</a> --> 
+     				and the one-person one-account rule.</p>
+						<input type="submit" name="submit" id="submit" class="button" value="Verify" />
+						<input type="submit" name="resendCodes" id="resendCodes" class="no-style-button" value="Send new codes" />
+						
+						<input type="hidden" name="verifyingEmail" th:value="${verifyingEmail}" id="verifyingEmail" />
+						<input type="hidden" name="verifyingPhone" th:value="${verifyingPhone}" id="verifyingPhone" />
+						
+						
+				</form>
+									
+			</div>
+	<div class="push"></div>
+</div>
+</div>
+<div id="footer">
+  <div class="container">
+    <div class="row-fluid">
+      <div class="cspMain">YOUR CLOUD SERVICE PROVIDER | <img src="img/csp_logo.png" /> &nbsp;
+      </div>
     </div>
+  </div>
+</div>
+<div id="phoneModal" class="modalDialog">
+	<div>
+		<a href="#close" title="Close" class="close">X</a>
+		<p>Edit Phone</p>
+		<div class="formGroup mobile-fields">
+          <input type="text" class="phoneField" name="mobilePhone" id="mobilePhone" placeholder="mobile: nnnnnnnnnn" required="required" onFocus="clearText(this)" onBlur="clearText(this.className = 'onblurtextPhone smallTop')" th:value="*{mobilePhone}" />                     
+      	</div>
+      	<input type="submit" class="button" value="Send new code" /><br/>
+      	<a href="#close">cancel</a>
+	</div>
+</div>
+<div id="emailModal" class="modalDialog">
+	<div>
+		<a href="#close" title="Close" class="close">X</a>
+		<p>Edit Email</p>
+		<div class="formGroup">
+				  <input type="text" class="inputFields" name="email"  id="email" placeholder="email address" required="required" onFocus="clearText(this)" onBlur="clearText(this.className = 'onblurtext smallTop')" th:value="*{email}" />
+				  <input type="submit" class="button" value="Send new code" /><br/>
+				  <a href="#close" class="no-style-button">cancel</a>
+		</div>
+	</div>
 </div>
 
-<th:block layout:fragment="postFooterContent">
-    <script>
-        /*<![CDATA[*/
-        $(document).ready(function () {
-            addFormValidation('#validateCodesForm', {
-                rules: {
-                    emailCode: {
-                        required: true
-                    },
-                    smsCode: {
-                        required: true
-                    },
-                    terms: {
-                        required: true
-                    }
-                },
-                messages: {
-                    emailCode: {
-                        required: 'Please enter the email code'
-                    },
-                    smsCode: {
-                        required: 'Please enter the sms code'
-                    },
-                    terms: {
-                        required: 'Please agree to the terms and conditions'
-                    }
-                }
-            });
-        });
-        /*]]>*/
-    </script>
-</th:block>
+    <!-- Javascript
+    ================================================== -->
+    <!-- <script src="js/libs/bootstrap-collapse.js"></script> -->
+
+
 
 </body>
 </html>

@@ -12,7 +12,6 @@ import java.util.regex.Pattern;
 import net.respectnetwork.csp.application.exception.CSPException;
 import net.respectnetwork.csp.application.exception.UserRegistrationException;
 import net.respectnetwork.csp.application.model.AvailabilityResponse;
-import net.respectnetwork.csp.application.util.EmailHelper;
 import net.respectnetwork.sdk.csp.BasicCSPInformation;
 import net.respectnetwork.sdk.csp.CSP;
 import net.respectnetwork.sdk.csp.UserValidator;
@@ -136,7 +135,14 @@ public class RegistrationManager {
     private String contactSupportEmail;
     
     private String cspCloudName;
-    
+    /**
+     * RN endpoint for social safe licence key
+     */
+    private String rnSocialSafeEndpoint;
+    /**
+     * Social safe secret token for CSP
+     */
+    private String rnSocialSafeToken;
     public static final String GeoLocationPostURIKey = "<$https><#network.globe><$set>";
     public static final String RNpostRegistrationLandingPageURIKey = "<$https><#post><#registration>";
     public static final String CSPCloudRegistrationURIKey = "<$https><#registration>";
@@ -279,6 +285,22 @@ public class RegistrationManager {
      */
     public void setValidateCodes(boolean validateCodes) {
         this.validateCodes = validateCodes;
+    }
+    
+    public String getRnSocialSafeEndpoint() {
+        return rnSocialSafeEndpoint;
+    }
+
+    public void setRnSocialSafeEndpoint(String rnSocialSafeEndpoint) {
+        this.rnSocialSafeEndpoint = rnSocialSafeEndpoint;
+    }
+
+    public String getRnSocialSafeToken() {
+        return rnSocialSafeToken;
+    }
+
+    public void setRnSocialSafeToken(String rnSocialSafeToken) {
+        this.rnSocialSafeToken = rnSocialSafeToken;
     }
 
     /**
@@ -456,78 +478,12 @@ public class RegistrationManager {
            rut.setCspContactSupportEmail(this.contactSupportEmail);
            rut.setUserEmail(verifiedEmail);
            rut.setCspContactEmail(cspContactEmail);
+           rut.setLicenceKeyApplicable(true);
+           rut.setRnSocialSafeEndpoint(rnSocialSafeEndpoint);
+           rut.setRnSocialSafeToken(rnSocialSafeToken);
            Thread t = new Thread(rut);
            t.start();
-           
-           /*
-        // Step 1: Register Cloud with Cloud Number and Shared Secret
-        
-        String cspSecretToken = cspRegistrar.getCspInformation().getCspSecretToken();
 
-        cspRegistrar.registerCloudInCSP(cloudNumber, cspSecretToken);
-
-        // step 2: Set Cloud Services in Cloud
-
-        Map<XDI3Segment, String> services = new HashMap<XDI3Segment, String> ();
-        
-        try {
-            services.put(XDI3Segment.create("<$https><$connect><$xdi>"), this.getCspRespectConnectBaseURL() +
-                URLEncoder.encode(cloudNumber.toString(), "UTF-8") + "/connect/request");
-        } catch (UnsupportedEncodingException e) {
-            throw new CSPRegistrationException(e);
-        }
-        
-        cspRegistrar.setCloudServicesInCloud(cloudNumber, cspSecretToken, services);
-
-        // step 3: Check if the Cloud Name is available
-
-        CloudNumber existingCloudNumber = cspRegistrar.checkCloudNameAvailableInRN(cloudName);
-
-        if (existingCloudNumber != null) {
-            throw new CSPRegistrationException("Cloud Name " + cloudName + " is already registered with Cloud Number " + existingCloudNumber + ".");
-        }
-      
-        // step 5: Register Cloud Name
-        if(cdc != null)
-        {
-           cspRegistrar.registerCloudNameInRN(cloudName, cloudNumber, verifiedPhone, verifiedEmail, cdc);
-        } else
-        {
-           cspRegistrar.registerCloudNameInRN(cloudName, cloudNumber, verifiedPhone, verifiedEmail, cloudNameDiscountCode);
-        }
-        cspRegistrar.registerCloudNameInCSP(cloudName, cloudNumber);
-        cspRegistrar.registerCloudNameInCloud(cloudName, cloudNumber, cspSecretToken);
-
-        // step 6: Set phone number and e-mail address
-
-        cspRegistrar.setPhoneAndEmailInCloud(cloudNumber, cspSecretToken, verifiedPhone, verifiedEmail);
-
-        // step 7: Set RN/RF membership
-
-        cspRegistrar.setRespectNetworkMembershipInRN(cloudNumber, new Date(), respectNetworkMembershipDiscountCode);
-        cspRegistrar.setRespectFirstMembershipInRN(cloudNumber);
-        
-        // Step 8: Change Secret Token
-
-        cspRegistrar.setCloudSecretTokenInCSP(cloudNumber, userPassword);
-        
-        //Step 9 : save the email and phone in local DB
-        
-        DAOFactory dao = DAOFactory.getInstance();
-        SignupInfoModel signupInfo  = new SignupInfoModel();
-        signupInfo.setCloudName(cloudName.toString());
-        signupInfo.setEmail(verifiedEmail);
-        signupInfo.setPhone(verifiedPhone);
-        
-        try
-      {
-         dao.getSignupInfoDAO().insert(signupInfo);
-      } catch (DAOException e)
-      {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
-      }
-      */
         }
         return cloudNumber;
 
@@ -564,97 +520,7 @@ public class RegistrationManager {
 				  rdct.setCspContactEmail(cspContactEmail);
 				  Thread t = new Thread(rdct);
 				  t.start();
-					
-				/*
-				// Common Data
 
-				CloudNumber guardianCloudNumber = null;
-		        CloudNumber dependentCloudNumber = null;
-		        PrivateKey guardianPrivateKey = null;
-		        PrivateKey dependentPrivateKey = null;
-				boolean withConsent = true;
-				
-				Date dependentBirthDate = null;
-				
-				BasicCSPInformation cspInformation = (BasicCSPInformation)cspRegistrar.getCspInformation();
-				
-				// Resolve Cloud Numbers from Name
-				
-		        XDIDiscoveryClient discovery = cspInformation.getXdiDiscoveryClient();
-
-		        try {
-		            SimpleDateFormat format = 
-		                    new SimpleDateFormat("MM/dd/yyyy");
-		            dependentBirthDate = format.parse(s_dependentBirthDate);
-		        } catch (ParseException e) {
-	                logger.debug("Invalid Dependent BirthDate.");
-	                return null;
-		        }
-
-				for (int tries = 0 ; tries < 5 ; tries++) {
-
-					try {
-						logger.debug("Waiting for five seconds to allow for the newly registered dependent name in discovery");
-						Thread.sleep(5000);
-					} catch (InterruptedException e1) {
-						
-					}
-		        
-			        try {
-			            XDIDiscoveryResult guardianRegistry = discovery.discoverFromRegistry(
-			                    XDI3Segment.create(guardianCloudName.toString()), null);
-			            
-			            XDIDiscoveryResult dependentRegistry = discovery.discoverFromRegistry(
-			                    XDI3Segment.create(dependentCloudName.toString()), null);
-			            
-			            guardianCloudNumber = guardianRegistry.getCloudNumber();
-			            dependentCloudNumber = dependentRegistry.getCloudNumber();
-			            
-			            String guardianXdiEndpoint = guardianRegistry.getXdiEndpointUri();
-			            String dependentXdiEndpoint = dependentRegistry.getXdiEndpointUri();
-	
-			            guardianPrivateKey = XDIClientUtil.retrieveSignaturePrivateKey(guardianCloudNumber, guardianXdiEndpoint, guardianToken);
-			            logger.debug("GuardianPrivateKey Algo: " + guardianPrivateKey.getAlgorithm());
-	
-			            dependentPrivateKey = XDIClientUtil.retrieveSignaturePrivateKey(dependentCloudNumber, dependentXdiEndpoint, dependentToken);
-			            logger.debug("DependentPrivateKey Algo: " + dependentPrivateKey.getAlgorithm());
-			            
-			            if (guardianCloudNumber == null || dependentCloudNumber == null) {
-			                logger.debug("Un-registered Cloud Name.");
-			                continue;
-			            }
-			            break;
-	
-			        } catch (Xdi2ClientException e) {
-			            logger.debug("Problem with Cloud Name Provided.");
-			            e.printStackTrace();
-			            logger.debug(e.getMessage());
-			            continue;
-			        } catch (GeneralSecurityException gse){
-			        	logger.debug("Problem retrieving signatures.");
-			        	gse.printStackTrace();
-			        	logger.debug(gse.getMessage());
-			            continue;
-			        }
-			        
-				}
-				if(guardianCloudNumber != null && dependentCloudNumber != null) {
-			        try {
-			            // Set User Cloud Data
-			        	cspRegistrar.setGuardianshipInCloud(cspInformation, guardianCloudNumber, dependentCloudNumber, dependentBirthDate, withConsent, guardianToken, guardianPrivateKey);
-			    		
-			    		// Set CSP Cloud Data
-			        	cspRegistrar.setGuardianshipInCSP(cspInformation, guardianCloudNumber, dependentCloudNumber, dependentBirthDate, withConsent, guardianPrivateKey);
-			    	    
-			    	    // Set MemberGraph Data
-			        	cspRegistrar.setGuardianshipInRN(cspInformation, guardianCloudNumber, dependentCloudNumber, dependentBirthDate, withConsent, guardianPrivateKey);
-			    	    
-			        } catch (Xdi2ClientException e) {
-			        	logger.debug("Xdi2ClientException: " + e.getMessage());
-			            e.printStackTrace();
-			        }
-				}
-				*/
 		return depCloudNumber;
 	}
 
@@ -675,7 +541,11 @@ public class RegistrationManager {
     public void setCspContactEmail(String cspEmail) {
         this.cspContactEmail = cspEmail;
     }
-    
+
+    public String getCspContactEmail() {
+        return this.cspContactEmail;
+    }
+
     public String getCSPContactInfo() {
     	
     	return "Please contact the CSP at " + this.cspContactPhone + " or via email at " + this.cspContactEmail;
@@ -801,16 +671,28 @@ public class RegistrationManager {
        this.contactSupportEmail = contactSupportEmail;
    }
 
+   public String getCspContactSupportEmail() {
+       return this.contactSupportEmail;
+   }
+
    @Autowired
    @Qualifier("cspCloudName")
    public void setCspCloudName(String cspCloudName) {
        this.cspCloudName = cspCloudName;
    }
 
+   public String getCspCloudName(){
+       return this.cspCloudName;
+   }
+
    @Autowired
    @Qualifier("cspHomePage")
    public void setCspHomePage(String cspHomePage) {
        this.cspHomePage = cspHomePage;
+   }
+
+   public String getCspHomePage(){
+       return this.cspHomePage;
    }
 
    public static boolean validateCloudName(String iname) {

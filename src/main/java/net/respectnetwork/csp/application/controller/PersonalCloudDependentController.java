@@ -6,9 +6,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.List;
-import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -21,13 +19,11 @@ import net.respectnetwork.csp.application.form.DependentForm;
 import net.respectnetwork.csp.application.form.DependentFormIndividual;
 import net.respectnetwork.csp.application.form.PaymentForm;
 import net.respectnetwork.csp.application.manager.RegistrationManager;
-import net.respectnetwork.csp.application.manager.StripePaymentProcessor;
-import net.respectnetwork.csp.application.model.CSPCostOverrideModel;
 import net.respectnetwork.csp.application.model.CSPModel;
 import net.respectnetwork.csp.application.model.DependentCloudModel;
 import net.respectnetwork.csp.application.model.PaymentModel;
 import net.respectnetwork.csp.application.session.RegistrationSession;
-import net.respectnetwork.sdk.csp.exception.CSPRegistrationException;
+import net.respectnetwork.csp.application.util.CSPHelper;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,10 +36,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
-
-import xdi2.client.exceptions.Xdi2ClientException;
-import xdi2.core.xri3.CloudName;
-import xdi2.core.xri3.CloudNumber;
 
 @Controller
 public class PersonalCloudDependentController
@@ -174,7 +166,7 @@ public class PersonalCloudDependentController
    public ModelAndView showDependentDoneForm(Model model,
          HttpServletRequest request) throws DAOException
    {
-      ModelAndView mv = PersonalCloudController.getCloudPage(request,
+      ModelAndView mv = CSPHelper.getCloudPage(request,
             this.regSession.getCloudName());
       return mv;
    }
@@ -205,7 +197,7 @@ public class PersonalCloudDependentController
       if (result.hasErrors())
       {
          logger.error("result - " + result);
-         mv = PersonalCloudController.getCloudPage(request, cloudName);
+         mv = CSPHelper.getCloudPage(request, cloudName);
          return mv;
       }
 

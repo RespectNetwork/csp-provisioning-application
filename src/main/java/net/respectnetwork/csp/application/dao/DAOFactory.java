@@ -21,6 +21,8 @@ public class DAOFactory
 	private SignupInfoDAO         signupInfoDAO;
 	private PromoCodeDAO         promoCodeDAO;
 	private PromoCloudDAO         promoCloudDAO;
+	private CSPProductDAO         cSPProductDAO;
+	private LicenseKeyDAO licenseKeyDAO;
 
 	public static DAOFactory getInstance()
 	{
@@ -173,4 +175,22 @@ public class DAOFactory
    {
       this.promoCloudDAO = promoCloudDAO;
    }
+
+   public CSPProductDAO getCSPProductDAO() {
+       return cSPProductDAO;
+   }
+
+   public void setCSPProductDAO(CSPProductDAO cSPProductDAO) {
+       this.cSPProductDAO = cSPProductDAO;
+   }
+
+    public LicenseKeyDAO getLicenseKeyDAO() {
+        return licenseKeyDAO;
+    }
+    
+    public void setLicenseKeyDAO(LicenseKeyDAO licenseKeyDAO) {
+        this.licenseKeyDAO = licenseKeyDAO;
+    }
+   
+   
 }

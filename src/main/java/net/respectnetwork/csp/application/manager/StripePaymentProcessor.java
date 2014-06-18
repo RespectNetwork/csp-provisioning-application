@@ -47,15 +47,22 @@ public class StripePaymentProcessor
 		   desc = dsc;
 		}
 
-		builder.append("<script           class=\"stripe-button\"\n")
-		       .append("                    src=\"" + csp.getPaymentUrlTemplate().replaceAll("\"", "&quot;") + "\"\n")
-		       .append("               data-key=\"" + csp.getUsername().replaceAll("\"", "&quot;") + "\"\n")
-		       .append("            data-amount=\"" + getAmount(amount) + "\"\n")
-		       .append("              data-name=\"" + csp.getPaymentGatewayName().replaceAll("\"", "&quot;") + "\"\n")
-		       .append("       data-description=\"" + desc.replaceAll("\"", "&quot;") + "\"\n")
-		       .append("             data-image=\"img/csp_logo.png\">\n")
-		       .append("</script>\n");
-
+        builder.append("<script src=\""+ csp.getPaymentUrlTemplate().replaceAll("\"", "&quot;") +"\"></script>\n")
+            .append("<script>\n")
+            .append("var token = function(res){\n")
+            .append("var $input = $('<input type=hidden name=stripeToken />').val(res.id);\n")
+            .append("$('form').append($input).submit();\n")
+            .append("};\n")
+            .append("StripeCheckout.open({\n")
+            .append("name:        '" + csp.getPaymentGatewayName().replaceAll("\"", "&quot;") + "',\n")
+            .append("key:         '" + csp.getUsername().replaceAll("\"", "&quot;") + "',\n")
+            .append("amount:      "+ getAmount(amount) +",\n")
+            .append("currency:      '"+ csp.getCurrency() +"',\n")
+            .append("description: '"+ desc.replaceAll("\"", "&quot;") +"',\n")
+            .append("image:       \"img/csp_logo.png\", \n")
+            .append("token:       token \n")
+            .append("});\n")
+            .append("</script>\n");
 		return builder.toString();
 	}
 
