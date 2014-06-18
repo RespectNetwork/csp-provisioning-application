@@ -57,6 +57,7 @@ public class StripePaymentProcessor
             .append("name:        '" + csp.getPaymentGatewayName().replaceAll("\"", "&quot;") + "',\n")
             .append("key:         '" + csp.getUsername().replaceAll("\"", "&quot;") + "',\n")
             .append("amount:      "+ getAmount(amount) +",\n")
+            .append("currency:      '"+ csp.getCurrency() +"',\n")
             .append("description: '"+ desc.replaceAll("\"", "&quot;") +"',\n")
             .append("image:       \"img/csp_logo.png\", \n")
             .append("token:       token \n")
