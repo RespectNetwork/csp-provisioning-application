@@ -107,30 +107,36 @@
  		
 	    $(cloudnameField).checkCloud({
 	        completed: function(elem, success) {
-	        	
-	        	// success var will contain a 1 if the name is available
-	        	// and 0 if it not available.
-	        	
+	        	$('#submit').removeAttr('disabled');
+	        	// clear error
+                if ($(cloudnameField).val().trim() == '') {
+                	$(messageSpan).html('');
+                     return;
+                }
 	        	console.log('Checking cloud...');
 	            console.log(success);
-	        	
+	        	// success var will contain a 1 if the name is available
+	        	// and 0 if it not available.
 	        	if(success==1)
 	        	{
 	        		// Make whatever changes to the UI to indicate that the name is
 	        		// available
 	        		$(messageSpan).html(" &radic; Your cloud name is available");
 	        		$(messageSpan).css('color', 'green');
+	        		$('#submit').removeAttr('disabled');
 	        		 		      		
                 }else if(success==0){
                     // Make whatever changes to the UI to indicate that the name is
                     // unavailable
                     $(messageSpan).html("This cloud name is NOT available");
                     $(messageSpan).css('color', 'red');
+                    $('#submit').attr("disabled", "disabled");
                 }else{
                     // Make whatever changes to the UI to indicate that the name is
                     // unavailable
                     $(messageSpan).html("This cloud name is INVALID");
                     $(messageSpan).css('color', 'red');
+                    $('#submit').attr("disabled", "disabled");
                 }
 	        	
 	            
@@ -146,19 +152,7 @@
                 // indicates the location of the availability service
                 availabilityApi: /*[[${signUpInfo.nameAvailabilityCheckURL + '/api/availability/equals/'}]]*/ "https://registration-stage.respectnetwork.net/rn-checkavailability-service/api/availability/equals/"
             });
-        addFormValidation('#signupForm', {
-                rules: {
-                    cloudName: {
-                        required: true,
-                        minlength: 3,
-                        isAvailable: true
-                    }
-                },
-                errorPlacement: function(error, element) {
-                    // nothing - using custom error msgs
-                }
-            });
-        });
+    });
 
  
  

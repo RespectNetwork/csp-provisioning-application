@@ -282,7 +282,9 @@ public class PersonalCloudController
                        personalCloudManager.getLicenceKey(
                                myCSP.getCspInformation().getCspCloudNumber().toString(),
                                cloudNumber.toString());
-               mv.addObject("licenceKey", licenceKeyModel.getKeyValue());               
+	       if(licenceKeyModel != null) {
+               		mv.addObject("licenceKey", licenceKeyModel.getKeyValue());               
+	       }
                logger.info("Successfully authenticated to the personal cloud for "
                      + cloudName);
             } else
@@ -941,8 +943,11 @@ public class PersonalCloudController
             errors = true;
             errorText = "Number of clouds being purchased is less than the number of gift codes provided";
 
-         } else
-         {
+         } else if(giftCodes != null
+                 && paymentForm.getNumberOfClouds() > giftCodes.length) {
+             errors = true;
+             errorText = "Number of clouds being purchased is more than the number of gift codes provided";
+         } else {
             int i = 0;
 
             for (String giftCode : giftCodes)

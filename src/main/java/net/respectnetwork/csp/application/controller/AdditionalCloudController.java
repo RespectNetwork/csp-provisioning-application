@@ -237,10 +237,33 @@ public class AdditionalCloudController {
             }
         }
         if (errors) {
-            mv.addObject("cloudName", cloudName);
+            mv = new ModelAndView("additionalCloud");
+            AdditionalCloudForm addCloudForm = new AdditionalCloudForm();
+            addCloudForm.setNameAvailabilityCheckURL(theManager.getNameAvailabilityCheckURL());
+
+            List<String> additionalCloudNames = null;
+            try {
+                CloudName loggedinCloudName = CloudName.create(cloudName);
+                AdditionalCloudManager acm = new AdditionalCloudManager(regSession,
+                        theManager);
+                additionalCloudNames = acm
+                        .getAdditionalCloudNamesInCSP(loggedinCloudName);
+            } catch (Xdi2ClientException ex2) {
+                logger.error("Failed to fetch the cloudNumber for cloudName "
+                        + cloudName);
+                logger.error("Xdi2ClientException while getting cloud number "
+                        + ex2.getMessage());
+
+                mv = new ModelAndView("login");
+                mv.addObject("postURL",  request.getContextPath() + "/cloudPage");
+                return mv;
+            }
+            if(additionalCloudNames != null) {
+                addCloudForm.setAdditionalCloudNames(additionalCloudNames);
+            }
+            mv.addObject("additionalCloudForm", addCloudForm);
             mv.addObject("error", errorStr);
             return mv;
-
         }
 
         cspModel = DAOFactory.getInstance().getCSPDAO()
