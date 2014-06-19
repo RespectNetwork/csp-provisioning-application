@@ -6,6 +6,7 @@ import net.respectnetwork.csp.application.util.EmailHelper;
 import net.respectnetwork.sdk.csp.CSP;
 import net.respectnetwork.sdk.csp.discount.NeustarRNCampaignCode;
 import net.respectnetwork.sdk.csp.discount.NeustarRNDiscountCode;
+import net.respectnetwork.sdk.csp.exception.CSPRegistrationException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,6 +49,11 @@ public class AdditionalCloudThread implements Runnable {
         boolean isAdditionalCloud = true;
 
             try {
+                // Return if cloud is already registered.
+                if(!(registrationManager.isCloudNameAvailableInRegistry(cloudName.toString()) && registrationManager.isCloudNameAvailable(cloudName.toString()))) {
+                    throw new CSPRegistrationException("Cloud Name " + cloudName
+                            + " is already registered.");
+                }
                 // Step 1: Add an additional Cloud Name to an Existing Respect
                 // Network Account.
                 myCSP.registerAdditionalCloudNameInRN(cloudName, cloudNumber,
