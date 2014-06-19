@@ -282,7 +282,9 @@ public class PersonalCloudController
                        personalCloudManager.getLicenceKey(
                                myCSP.getCspInformation().getCspCloudNumber().toString(),
                                cloudNumber.toString());
-               mv.addObject("licenceKey", licenceKeyModel.getKeyValue());               
+	       if(licenceKeyModel != null) {
+               		mv.addObject("licenceKey", licenceKeyModel.getKeyValue());               
+	       }
                logger.info("Successfully authenticated to the personal cloud for "
                      + cloudName);
             } else
