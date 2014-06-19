@@ -943,8 +943,11 @@ public class PersonalCloudController
             errors = true;
             errorText = "Number of clouds being purchased is less than the number of gift codes provided";
 
-         } else
-         {
+         } else if(giftCodes != null
+                 && paymentForm.getNumberOfClouds() > giftCodes.length) {
+             errors = true;
+             errorText = "Number of clouds being purchased is more than the number of gift codes provided";
+         } else {
             int i = 0;
 
             for (String giftCode : giftCodes)

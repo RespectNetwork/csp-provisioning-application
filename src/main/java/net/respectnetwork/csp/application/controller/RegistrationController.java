@@ -198,13 +198,13 @@ public class RegistrationController
             {
                errors = true;
                logger.debug("Invite code is required and it has not been passed in the input query parameters(inviteCode=)");
-            } else if (!theManager.isCloudNameAvailable(cloudName))
+            } else if (!theManager.isCloudNameAvailableInRegistry(cloudName) && !theManager.isCloudNameAvailable(cloudName))
             {
                String errorStr = "CloudName not Available";
                mv.addObject("cloudNameError", errorStr);
                errors = true;
             }
-         } catch (UserRegistrationException e)
+         } catch (Exception e)
          {
             String errorStr = "System Error checking CloudName";
             logger.warn(errorStr + " : {}", e.getMessage());
