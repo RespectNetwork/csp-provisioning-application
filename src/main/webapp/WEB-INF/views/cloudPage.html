@@ -6,129 +6,20 @@
 <!--[if gt IE 8]><!--> <html xmlns:th="http://www.thymeleaf.org" class="no-js"> <!--<![endif]-->
 <head>
     <meta charset="utf-8" />
-    <title>Respect Network</title>
+    <title>CSP Welcome Page</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="" />
     <meta name="author" content="" />
 
-    <!-- CSS -->
-    
-<link href="https://s3.amazonaws.com/rnfonts/demo.css" rel="stylesheet" type="text/css" />
-
-    
+    <!-- CSS -->   
     <link href="css/bootstrap.css" rel="stylesheet" />
-    <link href="css/style.css" rel="stylesheet" />
-   <style type="text/css" >
-
-      /* Sticky footer styles
-      -------------------------------------------------- */
-
-      html,
-      body {
-        height: 100%;
-        /* The html and body elements cannot have any padding or margin. */
-      }
-
-      /* Wrapper for page content to push down footer */
-      #wrap {
-        min-height: 100%;
-        height: auto !important;
-        height: 100%;
-        /* Negative indent footer by it's height */
-        margin: 0 auto -60px;
-      }
-
-      /* Set the fixed height of the footer here */
-      #push,
-      #footer {
-        height: 60px;
-      }
-      #footer {
-        border-top: solid 1px #d9d9d9;
-      }
-
-      /* Lastly, apply responsive CSS fixes as necessary */
-      @media (max-width: 979px) {
-        #footer {
-          margin-left: -20px;
-          margin-right: -20px;
-          padding-left: 20px;
-          padding-right: 20px;
-        }
-        .bodyContainer {
-					padding-top: 50px !important;
-				}
-      }
-      
-      @media (max-width: 767px) {
-        #footer {
-          margin-left: -20px;
-          margin-right: -20px;
-          padding-left: 20px;
-          padding-right: 20px;
-        }
-        .bodyContainer {
-					padding-top: 50px !important;
-				}
-      }
-      @media (max-width: 450px) {
-				#feedback { 
-  			top: 80%;
-  			z-index: 9999;
-			}
-}
-
-      /* Custom page CSS
-      -------------------------------------------------- */
-      /* Not required for template or sticky footer method. */
-
-      #wrap > .container {
-        padding-top: 150px;
-      }
-      
-      .bodyContainer {
-      	padding-top: 125px;
-      }
-      
-      .container .credit {
-        margin: 20px 0;
-        text-align:center;
-      }
-
-      code {
-        font-size: 80%;
-      }
-      
-/* floating Help button
-------------------------------------------------------*/
-#feedback { 
-  height: 104px; 
-  width: 104px; 
-  position: fixed; 
-  top: 95%;
-  left: 150px;
-  z-index: 9999;
-}
-#feedback a { 
-  display: block; 
-  background: #fff; 
-  height: 15px; 
-  width: 70px; 
-  padding: 8px 16px;
-  color: #efefef; 
-  font-size: 17px; 
-  text-decoration: none; 
-  text-align:center;
-}
-
-#feedback a:hover { 
-  background: #06c; 
-}
-
-      
-
-    </style>
     <link href="css/bootstrap-responsive.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="css/default_test.css" />
+		<link rel="stylesheet" type="text/css" href="css/component_test.css" />
+    <link href="css/stylesheet.css" rel="stylesheet" />
+		<link href="css/cloudstyle.css" rel="stylesheet" />
+		<link href="https://s3.amazonaws.com/rnfonts/demo.css" rel="stylesheet" type="text/css" />
+		<link href="css/csp_styles.css" rel="stylesheet" />
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
@@ -159,7 +50,7 @@
 <body>
 
 <!-- Part 1: Wrap all page content here -->
-    <div id="wrap">
+<div id="wrap">
 
       <!-- Fixed navbar -->
   <div class="navbar navbar-fixed-top">
@@ -167,15 +58,20 @@
       <div class="container">
       <div class="row-fluid">  
         <div class="span4 smallTop">
-        	<p class="cspHeader right"><img src="img/csp_logo.png" /></p>
+        	<p class="cspHeader"><img src="img/csp_logo.png" /></p>
         </div>
         <div class="span4"></div>
         <div class="span4 equation">
              <ul class="nav">
                  <a  href="#" class="dropdown-toggle" data-toggle="dropdown"><span th:text="${cloudName}"/> &nbsp;<b class="caret"></b> &nbsp;</a>
                 <ul class="dropdown-menu">
+                  <li><a th:href="@{/changePassword}">Change Password</a></li>
                   <li><a th:href="@{/logout}">Logout</a></li>
               </ul>
+          <form method="get" action="#" th:action="@{/changePassword}">
+          	  <input type="hidden" id="name" name="name" th:value="${cloudName}" />
+<!--              <button id="full" type="submit" class="button big">Change Password</button>-->
+          </form>
 
             </ul> 
         </div>
@@ -185,7 +81,116 @@
 	</div>
 
       <!-- Begin page content -->
-      <div class="bodyContainer">
+	  <div id="content-wrapper">  			
+    <div class="container-fluid">
+      <div class="row-fluid">
+      <div class="span1"></div>
+        <div class="span7">
+          <div class="hero-unit">
+            <h1>Welcome to the future of personal data</h1>
+            <br />         
+            <img src="img/main_pic.png" />          
+          </div>
+          <div class="row-fluid">
+            <div class="span12">
+				<div id="cbp-qtrotator" class="cbp-qtrotator">
+<!--			<div class="cbp-qtcontent">
+						<img src="img/RespectNetwork_Logo_V_RGB.png" width="100" height="100" alt="Respect Network" />
+						<blockquote>
+						  <p>The personal cloud is the consumer-centric alternative that gives people power over their content,
+						  and I predict 2014 to be the year the consumer voice changes from a murmur to a loud chorus.</p>
+						  <footer>Eric Caso</footer>
+						</blockquote>
+					</div>
+-->
+					<div class="cbp-qtcontent">
+						<img src="img/RespectNetwork_Logo_V_RGB.png" width="100" height="100" alt="Respect Network" />
+						<blockquote>
+						  <p>Drummond Reed, CEO, Respect Network, congratulates Dr. Ann Kavoukain for starting the privacy-by-design movement. <a href=" ">Watch the video</a></p>
+						  <footer></footer>
+						</blockquote>
+					</div>
+<!--			<div class="cbp-qtcontent">
+						<img src="img/RespectNetwork_Logo_V_RGB.png" width="100" height="100" alt="Respect Network" />
+						<blockquote>
+						  <p>
+						  lorem ipsum delorem.</p>
+						  <footer></footer>
+						</blockquote>
+					</div>
+					<div class="cbp-qtcontent">
+						<img src="img/RespectNetwork_Logo_V_RGB.png" width="100" height="100" alt="Respect Network" />
+						<blockquote>
+						  <p>lorem ipsum delorem.</p>
+						  <footer></footer>
+						</blockquote>
+					</div>
+-->				
+
+
+    	</div>
+            </div><!--/span-->
+           
+          </div><!--/row-->
+        </div><!--/span-->
+        <div class="span3">
+          <div class="well sidebar-nav">
+            <ul class="nav nav-list">
+            	<li>
+            		<input type="hidden" id="queryStr" name="queryStr" th:value="${queryStr}" />         	  
+  			  			<input type="hidden" id="postURL" name="postURL" th:value="${postURL}" />
+								<button type="submit" id="goToRN" class="link" onclick="goToRNlandingPage();">Invite your friends</button>
+	  					</li>              
+	  					<br />
+              <li>
+          			<form method="get" action="#" th:action="@{/invite}">
+          	  	<input type="hidden" id="name" name="name" th:value="${cloudName}" />
+              	<button id="full" type="submit" class="link">Purchase gift cards</button>
+          			</form>
+              </li>
+              <br />
+              <li>
+                <form method="get" action="#" th:action="@{/dependent}">
+          	    <input type="hidden" id="name" name="name" th:value="${cloudName}" />
+                <button id="full" type="submit" class="link">Add dependent clouds</button>
+                </form>
+              </li>
+              <hr></hr>
+              <!--<li class="nav-header"></li>-->
+              <p>Want to use one cloud name for business and another cloud name for personal activities? 
+              Secure up to 5 additional cloud names during our First Million Member campaign.</p>
+              <li>
+              	<form method="get" action="#" th:action="@{/additionalCloud}">
+              	<input type="hidden" id="name" name="name" th:value="${cloudName}" />
+              	<button id="full" type="submit" class="link">Add cloud names</button>
+          			</form>
+              </li>
+              <div th:if="${licenceKey}"><p>Your <a th:href="@{http://www.socialsafe.com}">Social Safe</a> license key is : &nbsp;<span th:text="${licenceKey}"/></p></div>
+</ul>         	
+
+
+         
+          </div><!--/.well -->
+        </div><!--/span-->
+      </div><!--/row-->
+
+      <hr></hr>
+
+      <footer>
+        <p>&copy; Company 2014</p>
+      </footer>
+
+    </div><!--/.fluid-container-->
+</div></div>
+		<script src="js/libs/jquery.cbpQTRotator.min.js"></script>
+		<script>
+			$( function() {
+				$( '#cbp-qtrotator' ).cbpQTRotator();
+
+			} );
+		</script>  
+  
+<!--  <div class="bodyContainer">
 		<div class="middle2"> 
 			<div>
 					<input type="hidden" id="queryStr" name="queryStr" th:value="${queryStr}" />         	  
@@ -212,16 +217,18 @@
           </form>
            <br></br>
           <br></br>
+
           <form method="get" action="#" th:action="@{/changePassword}">
           	  <input type="hidden" id="name" name="name" th:value="${cloudName}" />
               <button id="full" type="submit" class="button big">Change Password</button>
           </form>
+
           <div th:if="${licenceKey != null}">
-          	<p class="secondary">Your SocialSafe license key is : &nbsp;<span th:text="${licenceKey}"/></p>
+          	<p class="secondary">Your SocialSafe licence key is : &nbsp;<span th:text="${licenceKey}"/></p>
           </div>
 		</div>
 	</div>	  
-
+-->
     <div id="footer">
       	<!--
   			<div class="help">
@@ -233,6 +240,11 @@
     </div>
 
 
-</div>
+    <!-- javascript ================================================== -->
+<script src="js/libs/modernizr-2.0.6.min.js" th:src="@{/js/libs/modernizr-2.0.6.min.js}"></script>
+		<script src="js/libs/responsivegridsystem.js" th:src="@{/js/libs/responsivegridsystem.js}"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+		<script src="js/libs/misc.js"> </script>
+ 
 </body>
 </html>

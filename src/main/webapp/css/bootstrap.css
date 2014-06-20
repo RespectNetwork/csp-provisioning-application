@@ -1103,6 +1103,15 @@ input[type="color"],
           border-radius: 4px;
 }
 
+#USA_State,
+#BillingCountry {
+    height:2.9375rem;
+    width:100%;
+    text-align:center;
+    font-size: 1.5rem;
+    font-family: inherit;
+}
+
 input,
 textarea,
 .uneditable-input {
