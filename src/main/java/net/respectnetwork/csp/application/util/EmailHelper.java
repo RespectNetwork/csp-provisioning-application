@@ -22,7 +22,8 @@ public class EmailHelper {
     /** Class Logger */
     private static final Logger logger = LoggerFactory
             .getLogger(PasswordManager.class);
-    
+    private static final String DEFAILT_REGISTER_MAIL_TXT_1  = "You are now officially a lifetime member of the Respect Network.<br/><br/>";
+    private static final String DEFAILT_REGISTER_MAIL_TXT_2  = "As a member, you're an integral part of crowd-funding and growing the world\u2019s first trusted, personal data network.<br/><br/>";
     private String licenceKey;
     
     public String getLicenceKey() {
@@ -57,25 +58,27 @@ public class EmailHelper {
            // TODO Auto-generated catch block
            e.printStackTrace();
         }
-
-        Object[] cloudNames = new Object[] { cloudName };
+        
+        Object[] cloudNames = new Object[] { cloudName};
+        Object[] cloudAndCSP = new Object[] { cloudName, cspCloudName};
         Object[] cspName = new Object[] { cspCloudName };
         Object[] cspHomePage = new Object[] { homePage };
         Object[] licenceKeyValue = new Object[] { licenceKey };
         
         String subject = getMessageFromResource("register.mail.subject", cloudNames, null, locale);
-
         StringBuilder builder = new StringBuilder();
         if(isAdditionalCloud) {
             builder.append(getMessageFromResource("register.additionalcloud.mail.text.0" , cloudNames, null , locale));
         } else {
-            builder.append(getMessageFromResource("register.cloud.mail.text.0" , cloudNames, null , locale));
+            builder.append(getMessageFromResource("register.cloud.mail.text.0" , cloudAndCSP, null , locale));
+            builder.append(getMessageFromResource("register.cloud.mail.text.1" , null, DEFAILT_REGISTER_MAIL_TXT_1 , locale));
         }
-        builder.append(getMessageFromResource("register.mail.text.1" , cspName, null , locale));
-        builder.append(getMessageFromResource("register.mail.faq" , cspHomePage, null , locale));
+        builder.append(getMessageFromResource("register.cloud.mail.text.2" , null, DEFAILT_REGISTER_MAIL_TXT_2 , locale));
+        builder.append(getMessageFromResource("register.cloud.mail.faq" , cspHomePage, null , locale));
         if(licenceKey != null) {
             builder.append(getMessageFromResource("register.mail.licenceKey" , licenceKeyValue, null , locale));
         }
+        
         builder.append(getMessageFromResource("register.mail.footer" , cspName, null , locale));
 
         sendMail(builder, subject, emailAddress, bccEmailAddress);
