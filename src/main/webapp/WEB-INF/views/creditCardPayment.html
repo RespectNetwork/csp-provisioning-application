@@ -28,6 +28,7 @@
 	<!--include jquery-->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 	<script src="js/libs/misc.js"> </script>
+	<script src="js/libs/countryStateList.js"> </script>
 
 </head>
 
@@ -77,19 +78,26 @@
         <input type="text" name="BillingCity" id="BillingCity" placeholder=" city" class="inputFields short smallMarg"
                onFocus="clearText(this)" onBlur="clearText(this.className = 'onblurtext med smallMarg')"
                required="required"/>
-        <input type="text" name="BillingState" id="BillingState" placeholder="state/province" class="inputFields mini"
-                     onFocus="clearText(this)" onBlur="clearText(this.className = 'onblurtext med smallMarg')"/>
+
+        <select id="BillingCountry" name="BillingCountry" required="required" onchange="loadStates(this.value)" class="inputFields short smallMarg"
+               onFocus="clearText(this)" onBlur="clearText(this.className = 'onblurtext med smallMarg')"></select>
+
+        <select style="display:none" id="USA_State" name="USA_State" required="required"></select>
+        <input type="text" name="BillingState" id="BillingState" value="" placeholder="state/province" class="inputFields mini"
+                 onFocus="clearText(this)" onBlur="clearText(this.className = 'onblurtext med smallMarg')" />
+
         <input type="text" name="BillingPostCode" id="BillingPostCode" placeholder="postal code"
                      class="inputFields tiny smallMarg" onFocus="clearText(this)"        
                      onBlur="clearText(this.className = 'onblurtext med smallMarg')" required="required"/>
-        
-        <input type="text" name="BillingCountry" id="BillingCountry" 
-                      class="inputFields mini" placeholder="country" onFocus="clearText(this)"
-                      onBlur="clearText(this.className = 'onblurtext med smallMarg')" required="required"/>
+
 		<br/>
             <button type="submit" name="submit" id="submit" class="button big">Continue</button>
-        
 
+        <script th:inline="javascript">
+            /*<![CDATA[*/
+                loadCountriesAndStates();
+            /*]]>*/
+        </script>
     </div>
     <div th:if="${BrainTree}">
         <input type="text" size="20" autocomplete="off" data-encrypted-name="number"
@@ -257,6 +265,7 @@
                     };
                 });
                 /*]]>*/
+
 
         </script>
         <div class="row-fluid">
