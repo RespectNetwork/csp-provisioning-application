@@ -177,17 +177,13 @@
       <script>
         /*<![CDATA[*/
           $(document).ready(function () {
-              $(".cname").keyup(function(){
-                  checkCloudNameAvailability(this);
-              })
-
-              function checkCloudNameAvailability(meobj) {
+              function checkCloudNameAvailability(meobjid) {
                   // Get the position of input text box
-                  var pos = meobj.id.split('additionalCloudNames')[1];
+                  var pos = meobjid.split('additionalCloudNames')[1];
 
                   // the value of this var is the id of the input element
                   // that the user is typing into
-                  var cloudnameField = "#"+meobj.id;
+                  var cloudnameField = "#"+meobjid;
                   // the value of this var is the id of the display element 
                   // that will be used to convey information to the user
                   var messageSpan = "#isValidCloudName"+pos;
@@ -260,6 +256,8 @@
                   var txtTitle = document.getElementById(id).value;
                   if(txtTitle.trim() != "") {
                       document.getElementById(id).disabled = true;
+                  } else {
+                      checkCloudNameAvailability(id);
                   }
               }
               document.getElementById('submit').disabled = true;

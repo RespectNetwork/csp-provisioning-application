@@ -67,9 +67,9 @@
 	  <div class="row-fluid">
 		<div class="span2"></div>
 			<div class="span8"> 
-				<div class="middle"><p><span th:text="${statusText}"/></p>	
+				<div class="middle" style="text-align:left !important; font-size:25px;"><p><span th:utext="${statusText}"/></p>
 				<p class="primary">
-					<div th:if="${#strings.length(queryStr) == 0}">
+					<div style="text-align:center !important;" th:if="${#strings.length(queryStr) == 0}">
           				<form  action="#" role="form" name="txnCompletionForm" th:action="${postURL}" method="${submitMethod}">
           			
           					<input type="hidden" id="cloudname" name="cloudname" th:value="${cloudName}" />         	  

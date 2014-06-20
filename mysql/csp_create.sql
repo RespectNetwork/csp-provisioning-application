@@ -130,3 +130,12 @@ create table license_key
   key_value VARCHAR(256) NOT NULL,
   PRIMARY KEY (csp_cloudnumber, user_cloudnumber)
 );
+
+create table csp_product (
+  product_id varchar(255) NOT NULL,
+  product_cost decimal(9,2) NOT NULL,
+  product_currency char(3) NOT NULL,
+  duration_unit_years int(10) unsigned DEFAULT NULL,
+  csp_name varchar(255) NOT NULL,
+  PRIMARY KEY (product_id, csp_name)
+)
