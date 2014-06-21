@@ -27,7 +27,14 @@
                                    <link rel="shortcut icon" href="img/ico/favicon.png" />
   </head>
 
-<body>
+<body onload="submitForm()">
+<script LANGUAGE="JavaScript">
+
+	<!-- <![CDATA[ -->
+
+    function submitForm() { document.forms['autoform'].submit(); }         
+	<!-- ]]> -->
+</script>
 <div id="wrap">
     
 	
@@ -51,10 +58,10 @@
 			<div class="middle"> 
 				
 					<p class="primary">				
-            		<form action="#"  th:action="${postURL}" method="post">
+            		<form action="#"  name="autoform" th:action="${postURL}" method="post">
                     
                     <div th:if="${SagePay}">
-						<button type="submit" name="submit" class="button big">Process Payment</button> 
+			<button type="submit" name="submit"  style="display: none;" border="0"></button> 
                     	<input type="hidden" name="VPSProtocol" value="2.23" id="VPSProtocol" />
                     	<input type="hidden" name="TxType" value="PAYMENT" id="TxType"   />
                     	<input type="hidden" name="Vendor" value="" id="Vendor"  th:value="${vendor}" />
