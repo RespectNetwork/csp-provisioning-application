@@ -19,15 +19,15 @@
       <script src="../../js/html5shiv.js"></script>
     <![endif]-->
 
-    <!-- Fav and touch icons -->
-    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="img/ico/apple-touch-icon-144-precomposed.png" />
-    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/ico/apple-touch-icon-114-precomposed.png" />
-      <link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/ico/apple-touch-icon-72-precomposed.png" />
-                    <link rel="apple-touch-icon-precomposed" href="img/ico/apple-touch-icon-57-precomposed.png" />
-                                   <link rel="shortcut icon" href="img/ico/favicon.png" />
-  </head>
+<script type="text/javascript">
+    function submitForm() { 
+    	document.forms['autoform'].submit(); 
+    }         
+</script>   
+</head>
 
-<body>
+<body onload="submitForm();">
+
 <div id="wrap">
     
 	
@@ -37,8 +37,7 @@
         	<div class="navbar-inner">
           	<div class="container">
           	<div class="row-fluid">  
-          	<div class="span4 smallTop"><img src="img/RespectNetwork_Logo_H_RGB.png" />
-          	</div>
+          	
           	<div class="span4 midHdr">
           	</div>
           	
@@ -51,10 +50,10 @@
 			<div class="middle"> 
 				
 					<p class="primary">				
-            		<form action="#"  th:action="${postURL}" method="post">
+            		<form action="#"  id="autoform" name="autoform" th:action="${postURL}" method="post">
                     
                     <div th:if="${SagePay}">
-						<button type="submit" name="submit" class="button big">Process Payment</button> 
+			<button type="submit" name="submit"  style="display: none;" border="0"></button> 
                     	<input type="hidden" name="VPSProtocol" value="2.23" id="VPSProtocol" />
                     	<input type="hidden" name="TxType" value="PAYMENT" id="TxType"   />
                     	<input type="hidden" name="Vendor" value="" id="Vendor"  th:value="${vendor}" />
@@ -69,8 +68,7 @@
         <div id="footer">
   <div class="row-fluid">
     <div class="span1"></div>
-    <div class="span10 cspMain">YOUR CLOUD SERVICE PROVIDER | <img src="img/csp_logo.png" /> &nbsp;
-		</div>
+    
 	</div>
 <!--  <div class="row-fluid">
   	<div class="span1"></div>
