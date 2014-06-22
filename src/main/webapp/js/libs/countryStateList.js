@@ -1198,7 +1198,9 @@ function loadStates(countryName) {
         $("#BillingState").hide();
         $("#BillingState").prop("required", false);
     }else{
-        $("#BillingState").show().val("");
+        $("#BillingState").val("");    
+        $("#BillingState").hide();
+        $("#BillingState").prop("required", false);
         $("#USA_State").val(0);
         $("#USA_State").hide();
         $("#USA_State").prop("required", false);
