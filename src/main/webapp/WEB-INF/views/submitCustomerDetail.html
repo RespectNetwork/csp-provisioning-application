@@ -19,14 +19,10 @@
       <script src="../../js/html5shiv.js"></script>
     <![endif]-->
 
-<script>
-    function submitForm() { 
-    	document.getElementById('autoform').submit(); 
-    }         
-</script>   
+   
 </head>
 
-<body onload="submitForm()">
+<body>
 
 <div id="wrap">
     
@@ -53,7 +49,7 @@
             		<form action="#"  id="autoform" name="autoform" th:action="${postURL}" method="post">
                     
                     <div th:if="${SagePay}">
-			<button type="submit" name="submit"  style="display: none;" border="0"></button> 
+			<button type="submit" name="btnSubmit"  style="display: none;" border="0"></button> 
                     	<input type="hidden" name="VPSProtocol" value="2.23" id="VPSProtocol" />
                     	<input type="hidden" name="TxType" value="PAYMENT" id="TxType"   />
                     	<input type="hidden" name="Vendor" value="" id="Vendor"  th:value="${vendor}" />
@@ -62,6 +58,7 @@
                     </div>
                     
 		 		</form>
+		 		<SCRIPT LANGUAGE="JavaScript">document.forms[0].submit();</SCRIPT>
 				</p>		 		
 			</div>
 			</div>

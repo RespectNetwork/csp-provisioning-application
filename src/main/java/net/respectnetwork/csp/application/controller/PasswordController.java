@@ -209,7 +209,7 @@ public class PasswordController {
         try {
             passwordManager.verifyRecoverPasswordDetails(cloudName,
                     forgotPasswordForm.getEmailAddress(),
-                    forgotPasswordForm.getPhoneNumber());
+                    forgotPasswordForm.getPhoneNumber(), regSession.getSessionId());
 
         } catch (PasswordValidationException ex) {
             String errorStr = "System Error checking Email/Phone Number Uniqueness";

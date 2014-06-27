@@ -443,6 +443,7 @@ public class RegistrationController
       String verifyingPhone = request.getParameter("verifyingPhone");
 	  // To check if request comes from reset password 
       boolean resetPwd = Boolean.parseBoolean(request.getParameter("resetPwd"));
+      logger.debug("Reset Pwd Param ?: {}",request.getParameter("resetPwd"));
       mv.addObject("validateInfo", validateForm);
       mv.addObject("cloudName", regSession.getCloudName());
       mv.addObject("verifyingEmail", verifyingEmail);
