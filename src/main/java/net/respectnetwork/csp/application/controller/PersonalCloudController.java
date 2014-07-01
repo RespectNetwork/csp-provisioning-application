@@ -578,7 +578,7 @@ public class PersonalCloudController
       mv = new ModelAndView("AutoSubmitForm"); // DO NOT CHANGE THE REASSIGNMENT
                                                // OF THE VIEW HERE
       mv.addObject("URL", request.getContextPath()
-            + "/transactionSuccessFailure");
+            + "/confirmation");
       mv.addObject("cloudName", cloudName);
 
       mv.addObject("statusText", statusText);
@@ -917,7 +917,7 @@ public class PersonalCloudController
          mv = new ModelAndView("AutoSubmitForm");
 
          mv.addObject("URL", request.getContextPath()
-               + "/transactionSuccessFailure");
+               + "/confirmation");
          mv.addObject("cloudName", cloudName);
          mv.addObject("submitMethod", method);
          mv.addObject("statusText", statusText);
@@ -1106,7 +1106,7 @@ public class PersonalCloudController
             mv = new ModelAndView("AutoSubmitForm");
 
             mv.addObject("URL", request.getContextPath()
-                  + "/transactionSuccessFailure");
+                  + "/confirmation");
             mv.addObject("cloudName", cloudName);
             mv.addObject("submitMethod", method);
             mv.addObject("statusText", statusText);
@@ -1583,11 +1583,11 @@ private ModelAndView createDependentClouds(String cloudName,
       return mv;
    }
 
-   @RequestMapping(value = "/transactionSuccessFailure", method = RequestMethod.POST)
-   public ModelAndView showTransactionSuccessFailureForm(
+   @RequestMapping(value = "/confirmation", method = RequestMethod.POST)
+   public ModelAndView showConfirmationForm(
          HttpServletRequest request, Model model)
    {
-      logger.info("showing transactionSuccessFailure form "
+      logger.info("showing confirmation form "
             + request.getParameter("nextHop") + "::"
             + request.getParameter("cloudname"));
 

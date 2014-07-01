@@ -1016,7 +1016,7 @@ $.extend($.validator, {
 			if ( returnValuel ) {
 				$('#val-letters').addClass('validated');
 			} else {
-				$('#val-letters').removeClass('validated')
+				$('#val-letters').removeClass('validated');
 			};
 			if ( returnValuen ) {
 				$('#val-numbers').addClass('validated');

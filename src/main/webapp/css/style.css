@@ -168,6 +168,84 @@
 	margin-top: 10px;
 }
 
+.error {
+    font-size:14px;
+    color: #ff5c02;
+    line-height: 24px;
+    margin: 10px 0;
+    display: block;
+}
+.error.valid{
+    display: inline-block!important;
+    text-indent: -9999px;
+    background: url("../img/valid.png") no-repeat center center;
+    width: 40px;
+    height: 26px;
+    margin-left: -40px;
+    position: relative;
+    z-index: 200;
+}
+.hide-error .error{
+  display: none!important;
+}
+.hide-error .error.valid{
+  display: inline-block!important;
+}
+
+.password-validation {
+    color: #ff7300;
+    font-size: 14px;
+    line-height: 20px;
+    position: relative;
+}
+.password-validation div{
+    width: 16%;
+    display: inline-block;
+    text-align: left;
+    background: #d9d9d9;
+    padding: 5px 28px 5px 5px;
+    margin: .25rem 0;
+    -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+}
+.password-validation div.validated{
+    background: #fff url("../img/valid.png") no-repeat right center;
+    color: #02e4ff;
+
+}
+#change-password-form, #reset-password-form{
+    max-width: 410px !important;
+    margin: 0 auto !important;
+}
+#change-password-form input[type="text"], #change-password-form input[type="password"], #reset-password-form input[type="text"], #reset-password-form input[type="password"]{
+  display: inline-block !important;
+  width: 100% !important;
+-webkit-appearance: none;
+background-color: #fdfdfd;
+font-family: inherit;
+border: 0px solid #cccccc;
+color: #6d6f70;
+font-size: 1.5rem;
+margin: 0 0 1rem 0;
+padding: 0.5rem;
+height: 2.9375rem;
+-webkit-box-sizing: border-box;
+-moz-box-sizing: border-box;
+box-sizing: border-box;
+border-radius: 5px;
+text-align: center;
+transition: all 0.15s linear;
+max-width: 31.25rem;
+    margin: .33em auto;
+}
+
+#confirmPassword {
+  margin-top: 0px;
+  position: relative;
+  z-index: 1;
+}
+
 .smallerTop {
 	margin-top: 20px;
 }

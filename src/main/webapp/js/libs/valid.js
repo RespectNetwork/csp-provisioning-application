@@ -38,4 +38,60 @@ $(document).ready(function(){
                         }
           });
 
+          $('#change-password-form').validate({
+              rules: {
+                  newPassword: {
+                      required: true,
+                      atleasttwo: true,
+                      passtestletters: true,
+                      passtestnumbers: true,
+                      passtestchars: true,
+                      passtestlength: true,
+                  },
+                  confirmPassword: {
+                      required: true,
+                      equalTo: "#newPassword"
+                  },
+                  agree:  {
+                      required: true
+                  },
+              },
+              highlight: function(element) {
+                  $(element).closest('.formGroup').removeClass('success').addClass('error');
+              },
+              success: function(element) {
+                  element
+                  .text('OK!').addClass('valid')
+                  .closest('.formGroup').removeClass('error').addClass('success');
+              }
+          });
+
+
+          $('#reset-password-form').validate({
+              rules: {
+                  newPassword: {
+                      required: true,
+                      atleasttwo: true,
+                      passtestletters: true,
+                      passtestnumbers: true,
+                      passtestchars: true,
+                      passtestlength: true,
+                  },
+                  confirmPassword: {
+                      required: true,
+                      equalTo: "#newPassword"
+                  },
+                  agree:  {
+                      required: true
+                  },
+              },
+              highlight: function(element) {
+                  $(element).closest('.formGroup').removeClass('success').addClass('error');
+              },
+              success: function(element) {
+                  element
+                  .text('OK!').addClass('valid')
+                  .closest('.formGroup').removeClass('error').addClass('success');
+              }
+          });
 }); // end document.ready
