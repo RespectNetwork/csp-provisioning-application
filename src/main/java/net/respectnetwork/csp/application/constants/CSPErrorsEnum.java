@@ -3,7 +3,7 @@ package net.respectnetwork.csp.application.constants;
 public enum CSPErrorsEnum {
     
     VE_INVALID_CURRENT_PASSWORD(1000, "You have provided an incorrect current password."),
-    VE_INVALID_PASSWORD_FORMAT(1001, "Invalid password. Please provide a password that is at least 8 characters, have at least 2 letters, 2 numbers and at least one special character, e.g. @, #, $ etc. except a , (comma)"),
+    VE_INVALID_PASSWORD_FORMAT(1001, "Invalid password. Please provide a password that is at least 8 characters, have at least 2 letters, 2 numbers and at least one special character, e.g. @, #, $ etc."),
     VE_INVALID_CLOUD_NAME(1002, "The Cloud Name provided is not valid."),
     VE_INVALID_NOT_REGISTERED_EMAIL(1003, "The email address provided is not registered with this cloud name."),
     VE_INVALID_NOT_REGISTERED_PHONE(1004, "The phone number provided is not registered with this cloud name."),

@@ -47,6 +47,7 @@ function validatePwd(pwd, dependentCounter) {
               (pwd.charAt(i) ==  '?') ||
               (pwd.charAt(i) ==  '.') ||
               (pwd.charAt(i) ==  '&') ||
+              (pwd.charAt(i) ==  ',') ||
               (pwd.charAt(i) ==  '/') 
               )
         {
