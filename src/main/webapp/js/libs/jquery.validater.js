@@ -628,7 +628,7 @@ $.extend($.validator, {
 				}
 			}
 			this.toHide = this.toHide.not( this.toShow );
-			this.hideErrors();
+			//this.hideErrors();
 			this.addWrapper( this.toShow ).show();
 		},
 
