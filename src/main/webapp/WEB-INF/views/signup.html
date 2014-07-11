@@ -63,6 +63,7 @@
 							</p>
 						<button type="submit" name="submit" id="submit" class="button">Submit</button>
                         <input type="hidden" name="giftCode" id="giftCode" th:value="*{giftCode}" th:if="${signUpInfo} != null" />
+                        <input type="hidden" name="avAPI" value="" id="avAPI" th:value="*{nameAvailabilityCheckURL} + '/api/availability/equals/'"/>
 					</form>
 				</div>
 			</div>
@@ -150,7 +151,7 @@
 	        stripSymbol:true, 
 
                 // indicates the location of the availability service
-                availabilityApi: /*[[${signUpInfo.nameAvailabilityCheckURL + '/api/availability/equals/'}]]*/ "https://registration-stage.respectnetwork.net/rn-checkavailability-service/api/availability/equals/"
+		        availabilityApi :  document.getElementById("avAPI").value
             });
     });
 
