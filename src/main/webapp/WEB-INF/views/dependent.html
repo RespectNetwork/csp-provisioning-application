@@ -98,6 +98,8 @@
                                 id="dependentCloudPassword" placeholder="password" required="required"
                                 th:value="*{dependentCloudPassword}" onchange="validatePwd(this.value)" />
                 <br></br><span class="dependent-error"  name="isValidPassword" id="isValidPassword"></span>
+                                <input type="password" class="inputFields smallMarg" name="confirmPassword" value="" id="confirmPassword" placeholder="confirm password" required="required" onFocus="clearText(this)" onBlur="clearText(this.className = 'onblurtext smallMarg')" onchange="confirmPwd()"/>
+                <br></br><span class="dependent-error"  name="isValidConfirmPassword" id="isValidConfirmPassword"></span>
  			    	<p class="secondary"></p>
 <!-- 			    	
            		<p class="payment3">Dependent's birthdate:
@@ -255,6 +257,7 @@
       var isValidDate = 'isValidDate' +  window.mycounter;
       var divId = 'dependent'+ window.mycounter;
       var isValidPassword = 'isValidPassword' +  window.mycounter;
+      var isValidConfirmPassword = 'isValidConfirmPassword' +  window.mycounter;
 
       var strA = '<div id="'+divId+'"><table ><tr><td><p class="payment3">Dependent&apos;s cloud name &nbsp;&nbsp;&nbsp;&nbsp;<a href="#" onclick="removeDiv('+divId+');">Delete Dependent</a></p></td></tr>  <tr> <td> <input type="text" class="inputFields smallMarg" name="dependentFormIndividual[' + window.mycounter + '].dependentCloudName' ;
       var strB = strA + '"  id="' ;
@@ -263,20 +266,26 @@
       var strE = strD + depIsAvailable ;
       var strF = strE + '"  id="' ;
       var strG = strF + depIsAvailable ;
-      var strH = strG + '"></span></td></tr> <tr><td><input type="password" name="dependentFormIndividual[' + window.mycounter + '].dependentPassword" class="inputFields smallMarg" id="dependentCloudPassword" placeholder="password" required="required" onchange="validatePwd(this.value, ' ;
+      var strH = strG + '"></span></td></tr> <tr><td><input type="password" name="dependentFormIndividual[' + window.mycounter + '].dependentPassword" class="inputFields smallMarg" id="dependentCloudPassword' + window.mycounter + '" placeholder="password" required="required" onchange="validatePwd(this.value, ' ;
       var strI = strH + window.mycounter ;
       var strJ = strI + ')" /> </td></tr><tr><td><span class="dependent-error"  name="' ;
       var strK = strJ + isValidPassword ;
       var strL = strK + '"  id="' ;
       var strM = strL + isValidPassword;
-      var strN = strM + '"></span></td></tr><tr><td><p class="payment3">Dependent&apos;s birthdate:</p></td></tr><tr><td><input type="text" class="inputFields smallMarg dependentBirthDate" name="dependentFormIndividual[' + window.mycounter + '].dependentBirthDate" value="" placeholder="MM/DD/YYYY" required="required" onchange="validateDate(this.value, ' ;
+      var strN = strM + '"></span></td></tr><tr><td><input type="password" class="inputFields smallMarg" name="confirmPassword' + window.mycounter + '" value="" id="confirmPassword' + window.mycounter + '" placeholder="Confirm password" required="required" onchange="confirmPwd(' ;
       var strO = strN + window.mycounter ;
-      var strP = strO + ')"   /></td></tr><tr><td><span class="dependent-error"  name="' ;
-      var strQ = strP + isValidDate ;
+      var strP = strO + ')" /> </td></tr><tr><td><span class="dependent-error"  name="' ;
+      var strQ = strP + isValidConfirmPassword ;
       var strR = strQ + '"  id="' ;
-      var strS = strR + isValidDate ;
-      var strT = strS + '"></span></td></tr><tr><td><p class="secondary"> <input type="checkbox" name="consent"  required="required" /> I consent to my dependent obtaining a personal cloud.</p></td></tr></table></div>';
-      $( strT ).appendTo("#allDependents");
+      var strS = strR + isValidConfirmPassword;
+      var strT = strS + '"></span></td></tr><tr><td><p class="payment3">Dependent&apos;s birthdate:</p></td></tr><tr><td><input type="text" class="inputFields smallMarg dependentBirthDate" name="dependentFormIndividual[' + window.mycounter + '].dependentBirthDate" value="" placeholder="MM/DD/YYYY" required="required" onchange="validateDate(this.value, ' ;
+      var strU = strT + window.mycounter ;
+      var strV = strU + ')"   /></td></tr><tr><td><span class="dependent-error"  name="' ;
+      var strW = strV + isValidDate ;
+      var strX = strW + '"  id="' ;
+      var strY = strX + isValidDate ;
+      var strZ = strY + '"></span></td></tr><tr><td><p class="secondary"> <input type="checkbox" name="consent"  required="required" /> I consent to my dependent obtaining a personal cloud.</p></td></tr></table></div>';
+      $( strZ ).appendTo("#allDependents");
 
       checkCloudNameAvailability(depCloudName, depIsAvailable);
       setDatePicker();
@@ -300,7 +309,7 @@ function disableEnableContinue() {
             if($('span#isAvailable').text() == "Sorry, that cloud name is not available. Please try again.") {
                 enableSubmit = false;
             }
-            if(($('span#isValidDate').text() != "") || ($('span#isValidPassword').text() != "")) {
+            if(($('span#isValidDate').text() != "") || ($('span#isValidPassword').text() != "") || ($('span#isValidConfirmPassword').text() != "")) {
                enableSubmit = false;
             }
         } else {
@@ -311,7 +320,7 @@ function disableEnableContinue() {
                         enableSubmit = false;
                         break;
                     }
-                    if(($('span#isValidDate').text() != "") || ($('span#isValidPassword').text() != "")) {
+                    if(($('span#isValidDate').text() != "") || ($('span#isValidPassword').text() != "") || ($('span#isValidConfirmPassword').text() != "")) {
                         enableSubmit = false;
                         break;
                     }
@@ -320,7 +329,7 @@ function disableEnableContinue() {
                         enableSubmit = false;
                         break;
                     }
-                    if(($('span#isValidDate'+window.mycounter).text() != "") || ($('span#isValidPassword'+window.mycounter).text() != "")) {
+                    if(($('span#isValidDate'+window.mycounter).text() != "") || ($('span#isValidPassword'+window.mycounter).text() != "") || ($('span#isValidConfirmPassword'+window.mycounter).text() != "")) {
                         enableSubmit = false;
                         break;
                     }
