@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+        <appender name="fileAppender" class="ch.qos.logback.core.FileAppender">
+                <file>/usr/share/apache-tomcat-7.0.50/logs/catalina.out</file>
+                <append>true</append>
+                <encoder>
+              <pattern>[%d{dd MMM yyyy HH:mm:ss,SSS}] [%5p] [%X{sid}] [%-20C{0} %25M]:[%-4L] - %m%n</pattern>
+            </encoder>
+        </appender>
+
+
+        <appender name="gelf" class="gelf4j.logback.GelfAppender">
+        <host>log-external.nexgen.neustar.biz</host>
+        <port>12201</port>
+        <compressedChunking>false</compressedChunking>
+        <defaultFields>{"facility": "PC-csp-prov-prod"}</defaultFields>
+        </appender>
+
+        <root level="DEBUG">
+                <appender-ref ref="gelf" />
+                <appender-ref ref="fileAppender" />
+        </root>
+</configuration>
