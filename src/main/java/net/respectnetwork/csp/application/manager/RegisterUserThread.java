@@ -114,7 +114,7 @@ public class RegisterUserThread implements Runnable
             throw new CSPRegistrationException(e);
          }
 
-         cspRegistrar.setCloudServicesInCloud(cloudNumber, cspSecretToken,
+         cspRegistrar.setCloudServicesInCloud(cloudNumber, userPassword,
                services);
 
          // step 3: Check if the Cloud Name is available
@@ -141,11 +141,11 @@ public class RegisterUserThread implements Runnable
          }
          cspRegistrar.registerCloudNameInCSP(cloudName, cloudNumber);
          cspRegistrar.registerCloudNameInCloud(cloudName, cloudNumber,
-               cspSecretToken);
+               userPassword);
 
          // step 6: Set phone number and e-mail address
 
-         cspRegistrar.setPhoneAndEmailInCloud(cloudNumber, cspSecretToken,
+         cspRegistrar.setPhoneAndEmailInCloud(cloudNumber, userPassword,
                verifiedPhone, verifiedEmail);
 
          // step 7: Set RN/RF membership
