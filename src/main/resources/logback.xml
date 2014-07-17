@@ -3,9 +3,10 @@
         <appender name="fileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
                 <file>/usr/share/apache-tomcat-7.0.50/logs/catalina.out</file>
                 <append>true</append>
-                <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy" />
-                <maxHistory>7</maxHistory>
-                <fileNamePattern>catalina.%d{yyyy-MM-dd}.out</fileNamePattern>
+                <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy" >
+                	<maxHistory>7</maxHistory>
+                	<fileNamePattern>/usr/share/apache-tomcat-7.0.50/logs/catalina.out.%d</fileNamePattern>
+                </rollingPolicy>
                 <encoder>
                                 <pattern>[%d{dd MM yyy HH:mm:ss,SSS}] [%5p] [%X{sid}] [%-20C{0} %25M]:[%-4L] - %m%n</pattern>
                 </encoder>
