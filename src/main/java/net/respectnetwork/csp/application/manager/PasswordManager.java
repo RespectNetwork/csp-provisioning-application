@@ -118,7 +118,7 @@ public class PasswordManager {
     }
 
     public void verifyRecoverPasswordDetails(String cloudName,
-            String emailAddress, String phoneNumber)
+            String emailAddress, String phoneNumber, String sessionId)
             throws PasswordValidationException {
         CloudNumber cloudNumber;
         if (!RegistrationManager.validateCloudName(cloudName)) {
@@ -173,7 +173,7 @@ public class PasswordManager {
 
         // If all is okay send out the validation messages.
         try {
-            registrationManager.sendValidationCodes(cloudNumber.toString(),
+            registrationManager.sendValidationCodes(sessionId,
                     emailAddress, phoneNumber);
         } catch (CSPValidationException ex) {
             logger.error(

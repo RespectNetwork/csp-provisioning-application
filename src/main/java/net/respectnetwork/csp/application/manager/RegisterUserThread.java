@@ -91,14 +91,22 @@ public class RegisterUserThread implements Runnable
       boolean isAdditionalCloud = false;
       try
       {
-         // Step 1: Register Cloud with Cloud Number and Shared Secret
+      // step 1: Check if the Cloud Name is available
 
-         String cspSecretToken = cspRegistrar.getCspInformation()
-               .getCspSecretToken();
+         CloudNumber existingCloudNumber = cspRegistrar
+               .checkCloudNameInRN(cloudName);
 
-         cspRegistrar.registerCloudInCSP(cloudNumber, cspSecretToken);
+         if (existingCloudNumber != null)
+         {
+            throw new CSPRegistrationException("Cloud Name " + cloudName
+                  + " is already registered with Cloud Number "
+                  + existingCloudNumber + ".");
+         }
+         // Step 2: Register Cloud with Cloud Number
 
-         // step 2: Set Cloud Services in Cloud
+         cspRegistrar.registerCloudInCSP(cloudNumber, userPassword);
+
+         // step 3: Set Cloud Services in Cloud
 
          Map<XDI3Segment, String> services = new HashMap<XDI3Segment, String>();
 
@@ -114,22 +122,10 @@ public class RegisterUserThread implements Runnable
             throw new CSPRegistrationException(e);
          }
 
-         cspRegistrar.setCloudServicesInCloud(cloudNumber, cspSecretToken,
+         cspRegistrar.setCloudServicesInCloud(cloudNumber, userPassword,
                services);
 
-         // step 3: Check if the Cloud Name is available
-
-         CloudNumber existingCloudNumber = cspRegistrar
-               .checkCloudNameInRN(cloudName);
-
-         if (existingCloudNumber != null)
-         {
-            throw new CSPRegistrationException("Cloud Name " + cloudName
-                  + " is already registered with Cloud Number "
-                  + existingCloudNumber + ".");
-         }
-
-         // step 5: Register Cloud Name
+         // step 4: Register Cloud Name
          if (cdc != null)
          {
             cspRegistrar.registerCloudNameInRN(cloudName, cloudNumber,
@@ -141,14 +137,14 @@ public class RegisterUserThread implements Runnable
          }
          cspRegistrar.registerCloudNameInCSP(cloudName, cloudNumber);
          cspRegistrar.registerCloudNameInCloud(cloudName, cloudNumber,
-               cspSecretToken);
+               userPassword);
 
-         // step 6: Set phone number and e-mail address
+         // step 5: Set phone number and e-mail address
 
-         cspRegistrar.setPhoneAndEmailInCloud(cloudNumber, cspSecretToken,
+         cspRegistrar.setPhoneAndEmailInCloud(cloudNumber, userPassword,
                verifiedPhone, verifiedEmail);
 
-         // step 7: Set RN/RF membership
+         // step 6: Set RN/RF membership
 
          cspRegistrar.setRespectNetworkMembershipInRN(cloudNumber, new Date(),
                null);
@@ -156,11 +152,9 @@ public class RegisterUserThread implements Runnable
 //         {
 //            cspRegistrar.setRespectFirstMembershipInRN(cloudNumber);
 //         }
-         // Step 8: Change Secret Token
+         
 
-         cspRegistrar.setCloudSecretTokenInCSP(cloudNumber, userPassword);
-
-         // Step 9 : save the email and phone in local DB
+         // Step 7 : save the email and phone in local DB
 
          DAOFactory dao = DAOFactory.getInstance();
          try

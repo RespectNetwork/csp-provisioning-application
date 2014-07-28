@@ -578,7 +578,7 @@ public class PersonalCloudController
       mv = new ModelAndView("AutoSubmitForm"); // DO NOT CHANGE THE REASSIGNMENT
                                                // OF THE VIEW HERE
       mv.addObject("URL", request.getContextPath()
-            + "/transactionSuccessFailure");
+            + "/confirmation");
       mv.addObject("cloudName", cloudName);
 
       mv.addObject("statusText", statusText);
@@ -917,7 +917,7 @@ public class PersonalCloudController
          mv = new ModelAndView("AutoSubmitForm");
 
          mv.addObject("URL", request.getContextPath()
-               + "/transactionSuccessFailure");
+               + "/confirmation");
          mv.addObject("cloudName", cloudName);
          mv.addObject("submitMethod", method);
          mv.addObject("statusText", statusText);
@@ -1106,7 +1106,7 @@ public class PersonalCloudController
             mv = new ModelAndView("AutoSubmitForm");
 
             mv.addObject("URL", request.getContextPath()
-                  + "/transactionSuccessFailure");
+                  + "/confirmation");
             mv.addObject("cloudName", cloudName);
             mv.addObject("submitMethod", method);
             mv.addObject("statusText", statusText);
@@ -1209,8 +1209,7 @@ public class PersonalCloudController
             throws UserRegistrationException, CSPException {
         if (PaymentForm.TXN_TYPE_SIGNUP.equals(txnType)) {
             // check availability of cloud name before billing once again
-            if (!registrationManager.isCloudNameAvailableInRegistry(cloudName)
-                    && !registrationManager.isCloudNameAvailable(cloudName)) {
+            if (!registrationManager.isCloudNameAvailableInRegistry(cloudName)) {
                 throw new CSPProValidationException(
                         "Sorry! The cloud name is not available. Please try with some different cloud name.");
             }
@@ -1225,9 +1224,7 @@ public class PersonalCloudController
                     // check availability of cloud name before billing once
                     // again
                     if (!registrationManager
-                            .isCloudNameAvailableInRegistry(dependentCloudName)
-                            && !registrationManager
-                                    .isCloudNameAvailable(dependentCloudName)) {
+                            .isCloudNameAvailableInRegistry(dependentCloudName)) {
                         throw new CSPProValidationException(
                                 "Sorry! The dependent cloud name is not available. Please try with some different cloud name.");
                     }
@@ -1583,11 +1580,11 @@ private ModelAndView createDependentClouds(String cloudName,
       return mv;
    }
 
-   @RequestMapping(value = "/transactionSuccessFailure", method = RequestMethod.POST)
-   public ModelAndView showTransactionSuccessFailureForm(
+   @RequestMapping(value = "/confirmation", method = RequestMethod.POST)
+   public ModelAndView showConfirmationForm(
          HttpServletRequest request, Model model)
    {
-      logger.info("showing transactionSuccessFailure form "
+      logger.info("showing confirmation form "
             + request.getParameter("nextHop") + "::"
             + request.getParameter("cloudname"));
 

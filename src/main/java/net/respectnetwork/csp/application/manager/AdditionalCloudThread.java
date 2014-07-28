@@ -50,7 +50,7 @@ public class AdditionalCloudThread implements Runnable {
 
             try {
                 // Return if cloud is already registered.
-                if(!(registrationManager.isCloudNameAvailableInRegistry(cloudName.toString()) && registrationManager.isCloudNameAvailable(cloudName.toString()))) {
+                if(!registrationManager.isCloudNameAvailableInRegistry(cloudName.toString())) {
                     throw new CSPRegistrationException("Cloud Name " + cloudName
                             + " is already registered.");
                 }
