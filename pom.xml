@@ -6,7 +6,7 @@
     <groupId>net.respectnetwork.csp.application</groupId>
     <artifactId>csp-provisioning-application</artifactId>
     <packaging>war</packaging>
-    <version>0.6.1</version>
+    <version>0.6.2</version>
     <name>CSP Provisioning Application</name>
     <description>CSP Provisioning Application</description>
 
