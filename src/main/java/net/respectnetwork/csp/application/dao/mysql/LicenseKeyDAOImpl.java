@@ -58,10 +58,8 @@ public class LicenseKeyDAOImpl extends BaseDAOImpl implements LicenseKeyDAO {
             this.closeConnection(conn, stmt, rset);
         }
         if (licenceKeyModel == null) {
-            logger.error("No License key found");
-        } else {
-            // logger.error("DependentCloud found = " + licenceKeyModel.size());
-        }
+            logger.warn("No License key found csp cloud number {} and user cloud number {} combination:", cspCloudNumber, userCloudNumber);
+        } 
         return licenceKeyModel;
     }
 

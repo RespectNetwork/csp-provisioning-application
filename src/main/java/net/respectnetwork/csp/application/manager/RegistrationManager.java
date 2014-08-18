@@ -135,14 +135,7 @@ public class RegistrationManager {
     private String contactSupportEmail;
     
     private String cspCloudName;
-    /**
-     * RN endpoint for social safe licence key
-     */
-    private String rnSocialSafeEndpoint;
-    /**
-     * Social safe secret token for CSP
-     */
-    private String rnSocialSafeToken;
+    
     public static final String GeoLocationPostURIKey = "<$https><#network.globe><$set>";
     public static final String RNpostRegistrationLandingPageURIKey = "<$https><#post><#registration>";
     public static final String CSPCloudRegistrationURIKey = "<$https><#registration>";
@@ -287,22 +280,6 @@ public class RegistrationManager {
         this.validateCodes = validateCodes;
     }
     
-    public String getRnSocialSafeEndpoint() {
-        return rnSocialSafeEndpoint;
-    }
-
-    public void setRnSocialSafeEndpoint(String rnSocialSafeEndpoint) {
-        this.rnSocialSafeEndpoint = rnSocialSafeEndpoint;
-    }
-
-    public String getRnSocialSafeToken() {
-        return rnSocialSafeToken;
-    }
-
-    public void setRnSocialSafeToken(String rnSocialSafeToken) {
-        this.rnSocialSafeToken = rnSocialSafeToken;
-    }
-
     /**
      * Constructor Used for Getting CSP Private Key
      */
@@ -479,8 +456,6 @@ public class RegistrationManager {
            rut.setUserEmail(verifiedEmail);
            rut.setCspContactEmail(cspContactEmail);
            rut.setLicenceKeyApplicable(true);
-           rut.setRnSocialSafeEndpoint(rnSocialSafeEndpoint);
-           rut.setRnSocialSafeToken(rnSocialSafeToken);
            Thread t = new Thread(rut);
            t.start();
 

@@ -76,12 +76,13 @@
 		<beans:property name="cspRespectConnectBaseURL" value="${csp.cspRespectConnectBaseURL}"/>
 		<beans:property name="cspTCURL" value="${csp.cspTCURL}"/>
 		<beans:property name="nameAvailabilityCheckURL" value="${csp.nameAvailabilityCheckURL}"/> 
-		<beans:property name="rnSocialSafeEndpoint" value="${csp.rnSocialSafeEndpoint}"/>
-		<beans:property name="rnSocialSafeToken" value="${csp.rnSocialSafeToken}"/>				  	
     </beans:bean>
     <beans:bean id="cspHelper"
         class="net.respectnetwork.csp.application.util.CSPHelper">
-        <beans:constructor-arg name="registrationManager" ref="regManager"/>  
+        <beans:constructor-arg name="registrationManager" ref="regManager"/>
+        <beans:constructor-arg name="cspRegistrar" ref="basicCSP"/>  
+        <beans:property name="rnSocialSafeEndpoint" value="${csp.rnSocialSafeEndpoint}"/>
+		<beans:property name="rnSocialSafeToken" value="${csp.rnSocialSafeToken}"/>	
     </beans:bean>
     
 	<!-- Personal Cloud Manager -->
