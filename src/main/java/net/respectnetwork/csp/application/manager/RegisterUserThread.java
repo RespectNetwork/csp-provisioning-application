@@ -7,14 +7,10 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import net.respectnetwork.csp.application.constants.LicenceKeyEnum;
 import net.respectnetwork.csp.application.dao.DAOException;
 import net.respectnetwork.csp.application.dao.DAOFactory;
-import net.respectnetwork.csp.application.exception.CSPException;
-import net.respectnetwork.csp.application.model.LicenseKeyModel;
-import net.respectnetwork.csp.application.model.LicenseKeyResponse;
 import net.respectnetwork.csp.application.model.SignupInfoModel;
-import net.respectnetwork.csp.application.rest.client.RestServiceHttpClient;
+import net.respectnetwork.csp.application.util.CSPHelper;
 import net.respectnetwork.csp.application.util.EmailHelper;
 import net.respectnetwork.sdk.csp.CSP;
 import net.respectnetwork.sdk.csp.discount.NeustarRNDiscountCode;
@@ -27,9 +23,6 @@ import xdi2.client.exceptions.Xdi2ClientException;
 import xdi2.core.xri3.CloudName;
 import xdi2.core.xri3.CloudNumber;
 import xdi2.core.xri3.XDI3Segment;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 
 public class RegisterUserThread implements Runnable
 {   
@@ -165,46 +158,11 @@ public class RegisterUserThread implements Runnable
             logger.error("Problem inserting record in signupInfo table. Data : " + signupInfo.toString());
             logger.error("DB Exception : " + e.getMessage());
          }
-         
-         String licenceKey = null;
-         if (isLicenceKeyApplicable) {
-             logger.info("Get licence key for user cloud number : {}", cloudNumber.toString());
-             String cspCloudNumber = cspRegistrar.getCspInformation()
-                     .getCspCloudNumber().toString();
-             LicenseKeyModel licenceKeyModel = new LicenseKeyModel(
-                     cspCloudNumber, cloudNumber.toString(),
-                     rnSocialSafeToken);
-             RestServiceHttpClient restServiceHttpClient = new RestServiceHttpClient(
-                     rnSocialSafeEndpoint, licenceKeyPath,
-                     licenceKeyModel);
-             LicenseKeyResponse licenceKeyResponse = null;
-            try {
-                licenceKeyResponse = restServiceHttpClient
-                         .deserialize(restServiceHttpClient.postRequest(),
-                                 LicenseKeyResponse.class);
-            } catch (CSPException ex) {
-                logger.error("Error while parsing the licence key response: ", ex);
-            }
-            if (licenceKeyResponse != null) {
-                if(licenceKeyResponse.getKeyResponse() != null) {
-                     licenceKeyModel
-                             .setKeyName(LicenceKeyEnum.SOCIALSAFE.name());
-                     licenceKeyModel
-                             .setKeyValue(licenceKeyResponse.getKeyResponse().getKeyData());
-                     try {
-                         dao.getLicenseKeyDAO().insert(licenceKeyModel);
-                     } catch (DAOException ex) {
-                         logger.error("Error while inserting into licence key: ", ex);
-                     }
-                     licenceKey = licenceKeyModel.getKeyValue();
-                     emailHelper.setLicenceKey(licenceKey);
-                    } else {
-                        logger.error("Failed to get the license key. Error code is: "
-                                +licenceKeyResponse.getErrorCode()+" and reason : "+licenceKeyResponse.getErrorMessage());
-                    }
-            }
+                  
+         String licenceKey = CSPHelper.generateSocialSafeKey(isLicenceKeyApplicable(), cloudNumber.toString());
+         if(licenceKey != null) {
+             emailHelper.setLicenceKey(licenceKey);
          }
-
          // Step 10 : send the notification email for successful registration of cloudname.
          // Send the email at email address registered for the cloud name.
          emailHelper.sendRegistrationSuccessNotificaionEmail(userEmail, cspContactEmail, cloudName.toString(), locale, cspCloudName, cspHomePage, isAdditionalCloud);

@@ -238,6 +238,7 @@ public class PersonalCloudController
             {
 
                myCSP.authenticateInCloud(cloudNumber, secretToken);
+               boolean isAdditionalCloud = true;
                if (regSession != null && regSession.getCloudName() == null)
                {
 
@@ -252,7 +253,7 @@ public class PersonalCloudController
                   logger.info("Setting cloudname as  " + cloudName);
                   if (request.getParameter("cloudname") != null)
                   {
-                     regSession.setCloudName(cName);
+                     regSession.setCloudName(cName.toLowerCase());
                   }
                   // logger.info("Setting secret token as  " +
                   // request.getParameter("secrettoken"));
@@ -271,6 +272,7 @@ public class PersonalCloudController
                      {
                         regSession.setVerifiedEmail(signupInfo.getEmail());
                         regSession.setVerifiedMobilePhone(signupInfo.getPhone());
+                        isAdditionalCloud = false;
                      }
                   } catch (DAOException e)
                   {
@@ -284,8 +286,14 @@ public class PersonalCloudController
                                cloudNumber.toString());
 	       if(licenceKeyModel != null) {
                		mv.addObject("licenceKey", licenceKeyModel.getKeyValue());               
+	       } else if (!isAdditionalCloud && !CSPHelper.isDependentCloud(regSession.getCloudName())) {
+	           String socialSafeKey = CSPHelper.generateSocialSafeKey(true, cloudNumber.toString());
+	           if(socialSafeKey != null) {
+	               mv.addObject("licenceKey", socialSafeKey); 
+	           }
 	       }
-               logger.info("Successfully authenticated to the personal cloud for "
+    
+	        logger.info("Successfully authenticated to the personal cloud for "
                      + cloudName);
             } else
             {
