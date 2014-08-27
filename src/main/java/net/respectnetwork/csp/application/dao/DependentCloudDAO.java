@@ -8,4 +8,5 @@ public interface DependentCloudDAO
 {
 	public List<DependentCloudModel> list( String guardianCloudName ) throws DAOException;
 	public DependentCloudModel insert( DependentCloudModel dependentCloud ) throws DAOException;
+	public DependentCloudModel getDependent( String cloudName ) throws DAOException;
 }

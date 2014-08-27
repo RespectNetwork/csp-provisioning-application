@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.respectnetwork.csp.application.model.DependentCloudModel;
+import net.respectnetwork.csp.application.model.SignupInfoModel;
 import net.respectnetwork.csp.application.dao.DependentCloudDAO;
 import net.respectnetwork.csp.application.dao.DAOException;
 
@@ -140,4 +141,36 @@ public class DependentCloudDAOImpl extends BaseDAOImpl implements DependentCloud
 		}
 		return rtn;
 	}
+
+    @Override
+    public DependentCloudModel getDependent(String cloudName)
+            throws DAOException {
+        logger.info("getDependent() - {}", cloudName);
+        DependentCloudModel dependentCloudModel = null;
+        Connection conn = this.getConnection();
+        PreparedStatement stmt = null;
+        ResultSet rset = null;
+        String sql = null;
+        try {
+            sql = "select guardian_cloudname, dependent_cloudname, payment_id, time_created from dependent_cloud where dependent_cloudname = ?";
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, cloudName);
+            rset = stmt.executeQuery();
+            if (rset.next()) {
+                dependentCloudModel = this.get(rset);
+                logger.debug(dependentCloudModel.toString());
+            }
+
+        } catch (SQLException e) {
+            String err = "Failed to execute SQL statement - " + sql;
+            logger.error(err, e);
+            throw new DAOException(err, e);
+        } finally {
+            this.closeConnection(conn, stmt, rset);
+        }
+        if (dependentCloudModel == null) {
+            logger.debug("Depenednt cloud {} not found.", cloudName);
+        }
+        return dependentCloudModel;
+    }
 }
