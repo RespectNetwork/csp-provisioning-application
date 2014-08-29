@@ -16,7 +16,7 @@
         <github.global.server>github</github.global.server>
         <java.version>1.6</java.version>
         <org.slf4j-version>1.7.5</org.slf4j-version>
-        <xdi2-version>0.5.1</xdi2-version>
+        <xdi2-version>0.6</xdi2-version>
         <cspsdk-version>0.4.2</cspsdk-version>
         <thymeleaf-version>2.1.1.RELEASE</thymeleaf-version>
         <jetty-version>6.1.10</jetty-version>
