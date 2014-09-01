@@ -166,6 +166,9 @@
               </li>
               <p>As part of the First Million Members campaign, you are entitled to a <a href="https://apps.respectnetwork.com/">goodie bag of apps </a> from the Respect Network App Catalog.
               Enjoy!</p>
+              <div th:if="${licenceKey != null}">
+          		<p>Your SocialSafe licence key is : &nbsp;<span th:text="${licenceKey}"/></p>
+          	  </div>
 </ul>         	
 
 
