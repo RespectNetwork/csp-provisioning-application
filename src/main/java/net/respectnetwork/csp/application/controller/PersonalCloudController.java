@@ -4,10 +4,13 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -945,7 +948,11 @@ public class PersonalCloudController
 
          regSession.setGiftCode(giftCodesVal);
 
-         if (giftCodes != null
+         Set<String> giftCodeSet = new HashSet<String>(Arrays.asList(giftCodes));
+         if(giftCodeSet.size() != giftCodes.length) {
+             errors = true;
+             errorText = "Please provide unique giftcode for each cloud.";
+         } else if (giftCodes != null
                && paymentForm.getNumberOfClouds() < giftCodes.length)
          {
             errors = true;
