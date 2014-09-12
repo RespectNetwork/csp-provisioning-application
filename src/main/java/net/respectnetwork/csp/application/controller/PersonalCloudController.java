@@ -1180,7 +1180,7 @@ public class PersonalCloudController
             mv.addObject("StripeJavaScript",
                   StripePaymentProcessor.getJavaScript(cspModel, amount, desc));
             mv.addObject("postURL", cspHomeURL + "/ccpayment");
-
+            mv.addObject("cspTCURL", this.getRegistrationManager().getCspTCURL());
          } else if (cspModel.getPaymentGatewayName().equals("SAGEPAY"))
          {
             logger.debug("Payment gateway is SAGEPAY");
