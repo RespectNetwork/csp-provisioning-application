@@ -510,7 +510,7 @@ public class PersonalCloudController
             {
                if (this.registerCloudName(cloudName, phone, email, password, PaymentType.CreditCard.toString(), payment.getPaymentId(), request.getLocale()))
                {
-                  forwardingPage = getRNpostRegistrationLandingPage() ; //RegistrationManager.getCspInviteURL();
+                  forwardingPage += "/welcome"; //getRNpostRegistrationLandingPage() ; //RegistrationManager.getCspInviteURL();
                   queryStr = this.formatQueryStr(cloudName, regSession.getRnQueryString(), request);
                   statusText = "Thank you " + cloudName + " for your personal cloud order.<br/>"
                           + "We are processing your order and will notify you once it completes registration in the network.";
@@ -527,7 +527,7 @@ public class PersonalCloudController
                      "",request)) != null)
                {
                   // forwardingPage += "/cloudPage";
-                  forwardingPage = getRNpostRegistrationLandingPage() ; //RegistrationManager.getCspInviteURL();
+                   forwardingPage += "/welcome"; //getRNpostRegistrationLandingPage() ; //RegistrationManager.getCspInviteURL();
                   queryStr = this.formatQueryStr(cloudName, regSession.getRnQueryString(), request);
                   statusText = "Thank you " + cloudName + " for your dependent cloud order.<br/>"
                           + "We are processing your order and will notify you once it completes registration in the network.";
@@ -545,7 +545,7 @@ public class PersonalCloudController
                 if ((mv = acm.createAdditionalClouds(cloudName, payment, null,
                         "", getRegisteredEmailAddress(), getRegisteredPhoneNumber(), request)) != null)
                 {
-                   forwardingPage = getRNpostRegistrationLandingPage();
+                    forwardingPage += "/welcome"; //getRNpostRegistrationLandingPage();
                    queryStr = this.formatQueryStr(cloudName, regSession.getRnQueryString(), request);
                    statusText = "Thank you " + cloudName + " for your additional cloudname order.<br/>"
                            + "We are processing your order and will notify you once it completes registration in the network.";
@@ -562,7 +562,7 @@ public class PersonalCloudController
                      cspModel)) != null)
                {
                   // forwardingPage += "/cloudPage";
-                  forwardingPage = getRNpostRegistrationLandingPage() ; //RegistrationManager.getCspInviteURL();
+                   forwardingPage += "/welcome"; //getRNpostRegistrationLandingPage() ; //RegistrationManager.getCspInviteURL();
                   queryStr = this.formatQueryStr(cloudName, regSession.getRnQueryString(), request);
                   statusText = "Congratulations " + cloudName
                         + "! You have successfully purchased giftcodes.";
@@ -658,7 +658,7 @@ public class PersonalCloudController
          }
       }
 
-      String forwardingPage = getRNpostRegistrationLandingPage() ; //RegistrationManager.getCspInviteURL()  ;
+      String forwardingPage = request.getContextPath(); //getRNpostRegistrationLandingPage() ; //RegistrationManager.getCspInviteURL()  ;
       String statusText = "";
       
       String[] paramValues = request.getParameterValues("paymentType");
@@ -858,7 +858,7 @@ public class PersonalCloudController
                if (this.registerCloudName(cloudName, phone, email, password, PaymentType.PromoCode.toString() , giftCodesVal, request.getLocale()))
                {
                   // forwardingPage += "/cloudPage";
-                  forwardingPage = getRNpostRegistrationLandingPage() ; // RegistrationManager.getCspInviteURL();
+                   forwardingPage += "/welcome"; //getRNpostRegistrationLandingPage() ; // RegistrationManager.getCspInviteURL();
                   queryStr = this.formatQueryStr(cloudName, regSession.getRnQueryString(), request);
                   statusText = "Thank you " + cloudName + " for your personal cloud order.<br/>"
                           + "We are processing your order and will notify you once it completes registration in the network.";
@@ -892,7 +892,7 @@ public class PersonalCloudController
                                                              // for
                {
                   // forwardingPage += "/cloudPage";
-                  forwardingPage = getRNpostRegistrationLandingPage() ; //RegistrationManager.getCspInviteURL();
+                   forwardingPage += "/welcome"; //getRNpostRegistrationLandingPage() ; //RegistrationManager.getCspInviteURL();
                   queryStr = this.formatQueryStr(cloudName, regSession.getRnQueryString(), request);
                   statusText = "Thank you " + cloudName + " for your dependent cloud order.<br/>"
                           + "We are processing your order and will notify you once it completes registration in the network.";
@@ -913,7 +913,7 @@ public class PersonalCloudController
              {
                 if (mv.getViewName().equals("additionalCloudDone")) // all additional clouds have been paid for
                 {
-                   forwardingPage = getRNpostRegistrationLandingPage();
+                    forwardingPage += "/welcome"; //getRNpostRegistrationLandingPage();
                    queryStr = this.formatQueryStr(cloudName, regSession.getRnQueryString(), request);
                    statusText = "Thank you " + cloudName + " for your additional cloudname order.<br/>"
                            + "We are processing your order and will notify you once it completes registration in the network.";
@@ -1036,7 +1036,7 @@ public class PersonalCloudController
                    * mv.addObject("accountInfo", accountForm);
                    */
                   // forwardingPage += "/cloudPage";
-                  forwardingPage = getRNpostRegistrationLandingPage() ; //RegistrationManager.getCspInviteURL();
+                  forwardingPage += "/welcome"; //getRNpostRegistrationLandingPage() ; //RegistrationManager.getCspInviteURL();
                   queryStr = this.formatQueryStr(cloudName, regSession.getRnQueryString(), request);
                   statusText = "Thank you " + cloudName + " for your personal cloud order.<br/>"
                           + "We are processing your order and will notify you once it completes registration in the network.";
@@ -1076,7 +1076,7 @@ public class PersonalCloudController
                                                                 // paid for
                   {
                      // forwardingPage += "/cloudPage";
-                     forwardingPage = getRNpostRegistrationLandingPage() ; //RegistrationManager.getCspInviteURL();
+                     forwardingPage += "/welcome"; //getRNpostRegistrationLandingPage() ; //RegistrationManager.getCspInviteURL();
                      queryStr = this.formatQueryStr(cloudName, regSession.getRnQueryString(), request);
                      statusText = "Thank you " + cloudName + " for your dependent cloud order.<br/>"
                              + "We are processing your order and will notify you once it completes registration in the network.";
@@ -1101,7 +1101,7 @@ public class PersonalCloudController
                 {
                    if (mv.getViewName().equals("additionalCloudDone")) // all additional clouds have been paid for
                    {
-                      forwardingPage = getRNpostRegistrationLandingPage();
+                       forwardingPage += "/welcome"; //getRNpostRegistrationLandingPage();
                       queryStr = this.formatQueryStr(cloudName, regSession.getRnQueryString(), request);
                       statusText = "Thank you " + cloudName + " for your additional cloudname order.<br/>"
                               + "We are processing your order and will notify you once it completes registration in the network.";
@@ -1627,7 +1627,18 @@ private ModelAndView createDependentClouds(String cloudName,
       this.clearPaymentInfo();
       return mv;
    }
-
+   
+   @RequestMapping(value = "/welcome", method = RequestMethod.POST)
+   public ModelAndView showWelcomePage(HttpServletRequest request, Model model) {
+       logger.info("showing welcome page " + request.getParameter("csp")
+               + "::" + request.getParameter("cloudname"));
+       ModelAndView mv = null;
+       mv = new ModelAndView("welcome");
+       mv.addObject("cloudName", request.getParameter("name"));
+       mv.addObject("csp", request.getParameter("csp"));
+       mv.addObject("cspLoginURL", request.getContextPath() + "/login");
+       return mv;
+   }
    public boolean postLatitudeLongitudeInfo() throws Exception
    {
       String latLongPostURL = RegistrationManager.getLatLongPostURL();

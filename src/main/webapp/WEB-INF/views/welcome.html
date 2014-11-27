@@ -29,19 +29,6 @@
       <link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/ico/apple-touch-icon-72-precomposed.png" />
                     <link rel="apple-touch-icon-precomposed" href="img/ico/apple-touch-icon-57-precomposed.png" />
                                    <link rel="shortcut icon" href="img/ico/favicon.png" />
-<!--   <script>     
-     function goToRNlandingPage()
-	 {
-
-		query = document.getElementById('queryStr').value;
-		url = document.getElementById('postURL').value ;	
-		urlAndQs = "?" + query;
-		
-		window.open(url+urlAndQs,"_self");
-	 }
-	 
-</script> -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 </head>
 <body>
 
@@ -67,30 +54,11 @@
 	  <div class="row-fluid">
 		<div class="span2"></div>
 			<div class="span8"> 
-				<div class="middle" style="text-align:left !important; font-size:25px;"><p><span th:utext="${statusText}"/></p>
-				<p class="primary">
-					<div style="text-align:center !important;">
-          				<form  action="#" role="form" name="txnCompletionForm" th:action="${postURL}" th:method="${submitMethod}">
-          			
-          					<input type="hidden" id="cloudname" name="cloudname" th:value="${cloudName}" />         	  
-  			 				<input type="hidden" id="statusText" name="statusText" th:value="${statusText}" />
-  			  				<input type="hidden" id="postURL" name="postURL" th:value="${postURL}" />
-  			  			
-							<button type="submit" name="submit" id="submit" class="button big">Continue</button>
-						</form>
-					</div>
-				
-				
-			<!-- <div th:if="${#strings.length(queryStr)}">
-				
-						<input type="hidden" id="cloudname" name="cloudname" th:value="${cloudName}" />         	  
-  			 			<input type="hidden" id="statusText" name="statusText" th:value="${statusText}" />
-  			  			
-  			  			<input type="hidden" id="postURL" name="postURL" th:value="${postURL}" />
-  			  			<input type="hidden" id="queryStr" name="queryStr" th:value="${queryStr}" />
-						<button type="button" id="goToRN" class="button big" onclick="goToRNlandingPage();">Continue</button>
-				
-				</div> -->
+				<div class="middle" style="text-align:left !important; font-size:25px;">
+				<p class="primary"><p align="justify">Congratulations! on your purchase and welcome to the family.</p>
+					<p align="justify">With your purchase today, you also receive a lifetime membership in the Respect Network, the world's first global private network of personal and business clouds.   Tell your family and friends!  Let them know to act now, and grab your preferred =cloudname, while the names are  still available.  After the first  one million =cloud names  are sold the price will be higher and renewable annually. To order, you can log back in and invite them by <a th:href="${cspLoginURL}">clicking this link.</a>
+                    </p>
+					
 			    </p>
 			    </div>
 			  </div>
@@ -106,14 +74,7 @@
     			<div class="span10 cspMain">YOUR CLOUD SERVICE PROVIDER | <img src="img/csp_logo.png" /> &nbsp;
 				</div>
 		 </div>
-		 <!--
-	<div class="help">
-  				<div id="help">
-  					<a target="_blank" onclick="return windowpop(this.href, 545, 433); " th:href="@{/help}">Help</a>
-				</div>
-	 </div>
--->
-  	</div>
+	</div>
 
 </body>
 </html>
